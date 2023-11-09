@@ -13,6 +13,10 @@ public class Main
 {
     public static void main( String[] args )
     {
+        // Set the root logger level to INFO to reduce the amount of logging output
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
+        // otherwise it clusters the console with unwanted info
+
         System.out.println( "Hello World!" );
         DefaultDockerClientConfig.Builder builder = DefaultDockerClientConfig.createDefaultConfigBuilder();
         //builder.withDockerHost("tcp://Localhost:2375");
@@ -42,6 +46,5 @@ public class Main
         System.out.println("--------");
         containers = dockerClient.listContainersCmd() .withShowAll(false).exec();
         containers.forEach(c -> System.out.println(c.getId() +" "+ c.getState()));
-
     }
 }
