@@ -19,11 +19,21 @@ public class Main
         DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
         dockerClient.versionCmd().exec();
         List<Container> containers;
-        System.out.println("-------------------ALL CONTAINER INSTANCES-~========-=--");
         containers = dockerClient.listContainersCmd().withShowAll(true).exec();
-        containers.forEach(c -> System.out.println(c.getId() + " " + c.getState()));
-        String id = containers.get(0).getId();
-        dockerClient.stopContainerCmd(id).exec();
 
+        int totalContainers = 0;
+        int totalImages = 0;
+        int runningContainers = 0;
+        int stoppedContainers = 0;
+
+        // Print container information
+        for (Container container : containers) {
+
+            System.out.println("Container ID: " + container.getId());
+            System.out.println("Container Name: " + container.getNames()[0]);
+            System.out.println("Container Image: " + container.getImage());
+            System.out.println("Container Status: " + container.getStatus());
+            System.out.println("---------------");
+        }
     }
 }
