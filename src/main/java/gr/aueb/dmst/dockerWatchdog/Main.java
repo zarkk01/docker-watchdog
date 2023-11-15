@@ -24,22 +24,6 @@ public class Main
         containers.forEach(c -> System.out.println(c.getId() + " " + c.getState()));
         String id = containers.get(0).getId();
         dockerClient.stopContainerCmd(id).exec();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            //throw new RuntimeException(e);
-            System.err.println("Thread pause interrupted: " + e.getMessage());
-        }
-        System.out.println("-----. -ACTIVE CONTAINER INSTANCES-- ");
-        containers = dockerClient.listContainersCmd().withShowAll(false).exec();
-        containers.forEach(c -> System.out.println(c.getId() + " " + c.getState()));
-        System.out.println(" - - - - - - - -------ALL CONTAINER INSTANCES----- --");
-                containers = dockerClient.listContainersCmd() .withShowAll(true).exec();
-        containers.forEach(c -> System.out.println(c.getId() + " "
-                + c.getState()));
-        dockerClient.startContainerCmd(id).exec();
-        System.out.println("--------");
-        containers = dockerClient.listContainersCmd() .withShowAll(false).exec();
-        containers.forEach(c -> System.out.println(c.getId() +" "+ c.getState()));
+
     }
 }
