@@ -12,12 +12,18 @@ public class Main
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
         // otherwise it clusters the console with unwanted info
 
-        System.out.println( "Hello World!" );
+        // Just for debugging reason.
+        System.out.println( "Starting " );
+
+        //Config builder and create dockerClient
         DefaultDockerClientConfig.Builder builder = DefaultDockerClientConfig.createDefaultConfigBuilder();
-        //builder.withDockerHost("tcp://Localhost:2375");
-        builder.withDockerCertPath("/Users/giannistampakis/.docker");
         DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
-        dockerClient.versionCmd().exec();
+
+        //No need for them.
+        //builder.withDockerHost("tcp://Localhost:2375");
+        //builder.withDockerCertPath("/Users/zark/.docker");
+        //dockerClient.versionCmd().exec();
+
         List<Container> containers;
         containers = dockerClient.listContainersCmd().withShowAll(true).exec();
 
