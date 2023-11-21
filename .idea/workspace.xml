@@ -5,17 +5,67 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d3730c32-d3a2-4d5a-a021-bc65faa720a2" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Img.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/startmonitoring" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/monitorThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" afterDir="false" />
+    </list>
+    <list id="73105d3e-47c3-4e6c-8959-1e32be532562" name="Changes by zark" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Instance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java">
+      <ranges>
+        <range start1="1" end1="1" start2="1" end2="7" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="3" end1="3" start2="9" end2="16" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="5" end1="6" start2="18" end2="19" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="8" end1="10" start2="21" end2="21" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="13" end1="18" start2="24" end2="29" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="20" end1="21" start2="31" end2="32" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="23" end1="24" start2="34" end2="34" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java">
+      <ranges>
+        <range start1="2" end1="3" start2="2" end2="4" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="4" end1="6" start2="5" end2="7" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="8" end1="9" start2="9" end2="9" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="10" end1="11" start2="10" end2="10" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
+        <range start1="17" end1="21" start2="16" end2="16" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="23" end1="23" start2="18" end2="19" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="26" end1="27" start2="22" end2="23" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="30" end1="31" start2="26" end2="27" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="37" end1="38" start2="33" end2="34" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="39" end1="41" start2="35" end2="36" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="43" end1="45" start2="38" end2="40" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="46" end1="59" start2="41" end2="45" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="60" end1="62" start2="46" end2="48" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="63" end1="75" start2="49" end2="55" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="76" end1="76" start2="56" end2="58" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="78" end1="83" start2="60" end2="67" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="84" end1="86" start2="68" end2="79" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="96" end1="97" start2="89" end2="90" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+        <range start1="102" end1="103" start2="95" end2="95" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
+      </ranges>
+    </file>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -24,25 +74,30 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2YPB5JB0Upy1mXKKQjQ3OKW8DYQ" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;monitor&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/zark/Code/docker/docker-watchdog&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "monitor",
+    "last_opened_file_path": "/Users/zark/Code/docker/docker-watchdog",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -58,5 +113,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -18,6 +18,6 @@ public class Main
         }
 
         // Stop the monitoring thread - stop updates
-        dockerMonitor.stopMonitoring();
+        //dockerMonitor.stopMonitoring();
     }
 }

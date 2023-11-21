@@ -1,0 +1,46 @@
+ private void startMonitoring() {
+
+        // Set the root logger level to INFO to reduce the amount of logging output
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
+
+        int howMuchRun = 0;
+        int howManyStop = 0;
+
+        // Print container information
+        for (int i = Main.instancesList.size() - 1; i >= 0; i--) {
+
+            System.out.println("Container ID: " + Main.instancesList.get(i).getId());
+            System.out.println("Container Name: " + Main.instancesList.get(i).getName());
+            System.out.println("Container Image: " + Main.instancesList.get(i).getImage());
+            System.out.println("Container Status: " + Main.instancesList.get(i).getStatus());
+            System.out.println("---------------");
+
+            // Check if the current container is running or not
+            boolean isRunning;
+
+            try {
+                isRunning = Boolean.TRUE.equals(Main.dockerClient.inspectContainerCmd(Main.instancesList.get(i).getId()).exec().getState().getRunning());
+                if (isRunning) {
+                    // Incrementing runningContainers
+                    howMuchRun++;
+                } else {
+                    // Incrementing stoppedContainers
+                    howManyStop++;
+                }
+            } catch (Exception e) {
+                Main.instancesList.remove(Main.instancesList.get(i));
+            }
+        }
+
+        runningContainers = howMuchRun;
+        stoppedContainers = howManyStop;
+
+        // Showing what we found
+        System.out.println("We have " + Main.instancesList.size() + " containers. " +
+                runningContainers + " of them are running, while " +
+                stoppedContainers + " stopped." +
+                " The total images count is " + Main.imagesList.size() + " and from them " + Img.getUsedImages() + " used.");
+
+        // Letting user waiting
+        System.out.println("Next update in about 20 seconds...");
+    }
