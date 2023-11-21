@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d3730c32-d3a2-4d5a-a021-bc65faa720a2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Img.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/startmonitoring" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java" afterDir="false" />
-    </list>
+    <list default="true" id="d3730c32-d3a2-4d5a-a021-bc65faa720a2" name="Changes" comment="Do too much to comment" />
     <list id="73105d3e-47c3-4e6c-8959-1e32be532562" name="Changes by zark" comment="">
       <change afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Instance.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java" afterDir="false" />
@@ -30,42 +24,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/Main.java">
-      <ranges>
-        <range start1="1" end1="1" start2="1" end2="7" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="3" end1="3" start2="9" end2="16" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="5" end1="6" start2="18" end2="19" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="8" end1="10" start2="21" end2="21" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="13" end1="18" start2="24" end2="29" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="20" end1="21" start2="31" end2="32" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="23" end1="24" start2="34" end2="34" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/src/main/java/gr/aueb/dmst/dockerWatchdog/MonitorThread.java">
-      <ranges>
-        <range start1="2" end1="3" start2="2" end2="4" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="4" end1="6" start2="5" end2="7" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="8" end1="9" start2="9" end2="9" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="10" end1="11" start2="10" end2="10" changelist="73105d3e-47c3-4e6c-8959-1e32be532562" />
-        <range start1="17" end1="21" start2="16" end2="16" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="23" end1="23" start2="18" end2="19" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="26" end1="27" start2="22" end2="23" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="30" end1="31" start2="26" end2="27" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="37" end1="38" start2="33" end2="34" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="39" end1="41" start2="35" end2="36" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="43" end1="45" start2="38" end2="40" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="46" end1="59" start2="41" end2="45" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="60" end1="62" start2="46" end2="48" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="63" end1="75" start2="49" end2="55" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="76" end1="76" start2="56" end2="58" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="78" end1="83" start2="60" end2="67" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="84" end1="86" start2="68" end2="79" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="96" end1="97" start2="89" end2="90" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-        <range start1="102" end1="103" start2="95" end2="95" changelist="d3730c32-d3a2-4d5a-a021-bc65faa720a2" />
-      </ranges>
-    </file>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -109,6 +67,14 @@
       <workItem from="1700417153553" duration="4419000" />
       <workItem from="1700471766714" duration="2409000" />
     </task>
+    <task id="LOCAL-00001" summary="Do too much to comment">
+      <created>1700593064524</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1700593064524</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -124,5 +90,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Do too much to comment" />
+    <option name="LAST_COMMIT_MESSAGE" value="Do too much to comment" />
   </component>
 </project>

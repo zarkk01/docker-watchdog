@@ -1,14 +1,13 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import com.github.dockerjava.api.DockerClient;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.core.DefaultDockerClientConfig;
-import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.api.model.Image;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MonitorThread implements Runnable {
 
