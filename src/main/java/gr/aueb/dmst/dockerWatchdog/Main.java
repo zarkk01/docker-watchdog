@@ -16,10 +16,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        // Initiate and start monitorThread
-//        MonitorThread dockerMonitor = new MonitorThread();
-//        Thread monitorThread = new Thread(dockerMonitor);
-//        monitorThread.start();
+//      Initiate and start monitorThread
+        MonitorThread dockerMonitor = new MonitorThread();
+        Thread monitorThread = new Thread(dockerMonitor);
+        monitorThread.start();
 
         ExecutorThread dockerExecutor = new ExecutorThread();
         Thread executorThread = new Thread(dockerExecutor);

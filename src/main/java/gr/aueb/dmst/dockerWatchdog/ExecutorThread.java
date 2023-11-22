@@ -1,11 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Scanner;
@@ -13,52 +10,13 @@ import java.util.Scanner;
 public class ExecutorThread implements Runnable {
 
     Scanner scanner = new Scanner(System.in);
-
     @Override
     public void run(
     ) {
         while (true) {
-            System.out.println("Choose an option:");
-            System.out.println("1. View Docker containers");
-            System.out.println("2. Exit");
-            System.out.println("3. Start a container");
-            System.out.println("4. Stop a container");
-            System.out.println("5. Remove a container");
-            System.out.println("6. Rename a container");
-            System.out.println("7. Pull an image");
-            System.out.println("8. run a container");
+            showMenuWithInteractions();
             int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    showDockerInfo();
-                    break;
-                case 2:
-                    ;
-                    System.exit(0);
-                    break;
-                case 3:
-                    startContainer();
-                    break;
-                case 4:
-                    stopContainer();
-                    break;
-                case 5:
-                    System.out.println("Please be careful, the container will be permanently removed!!");
-                    removeContainer();
-                    break;
-                case 6:
-                    renameContainer();
-                    break;
-                case 7:
-                    pullImage();
-                    break;
-                case 8:
-                    runContainer();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+            doDependsOnChoice(choice);
         }
     };
 
@@ -83,7 +41,8 @@ public class ExecutorThread implements Runnable {
         Container container = getContainerByName(containerName);
 
         if (container != null && container.getStatus().startsWith("Exited")) {
-//                 Start the container
+
+            //Start the container
             System.out.println("Starting the container " + containerName + "...");
             Main.dockerClient.startContainerCmd(containerName).exec();
             System.out.println("Container started successfully.");
@@ -152,6 +111,8 @@ public class ExecutorThread implements Runnable {
     }
     public void runContainer() {
         try {
+            ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
+                    (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the name of the image: ");
             String imageName = scanner.nextLine();
@@ -160,8 +121,9 @@ public class ExecutorThread implements Runnable {
 
             // Create and start a container based on the pulled image
             CreateContainerResponse containerResponse = Main.dockerClient.createContainerCmd(imageName).exec();
+            Main.dockerClient.startContainerCmd(containerResponse.getId()).exec();
 
-            System.out.println("Container started successfully. Container ID: " + containerResponse.getId());
+            System.out.println("Container started and running successfully. Container ID: " + containerResponse.getId());
         } catch (InterruptedException e) {
             System.out.println("Container creation or start operation was interrupted.");
             e.printStackTrace();
@@ -172,6 +134,8 @@ public class ExecutorThread implements Runnable {
     }
 
     public void pullImage() {
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
+                (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the name of the image to pull: ");
         String imageName = scanner.nextLine();
@@ -189,16 +153,61 @@ public class ExecutorThread implements Runnable {
         }
     }
 
-    public String showDockerInfo() {
+    public void showDockerInfo() {
 
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
-        String s = "";
-        for (Container container : containers) {
-            s += container.getNames()[0] + " ";
+        for (Instance instance : Main.instancesList) {
+            System.out.println(instance);
         }
-        return s;
+
+
+    }
+
+    private void showMenuWithInteractions(){
+        System.out.println("Choose an option:");
+        System.out.println("1. View Docker containers");
+        System.out.println("2. Exit");
+        System.out.println("3. Start a container");
+        System.out.println("4. Stop a container");
+        System.out.println("5. Run a container");
+        System.out.println("6. Remove a container");
+        System.out.println("7. Rename a container");
+        System.out.println("8. Pull an image");
+    }
+
+    private void doDependsOnChoice(int choice){
+        switch (choice) {
+            case 1:
+                showDockerInfo();
+                break;
+            case 2:
+                ;
+                System.exit(0);
+                break;
+            case 3:
+                startContainer();
+                break;
+            case 4:
+                stopContainer();
+                break;
+            case 5:
+                runContainer();
+                break;
+            case 6:
+                System.out.println("Please be careful, the container will be permanently removed!!");
+                removeContainer();
+                break;
+            case 7:
+                renameContainer();
+                break;
+            case 8:
+                pullImage();
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
     }
 }
