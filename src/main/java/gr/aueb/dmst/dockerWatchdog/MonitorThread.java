@@ -1,23 +1,23 @@
 package gr.aueb.dmst.dockerWatchdog;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class MonitorThread implements Runnable {
 
+
+
+
     //Initiate running variable true
     private volatile boolean running = true;
-
     @Override
     public void run() {
-        fillList();
         while (running) {
             // Calling monitorCluster so to show the current cluster situation
             monitoring();
@@ -30,41 +30,21 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    private void fillList() {
 
-        ((Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(Level.INFO);
 
-        // Initiate containers list with existing containers.
-        List < Container > containers;
-        containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
-        for (Container container: containers) {
-            Instance obj = new Instance(container.getId(), container.getNames()[0], container.getImage(), container.getStatus());
-            Main.instancesList.add(obj);
-        }
-
-        List < Image > images;
-        images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
-
-        for (Image image: images) {
-            String isUsed = "false";
-            for (Container container: containers) {
-                if (container.getImageId().equals(image.getId())) {
-                    isUsed = "true";
-                }
-            }
-            Img obj = new Img(image.getId(), image.getRepoTags()[0], isUsed, image.getSize());
-            Main.imagesList.add(obj);
-        }
-    }
 
     private void monitoring() {
-// Set the root logger level to INFO to reduce the amount of logging output
+
+        // Set the root logger level to INFO to reduce the amount of logging output
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         List < Container > containers;
         containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+
+        List < Image > images;
+        images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
 
         String[][] instancesArray = new String[100][2];
         int counterInstance = -1;
@@ -126,16 +106,74 @@ public class MonitorThread implements Runnable {
             }
         }
 
-        int runningContainers = 0;
-        for (Instance instance :Main.instancesList) {
-            if (instance.getStatus().equals("running")){
-                runningContainers++;
+
+        String[][] myImagesArray = new String[100][2];
+        int counterMyImages = -1;
+        String[][] imagesArray = new String[100][2];
+        int counterImages = -1;
+
+        for (Image image: images) {
+            counterImages++;
+            imagesArray[counterImages][0] = image.getId();
+
+            for ( MyImage instance: Main.myimagesList) {
+                if (image.getId().equals(instance.getId())) {
+                    imagesArray[counterImages][1] = "match";
+                    break;
+                }
             }
         }
+
+        for (MyImage myImage : Main.myimagesList) {
+            counterMyImages++;
+            myImagesArray[counterMyImages][0] = myImage.getId();
+
+            for (Image image: images) {
+                if (myImage.getId().equals(image.getId())){
+                    myImagesArray[counterMyImages][1] = "match";
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0 ; i < counterImages + 1 ; i++) {
+
+            if (imagesArray[i][1] == null) {
+                MyImage addOne = new MyImage(imagesArray[i][0], Main.dockerClient
+                        .inspectImageCmd(imagesArray[i][0]).exec().getSize());
+
+                Main.myimagesList.add(addOne);
+            }
+        }
+
+        for (int i = 0 ; i < counterMyImages +1 ; i++) {
+            Iterator<MyImage> iterator = Main.myimagesList.iterator();
+            while (iterator.hasNext()) {
+                MyImage myImage = iterator.next();
+
+                if (myImage.getId().equals(myImagesArray[i][0]) && myImagesArray[i][1] == null) {
+                    iterator.remove();
+                }
+            }
+        }
+
+
+//        int runningContainers = 0;
+//        for (Instance instance :Main.instancesList) {
+//            if (instance.getStatus().equals("running")){
+//                runningContainers++;
+//            }
+//        }
 
 //        System.out.println("We have " + Main.instancesList.size() + " containers. " +
 //                runningContainers + " of them are running, while ");
     }
+
+
+
+
+
+
 
     public void stopMonitoring() {
         // Thread is about to stop, so while loop in run method should stop

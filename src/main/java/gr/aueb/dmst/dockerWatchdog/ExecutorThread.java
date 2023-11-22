@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
 import java.util.List;
@@ -161,6 +162,11 @@ public class ExecutorThread implements Runnable {
         List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
         for (Instance instance : Main.instancesList) {
             System.out.println(instance);
+        }
+
+        List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
+        for (MyImage myImage : Main.myimagesList) {
+            System.out.println(myImage);
         }
 
 
