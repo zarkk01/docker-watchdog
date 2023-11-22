@@ -7,7 +7,7 @@ public class Instance {
     private final String id;
     private String name;
     private final String image;
-    private final String status;
+    private String status;
 
     // constructor
     public Instance(String id ,String name ,String image ,String status){
@@ -37,6 +37,10 @@ public class Instance {
     // Getter for status
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 
     // Getter for name
