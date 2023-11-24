@@ -46,7 +46,7 @@ public class MyImage {
     }
 
     public String getStatus(){
-        return this.status;
+        return status;
     }
 
     public void setStatus(String status){
