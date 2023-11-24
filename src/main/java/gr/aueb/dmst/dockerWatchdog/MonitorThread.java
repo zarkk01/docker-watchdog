@@ -1,13 +1,19 @@
 package gr.aueb.dmst.dockerWatchdog;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+
 
 public class MonitorThread implements Runnable {
 
@@ -16,9 +22,19 @@ public class MonitorThread implements Runnable {
     @Override
     public void run() {
         while (running) {
+            // Set the root logger level to ERROR to suppress all messages
+            ((Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)).setLevel(Level.ERROR);
+            // Set the level for the specific logger to ERROR
+            ((Logger) LoggerFactory.getLogger("org.apache.http.impl.execchain.RetryExec")).setLevel(Level.ERROR);
 
             // Calling monitoring so to show the current cluster situation
-            monitoring();
+            try {
+                monitoring();
+            } catch ( Exception e) {
+                System.out.println("Error trying to connect to the Docker Daemon" +
+                        ". Try restarting your docker desktop and running the program again..");
+                System.exit(0);
+            }
 
             // Sleep for a specified interval (e.g., 20 sec) and then repeat if running
             try {
@@ -30,7 +46,7 @@ public class MonitorThread implements Runnable {
     }
     static List< Container > containers;
     static List < Image > images;
-    private void monitoring() {
+    private void monitoring() throws InternalServerErrorException, SocketException {
 
         // Set the root logger level to INFO to reduce the amount of logging output
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
