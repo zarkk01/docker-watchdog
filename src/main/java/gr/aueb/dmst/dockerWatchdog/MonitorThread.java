@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -39,125 +40,132 @@ public class MonitorThread implements Runnable {
 
         images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
 
-        String[][] instancesArray = new String[100][2];
-        int counterInstance = -1;
-        String[][] containersArray = new String[100][2];
+        List<String[]> containersList = new ArrayList<>();
+        List<String[]> instancesList = new ArrayList<>();
+
         int counterContainer = -1;
+        int counterInstance = -1;
 
-        for (Container container: containers) {
+        for (Container container : containers) {
             counterContainer++;
-            containersArray[counterContainer][0] = container.getId();
+            String[] containerInfo = new String[2];
+            containerInfo[0] = container.getId();
 
-            for ( MyInstance instance: Main.myInstancesList) {
+            for (MyInstance instance : Main.myInstancesList) {
                 if (container.getId().equals(instance.getId())) {
-                    containersArray[counterContainer][1] = "match";
+                    containerInfo[1] = "match";
                     break;
                 }
             }
+            containersList.add(containerInfo);
         }
 
         for (MyInstance instance : Main.myInstancesList) {
             counterInstance++;
-            instancesArray[counterInstance][0] = instance.getId();
+            String[] instanceInfo = new String[2];
+            instanceInfo[0] = instance.getId();
 
-            for (Container container: containers) {
-                if (instance.getId().equals(container.getId())){
-                    instancesArray[counterInstance][1] = "match";
+            for (Container container : containers) {
+                if (instance.getId().equals(container.getId())) {
+                    instanceInfo[1] = "match";
                     break;
                 }
             }
+            instancesList.add(instanceInfo);
         }
 
-        for (int i = 0 ; i < counterContainer + 1 ; i++) {
-
-            if ("match".equals(containersArray[i][1])){
+        for (int i = 0; i < counterContainer + 1; i++) {
+            if ("match".equals(containersList.get(i)[1])) {
                 for (MyInstance instance : Main.myInstancesList) {
-                    if (instance.getId().equals(containersArray[i][0])){
-                        instance.setStatus(Main.dockerClient.inspectContainerCmd
-                                (containersArray[i][0]).exec().getState().getStatus());
-                        instance.setName(Main.dockerClient.inspectContainerCmd
-                                (containersArray[i][0]).exec().getName());
+                    if (instance.getId().equals(containersList.get(i)[0])) {
+                        instance.setStatus(Main.dockerClient.inspectContainerCmd(containersList.get(i)[0]).exec().getState().getStatus());
+                        instance.setName(Main.dockerClient.inspectContainerCmd(containersList.get(i)[0]).exec().getName());
                         break;
                     }
                 }
             } else {
-                MyInstance addOne = new MyInstance(containersArray[i][0],
-                        Main.dockerClient.inspectContainerCmd(containersArray[i][0]).exec().getName() ,
-                        Main.dockerClient.inspectContainerCmd(containersArray[i][0]).exec().getImageId() ,
-                        Main.dockerClient.inspectContainerCmd(containersArray[i][0]).exec().getState().getStatus());
+                MyInstance addOne = new MyInstance(containersList.get(i)[0],
+                        Main.dockerClient.inspectContainerCmd(containersList.get(i)[0]).exec().getName(),
+                        Main.dockerClient.inspectContainerCmd(containersList.get(i)[0]).exec().getImageId(),
+                        Main.dockerClient.inspectContainerCmd(containersList.get(i)[0]).exec().getState().getStatus());
 
                 Main.myInstancesList.add(addOne);
             }
-
         }
 
-        for (int i = 0 ; i < counterInstance +1 ; i++) {
+        for (int i = 0; i < counterInstance + 1; i++) {
             Iterator<MyInstance> iterator = Main.myInstancesList.iterator();
             while (iterator.hasNext()) {
                 MyInstance instance = iterator.next();
 
-                if (instance.getId().equals(instancesArray[i][0]) && instancesArray[i][1] == null) {
+                if (instance.getId().equals(instancesList.get(i)[0]) && instancesList.get(i)[1] == null) {
                     iterator.remove();
                 }
             }
         }
 
-        String[][] myImagesArray = new String[100][2];
-        int counterMyImages = -1;
-        String[][] imagesArray = new String[100][2];
+        List<String[]> imagesList = new ArrayList<>();
+        List<String[]> myImagesList = new ArrayList<>();
         int counterImages = -1;
+        int counterMyImages = -1;
 
-        for (Image image: images) {
-
+        // Populate imagesList with matching information
+        for (Image image : images) {
             counterImages++;
-            imagesArray[counterImages][0] = image.getId();
+            String[] imageInfo = new String[2];
+            imageInfo[0] = image.getId();
 
-            for ( MyImage img: Main.myImagesList) {
+            for (MyImage img : Main.myImagesList) {
                 if (image.getId().equals(img.getId())) {
-                    imagesArray[counterImages][1] = "match";
+                    imageInfo[1] = "match";
                     break;
                 }
             }
+            imagesList.add(imageInfo);
         }
 
+        // Populate myImagesList with matching information
         for (MyImage img : Main.myImagesList) {
             counterMyImages++;
-            myImagesArray[counterMyImages][0] = img.getId();
+            String[] myImageInfo = new String[2];
+            myImageInfo[0] = img.getId();
 
-            for (Image image: images) {
-                if (img.getId().equals(image.getId())){
-                    myImagesArray[counterMyImages][1] = "match";
+            for (Image image : images) {
+                if (img.getId().equals(image.getId())) {
+                    myImageInfo[1] = "match";
                     break;
                 }
             }
+            myImagesList.add(myImageInfo);
         }
 
-        for (int i = 0 ; i < counterImages + 1 ; i++) {
-
-            if ("match".equals(imagesArray[i][1])){
+        // Update Main.myImagesList based on imagesList
+        for (int i = 0; i < counterImages + 1; i++) {
+            if ("match".equals(imagesList.get(i)[1])) {
                 for (MyImage image : Main.myImagesList) {
-                    if (image.getId().equals(imagesArray[i][0])){
+                    if (image.getId().equals(imagesList.get(i)[0])) {
                         image.setStatus(getImageUsageStatus(Objects.requireNonNull(Main.dockerClient
-                                .inspectImageCmd(imagesArray[i][0]).exec().getRepoTags()).get(0)));
+                                .inspectImageCmd(imagesList.get(i)[0]).exec().getRepoTags()).get(0)));
                         break;
                     }
                 }
             } else {
                 MyImage addOne = new MyImage(Objects.requireNonNull(Main.dockerClient
-                        .inspectImageCmd(imagesArray[i][0]).exec().getRepoTags()).get(0),imagesArray[i][0], Main.dockerClient
-                        .inspectImageCmd(imagesArray[i][0]).exec().getSize(),getImageUsageStatus(Objects.requireNonNull(Main.dockerClient
-                        .inspectImageCmd(imagesArray[i][0]).exec().getRepoTags()).get(0)));
+                        .inspectImageCmd(imagesList.get(i)[0]).exec().getRepoTags()).get(0), imagesList.get(i)[0],
+                        Main.dockerClient.inspectImageCmd(imagesList.get(i)[0]).exec().getSize(),
+                        getImageUsageStatus(Objects.requireNonNull(Main.dockerClient
+                                .inspectImageCmd(imagesList.get(i)[0]).exec().getRepoTags()).get(0)));
 
                 Main.myImagesList.add(addOne);
             }
         }
 
-        for (int i = 0 ; i < counterMyImages +1 ; i++) {
+        // Remove unmatched entries from Main.myImagesList based on myImagesList
+        for (int i = 0; i < counterMyImages + 1; i++) {
             Iterator<MyImage> iterator = Main.myImagesList.iterator();
             while (iterator.hasNext()) {
                 MyImage myImage = iterator.next();
-
-                if (myImage.getId().equals(myImagesArray[i][0]) && myImagesArray[i][1] == null) {
+                if (myImage.getId().equals(myImagesList.get(i)[0]) && myImagesList.get(i)[1] == null) {
                     iterator.remove();
                 }
             }
