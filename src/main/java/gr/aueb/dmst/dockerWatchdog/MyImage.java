@@ -1,4 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog;
+
 import java.util.List;
 
 import com.github.dockerjava.api.DockerClient;
@@ -6,12 +7,16 @@ import com.github.dockerjava.api.model.Container;
 
 public class MyImage {
 
+    private final String name;
     private final String id;
     private final Long size;
+    private String status;
 
-    public MyImage(String id, Long size) {
+    public MyImage(String name,String id, Long size,String status) {
+        this.name = name;
         this.id = id;
         this.size = size;
+        this.status = status;
     }
 
     // Getter for id
@@ -33,7 +38,18 @@ public class MyImage {
 
     @Override
     public String toString() {
-        return "id = "+ id +  ", size = " + size;
+        return "name = " + name + ",id = "+ id.substring(7) +  ", size = " + size + ", status = " + status ;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getStatus(){
+        return this.status;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
+    }
 }
