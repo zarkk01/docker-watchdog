@@ -143,6 +143,7 @@ public class ExecutorThread implements Runnable {
             Container curIns = MonitorThread.containers.get(i - 1);
             if (curIns.getStatus().equals("Exited")) {
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
+                c++;
             } else {
                 System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Running)");
             }
