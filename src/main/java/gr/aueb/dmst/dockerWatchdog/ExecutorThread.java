@@ -45,7 +45,7 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("All containers are running.");
+            System.out.println("\nAll containers are running.");
             return;
         }
 
@@ -81,7 +81,7 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("All containers are exited.");
+            System.out.println("\nAll containers are stopped.");
             return;
         }
 
@@ -117,7 +117,7 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("All containers are running.");
+            System.out.println("\nAll containers are running so you can't remove them.");
             return;
         }
 
@@ -141,7 +141,7 @@ public class ExecutorThread implements Runnable {
         System.out.println("\nAvailable containers to rename : ");
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
-            if (curIns.getStatus().equals("Exited")) {
+            if (curIns.getStatus().startsWith("Exited")) {
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
             } else {
@@ -155,7 +155,7 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("All containers are running.");
+            System.out.println("\nAll containers are running so you can't rename them.");
             return;
         }
 
@@ -183,7 +183,7 @@ public class ExecutorThread implements Runnable {
                     (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the name and the version of the image (ex format: nginx:latest )." +
-                    "Don't worry if you have not pulled it, I will do it for you :) : ");
+                    "\nDon't worry if you have not pulled it, I will do it for you :) : ");
             String imageName = scanner.nextLine();
 
             Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
@@ -232,14 +232,14 @@ public class ExecutorThread implements Runnable {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        System.out.println("\n----Containers----");
+        System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
         for (MyInstance instance : Main.myInstancesList) {
-            System.out.println(instance);
+            System.out.println("\u001B[33m" + instance + "\u001B[0m");
         }
 
-        System.out.println("\n----Images----");
+        System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
         for (MyImage myImage : Main.myImagesList) {
-            System.out.println(myImage);
+            System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
         }
     }
 

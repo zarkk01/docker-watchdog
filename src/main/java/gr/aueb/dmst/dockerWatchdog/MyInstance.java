@@ -16,9 +16,8 @@ public class MyInstance {
 
     @Override
     public String toString() {
-        return "id = "+ id +", " +
-                "name =" + name.substring(1) +" ,image = " + image.substring(7)
-                + " ,status = " + status;
+        return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image.substring(7)
+                + " , Status = " + status;
     }
 
     // Getter for id
