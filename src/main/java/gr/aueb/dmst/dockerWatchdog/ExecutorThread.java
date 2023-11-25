@@ -162,6 +162,7 @@ public class ExecutorThread implements Runnable {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nEnter the number of the container to rename: ");
         int containerNumber = scanner.nextInt() - 1;
+        scanner.nextLine();
         // Retrieve the Container object corresponding to the containerName
         Container container = getContainerByNumber(containerNumber);
 
