@@ -23,8 +23,6 @@ public class ExecutorThread implements Runnable {
         }
     }
 
-    ;
-
     public void startContainer() {
 
         System.out.println("\nAvailable containers to start : ");
@@ -284,6 +282,7 @@ public class ExecutorThread implements Runnable {
                 break;
             case 8:
                 System.exit(0);
+                scanner.close();
                 break;
             default:
                 System.out.println("Invalid choice. Please try again.");
