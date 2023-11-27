@@ -1,6 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
@@ -51,13 +53,21 @@ public class ExecutorThread implements Runnable {
 
         System.out.print("\nEnter the number of the container to start: ");
         int containerNumber = scanner.nextInt() - 1;
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+            return;
+        }
 
         Container container = getContainerByNumber(containerNumber);
+        try {
+            //Start the container
+            System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.startContainerCmd(container.getId()).exec();
+            System.out.println("Container started successfully.");
+        } catch (NotModifiedException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
+        }
 
-        //Start the container
-        System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
-        Main.dockerClient.startContainerCmd(container.getId()).exec();
-        System.out.println("Container started successfully.");
     }
 
     public void stopContainer() {
@@ -86,13 +96,20 @@ public class ExecutorThread implements Runnable {
         Scanner scanner = new Scanner(System.in);
         System.out.print("\nEnter the number of the container to stop: ");
         int containerNumber = scanner.nextInt() - 1;
-
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number."+ "\033[0m");
+            return;
+        }
         // Retrieve the Container object corresponding to the containerName
         Container container = getContainerByNumber(containerNumber);
-        // Stop the specified container
-        System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
-        Main.dockerClient.stopContainerCmd(container.getId()).exec();
-        System.out.println("Container stopped successfully.");
+        try {
+            // Stop the specified container
+            System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.stopContainerCmd(container.getId()).exec();
+            System.out.println("Container stopped successfully.");
+        } catch (NotModifiedException e){
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already stopped." + "\033[0m");
+        }
     }
 
     public void removeContainer() {
@@ -123,13 +140,20 @@ public class ExecutorThread implements Runnable {
 
         System.out.print("\nEnter the number of the container to remove: ");
         int containerNumber = scanner.nextInt() - 1;
-
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number."+ "\033[0m");
+            return;
+        }
         // Retrieve the Container object corresponding to the containerName
         Container container = getContainerByNumber(containerNumber);
-        // Remove the specified container
-        System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
-        Main.dockerClient.removeContainerCmd(container.getId()).exec();
-        System.out.println("Container removed successfully.");
+        try {
+            // Remove the specified container
+            System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.removeContainerCmd(container.getId()).exec();
+            System.out.println("Container removed successfully.");
+        } catch (ConflictException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is currently running.. Try stoping it first" + "\033[0m");
+        }
 
     }
 
@@ -139,12 +163,8 @@ public class ExecutorThread implements Runnable {
         System.out.println("\nAvailable containers to rename : ");
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
-            if (curIns.getStatus().startsWith("Exited")) {
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
-            } else {
-                System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Running)");
-            }
         }
 
         if(c == 0){
@@ -161,19 +181,24 @@ public class ExecutorThread implements Runnable {
         System.out.print("\nEnter the number of the container to rename: ");
         int containerNumber = scanner.nextInt() - 1;
         scanner.nextLine();
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+            return;
+        }
         // Retrieve the Container object corresponding to the containerName
         Container container = getContainerByNumber(containerNumber);
 
         System.out.print("Enter the new name for the container: ");
         String newName = scanner.nextLine();
-
-        // Rename the specified container
-        Main.dockerClient.renameContainerCmd(container.getId())
-                .withName(newName)
-                .exec();
-
-        System.out.println("Container renamed successfully.");
-
+        try {
+            // Rename the specified container
+            Main.dockerClient.renameContainerCmd(container.getId())
+                    .withName(newName)
+                    .exec();
+            System.out.println("Container renamed successfully.");
+        } catch (ConflictException e) {
+            System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+        }
     }
 
     public void runContainer() {
