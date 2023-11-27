@@ -4,11 +4,8 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
-import org.bouncycastle.cert.jcajce.JcaAttributeCertificateIssuer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
