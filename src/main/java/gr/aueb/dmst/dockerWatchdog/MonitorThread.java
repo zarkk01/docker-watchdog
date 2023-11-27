@@ -38,7 +38,7 @@ public class MonitorThread implements Runnable {
 
             // Sleep for a specified interval (e.g., 20 sec) and then repeat if running
             try {
-                Thread.sleep(500); // 1 sec
+                Thread.sleep(50); // 1 sec
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

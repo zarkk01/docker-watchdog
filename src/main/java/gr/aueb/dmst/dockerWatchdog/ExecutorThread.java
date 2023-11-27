@@ -45,7 +45,11 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("\nAll containers are running.");
+            if (MonitorThread.containers.size() == 0) {
+                System.out.println("\nThere are no containers to run");
+            } else{
+                System.out.println("\nAll containers are running.");
+            }
             return;
         }
 
@@ -89,7 +93,11 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("\nAll containers are stopped.");
+            if (MonitorThread.containers.size() == 0) {
+                System.out.println("\nThere are no containers to stop");
+            } else{
+                System.out.println("\nAll containers are stopped.");
+            }
             return;
         }
 
@@ -132,7 +140,11 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("\nAll containers are running so you can't remove them.");
+            if (MonitorThread.containers.size() == 0) {
+                System.out.println("\nThere are no containers to remove");
+            } else{
+                System.out.println("\nAll containers are running so you can't remove them.");
+            }
             return;
         }
 
@@ -159,7 +171,7 @@ public class ExecutorThread implements Runnable {
 
     public void renameContainer() {
 
-        int c =0;
+        int c = 0;
         System.out.println("\nAvailable containers to rename : ");
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
@@ -173,7 +185,7 @@ public class ExecutorThread implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("\nAll containers are running so you can't rename them.");
+            System.out.println("\nThere are no containers to rename");
             return;
         }
 
