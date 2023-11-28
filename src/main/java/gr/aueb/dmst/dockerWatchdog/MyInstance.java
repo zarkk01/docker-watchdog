@@ -7,7 +7,7 @@ public class MyInstance {
     private String status;
 
     // constructor
-    public MyInstance(String id ,String name ,String image ,String status){
+    public MyInstance(String id ,String name ,String image ,String status) {
         this.id = id;
         this.name = name;
         this.image = image;
