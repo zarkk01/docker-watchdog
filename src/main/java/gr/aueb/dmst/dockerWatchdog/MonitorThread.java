@@ -5,7 +5,6 @@ import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +44,7 @@ public class MonitorThread implements Runnable {
     }
     static List< Container > containers;
     static List < Image > images;
-    private void monitoring() throws InternalServerErrorException, SocketException {
+    private void monitoring() throws InternalServerErrorException {
 
         // Set the root logger level to INFO to reduce the amount of logging output
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
@@ -62,13 +61,21 @@ public class MonitorThread implements Runnable {
                 if (container.getId().equals(instance.getId())) {
                     instance.setStatus(container.getStatus());
                     instance.setName(container.getNames()[0]);
+                    instance.setLabels(container.labels);
+                    Long sizeRootFs = container.getSizeRootFs();
+                    if (sizeRootFs != null) {
+                        instance.setSize(sizeRootFs);
+                    } else {
+                        instance.setSize(0);
+                    }
                     match = true;
                     break;
                 }
             }
             if (!match) {
+                Long sizeRootFs = container.getSizeRootFs();
                 MyInstance addOne = new MyInstance(container.getId(),container.getNames()[0],
-                        container.getImage(),container.getStatus());
+                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0);
 
                 Main.myInstancesList.add(addOne);
             }
