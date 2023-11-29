@@ -318,6 +318,7 @@ public class ExecutorThread implements Runnable {
                 pullImage();
                 break;
             case 8:
+                MonitorThread.stopMonitoring();
                 System.exit(0);
                 scanner.close();
                 break;
