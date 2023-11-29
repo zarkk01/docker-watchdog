@@ -1,6 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
@@ -291,6 +293,7 @@ public class ExecutorThread implements Runnable {
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
         System.out.println("8. Exit");
+        System.out.println("9. Wow");
     }
 
     private void doDependsOnChoice(int choice){
