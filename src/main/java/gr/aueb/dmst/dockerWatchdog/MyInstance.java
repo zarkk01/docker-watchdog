@@ -12,6 +12,8 @@ public class MyInstance {
     private final String image;
     private String status;
 
+    private long memoryUsage;
+
     // constructor
     public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size) {
         this.id = id;
@@ -25,7 +27,7 @@ public class MyInstance {
     @Override
     public String toString() {
         return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image.substring(7)
-                + " , Status = " + status;
+                + " , Status = " + status + " , memory usage : " + memoryUsage;
     }
 
     // Getter for id
@@ -57,6 +59,14 @@ public class MyInstance {
         return size;
     }
 
+    public long getMemoryUsage() {
+        return memoryUsage;
+    }
+
+    public void setMemoryUsage(long memoryUsage) {
+        this.memoryUsage = memoryUsage;
+    }
+
     // Setter for name
     public void setName(String newName) { this.name = newName; }
 
@@ -73,6 +83,20 @@ public class MyInstance {
     // Setter for size
     public void setSize(long size) {
         this.size = size;
+    }
+
+    public static MyInstance getInstanceByid(String id) {
+        MyInstance instanceToReturn = null;
+        for (MyInstance instance:Main.myInstancesList) {
+            if (id.equals(instance.getId())) {
+                instanceToReturn = instance;
+            }
+        }
+        if (instanceToReturn != null) {
+            return instanceToReturn;
+        } else {
+            return null;
+        }
     }
 
 

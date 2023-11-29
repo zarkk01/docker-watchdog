@@ -321,6 +321,9 @@ public class ExecutorThread implements Runnable {
                 System.exit(0);
                 scanner.close();
                 break;
+            case 9:
+                DockerLiveMetrics.liveMeasure();
+                break;
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
