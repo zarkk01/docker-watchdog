@@ -16,7 +16,7 @@ import ch.qos.logback.classic.Logger;
 public class MonitorThread implements Runnable {
 
     //Initiate running variable true
-    private volatile boolean running = true;
+    private static volatile boolean running = true;
     @Override
     public void run() {
         while (running) {
@@ -156,7 +156,7 @@ public class MonitorThread implements Runnable {
         return "Unused";
     }
 
-    public void stopMonitoring() {
+    public static void stopMonitoring() {
 
         // Thread is about to stop, so while loop in run method should stop
         running = false;

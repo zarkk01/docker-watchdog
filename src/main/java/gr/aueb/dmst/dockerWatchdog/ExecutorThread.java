@@ -1,12 +1,15 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
+import java.io.Closeable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -317,8 +320,10 @@ public class ExecutorThread implements Runnable {
         System.out.println("5. Remove a container");
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
-        System.out.println("8. Exit");
-        System.out.println("9.View Docker Summary");
+        System.out.println("9. Show statistics");
+        System.out.println("9. View Docker Summary");
+        System.out.println("10.Exit");
+
     }
 
     private void doDependsOnChoice(int choice){
@@ -346,12 +351,16 @@ public class ExecutorThread implements Runnable {
                 pullImage();
                 break;
             case 8:
+                MonitorThread.stopMonitoring();
                 System.exit(0);
                 scanner.close();
                 break;
             case 9:
-               showDockerSummary();
-               break;
+                DockerLiveMetrics.liveMeasure();
+                break;
+            case 10:
+                showDockerSummary();
+                break;
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
