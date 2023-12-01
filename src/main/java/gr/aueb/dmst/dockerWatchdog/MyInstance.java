@@ -26,8 +26,8 @@ public class MyInstance {
 
     @Override
     public String toString() {
-        return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image.substring(7)
-                + " , Status = " + status + " , memory usage : " + memoryUsage;
+        return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image
+                + " , Status = " + status + " , Memory usage : " + memoryUsage + " MB";
     }
 
     // Getter for id

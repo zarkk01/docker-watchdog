@@ -51,7 +51,7 @@ public class DockerLiveMetrics {
 
             // Memory Stats
             Long usage = stats.getMemoryStats().getUsage();
-            long memoryUsage = (usage != null) ? usage : 0L;
+            long memoryUsage = (usage != null) ? usage / (1024 * 1024) : 0L;
             //System.out.println("Memory Usage: " + memoryUsage +" bytes");
             MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
 
@@ -74,14 +74,11 @@ public class DockerLiveMetrics {
 
         @Override
         public void onComplete() {
-            // Clean up or perform any necessary actions when the stream is completed
-            System.out.println("Stream completed");
+
         }
 
         @Override
         public void onStart(Closeable closeable) {
-            // Perform any setup actions when the stream starts
-            System.out.println("Stream started");
         }
     }
 
