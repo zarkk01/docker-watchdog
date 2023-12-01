@@ -19,12 +19,11 @@ public class DockerLiveMetrics {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        DockerClient dockerClient = DockerClientBuilder.getInstance().build();
-        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
         for (Container container : containers) {
             String id = container.getId();
-            AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = dockerClient.statsCmd(id);
+            AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = Main.dockerClient.statsCmd(id);
             try {
                 asyncStatsCmd.exec(new CustomResultCallback(id));
             } catch (Exception e) {
