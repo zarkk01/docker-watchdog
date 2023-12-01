@@ -287,7 +287,7 @@ public class ExecutorThread implements Runnable {
         int imagesInUse = 0;
 
         for (MyInstance instance : Main.myInstancesList){
-            if (instance.getStatus().startsWith("Running")){
+            if (instance.getStatus().startsWith("Up")){
                 runningContainers++;
             }
         }
@@ -296,7 +296,7 @@ public class ExecutorThread implements Runnable {
 
         for (MyInstance instance : Main.myInstancesList) {
             for (MyImage image : Main.myImagesList){
-                if (instance.getImage().equals(image.getId())){
+                if (instance.getImage().equals(image.getName())){
                     imagesInUse++;
                     break;
                 }
