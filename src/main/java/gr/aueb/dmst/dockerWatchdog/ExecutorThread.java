@@ -265,19 +265,19 @@ public class ExecutorThread implements Runnable {
     }
 
     public void showDockerInfo() {
-        showDockerSummary();
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
-                (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
+            showDockerSummary();
+            ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
+                    (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
-        for (MyInstance instance : Main.myInstancesList) {
-            System.out.println("\u001B[33m" + instance + "\u001B[0m");
-        }
+            System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
+            for (MyInstance instance : Main.myInstancesList) {
+                System.out.println("\u001B[33m" + instance + "\u001B[0m");
+            }
 
-        System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
-        for (MyImage myImage : Main.myImagesList) {
-            System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
-        }
+            System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
+            for (MyImage myImage : Main.myImagesList) {
+                System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
+            }
     }
 
     public void showDockerSummary(){
@@ -292,13 +292,12 @@ public class ExecutorThread implements Runnable {
             }
         }
 
-        for (MyInstance instance : Main.myInstancesList) {
-            for (MyImage image : Main.myImagesList){
-                if (image.getStatus().equals("In use"){
-                    imagesInUse++;
-                }
+        for (MyImage image : Main.myImagesList){
+            if (image.getStatus().equals("In use")){
+                imagesInUse++;
             }
         }
+
         System.out.println("----"+"\u001B[35m" + "Docker Summary" + "\u001B[0m" + "----");
         System.out.println("\u001B[35m"+"Total Containers: " + totalContainers);
         System.out.println("Running Containers: " + runningContainers);
@@ -323,7 +322,6 @@ public class ExecutorThread implements Runnable {
     private void doDependsOnChoice(int choice){
         switch (choice) {
             case 1:
-                DockerLiveMetrics.liveMeasure();
                 showDockerInfo();
                 break;
             case 2:

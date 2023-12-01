@@ -19,6 +19,8 @@ public class Main {
 
     public static void main(String[] args) {
 
+        DockerLiveMetrics.liveMeasure();
+
         // Initiate and start monitorThread
         MonitorThread dockerMonitor = new MonitorThread();
         Thread monitorThread = new Thread(dockerMonitor);

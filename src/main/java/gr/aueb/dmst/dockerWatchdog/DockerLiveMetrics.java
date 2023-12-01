@@ -10,6 +10,7 @@ import com.github.dockerjava.core.async.ResultCallbackTemplate;
 
 import java.io.Closeable;
 import java.util.List;
+import java.util.Objects;
 
 public class DockerLiveMetrics {
 
@@ -30,11 +31,6 @@ public class DockerLiveMetrics {
                 e.printStackTrace();
             }
         }
-//        try {
-//            Thread.sleep(6000);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     private static class CustomResultCallback extends ResultCallbackTemplate<CustomResultCallback, Statistics> {
@@ -52,7 +48,7 @@ public class DockerLiveMetrics {
             Long usage = stats.getMemoryStats().getUsage();
             long memoryUsage = (usage != null) ? usage / (1024 * 1024) : 0L;
             //System.out.println("Memory Usage: " + memoryUsage +" bytes");
-            MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
+            Objects.requireNonNull(MyInstance.getInstanceByid(id)).setMemoryUsage(memoryUsage);
 
             // process IDs (PIDs) statistics..
 

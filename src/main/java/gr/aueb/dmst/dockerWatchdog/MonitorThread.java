@@ -75,7 +75,7 @@ public class MonitorThread implements Runnable {
             if (!match) {
                 Long sizeRootFs = container.getSizeRootFs();
                 MyInstance addOne = new MyInstance(container.getId(),container.getNames()[0],
-                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0);
+                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0,0);
 
                 Main.myInstancesList.add(addOne);
             }

@@ -15,13 +15,14 @@ public class MyInstance {
     private long memoryUsage;
 
     // constructor
-    public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size) {
+    public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size, long memoryUsage) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.status = status;
         this.labels = labels;
         this.size = size;
+        this.memoryUsage = memoryUsage;
     }
 
     @Override
