@@ -283,7 +283,7 @@ public class ExecutorThread implements Runnable {
     public void showDockerSummary(){
         int totalContainers = Main.myInstancesList.size();
         int runningContainers =0 ;
-        int images = 0;
+        int images = Main.myImagesList.size();
         int imagesInUse = 0;
 
         for (MyInstance instance : Main.myInstancesList){
@@ -291,14 +291,11 @@ public class ExecutorThread implements Runnable {
                 runningContainers++;
             }
         }
-        List<Image> dockerImages = Main.dockerClient.listImagesCmd().exec();
-        images = dockerImages.size();
 
         for (MyInstance instance : Main.myInstancesList) {
             for (MyImage image : Main.myImagesList){
-                if (instance.getImage().equals(image.getName())){
+                if (image.getStatus().equals("In use"){
                     imagesInUse++;
-                    break;
                 }
             }
         }
