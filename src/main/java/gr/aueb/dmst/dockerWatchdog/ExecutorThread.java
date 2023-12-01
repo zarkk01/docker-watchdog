@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
 import java.util.List;
@@ -275,6 +276,35 @@ public class ExecutorThread implements Runnable {
             System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
         }
     }
+    public void showDockerSummary(){
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+        int totalContainers = containers.size();
+        int runningContainers =0 ;
+        int images = 0;
+        int imagesInUse = 0;
+
+        for (Container container : containers){
+            if (container.getStatus().startsWith ("Up")){
+                runningContainers++;
+            }
+        }
+        List<Image> dockerImages = Main.dockerClient.listImagesCmd().exec();
+        images = dockerImages.size();
+
+        for (Container container : containers) {
+            for (Image image : dockerImages){
+                if (container.getImageId().equals(image.getId())){
+                    imagesInUse++;
+                    break;
+                }
+            }
+        }
+        System.out.println("\n----"+"\u001B[33m" + "Docker Summary" + "\u001B[0m" + "----");
+        System.out.println("Total Containers: " + totalContainers);
+        System.out.println("Running Containers: " + runningContainers);
+        System.out.println("Total Images: " + images);
+        System.out.println("Images In Use: " + imagesInUse);
+    }
 
 
 
@@ -288,6 +318,7 @@ public class ExecutorThread implements Runnable {
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
         System.out.println("8. Exit");
+        System.out.println("9.View Docker Summary");
     }
 
     private void doDependsOnChoice(int choice){
@@ -318,6 +349,9 @@ public class ExecutorThread implements Runnable {
                 System.exit(0);
                 scanner.close();
                 break;
+            case 9:
+               showDockerSummary();
+               break;
             default:
                 System.out.println("Invalid choice. Please try again.");
         }

@@ -11,8 +11,11 @@ public class Main {
     public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
     public static ArrayList<MyImage> myImagesList = new ArrayList<>();
 
-    public static DefaultDockerClientConfig.Builder builder = DefaultDockerClientConfig.createDefaultConfigBuilder();
+    public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
+            .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
+            .build();
     public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
+
 
     public static void main(String[] args) {
 
