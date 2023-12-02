@@ -1,17 +1,20 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
-import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.api.model.Image;
+import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
 import java.io.Closeable;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class ExecutorThread implements Runnable {
 
@@ -67,7 +70,7 @@ public class ExecutorThread implements Runnable {
         try {
             //Start the container
             System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.startContainerCmd(container.getId()).exec();
+            dockerClient.startContainerCmd(container.getId()).exec();
             System.out.println("Container started successfully.");
         } catch (NotModifiedException e) {
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
@@ -114,7 +117,7 @@ public class ExecutorThread implements Runnable {
         try {
             // Stop the specified container
             System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.stopContainerCmd(container.getId()).exec();
+            dockerClient.stopContainerCmd(container.getId()).exec();
             System.out.println("Container stopped successfully.");
         } catch (NotModifiedException e){
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already stopped." + "\033[0m");
@@ -162,7 +165,7 @@ public class ExecutorThread implements Runnable {
         try {
             // Remove the specified container
             System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.removeContainerCmd(container.getId()).exec();
+            dockerClient.removeContainerCmd(container.getId()).exec();
             System.out.println("Container removed successfully.");
         } catch (ConflictException e) {
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is currently running.. Try stoping it first" + "\033[0m");
@@ -205,7 +208,7 @@ public class ExecutorThread implements Runnable {
         String newName = scanner.nextLine();
         try {
             // Rename the specified container
-            Main.dockerClient.renameContainerCmd(container.getId())
+            dockerClient.renameContainerCmd(container.getId())
                     .withName(newName)
                     .exec();
             System.out.println("Container renamed successfully.");
@@ -223,13 +226,44 @@ public class ExecutorThread implements Runnable {
                     "\nDon't worry if you have not pulled it, I will do it for you :) : ");
             String imageName = scanner.nextLine();
 
-            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+            Integer sourcePort = null;
+            while (sourcePort == null || sourcePort < 1 || sourcePort > 65535) {
+                System.out.print("Enter the source port number (1-65535): ");
+                try {
+                    sourcePort = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                    scanner.next(); // consume invalid input
+                }
+            }
 
-            // Create and start a container based on the pulled image
-            CreateContainerResponse containerResponse = Main.dockerClient.createContainerCmd(imageName).exec();
-            Main.dockerClient.startContainerCmd(containerResponse.getId()).exec();
+    // Get the target port from the user
+            Integer targetPort = null;
+            while (targetPort == null || targetPort < 1 || targetPort > 65535) {
+                System.out.print("Enter the target port number (1-65535): ");
+                try {
+                    targetPort = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                    scanner.next(); // consume invalid input
+                }
+            }
 
-            System.out.println("Container started and running successfully. Container ID: " + containerResponse.getId());
+            dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
+
+            Ports portBindings = new Ports();
+            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
+
+            CreateContainerResponse container = dockerClient.createContainerCmd(imageName)
+                    .withCmd("sleep", "infinity")
+                    .withExposedPorts(tcp22)
+                    .withPortBindings(portBindings)
+                    .exec();
+
+            dockerClient.startContainerCmd(container.getId().toString()).exec();
+
+            System.out.println("Container started and running successfully. Container ID: " + container.getId());
         } catch (InterruptedException e) {
             System.out.println("Container creation or start operation was interrupted.");
             e.printStackTrace();
@@ -248,7 +282,7 @@ public class ExecutorThread implements Runnable {
 
         // Pull the specified Docker image
         try {
-            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+            dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
             System.out.println("Image pulled successfully.");
         } catch (InterruptedException e) {
             System.out.println("Image pull operation was interrupted.");
@@ -260,7 +294,7 @@ public class ExecutorThread implements Runnable {
     }
 
     private Container getContainerByNumber(int containerNumber) {
-        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
         return containers.get(containerNumber);
     }
 
@@ -316,7 +350,7 @@ public class ExecutorThread implements Runnable {
         System.out.println("5. Remove a container");
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
-        System.out.println("8.Exit");
+        System.out.println("8. Exit");
     }
 
     private void doDependsOnChoice(int choice){
