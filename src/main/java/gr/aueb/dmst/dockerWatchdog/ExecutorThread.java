@@ -1,15 +1,11 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
-import java.io.Closeable;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;

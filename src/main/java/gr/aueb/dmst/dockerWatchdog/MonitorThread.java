@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
+import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class MonitorThread implements Runnable {
 
@@ -50,9 +51,9 @@ public class MonitorThread implements Runnable {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+        containers = dockerClient.listContainersCmd().withShowAll(true).exec();
 
-        images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
+        images = dockerClient.listImagesCmd().withShowAll(true).exec();
 
         for (Container container : containers) {
             boolean match = false;
@@ -75,7 +76,7 @@ public class MonitorThread implements Runnable {
             if (!match) {
                 Long sizeRootFs = container.getSizeRootFs();
                 MyInstance addOne = new MyInstance(container.getId(),container.getNames()[0],
-                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0,0);
+                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0,0,0,0);
 
                 Main.myInstancesList.add(addOne);
             }
@@ -110,11 +111,10 @@ public class MonitorThread implements Runnable {
             }
 
             if (!match) {
-                MyImage addOne = new MyImage(Objects.requireNonNull(Main.dockerClient
+                MyImage addOne = new MyImage(Objects.requireNonNull(dockerClient
                         .inspectImageCmd(image.getId()).exec().getRepoTags()).get(0), image.getId(),
-                        Main.dockerClient.inspectImageCmd(image.getId()).exec().getSize(),
-                        getImageUsageStatus(Objects.requireNonNull(Main.dockerClient
-                                .inspectImageCmd(image.getId()).exec().getRepoTags()).get(0)));
+                        dockerClient.inspectImageCmd(image.getId()).exec().getSize(),
+                        getImageUsageStatus(Objects.requireNonNull(dockerClient.inspectImageCmd(image.getId()).exec().getRepoTags()).get(0)));
 
                 Main.myImagesList.add(addOne);
             }
@@ -140,11 +140,11 @@ public class MonitorThread implements Runnable {
 
     private String getImageUsageStatus(String imageName) {
         // Get a list of all containers
-        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
 
         // Check if any container is using the specified image
         for (Container container : containers) {
-            InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
+            InspectContainerResponse containerInfo = dockerClient.inspectContainerCmd(container.getId()).exec();
 
             // Check if the container uses the specified image
             if (imageName.equals(containerInfo.getConfig().getImage())) {
@@ -162,7 +162,7 @@ public class MonitorThread implements Runnable {
         running = false;
         // Closing dockerClient to prevent resource leaks
         try {
-            Main.dockerClient.close();
+            dockerClient.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -11,11 +11,12 @@ public class MyInstance {
     private Map<String ,String> labels;
     private final String image;
     private String status;
-
+    private long pids;
     private long memoryUsage;
+    private double cpuUsage;
 
     // constructor
-    public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size, long memoryUsage) {
+    public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size,double cpuUsage, long memoryUsage,long pids) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -23,12 +24,14 @@ public class MyInstance {
         this.labels = labels;
         this.size = size;
         this.memoryUsage = memoryUsage;
+        this.pids = pids;
+        this.cpuUsage = cpuUsage;
     }
 
     @Override
     public String toString() {
         return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image
-                + " , Status = " + status + " , Memory usage : " + memoryUsage + " MB";
+                + " , Status = " + status + " , CPU Usage:" + cpuUsage +" seconds" + " , Memory usage : " +memoryUsage + " MB" + " , PIDs : " + pids;
     }
 
     // Getter for id
@@ -101,4 +104,15 @@ public class MyInstance {
     }
 
 
+    public long getPids() {
+        return pids;
+    }
+
+    public void setPids(long pids) {
+        this.pids = pids;
+    }
+
+    public void setCpuUsage(double cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
 }
