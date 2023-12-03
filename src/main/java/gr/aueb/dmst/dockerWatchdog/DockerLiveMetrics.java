@@ -11,7 +11,6 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Objects;
 
-import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 public class DockerLiveMetrics {
 
     public static void liveMeasure() {
@@ -19,11 +18,11 @@ public class DockerLiveMetrics {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
                 (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
         for (Container container : containers) {
             String id = container.getId();
-            AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = dockerClient.statsCmd(id);
+            AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = Main.dockerClient.statsCmd(id);
             try {
                 asyncStatsCmd.exec(new CustomResultCallback(id,asyncStatsCmd));
             } catch (Exception e) {

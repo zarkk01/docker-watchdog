@@ -1,15 +1,12 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
-import java.io.Closeable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -283,7 +280,7 @@ public class ExecutorThread implements Runnable {
     public void showDockerSummary(){
         int totalContainers = Main.myInstancesList.size();
         int runningContainers =0 ;
-        int images = 0;
+        int images = Main.myImagesList.size();
         int imagesInUse = 0;
 
         for (MyInstance instance : Main.myInstancesList){
@@ -291,16 +288,11 @@ public class ExecutorThread implements Runnable {
                 runningContainers++;
             }
         }
-        List<Image> dockerImages = Main.dockerClient.listImagesCmd().exec();
-        images = dockerImages.size();
 
-        for (MyInstance instance : Main.myInstancesList) {
             for (MyImage image : Main.myImagesList){
-                if (instance.getImage().equals(image.getName())){
+                if (image.getStatus().startsWith("In")){
                     imagesInUse++;
-                    break;
                 }
-            }
         }
         System.out.println("----"+"\u001B[35m" + "Docker Summary" + "\u001B[0m" + "----");
         System.out.println("\u001B[35m"+"Total Containers: " + totalContainers);
@@ -326,7 +318,6 @@ public class ExecutorThread implements Runnable {
     private void doDependsOnChoice(int choice){
         switch (choice) {
             case 1:
-//                DockerLiveMetrics.liveMeasure();
                 showDockerInfo();
                 break;
             case 2:
@@ -349,10 +340,8 @@ public class ExecutorThread implements Runnable {
                 pullImage();
                 break;
             case 8:
-                MonitorThread.stopMonitoring();
-                System.exit(0);
                 scanner.close();
-                break;
+                System.exit(0);
             default:
                 System.out.println("Invalid choice. Please try again.");
         }

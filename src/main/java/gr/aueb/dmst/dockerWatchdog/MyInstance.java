@@ -106,12 +106,9 @@ public class MyInstance {
             return null;
         }
     }
-
-
     public long getPids() {
         return pids;
     }
-
     public void setPids(long pids) {
         this.pids = pids;
     }
@@ -121,8 +118,6 @@ public class MyInstance {
     public void setBlockO(double blockO) {
         this.blockO = blockO;
     }
-
-
     public void setCpuUsage(double cpuUsage) {
         this.cpuUsage = cpuUsage;
     }

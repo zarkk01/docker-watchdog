@@ -1,10 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import java.util.List;
-
-import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.model.Container;
-
 public class MyImage {
 
     private final String name;
@@ -27,13 +22,6 @@ public class MyImage {
     // Getter for size
     public Long getSize() {
         return size;
-    }
-
-    public static int countUsedImages(DockerClient dockerClient) {
-        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
-        List<String> usedImageIds = containers.stream().map(Container::getImageId).distinct().toList();
-
-        return usedImageIds.size();
     }
 
     @Override
