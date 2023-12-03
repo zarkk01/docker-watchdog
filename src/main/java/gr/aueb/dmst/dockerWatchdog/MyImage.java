@@ -38,7 +38,7 @@ public class MyImage {
 
     @Override
     public String toString() {
-        return "Name = " + name + " , ID = "+ id.substring(7) +  " , Size = " + size + " , Status = " + status ;
+        return "Name = " + name + " , ID = "+ id.substring(7) +  " , Size = " + String.format("%.2f", (double) size / (1024 * 1024)) + " MB"+ " , Status = " + status ;
     }
 
     public String getName() {

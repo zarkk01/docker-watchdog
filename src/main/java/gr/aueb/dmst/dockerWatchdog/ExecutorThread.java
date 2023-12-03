@@ -1,16 +1,17 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import com.github.dockerjava.api.async.ResultCallbackTemplate;
 import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.NotModifiedException;
-import com.github.dockerjava.api.model.*;
+import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
-import java.util.InputMismatchException;
+import java.io.Closeable;
 import java.util.List;
 import java.util.Scanner;
-
-import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class ExecutorThread implements Runnable {
 
@@ -66,7 +67,7 @@ public class ExecutorThread implements Runnable {
         try {
             //Start the container
             System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
-            dockerClient.startContainerCmd(container.getId()).exec();
+            Main.dockerClient.startContainerCmd(container.getId()).exec();
             System.out.println("Container started successfully.");
         } catch (NotModifiedException e) {
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
@@ -113,7 +114,7 @@ public class ExecutorThread implements Runnable {
         try {
             // Stop the specified container
             System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
-            dockerClient.stopContainerCmd(container.getId()).exec();
+            Main.dockerClient.stopContainerCmd(container.getId()).exec();
             System.out.println("Container stopped successfully.");
         } catch (NotModifiedException e){
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already stopped." + "\033[0m");
@@ -161,7 +162,7 @@ public class ExecutorThread implements Runnable {
         try {
             // Remove the specified container
             System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
-            dockerClient.removeContainerCmd(container.getId()).exec();
+            Main.dockerClient.removeContainerCmd(container.getId()).exec();
             System.out.println("Container removed successfully.");
         } catch (ConflictException e) {
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is currently running.. Try stoping it first" + "\033[0m");
@@ -175,8 +176,8 @@ public class ExecutorThread implements Runnable {
         System.out.println("\nAvailable containers to rename : ");
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
-                System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
-                c++;
+            System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
+            c++;
         }
 
         if(c == 0){
@@ -204,7 +205,7 @@ public class ExecutorThread implements Runnable {
         String newName = scanner.nextLine();
         try {
             // Rename the specified container
-            dockerClient.renameContainerCmd(container.getId())
+            Main.dockerClient.renameContainerCmd(container.getId())
                     .withName(newName)
                     .exec();
             System.out.println("Container renamed successfully.");
@@ -222,44 +223,13 @@ public class ExecutorThread implements Runnable {
                     "\nDon't worry if you have not pulled it, I will do it for you :) : ");
             String imageName = scanner.nextLine();
 
-            Integer sourcePort = null;
-            while (sourcePort == null || sourcePort < 1 || sourcePort > 65535) {
-                System.out.print("Enter the source port number (1-65535): ");
-                try {
-                    sourcePort = scanner.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                    scanner.next(); // consume invalid input
-                }
-            }
+            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
 
-    // Get the target port from the user
-            Integer targetPort = null;
-            while (targetPort == null || targetPort < 1 || targetPort > 65535) {
-                System.out.print("Enter the target port number (1-65535): ");
-                try {
-                    targetPort = scanner.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                    scanner.next(); // consume invalid input
-                }
-            }
+            // Create and start a container based on the pulled image
+            CreateContainerResponse containerResponse = Main.dockerClient.createContainerCmd(imageName).exec();
+            Main.dockerClient.startContainerCmd(containerResponse.getId()).exec();
 
-            dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
-            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
-
-            Ports portBindings = new Ports();
-            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
-
-            CreateContainerResponse container = dockerClient.createContainerCmd(imageName)
-                    .withCmd("sleep", "infinity")
-                    .withExposedPorts(tcp22)
-                    .withPortBindings(portBindings)
-                    .exec();
-
-            dockerClient.startContainerCmd(container.getId().toString()).exec();
-
-            System.out.println("Container started and running successfully. Container ID: " + container.getId());
+            System.out.println("Container started and running successfully. Container ID: " + containerResponse.getId());
         } catch (InterruptedException e) {
             System.out.println("Container creation or start operation was interrupted.");
             e.printStackTrace();
@@ -278,7 +248,7 @@ public class ExecutorThread implements Runnable {
 
         // Pull the specified Docker image
         try {
-            dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
             System.out.println("Image pulled successfully.");
         } catch (InterruptedException e) {
             System.out.println("Image pull operation was interrupted.");
@@ -290,30 +260,30 @@ public class ExecutorThread implements Runnable {
     }
 
     private Container getContainerByNumber(int containerNumber) {
-        List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
         return containers.get(containerNumber);
     }
 
     public void showDockerInfo() {
-            showDockerSummary();
-            ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
-                    (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
+        showDockerSummary();
+        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger
+                (org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-            System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
-            for (MyInstance instance : Main.myInstancesList) {
-                System.out.println("\u001B[33m" + instance + "\u001B[0m");
-            }
+        System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
+        for (MyInstance instance : Main.myInstancesList) {
+            System.out.println("\u001B[33m" + instance + "\u001B[0m");
+        }
 
-            System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
-            for (MyImage myImage : Main.myImagesList) {
-                System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
-            }
+        System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
+        for (MyImage myImage : Main.myImagesList) {
+            System.out.println("\u001B[32m"+ myImage+ "\u001B[0m");
+        }
     }
 
     public void showDockerSummary(){
         int totalContainers = Main.myInstancesList.size();
         int runningContainers =0 ;
-        int images = Main.myImagesList.size();
+        int images = 0;
         int imagesInUse = 0;
 
         for (MyInstance instance : Main.myInstancesList){
@@ -321,13 +291,17 @@ public class ExecutorThread implements Runnable {
                 runningContainers++;
             }
         }
+        List<Image> dockerImages = Main.dockerClient.listImagesCmd().exec();
+        images = dockerImages.size();
 
-        for (MyImage image : Main.myImagesList){
-            if (image.getStatus().equals("In use")){
-                imagesInUse++;
+        for (MyInstance instance : Main.myInstancesList) {
+            for (MyImage image : Main.myImagesList){
+                if (instance.getImage().equals(image.getName())){
+                    imagesInUse++;
+                    break;
+                }
             }
         }
-
         System.out.println("----"+"\u001B[35m" + "Docker Summary" + "\u001B[0m" + "----");
         System.out.println("\u001B[35m"+"Total Containers: " + totalContainers);
         System.out.println("Running Containers: " + runningContainers);
@@ -346,12 +320,13 @@ public class ExecutorThread implements Runnable {
         System.out.println("5. Remove a container");
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
-        System.out.println("8. Exit");
+        System.out.println("8.Exit");
     }
 
     private void doDependsOnChoice(int choice){
         switch (choice) {
             case 1:
+//                DockerLiveMetrics.liveMeasure();
                 showDockerInfo();
                 break;
             case 2:

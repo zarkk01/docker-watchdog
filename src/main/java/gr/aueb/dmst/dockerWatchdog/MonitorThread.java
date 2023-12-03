@@ -30,8 +30,6 @@ public class MonitorThread implements Runnable {
             try {
                 monitoring();
             } catch ( Exception e) {
-                System.out.println("Error trying to connect to the Docker Daemon" +
-                        ". Try restarting your docker desktop and running the program again..");
                 System.exit(0);
             }
 
@@ -76,7 +74,7 @@ public class MonitorThread implements Runnable {
             if (!match) {
                 Long sizeRootFs = container.getSizeRootFs();
                 MyInstance addOne = new MyInstance(container.getId(),container.getNames()[0],
-                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0,0,0,0);
+                        container.getImage(),container.getStatus() ,container.labels ,sizeRootFs != null ? sizeRootFs : 0,0,0,0,0,0);
 
                 Main.myInstancesList.add(addOne);
             }
@@ -103,7 +101,7 @@ public class MonitorThread implements Runnable {
 
             for (MyImage myImage : Main.myImagesList) {
                 if (image.getId().equals(myImage.getId())) {
-                    myImage.setStatus(getImageUsageStatus(Objects.requireNonNull(Main.dockerClient
+                    myImage.setStatus(getImageUsageStatus(Objects.requireNonNull(dockerClient
                             .inspectImageCmd(image.getId()).exec().getRepoTags()).get(0)));
                     match = true;
                     break;
@@ -157,14 +155,14 @@ public class MonitorThread implements Runnable {
     }
 
     public static void stopMonitoring() {
-
         // Thread is about to stop, so while loop in run method should stop
         running = false;
         // Closing dockerClient to prevent resource leaks
         try {
             dockerClient.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
+
 }
