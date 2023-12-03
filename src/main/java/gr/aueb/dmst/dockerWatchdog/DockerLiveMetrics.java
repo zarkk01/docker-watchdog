@@ -46,9 +46,9 @@ public class DockerLiveMetrics {
             // CPU Stats
             long cpuUsage = getCpuUsageInNanos(stats);
             if(cpuUsage != 0 ){
-                MyInstance.getInstanceByid(id).setCpuUsage((double)cpuUsage/ 1_000_000_000);
+                Objects.requireNonNull(MyInstance.getInstanceByid(id)).setCpuUsage((double)cpuUsage/ 1_000_000_000);
             } else {
-                MyInstance.getInstanceByid(id).setCpuUsage(0.0);
+                Objects.requireNonNull(MyInstance.getInstanceByid(id)).setCpuUsage(0.0);
             }
 
             // Memory Stats
@@ -67,8 +67,14 @@ public class DockerLiveMetrics {
             List<BlkioStatEntry> ioServiceBytes = stats.getBlkioStats().getIoServiceBytesRecursive();
 
 // Assuming you are interested in read and write block I/O statistics
-            Long readBytes = getIoServiceBytesValue(ioServiceBytes, "Read");
-            Long writeBytes = getIoServiceBytesValue(ioServiceBytes, "Write");
+            Long readBytes = null;
+            if (ioServiceBytes != null) {
+                readBytes = getIoServiceBytesValue(ioServiceBytes, "Read");
+            }
+            Long writeBytes = null;
+            if (ioServiceBytes != null) {
+                writeBytes = getIoServiceBytesValue(ioServiceBytes, "Write");
+            }
 
             MyInstance.getInstanceByid(id).setBlockI(readBytes != null ? (double) readBytes / (1024 * 1024) : 0.0);
             MyInstance.getInstanceByid(id).setBlockO(writeBytes != null ? (double) writeBytes / (1024 * 1024) : 0.0);
@@ -85,6 +91,7 @@ public class DockerLiveMetrics {
 
         @Override
         public void onError(Throwable throwable) {
+            throwable.printStackTrace();
         }
 
         @Override
