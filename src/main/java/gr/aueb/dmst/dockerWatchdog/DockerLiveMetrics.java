@@ -56,7 +56,6 @@ public class DockerLiveMetrics {
             // Memory Stats
             Long usage = stats.getMemoryStats().getUsage();
             long memoryUsage = (usage != null) ? usage / (1024 * 1024) : 0L;
-            MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
             if(MyInstance.getInstanceByid(id) != null) {
                 MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
             }
