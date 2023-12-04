@@ -46,7 +46,7 @@ public class DockerLiveMetrics {
             // CPU Stats
             long cpuUsage = getCpuUsageInNanos(stats);
             if(cpuUsage != 0 ){
-                Objects.requireNonNull(MyInstance.getInstanceByid(id)).setCpuUsage((double)cpuUsage/ 1_000_000_000);
+                MyInstance.getInstanceByid(id).setCpuUsage((double)cpuUsage/ 1_000_000_000);
             } else {
                 if(MyInstance.getInstanceByid(id) != null) {
                     MyInstance.getInstanceByid(id).setCpuUsage(0.0);
@@ -56,15 +56,21 @@ public class DockerLiveMetrics {
             // Memory Stats
             Long usage = stats.getMemoryStats().getUsage();
             long memoryUsage = (usage != null) ? usage / (1024 * 1024) : 0L;
-            Objects.requireNonNull(MyInstance.getInstanceByid(id)).setMemoryUsage(memoryUsage);
+            MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
+            if(MyInstance.getInstanceByid(id) != null) {
+                MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
+            }
 
             // process IDs (PIDs) stats..
             Long pids = stats.getPidsStats().getCurrent();
-            if(pids != null) {
-                MyInstance.getInstanceByid(id).setPids(pids);
-            } else {
-                MyInstance.getInstanceByid(id).setPids(0);
+            if(MyInstance.getInstanceByid(id) != null) {
+                if(pids != null) {
+                    MyInstance.getInstanceByid(id).setPids(pids);
+                } else {
+                    MyInstance.getInstanceByid(id).setPids(0);
+                }
             }
+
             // blkio (block I/O) statistics
             List<BlkioStatEntry> ioServiceBytes = stats.getBlkioStats().getIoServiceBytesRecursive();
 
@@ -78,8 +84,10 @@ public class DockerLiveMetrics {
                 writeBytes = getIoServiceBytesValue(ioServiceBytes, "Write");
             }
 
-            MyInstance.getInstanceByid(id).setBlockI(readBytes != null ? (double) readBytes / (1024 * 1024) : 0.0);
-            MyInstance.getInstanceByid(id).setBlockO(writeBytes != null ? (double) writeBytes / (1024 * 1024) : 0.0);
+            if(MyInstance.getInstanceByid(id) != null) {
+                MyInstance.getInstanceByid(id).setBlockI(readBytes != null ? (double) readBytes / (1024 * 1024) : 0.0);
+                MyInstance.getInstanceByid(id).setBlockO(writeBytes != null ? (double) writeBytes / (1024 * 1024) : 0.0);
+            }
             // network I/O statistics
 
         }
