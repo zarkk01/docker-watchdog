@@ -153,16 +153,4 @@ public class MonitorThread implements Runnable {
         // If no container is using the image, consider it as "Unused"
         return "Unused";
     }
-
-    public static void stopMonitoring() {
-        // Thread is about to stop, so while loop in run method should stop
-        running = false;
-        // Closing dockerClient to prevent resource leaks
-        try {
-            Main.dockerClient.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

@@ -7,6 +7,7 @@ import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
