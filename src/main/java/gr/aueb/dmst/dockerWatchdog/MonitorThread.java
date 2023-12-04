@@ -4,7 +4,6 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Image;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
