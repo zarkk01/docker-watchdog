@@ -35,7 +35,7 @@ public class MyInstance {
     @Override
     public String toString() {
         return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image
-                + " , Status = " + status + " , CPU Usage:" + cpuUsage +" seconds" + " , Memory usage : " +String.format("%.2f", (double)memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/"+String.format("%.2f", blockO)+"MB";
+                + " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage*100) +" %" + " , Memory usage : " +String.format("%.2f", (double)memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/"+String.format("%.2f", blockO)+"MB";
     }
 
     // Getter for id
