@@ -48,7 +48,9 @@ public class DockerLiveMetrics {
             if(cpuUsage != 0 ){
                 Objects.requireNonNull(MyInstance.getInstanceByid(id)).setCpuUsage((double)cpuUsage/ 1_000_000_000);
             } else {
-                MyInstance.getInstanceByid(id).setCpuUsage(0.0);
+                if(MyInstance.getInstanceByid(id) != null) {
+                    MyInstance.getInstanceByid(id).setCpuUsage(0.0);
+                }
             }
 
             // Memory Stats
