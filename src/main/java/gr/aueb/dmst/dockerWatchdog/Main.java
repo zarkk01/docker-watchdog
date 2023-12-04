@@ -8,24 +8,25 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
-    public static ArrayList<MyImage> myImagesList = new ArrayList<>();
+    // Initiate myInstancesList and myImagesList
+    public static ArrayList < MyInstance > myInstancesList = new ArrayList < > ();
+    public static ArrayList < MyImage > myImagesList = new ArrayList < > ();
 
+    // Initiate dockerClient
     public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-//          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
+            //          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
             .build();
     public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
 
-
     public static void main(String[] args) {
 
+        // Calling liveMeasure so to keep track of CPU Usage, Memory Usage, Block I/O and PIDs
         DockerLiveMetrics.liveMeasure();
 
         // Initiate and start monitorThread
         MonitorThread dockerMonitor = new MonitorThread();
         Thread monitorThread = new Thread(dockerMonitor);
         monitorThread.start();
-
 
         // Initiate and start executorThread
         ExecutorThread dockerExecutor = new ExecutorThread();
