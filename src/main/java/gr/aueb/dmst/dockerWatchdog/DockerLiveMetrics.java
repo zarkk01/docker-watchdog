@@ -61,9 +61,7 @@ public class DockerLiveMetrics {
 
             // If the instance with the id exists
             if (MyInstance.getInstanceByid(id) != null) {
-                if(cpuUsage > 100){
-                    MyInstance.getInstanceByid(id).setCpuUsage(100.0);
-                } else if (cpuUsage != 0) {
+                if (cpuUsage != 0) {
                     // If cpuUsage is not 0 then set the cpuUsage of the instance with the value of cpuUsage
                     MyInstance.getInstanceByid(id).setCpuUsage((double) cpuUsage / 1_000_000_000);
                 } else {
