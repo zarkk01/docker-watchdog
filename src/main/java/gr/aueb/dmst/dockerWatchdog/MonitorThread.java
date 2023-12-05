@@ -27,6 +27,7 @@ public class MonitorThread implements Runnable {
             try {
                 monitoring();
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println("Error trying to connect to the Docker Daemon" +
                         ". Try restarting your docker desktop and running the program again..");
                 System.exit(0);
@@ -113,10 +114,10 @@ public class MonitorThread implements Runnable {
             }
             // If the image is not in the list, add it
             if (!match) {
-                MyImage addOne = new MyImage(Objects.requireNonNull(Main.dockerClient
-                        .inspectImageCmd(image.getId()).exec().getRepoTags()).get(0), image.getId(),
+                MyImage addOne = new MyImage(Main.dockerClient
+                        .inspectImageCmd(image.getId()).exec().getRepoTags().get(0), image.getId(),
                         Main.dockerClient.inspectImageCmd(image.getId()).exec().getSize(),
-                        getImageUsageStatus(Objects.requireNonNull(Main.dockerClient.inspectImageCmd(image.getId()).exec().getRepoTags()).get(0)));
+                        getImageUsageStatus(Main.dockerClient.inspectImageCmd(image.getId()).exec().getRepoTags().get(0)));
                 Main.myImagesList.add(addOne);
             }
         }
