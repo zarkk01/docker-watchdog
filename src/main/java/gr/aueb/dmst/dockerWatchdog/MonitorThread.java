@@ -3,10 +3,13 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Image;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+
+import com.github.dockerjava.api.model.Ports;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -80,7 +83,7 @@ public class MonitorThread implements Runnable {
             if (!match) {
                 Long sizeRootFs = container.getSizeRootFs();
                 MyInstance addOne = new MyInstance(container.getId(), container.getNames()[0],
-                        container.getImage(), container.getStatus(), container.labels, sizeRootFs != null ? sizeRootFs : 0, 0, 0, 0, 0, 0);
+                        container.getImage(), container.getStatus(),container.labels, sizeRootFs != null ? sizeRootFs : 0, 0, 0, 0, 0, 0,getContainerPorts(container.getId()));
                 Main.myInstancesList.add(addOne);
             }
         }
@@ -157,5 +160,32 @@ public class MonitorThread implements Runnable {
 
         // If no container is using the image, it is "Unused"
         return "Unused";
+    }
+
+    private static String getContainerPorts(String containerId) {
+        // Use the Docker Java API to inspect the container
+        InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(containerId).exec();
+
+        // Get the bindings map
+        Ports ports = containerInfo.getNetworkSettings().getPorts();
+        ExposedPort[] exposedPorts = ports.getBindings().keySet().toArray(new ExposedPort[0]);
+
+        // Check if there are any exposed ports
+        if (exposedPorts.length > 0) {
+            ExposedPort exposedPort = exposedPorts[0];
+            Ports.Binding[] bindings = ports.getBindings().get(exposedPort);
+
+            // Check if there are any bindings for the exposed port
+            if(bindings != null){
+                if (bindings.length > 0) {
+                    Ports.Binding binding = bindings[0];
+                    // Format and return the ports string
+                    return binding.getHostPortSpec() + ":" + exposedPort.getPort();
+                }
+            }
+        }
+
+        // Return a default value if no ports are found
+        return "No ports found";
     }
 }

@@ -1,5 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.Ports;
+
 import java.util.Map;
 
 public class MyInstance {
@@ -14,9 +18,10 @@ public class MyInstance {
     private double cpuUsage; // CPU usage of instance in %
     private double blockI; // Block I of instance in MB
     private double blockO; // Block O of instance in MB
+    private String ports; // Ports of instance
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, Map < String, String > labels, long size, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO) {
+    public MyInstance(String id, String name, String image, String status, Map < String, String > labels, long size, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
@@ -30,13 +35,14 @@ public class MyInstance {
         this.cpuUsage = cpuUsage;
         this.blockI = blockI;
         this.blockO = blockO;
+        this.ports = ports;
     }
 
     // Method toString that returns a string with the values of the instance variables
     @Override
     public String toString() {
         return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
-                " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/" + String.format("%.2f", blockO) + "MB";
+                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/" + String.format("%.2f", blockO) + "MB";
     }
 
     // Getter for id
