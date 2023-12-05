@@ -2,16 +2,25 @@ package gr.aueb.dmst.dockerWatchdog;
 
 public class MyImage {
 
-    private final String name;
-    private final String id;
-    private final Long size;
-    private String status;
+    private final String name; // Name of image final cause will not change
+    private final String id; // ID of image final cause will not change
+    private final Long size; // Size of image final cause will not change
+    private String status; // Status of image
 
-    public MyImage(String name,String id, Long size,String status) {
+    // Constructor
+    public MyImage(String name, String id, Long size, String status) {
+
+        // Initialize images variables with the values of the parameters
         this.name = name;
         this.id = id;
         this.size = size;
         this.status = status;
+    }
+
+    // Method toString that returns a string with the values of the instance variables
+    @Override
+    public String toString() {
+        return "Name = " + name + " , ID = " + id.substring(7) + " , Size = " + String.format("%.2f", (double) size / (1024 * 1024)) + " MB" + " , Status = " + status;
     }
 
     // Getter for id
@@ -24,20 +33,18 @@ public class MyImage {
         return size;
     }
 
-    @Override
-    public String toString() {
-        return "Name = " + name + " , ID = "+ id.substring(7) +  " , Size = " + String.format("%.2f", (double) size / (1024 * 1024)) + " MB"+ " , Status = " + status ;
-    }
-
+    // Getter for name
     public String getName() {
         return name;
     }
 
-    public String getStatus(){
+    // Getter for status
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status){
+    // Setter for status, only setter cause status can change
+    public void setStatus(String status) {
         this.status = status;
     }
 }

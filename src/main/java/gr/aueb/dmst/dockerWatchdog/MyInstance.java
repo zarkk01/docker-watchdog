@@ -3,22 +3,22 @@ package gr.aueb.dmst.dockerWatchdog;
 import java.util.Map;
 
 public class MyInstance {
-    private final String id;
-    private String name;
+    private final String id; // ID of instance is final
+    private String name; // Instance name
+    private long size; // Size of instance
+    private Map < String, String > labels; // Labels of instance
+    private final String image; // Image of instance
+    private String status; // Status of instance
+    private long pids; // PIDs of instance
+    private long memoryUsage; // Memory usage of instance in MB
+    private double cpuUsage; // CPU usage of instance in %
+    private double blockI; // Block I of instance in MB
+    private double blockO; // Block O of instance in MB
 
-    private long size;
+    // Constructor
+    public MyInstance(String id, String name, String image, String status, Map < String, String > labels, long size, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO) {
 
-    private Map<String ,String> labels;
-    private final String image;
-    private String status;
-    private long pids;
-    private long memoryUsage;
-    private double cpuUsage;
-    private double blockI;
-    private double blockO;
-
-    // constructor
-    public MyInstance(String id , String name , String image , String status ,Map<String,String> labels ,long size,double cpuUsage, long memoryUsage,long pids,double blockI,double blockO) {
+        // Initialize instance variables with the values of the parameters
         this.id = id;
         this.name = name;
         this.image = image;
@@ -32,10 +32,11 @@ public class MyInstance {
         this.blockO = blockO;
     }
 
+    // Method toString that returns a string with the values of the instance variables
     @Override
     public String toString() {
-        return "Name = " + name.substring(1) +" , ID = "+ id +", " +" , Image = " + image
-                + " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage*100) +" %" + " , Memory usage : " +String.format("%.2f", (double)memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/"+String.format("%.2f", blockO)+"MB";
+        return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
+                " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/" + String.format("%.2f", blockO) + "MB";
     }
 
     // Getter for id
@@ -58,7 +59,8 @@ public class MyInstance {
         return name;
     }
 
-    public Map<String, String> getLabels() {
+    // Getter for labels
+    public Map < String, String > getLabels() {
         return labels;
     }
 
@@ -67,16 +69,40 @@ public class MyInstance {
         return size;
     }
 
+    // Getter for memoryUsage
     public long getMemoryUsage() {
         return memoryUsage;
     }
 
+    // Getter for cpuUsage
     public void setMemoryUsage(long memoryUsage) {
         this.memoryUsage = memoryUsage;
     }
 
+    // Getter for PIDs
+    public long getPids() {
+        return pids;
+    }
+
+    // Getter for blockI
+    public double getBlockI() {
+        return blockI;
+    }
+
+    // Getter for blockO
+    public double getBlockO() {
+        return blockO;
+    }
+
+    // Setter for cpuUsage
+    public void setCpuUsage(double cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
+
     // Setter for name
-    public void setName(String newName) { this.name = newName; }
+    public void setName(String newName) {
+        this.name = newName;
+    }
 
     // Setter for image
     public void setStatus(String status) {
@@ -84,7 +110,7 @@ public class MyInstance {
     }
 
     // Setter for labels
-    public void setLabels(Map<String, String> labels) {
+    public void setLabels(Map < String, String > labels) {
         this.labels = labels;
     }
 
@@ -93,9 +119,25 @@ public class MyInstance {
         this.size = size;
     }
 
+    // Setter for PIDs
+    public void setPids(long pids) {
+        this.pids = pids;
+    }
+
+    // Setter for blockI
+    public void setBlockI(double blockI) {
+        this.blockI = blockI;
+    }
+
+    // Setter for blockO
+    public void setBlockO(double blockO) {
+        this.blockO = blockO;
+    }
+
+    // Given an ID of an instance, return the instance
     public static MyInstance getInstanceByid(String id) {
         MyInstance instanceToReturn = null;
-        for (MyInstance instance:Main.myInstancesList) {
+        for (MyInstance instance: Main.myInstancesList) {
             if (id.equals(instance.getId())) {
                 instanceToReturn = instance;
             }
@@ -105,20 +147,5 @@ public class MyInstance {
         } else {
             return null;
         }
-    }
-    public long getPids() {
-        return pids;
-    }
-    public void setPids(long pids) {
-        this.pids = pids;
-    }
-    public void setBlockI(double blockI) {
-        this.blockI = blockI;
-    }
-    public void setBlockO(double blockO) {
-        this.blockO = blockO;
-    }
-    public void setCpuUsage(double cpuUsage) {
-        this.cpuUsage = cpuUsage;
     }
 }

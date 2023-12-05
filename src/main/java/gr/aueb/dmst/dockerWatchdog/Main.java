@@ -8,29 +8,38 @@ import java.util.ArrayList;
 
 public class Main {
 
+    // Initiate myInstancesList and myImagesList
     public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
     public static ArrayList<MyImage> myImagesList = new ArrayList<>();
 
-    public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-//          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
-            .build();
-    public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
+    // Initiate dockerClient
+    static String dockerHost = "tcp://localhost:2375"; // Replace with your Docker daemon's host and port
 
+    // Build the Docker client configuration for TCP
+    static DefaultDockerClientConfig.Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder()
+            .withDockerHost(dockerHost);
+
+    // Use configBuilder to build the Docker client
+    public static DockerClient dockerClient = DockerClientBuilder.getInstance(configBuilder.build()).build();
 
     public static void main(String[] args) {
 
-        DockerLiveMetrics.liveMeasure();
+        try {
+            // Calling liveMeasure so to keep track of CPU Usage, Memory Usage, Block I/O, and PIDs
+            DockerLiveMetrics.liveMeasure();
 
-        // Initiate and start monitorThread
-        MonitorThread dockerMonitor = new MonitorThread();
-        Thread monitorThread = new Thread(dockerMonitor);
-        monitorThread.start();
+            // Initiate and start monitorThread
+            MonitorThread dockerMonitor = new MonitorThread();
+            Thread monitorThread = new Thread(dockerMonitor);
+            monitorThread.start();
 
-
-        // Initiate and start executorThread
-        ExecutorThread dockerExecutor = new ExecutorThread();
-        Thread executorThread = new Thread(dockerExecutor);
-        executorThread.start();
-
+            // Initiate and start executorThread
+            ExecutorThread dockerExecutor = new ExecutorThread();
+            Thread executorThread = new Thread(dockerExecutor);
+            executorThread.start();
+        } catch (Exception e) {
+            // Handle exceptions here
+            e.printStackTrace();
+        }
     }
 }
