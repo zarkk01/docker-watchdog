@@ -58,8 +58,6 @@ public class ExecutorThread implements Runnable {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
-
         // Get the container number from the user
         System.out.print("\nEnter the number of the container to start: ");
         int containerNumber = scanner.nextInt() - 1;
@@ -115,8 +113,6 @@ public class ExecutorThread implements Runnable {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
-
         // Get the container number from the user
         System.out.print("\nEnter the number of the container to stop: ");
         int containerNumber = scanner.nextInt() - 1;
@@ -171,7 +167,6 @@ public class ExecutorThread implements Runnable {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
 
         // Get the container number from the user
         System.out.print("\nEnter the number of the container to remove: ");
@@ -219,7 +214,6 @@ public class ExecutorThread implements Runnable {
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
 
         // Get the container number from the user
         System.out.print("\nEnter the number of the container to rename: ");
@@ -252,11 +246,11 @@ public class ExecutorThread implements Runnable {
     public void runContainer() {
         try {
             ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
-            Scanner scanner = new Scanner(System.in);
 
             // Get the image name from the user
             System.out.print("Enter the name and the version of the image (ex format: nginx:latest )." +
                     "\nDon't worry if you have not pulled it, I will do it for you :) : ");
+            scanner.nextLine();
             String imageName = scanner.nextLine();
 
             // Pull the specified Docker image
@@ -280,10 +274,10 @@ public class ExecutorThread implements Runnable {
     // Method to pull an image
     public void pullImage() {
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
-        Scanner scanner = new Scanner(System.in);
 
         // Get the image name from the user
         System.out.print("Enter the name and the version of the image to pull (ex format: nginx:latest ): ");
+        scanner.nextLine();
         String imageName = scanner.nextLine();
 
         // Pull the specified Docker image
