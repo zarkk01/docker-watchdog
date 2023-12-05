@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
@@ -191,6 +192,126 @@ public class ExecutorThread implements Runnable {
         }
 
     }
+
+    public void pauseContainer() {
+        System.out.println("\nAvailable containers to pause : ");
+        int c = 0;
+        for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
+            Container curIns = MonitorThread.containers.get(i - 1);
+            if (curIns.getStatus().startsWith("Up") && !curIns.getStatus().contains("Paused")) {
+                // Available containers to pause
+                System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
+                c++;
+            } else {
+                // Already exited containers
+                System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Exited or Paused)");
+            }
+        }
+
+        if (c == 0) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // If there are no containers to pause
+            if (MonitorThread.containers.size() == 0) {
+                System.out.println("\nThere are no containers to pause");
+            } else {
+                System.out.println("\nAll containers are paused.");
+            }
+            return;
+        }
+
+        // Get the container number from the user
+        System.out.print("\nEnter the number of the container to pause: ");
+        int containerNumber = scanner.nextInt() - 1;
+        // Check if the number is valid
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+            return;
+        }
+
+        // Retrieve the Container object corresponding to the containerName
+        Container container = getContainerByNumber(containerNumber);
+        try {
+            // Pause the specified container
+            System.out.println("Pausing the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.pauseContainerCmd(container.getId()).exec();
+            System.out.println("Container paused successfully.");
+        } catch (NotModifiedException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused." + "\033[0m");
+        } catch (ConflictException e) {
+        System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused or Exited." + "\033[0m");
+    }
+    }
+    public void unpauseContainer() {
+        System.out.println("\nAvailable containers to unpause : ");
+        int c = 0;
+        for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
+            Container curIns = MonitorThread.containers.get(i - 1);
+            if (curIns.getStatus().contains("Paused")) {
+                // Available containers to unpause
+                System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
+                c++;
+            } else {
+                // Containers that cannot be unpaused
+                System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Not Paused)");
+            }
+        }
+
+        if (c == 0) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // If there are no containers to unpause
+            if (MonitorThread.containers.size() == 0) {
+                System.out.println("\nThere are no containers to unpause");
+            } else {
+                System.out.println("\nAll containers are in a not paused state");
+            }
+            return;
+        }
+
+        // Get the container number from the user
+        System.out.print("\nEnter the number of the container to unpause: ");
+        int containerNumber = scanner.nextInt() - 1;
+        // Check if the number is valid
+        if (containerNumber < 0 || containerNumber >= MonitorThread.containers.size()) {
+            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+            return;
+        }
+
+        // Retrieve the Container object corresponding to the containerName
+        Container container = getContainerByNumber(containerNumber);
+        try {
+            // Unpause the specified container
+            System.out.println("Unpausing the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.unpauseContainerCmd(container.getId()).exec();
+            System.out.println("Container unpaused successfully.");
+        } catch (NotModifiedException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
+            return;
+        } catch (InternalServerErrorException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
+            return;
+        }
+    }
+
+    private void startContainer(Container container) {
+        try {
+            // Start the specified container
+            System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
+            Main.dockerClient.startContainerCmd(container.getId()).exec();
+            System.out.println("Container started successfully.");
+        } catch (NotModifiedException e) {
+            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running." + "\033[0m");
+        }
+    }
+
+
 
     // Method to rename a container
     public void renameContainer() {
@@ -409,7 +530,9 @@ public class ExecutorThread implements Runnable {
         System.out.println("5. Remove a container");
         System.out.println("6. Rename a container");
         System.out.println("7. Pull an image");
-        System.out.println("8. Exit");
+        System.out.println("8. Pause a container");
+        System.out.println("9. Unpause a container");
+        System.out.println("10. Exit");
     }
 
     // Method to do the appropriate action based on the user's choice
@@ -438,6 +561,12 @@ public class ExecutorThread implements Runnable {
                 pullImage();
                 break;
             case 8:
+                pauseContainer();
+                break;
+            case 9:
+                unpauseContainer();
+                break;
+            case 10:
                 scanner.close();
                 System.exit(0);
             default:
