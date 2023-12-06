@@ -104,7 +104,6 @@ public class MonitorThread implements Runnable {
         }
 
         for (Image image: images) {
-
             boolean match = false;
             // Check if the image is already in the list
             for (MyImage myImage: Main.myImagesList) {
@@ -145,16 +144,25 @@ public class MonitorThread implements Runnable {
     // Method getImageUsageStatus that checks if an image is used by a container
     private String getImageUsageStatus(String imageName) {
 
+        // Sleep for a litle so to let the docker daemon update the containers list
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         // List of all containers
         List < Container > containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
         // Check if any container is using the specified image
         for (Container container: containers) {
-            InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
+            if (container != null) {
+                InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
 
-            // Check if the container uses the specified image
-            if (imageName.equals(containerInfo.getConfig().getImage())) {
-                return "In use";
+                // Check if the container uses the specified image
+                if (imageName.equals(containerInfo.getConfig().getImage())) {
+                    return "In use";
+                }
             }
         }
 

@@ -13,14 +13,10 @@ public class Main {
     public static ArrayList<MyImage> myImagesList = new ArrayList<>();
 
     // Initiate dockerClient
-    static String dockerHost = "tcp://localhost:2375"; // Replace with your Docker daemon's host and port
-
-    // Build the Docker client configuration for TCP
-    static DefaultDockerClientConfig.Builder configBuilder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-            .withDockerHost(dockerHost);
-
-    // Use configBuilder to build the Docker client
-    public static DockerClient dockerClient = DockerClientBuilder.getInstance(configBuilder.build()).build();
+    public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
+            //          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
+            .build();
+    public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
 
     public static void main(String[] args) {
 

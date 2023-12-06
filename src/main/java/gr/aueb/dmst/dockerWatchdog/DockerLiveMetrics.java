@@ -36,13 +36,22 @@ public class DockerLiveMetrics {
         }
     }
 
+    public static void liveMeasureForNewContainer(String id) {
+        AsyncDockerCmd < StatsCmd, Statistics > asyncStatsCmd = Main.dockerClient.statsCmd(id);
+        try {
+            // Execute the statsCmd and call CustomResultCallback
+            asyncStatsCmd.exec(new CustomResultCallback(id, asyncStatsCmd));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // CustomResultCallback that extends ResultCallbackTemplate and implements Statistics class
     private static class CustomResultCallback extends ResultCallbackTemplate < CustomResultCallback, Statistics > {
 
         // Initiate id and asyncStatsCmd
         public String id;
-        private AsyncDockerCmd < StatsCmd,
-                Statistics > asyncStatsCmd;
+        private AsyncDockerCmd < StatsCmd,Statistics > asyncStatsCmd;
 
         // Constructor
         public CustomResultCallback(String id, AsyncDockerCmd < StatsCmd, Statistics > asyncStatsCmd) {

@@ -369,6 +369,7 @@ public class ExecutorThread implements Runnable {
     public void runContainer() {
         String imageName = null;
         try {
+
             ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
             // Get the image name from the user
@@ -418,6 +419,10 @@ public class ExecutorThread implements Runnable {
 
             // Create and start a container based on the pulled image
             Main.dockerClient.startContainerCmd(container.getId()).exec();
+
+            // Calling liveMeasureForNewContainer for this container so start a callback for CPU,Memory etc
+            // for this container too
+            DockerLiveMetrics.liveMeasureForNewContainer(container.getId());
 
             // Print the container ID
             System.out.println("Container started and running successfully. Container ID: " + container.getId() + "on port: " + sourcePort + ":" + targetPort);
