@@ -29,6 +29,10 @@ public class Main {
             Thread monitorThread = new Thread(dockerMonitor);
             monitorThread.start();
 
+            // Initiate and start dbThread
+            Thread dbThread = new Thread(new DatabaseThread(myInstancesList));
+            dbThread.start();
+
             // Initiate and start executorThread
             ExecutorThread dockerExecutor = new ExecutorThread();
             Thread executorThread = new Thread(dockerExecutor);

@@ -100,6 +100,11 @@ public class MyInstance {
         return blockO;
     }
 
+    //Getter for cpuUsage
+    public double getCpuUsage() {
+        return cpuUsage;
+    }
+
     // Setter for cpuUsage
     public void setCpuUsage(double cpuUsage) {
         this.cpuUsage = cpuUsage;
