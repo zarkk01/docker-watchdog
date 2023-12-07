@@ -21,6 +21,7 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+
             // Calling liveMeasure so to keep track of CPU Usage, Memory Usage, Block I/O, and PIDs
             DockerLiveMetrics.liveMeasure();
 
@@ -29,14 +30,15 @@ public class Main {
             Thread monitorThread = new Thread(dockerMonitor);
             monitorThread.start();
 
-            // Initiate and start dbThread
-            Thread dbThread = new Thread(new DatabaseThread(myInstancesList));
-            dbThread.start();
-
             // Initiate and start executorThread
             ExecutorThread dockerExecutor = new ExecutorThread();
             Thread executorThread = new Thread(dockerExecutor);
             executorThread.start();
+
+            // Initiate and start dbThread
+            Thread dbThread = new Thread(new DatabaseThread(myInstancesList));
+            dbThread.start();
+
         } catch (Exception e) {
             // Handle exceptions here
             e.printStackTrace();

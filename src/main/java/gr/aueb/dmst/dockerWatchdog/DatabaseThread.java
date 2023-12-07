@@ -6,9 +6,9 @@ import java.util.List;
 
 public class DatabaseThread implements Runnable {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/your_database";
-    private static final String USER = "your_username";
-    private static final String PASS = "your_password";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
+    private static final String USER = "root";
+    private static final String PASS = "password";
 
     private List<MyInstance> instances;
 
