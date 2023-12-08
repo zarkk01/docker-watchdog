@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
@@ -37,7 +38,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
-            if (curIns.getStatus().startsWith("Exited")) {
+            if (curIns.getStatus().startsWith("Exited") || curIns.getStatus().startsWith("Created")) {
                 // Available containers to start
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -95,8 +96,10 @@ public class ExecutorThread implements Runnable {
                 // Available containers to stop
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
-            } else {
+            } else if (curIns.getStatus().startsWith("Created")){
                 // Already exited containers
+                System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Hasn't started yet)");
+            } else {
                 System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Already exited)");
             }
         }
@@ -145,7 +148,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < MonitorThread.containers.size() + 1; i++) {
             Container curIns = MonitorThread.containers.get(i - 1);
-            if (curIns.getStatus().startsWith("Exited")) {
+            if (curIns.getStatus().startsWith("Exited") || curIns.getStatus().startsWith("Created")) {
                 // Available containers to remove
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -239,11 +242,9 @@ public class ExecutorThread implements Runnable {
             System.out.println("Pausing the container " + container.getNames()[0].substring(1) + "...");
             Main.dockerClient.pauseContainerCmd(container.getId()).exec();
             System.out.println("Container paused successfully.");
-        } catch (NotModifiedException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused." + "\033[0m");
         } catch (ConflictException e) {
         System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused or Exited." + "\033[0m");
-    }
+        }
     }
     public void unpauseContainer() {
         System.out.println("\nAvailable containers to unpause : ");
@@ -291,9 +292,6 @@ public class ExecutorThread implements Runnable {
             System.out.println("Unpausing the container " + container.getNames()[0].substring(1) + "...");
             Main.dockerClient.unpauseContainerCmd(container.getId()).exec();
             System.out.println("Container unpaused successfully.");
-        } catch (NotModifiedException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
-            return;
         } catch (InternalServerErrorException e) {
             System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
             return;
@@ -439,18 +437,22 @@ public class ExecutorThread implements Runnable {
                 // Print the container ID
                 System.out.println("Container started and running successfully. Container ID: " + container.getId());
             } catch (InterruptedException a) {
-                System.out.println("Container creation or start operation was interrupted.");
-                a.printStackTrace();
+                System.out.println("Image pull operation was interrupted.");
+                e.printStackTrace();
+            } catch (NotFoundException a) {
+                System.out.println("The image you are trying to pull does not exist");
             } catch (Exception a) {
-                System.out.println("Error pulling or running the image: " + a.getMessage());
-                a.printStackTrace();
+                System.err.println("Error pulling the image: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            System.out.println("Container creation or start operation was interrupted.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Error pulling or running the image: " + e.getMessage());
-            e.printStackTrace();
+        } catch (InterruptedException a) {
+            System.out.println("Image pull operation was interrupted.");
+            a.printStackTrace();
+        } catch (NotFoundException a) {
+            System.err.println("The image you are trying to pull does not exist");
+        } catch (Exception a) {
+            System.err.println("Error pulling the image: " + a.getMessage());
+            a.printStackTrace();
         }
     }
 
@@ -470,8 +472,10 @@ public class ExecutorThread implements Runnable {
         } catch (InterruptedException e) {
             System.out.println("Image pull operation was interrupted.");
             e.printStackTrace();
+        } catch (NotFoundException e) {
+            System.err.println("The image you are trying to pull does not exist");
         } catch (Exception e) {
-            System.out.println("Error pulling the image: " + e.getMessage());
+            System.err.println("Error pulling the image: " + e.getMessage());
             e.printStackTrace();
         }
     }
