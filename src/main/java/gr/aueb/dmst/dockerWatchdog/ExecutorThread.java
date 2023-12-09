@@ -392,7 +392,7 @@ public class ExecutorThread implements Runnable {
             // Get the source port from the user
             Integer sourcePort = null;
             while (sourcePort == null || sourcePort < 1 || sourcePort > 65535) {
-                System.out.print("Enter the source port number (1-65535): ");
+                System.out.print("Enter the source port number (1-65535) or 0 if you want no specific ports: ");
                 try {
                     sourcePort = scanner.nextInt();
                     if (sourcePort == 0) {
@@ -463,6 +463,8 @@ public class ExecutorThread implements Runnable {
             a.printStackTrace();
         } catch (NotFoundException a) {
             System.err.println("The image you are trying to pull does not exist");
+        } catch (InternalServerErrorException a) {
+            System.err.println("Port already in use try using another source port");
         } catch (Exception a) {
             System.err.println("Error pulling the image: " + a.getMessage());
             a.printStackTrace();
