@@ -20,91 +20,145 @@ public class NewMonitorThread implements Runnable {
             public void onNext(Event event) {
                 EventType eventType = event.getType();
                 String eventAction = event.getAction();
-                String containerId = event.getActor().getId();
+                String id = event.getActor().getId();
 
-                if (eventType == EventType.CONTAINER) {
-                    switch (eventAction) {
-                        case "start":
-                        case "unpause":
-                            // Find the corresponding instance and set its status to "Up running"
-                            MyInstance instance = MyInstance.getInstanceByid(containerId);
-                            if (instance != null) {
-                                instance.setStatus("running");
-                            }
-                            break;
-                        case "stop":
-                        case "die":
-                            // Find the corresponding instance and set its status to "Exited"
-                            instance = MyInstance.getInstanceByid(containerId);
-                            if (instance != null) {
-                                instance.setStatus("exited");
-                            }
-                            break;
-                        case "pause":
-                            // Find the corresponding instance and set its status to "Paused"
-                            instance = MyInstance.getInstanceByid(containerId);
-                            if (instance != null) {
-                                instance.setStatus("paused");
-                            }
-                            break;
-                        case "rename":
-                            // Find the corresponding instance and update its name
-                            instance = MyInstance.getInstanceByid(containerId);
-                            if (instance != null) {
-                                instance.setName(event.getActor().getAttributes().get("name"));
-                            }
-                            break;
-                        case "destroy":
-                            // Remove the corresponding instance from the list
-                            instance = MyInstance.getInstanceByid(containerId);
-                            if (instance != null) {
-                                Main.myInstancesList.remove(instance);
-                            }
-                            break;
-                        case "create":
-                            // Add the new instance to the list
-                            InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
-                            MyInstance newInstance = new MyInstance(
-                                    container.getId(),
-                                    container.getName(),
-                                    container.getImageId(),
-                                    container.getState().getStatus(),
-                                    container.getConfig().getLabels(),
-                                    container.getSizeRootFs(),
-                                    0, 0, 0, 0, 0,
-                                    getContainerPorts(container.getId())
-                            );
-                            Main.myInstancesList.add(newInstance);
-                            break;
-                    }
+                switch (eventType) {
+                    case CONTAINER:
+                        handleContainerEvent(eventAction, id,event);
+                        break;
+                    case IMAGE:
+                        handleImageEvent(eventAction, id,event);
+                        break;
                 }
             }
         });
+    }
+
+    private void handleContainerEvent(String eventAction, String containerId,Event event) {
+        switch (eventAction) {
+            case "start":
+            case "unpause":
+                // Find the corresponding instance and set its status to "Up running"
+                MyInstance instance = MyInstance.getInstanceByid(containerId);
+                if (instance != null) {
+                    instance.setStatus("running");
+                }
+                break;
+            case "stop":
+            case "die":
+                // Find the corresponding instance and set its status to "Exited"
+                instance = MyInstance.getInstanceByid(containerId);
+                if (instance != null) {
+                    instance.setStatus("exited");
+                }
+                break;
+            case "pause":
+                // Find the corresponding instance and set its status to "Paused"
+                instance = MyInstance.getInstanceByid(containerId);
+                if (instance != null) {
+                    instance.setStatus("paused");
+                }
+                break;
+            case "rename":
+                // Find the corresponding instance and update its name
+                instance = MyInstance.getInstanceByid(containerId);
+                if (instance != null) {
+                    instance.setName(event.getActor().getAttributes().get("name"));
+                }
+                break;
+            case "destroy":
+                // Remove the corresponding instance from the list
+                instance = MyInstance.getInstanceByid(containerId);
+                if (instance != null) {
+                    Main.myInstancesList.remove(instance);
+                }
+                boolean isThere = false;
+                for(MyInstance inst : Main.myInstancesList){
+                    if(inst.getImage().equals(instance.getImage())){
+                        isThere = true;
+                    }
+                }
+                if(!isThere){
+                    MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
+                    imageToSetUnused.setStatus("Unused");
+                }
+                break;
+            case "create":
+                // Add the new instance to the list
+                InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
+                MyInstance newInstance = new MyInstance(
+                        container.getId(),
+                        container.getName(),
+                        MyImage.getImageByID(container.getImageId()).getName(),
+                        container.getState().getStatus(),
+                        container.getConfig().getLabels(),
+                        0, 0, 0, 0, 0,
+                        getContainerPorts(container.getId())
+                );
+                for(MyImage image : Main.myImagesList) {
+                    if(newInstance.getImage().equals(image.getName())){
+                        image.setStatus("In use");
+                    }
+                }
+                Main.myInstancesList.add(newInstance);
+                break;
+        }
+    }
+
+    private void handleImageEvent(String eventAction, String imageName,Event event) {
+        switch (eventAction) {
+            case "pull":
+                // Add the new image to the list
+                InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
+                boolean isThere = false;
+                for(MyImage ima : Main.myImagesList){
+                    if(ima.getId().equals(image.getId())){
+                        isThere = true;
+                    }
+                }
+                if (!isThere) {
+                    MyImage newImage = new MyImage(
+                            image.getRepoTags().get(0),
+                            image.getId(),
+                            image.getSize(),
+                            getImageUsageStatus(image.getRepoTags().get(0))
+                    );
+                    Main.myImagesList.add(newImage);
+                }
+
+                break;
+            case "delete":
+            case "untag":
+                MyImage imageToRemove = MyImage.getImageByName(imageName);
+                if (imageToRemove != null) {
+                    Main.myImagesList.remove(imageToRemove);
+                }
+                break;
+        }
     }
 
     public void fillList() {
         // Get all Docker containers
         List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
-        // Iterate over the containers
-        for (Container container : containers) {
-            // Inspect the container to get its details
-            InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
+        // Get all Docker images
+        List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
 
-            // Create a new MyInstance object for the container
-            MyInstance instance = new MyInstance(
-                    containerInfo.getId(),
-                    containerInfo.getName(),
-                    containerInfo.getImageId(),
-                    containerInfo.getState().getStatus(),
-                    containerInfo.getConfig().getLabels(),
-                    0,
-                    0, 0, 0, 0, 0,
-                    getContainerPorts(containerInfo.getId())
+        // Iterate over the images
+        for (Image image : images) {
+            // Inspect the image to get its details
+            InspectImageResponse imageInfo = Main.dockerClient.inspectImageCmd(image.getId()).exec();
+
+            // Create a new MyImage object for the image
+            MyImage newImage = new MyImage(
+                    imageInfo.getRepoTags().get(0),
+                    imageInfo.getId(),
+                    imageInfo.getSize(),
+                    getImageUsageStatus(imageInfo.getRepoTags().get(0))
             );
 
-            // Add the new instance to the instancesList
-            Main.myInstancesList.add(instance);
+            // Add the new image to the imagesList
+            Main.myImagesList.add(newImage);
         }
     }
     private static String getContainerPorts(String containerId) {
