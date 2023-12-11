@@ -1,16 +1,17 @@
 package gr.aueb.dmst.dockerWatchdog;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.command.EventsResultCallback;
 
 import java.util.List;
 
-public class NewMonitorThread implements Runnable {
+public class MonitorThread implements Runnable {
 
     @Override
     public void run() {
-        fillList();
+        fillLists();
         startListening();
     }
 
@@ -137,7 +138,7 @@ public class NewMonitorThread implements Runnable {
         }
     }
 
-    public void fillList() {
+    public void fillLists() {
         // Get all Docker containers
         List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
@@ -159,6 +160,26 @@ public class NewMonitorThread implements Runnable {
 
             // Add the new image to the imagesList
             Main.myImagesList.add(newImage);
+        }
+
+        // Iterate over the containers
+        for (Container container : containers) {
+            // Inspect the container to get its details
+            InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
+
+            // Create a new MyInstance object for the container
+            MyInstance newInstance = new MyInstance(
+                    containerInfo.getId(),
+                    containerInfo.getName(),
+                    MyImage.getImageByID(containerInfo.getImageId()).getName(),
+                    containerInfo.getState().getStatus(),
+                    containerInfo.getConfig().getLabels(),
+                    0, 0, 0, 0, 0,
+                    getContainerPorts(containerInfo.getId())
+            );
+
+            // Add the new instance to the instancesList
+            Main.myInstancesList.add(newInstance);
         }
     }
     private static String getContainerPorts(String containerId) {
@@ -186,5 +207,14 @@ public class NewMonitorThread implements Runnable {
 
         // Return a default value if no ports are found
         return "No ports found";
+    }
+
+    public String getImageUsageStatus(String name){
+        for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
+            if(container.getImage().equals(name)){
+                return "In use";
+            }
+        }
+        return "Unused";
     }
 }

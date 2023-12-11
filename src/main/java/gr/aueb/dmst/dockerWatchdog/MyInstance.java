@@ -28,7 +28,6 @@ public class MyInstance {
         this.image = image;
         this.status = status;
         this.labels = labels;
-        this.size = size;
         this.memoryUsage = memoryUsage;
         this.pids = pids;
         this.cpuUsage = cpuUsage;

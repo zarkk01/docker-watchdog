@@ -44,7 +44,8 @@ public class ExecutorThread implements Runnable {
 
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("exited")) {
+
+            if (curIns.getStatus().startsWith("Exited")) {
 
                 // Available containers to start
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
@@ -118,7 +119,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("running")) {
+            if (curIns.getStatus().startsWith("Up")) {
                 // Available containers to stop
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -192,7 +193,7 @@ public class ExecutorThread implements Runnable {
 
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("exited")) {
+            if (curIns.getStatus().startsWith("Exited")) {
                 // Available containers to remove
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -260,7 +261,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("running") && !curIns.getStatus().contains("Paused")) {
+            if (curIns.getStatus().startsWith("Up") && !curIns.getStatus().contains("Paused")) {
                 // Available containers to pause
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
