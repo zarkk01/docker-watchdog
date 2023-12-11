@@ -47,4 +47,22 @@ public class MyImage {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public static MyImage getImageByName(String name){
+        for(MyImage image : Main.myImagesList){
+            if(image.getName().equals(name)){
+                return image;
+            }
+        }
+        return null;
+    }
+
+    public static MyImage getImageByID(String id){
+        for(MyImage image : Main.myImagesList){
+            if(image.getId().equals(id)){
+                return image;
+            }
+        }
+        return null;
+    }
 }

@@ -26,7 +26,7 @@ public class Main {
             DockerLiveMetrics.liveMeasure();
 
             // Initiate and start newMonitorThread
-            NewMonitorThread newDockerMonitor = new NewMonitorThread();
+            MonitorThread newDockerMonitor = new MonitorThread();
             Thread newMonitorThread = new Thread(newDockerMonitor);
             newMonitorThread.start();
 
