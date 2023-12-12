@@ -75,12 +75,12 @@ public class DatabaseThread implements Runnable {
                     upsertInstanceStmt.setString(2, instance.getName());
                     upsertInstanceStmt.setString(3, instance.getImage());
                     upsertInstanceStmt.setString(4, instance.getStatus());
-                    upsertInstanceStmt.setLong(6, instance.getMemoryUsage());
-                    upsertInstanceStmt.setLong(7, instance.getPids());
-                    upsertInstanceStmt.setDouble(8, instance.getCpuUsage());
-                    upsertInstanceStmt.setDouble(9, instance.getBlockI());
-                    upsertInstanceStmt.setDouble(10, instance.getBlockO());
-                    upsertInstanceStmt.setInt(11, metricId);
+                    upsertInstanceStmt.setLong(5, instance.getMemoryUsage());
+                    upsertInstanceStmt.setLong(6, instance.getPids());
+                    upsertInstanceStmt.setDouble(7, instance.getCpuUsage());
+                    upsertInstanceStmt.setDouble(8, instance.getBlockI());
+                    upsertInstanceStmt.setDouble(9, instance.getBlockO());
+                    upsertInstanceStmt.setInt(10, metricId);
                     upsertInstanceStmt.executeUpdate();
                 }
 
