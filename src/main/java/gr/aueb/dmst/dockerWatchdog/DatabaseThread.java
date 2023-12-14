@@ -17,13 +17,13 @@ public class DatabaseThread implements Runnable {
     }
 
     @Override
-    public void run() {
+    public void run() { // Loop periodically the updates the database. it sleeps for 5 secs between updates
         while(true){
             try {
-                // Establish a connection
+                // Establish a connection to a MYSQL DATABASE USING JDBC. The URL username and psw are constants
                 Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-                // Create the metrics table if it doesn't exist
+                // Create the metrics table if it doesn't exist - put columns for an auto-incremented ID and a timestamp
                 String createMetricsTable = "CREATE TABLE IF NOT EXISTS Metrics (" +
                         "id INT AUTO_INCREMENT, " +
                         "datetime TIMESTAMP, " +
@@ -44,7 +44,7 @@ public class DatabaseThread implements Runnable {
                     metricId = rs.getInt(1);
                 }
 
-                // Create the Instances table if it doesn't exist
+                // Create the Instances table if it doesn't exist - put columns representing docker instance info
                 String createInstancesTable = "CREATE TABLE IF NOT EXISTS Instances (" +
                         "id VARCHAR(255), " +
                         "name VARCHAR(255), " +
@@ -89,9 +89,9 @@ public class DatabaseThread implements Runnable {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
+            //exception handling
             try {
-                Thread.sleep(5000);
+                Thread.sleep(5000); //thread sleep before the next iteration
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

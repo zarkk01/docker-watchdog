@@ -508,16 +508,31 @@ public class ExecutorThread implements Runnable {
 
         // Show the Docker Instances
         System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
-        for (MyInstance instance: Main.myInstancesList) {
-            System.out.println("\u001B[33m" + instance + "\u001B[0m");
+        for (MyInstance instance : Main.myInstancesList) {
+            System.out.println("\u001B[33m" + "Name: " + instance.getName().substring(1) + "\u001B[0m");
+            System.out.println("\u001B[33m" +"ID: " + instance.getId()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Image: " + instance.getImage()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Status: " + instance.getStatus()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Port(s): " + instance.getPorts()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"CPU Usage: " + String.format("%.2f", instance.getCpuUsage() * 100) + " %"+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Memory Usage: " + String.format("%.2f", (double) instance.getMemoryUsage()) + " MB"+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"PIDs: " + instance.getPids()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Block I/0: " + String.format("%.2f", instance.getBlockI()) + " MB/" + String.format("%.2f", instance.getBlockO()) + " MB"+ "\u001B[0m");
+            System.out.println();
         }
 
         // Show the Docker Images
         System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
-        for (MyImage myImage: Main.myImagesList) {
-            System.out.println("\u001B[32m" + myImage + "\u001B[0m");
+        for (MyImage myImage : Main.myImagesList) {
+            System.out.println("\u001B[32m" + "Name: " + myImage.getName() + "\u001B[0m");
+            System.out.println("\u001B[32m" +"ID: " + myImage.getId().substring(7)+ "\u001B[0m");
+            System.out.println("\u001B[32m" +"Size: " + String.format("%.2f", (double) myImage.getSize() / (1024 * 1024)) + " MB"+ "\u001B[0m");
+            System.out.println("\u001B[32m" +"Status: " + myImage.getStatus()+ "\u001B[0m");
+            System.out.println();
         }
     }
+
+
 
     // Method to show the Docker summary
     public void showDockerSummary() {
