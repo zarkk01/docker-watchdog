@@ -237,7 +237,7 @@ public class ExecutorThread implements Runnable {
             if (Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() == 0) {
                 System.out.println("\nThere are no containers to pause");
             } else {
-                System.out.println("\nAll containers are paused.");
+                System.out.println("\nAll containers are paused or exited.");
             }
             return;
         }
