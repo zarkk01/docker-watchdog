@@ -44,6 +44,10 @@ public class MonitorThread implements Runnable {
                 if (instance != null) {
                     instance.setStatus("running");
                 }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
                 break;
             case "stop":
             case "die":
@@ -52,6 +56,10 @@ public class MonitorThread implements Runnable {
                 if (instance != null) {
                     instance.setStatus("exited");
                 }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
                 break;
             case "pause":
                 // Find the corresponding instance and set its status to "Paused"
@@ -59,12 +67,20 @@ public class MonitorThread implements Runnable {
                 if (instance != null) {
                     instance.setStatus("paused");
                 }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
                 break;
             case "rename":
                 // Find the corresponding instance and update its name
                 instance = MyInstance.getInstanceByid(containerId);
                 if (instance != null) {
                     instance.setName(event.getActor().getAttributes().get("name"));
+                }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
                 }
                 break;
             case "destroy":
@@ -82,6 +98,10 @@ public class MonitorThread implements Runnable {
                 if(!isThere){
                     MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
                     imageToSetUnused.setStatus("Unused");
+                }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
                 }
                 break;
             case "create":
@@ -102,6 +122,10 @@ public class MonitorThread implements Runnable {
                     }
                 }
                 Main.myInstancesList.add(newInstance);
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
                 break;
         }
     }
@@ -126,6 +150,10 @@ public class MonitorThread implements Runnable {
                     );
                     Main.myImagesList.add(newImage);
                 }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
 
                 break;
             case "delete":
@@ -133,6 +161,10 @@ public class MonitorThread implements Runnable {
                 MyImage imageToRemove = MyImage.getImageByName(imageName);
                 if (imageToRemove != null) {
                     Main.myImagesList.remove(imageToRemove);
+                }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
                 }
                 break;
         }
@@ -180,6 +212,10 @@ public class MonitorThread implements Runnable {
 
             // Add the new instance to the instancesList
             Main.myInstancesList.add(newInstance);
+        }
+        if (!Main.dbThread.isAlive()) {
+            Main.dbThread = new Thread(new DatabaseThread());
+            Main.dbThread.start();
         }
     }
     private static String getContainerPorts(String containerId) {

@@ -18,6 +18,9 @@ public class Main {
             .build();
     public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
 
+    //Initiate dbThread
+    public static Thread dbThread = new Thread(new DatabaseThread());
+
     public static void main(String[] args) {
 
         try {
@@ -35,9 +38,8 @@ public class Main {
             Thread executorThread = new Thread(dockerExecutor);
             executorThread.start();
 
-            // Initiate and start dbThread
-//            Thread dbThread = new Thread(new DatabaseThread(myInstancesList));
-//            dbThread.start();
+            // start dbThread
+            dbThread.start();
 
         } catch (Exception e) {
             // Handle exceptions here
