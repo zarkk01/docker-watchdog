@@ -7,14 +7,13 @@ public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "root";
-    private static final String PASS = "epoca2023";
+    private static final String PASS = "Zarko1213";
 
     private static boolean firstTime = true;
 
     @Override
     public void run() {
         try {
-
             // Establish a connection
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
