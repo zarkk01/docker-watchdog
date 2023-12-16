@@ -63,10 +63,6 @@ public class MyInstance {
         return name;
     }
 
-    public String getPorts() {
-        return ports;
-    }
-
     // Getter for labels
     public Map < String, String > getLabels() {
         return labels;
