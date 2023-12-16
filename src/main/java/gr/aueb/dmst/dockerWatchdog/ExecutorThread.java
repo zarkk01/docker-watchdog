@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.InternalServerErrorException;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
@@ -23,9 +24,14 @@ public class ExecutorThread implements Runnable {
 
         // Continuous loop showing menu and calling the appropriate method
         while (true) {
-            showMenuWithInteractions();
-            int choice = scanner.nextInt();
-            doDependsOnChoice(choice);
+            try {
+                showMenuWithInteractions();
+                int choice = scanner.nextInt();
+                doDependsOnChoice(choice);
+            } catch (InputMismatchException e) {
+                System.out.println("Please enter a valid integer.");
+                scanner.next();
+            }
         }
 
     }
@@ -37,7 +43,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("Exited")) {
+            if (curIns.getStatus().startsWith("Exited") || curIns.getStatus().startsWith("Created")) {
                 // Available containers to start
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -61,27 +67,31 @@ public class ExecutorThread implements Runnable {
             }
             return;
         }
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to start: ");
-        int containerNumber = scanner.nextInt() - 1;
-
-        // Check if the number is valid
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
         try {
-            //Start the container
-            System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.startContainerCmd(container.getId()).exec();
-            System.out.println("Container started successfully.");
-        } catch (NotModifiedException e) {
-            // If the container is already running
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to start: ");
+            int containerNumber = scanner.nextInt() - 1;
+
+            // Check if the number is valid
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+            try {
+                //Start the container
+                System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
+                Main.dockerClient.startContainerCmd(container.getId()).exec();
+                System.out.println("Container started successfully.");
+            } catch (NotModifiedException e) {
+                // If the container is already running
+                System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
+            }
+        }catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
     }
 
@@ -95,8 +105,10 @@ public class ExecutorThread implements Runnable {
                 // Available containers to stop
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
-            } else {
+            } else if (curIns.getStatus().startsWith("Created")){
                 // Already exited containers
+                System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Hasn't started yet)");
+            } else {
                 System.out.println("\033[9m" + i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "..." + "\033[0m" + " (Already exited)");
             }
         }
@@ -115,25 +127,29 @@ public class ExecutorThread implements Runnable {
             }
             return;
         }
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to stop: ");
-        int containerNumber = scanner.nextInt() - 1;
-        // Check if the number is valid
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
         try {
-            // Stop the specified container
-            System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.stopContainerCmd(container.getId()).exec();
-            System.out.println("Container stopped successfully.");
-        } catch (NotModifiedException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already stopped." + "\033[0m");
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to stop: ");
+            int containerNumber = scanner.nextInt() - 1;
+            // Check if the number is valid
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+            try {
+                // Stop the specified container
+                System.out.println("Stopping the container " + container.getNames()[0].substring(1) + "...");
+                Main.dockerClient.stopContainerCmd(container.getId()).exec();
+                System.out.println("Container stopped successfully.");
+            } catch (NotModifiedException e) {
+                System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already stopped." + "\033[0m");
+            }
+        }catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
     }
 
@@ -145,7 +161,7 @@ public class ExecutorThread implements Runnable {
         int c = 0;
         for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
             Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            if (curIns.getStatus().startsWith("Exited")) {
+            if (curIns.getStatus().startsWith("Exited") || curIns.getStatus().startsWith("Created")) {
                 // Available containers to remove
                 System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
                 c++;
@@ -169,26 +185,29 @@ public class ExecutorThread implements Runnable {
             }
             return;
         }
-
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to remove: ");
-        int containerNumber = scanner.nextInt() - 1;
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
         try {
-            // Remove the specified container
-            System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.removeContainerCmd(container.getId()).exec();
-            System.out.println("Container removed successfully.");
-        } catch (ConflictException e) {
-            // If the container is already running
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is currently running.. Try stoping it first" + "\033[0m");
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to remove: ");
+            int containerNumber = scanner.nextInt() - 1;
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+            try {
+                // Remove the specified container
+                System.out.println("Removing the container " + container.getNames()[0].substring(1) + "...");
+                Main.dockerClient.removeContainerCmd(container.getId()).exec();
+                System.out.println("Container removed successfully.");
+            } catch (ConflictException e) {
+                // If the container is already running
+                System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is currently running.. Try stoping it first" + "\033[0m");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
 
     }
@@ -218,31 +237,33 @@ public class ExecutorThread implements Runnable {
             if (Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() == 0) {
                 System.out.println("\nThere are no containers to pause");
             } else {
-                System.out.println("\nAll containers are paused.");
+                System.out.println("\nAll containers are paused or exited.");
             }
             return;
         }
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to pause: ");
-        int containerNumber = scanner.nextInt() - 1;
-        // Check if the number is valid
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
         try {
-            // Pause the specified container
-            System.out.println("Pausing the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.pauseContainerCmd(container.getId()).exec();
-            System.out.println("Container paused successfully.");
-        } catch (NotModifiedException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused." + "\033[0m");
-        } catch (ConflictException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused or Exited." + "\033[0m");
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to pause: ");
+            int containerNumber = scanner.nextInt() - 1;
+            // Check if the number is valid
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+            try {
+                // Pause the specified container
+                System.out.println("Pausing the container " + container.getNames()[0].substring(1) + "...");
+                Main.dockerClient.pauseContainerCmd(container.getId()).exec();
+                System.out.println("Container paused successfully.");
+            } catch (ConflictException e) {
+                System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already paused or Exited." + "\033[0m");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
     }
     public void unpauseContainer() {
@@ -274,29 +295,29 @@ public class ExecutorThread implements Runnable {
             }
             return;
         }
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to unpause: ");
-        int containerNumber = scanner.nextInt() - 1;
-        // Check if the number is valid
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
         try {
-            // Unpause the specified container
-            System.out.println("Unpausing the container " + container.getNames()[0].substring(1) + "...");
-            Main.dockerClient.unpauseContainerCmd(container.getId()).exec();
-            System.out.println("Container unpaused successfully.");
-        } catch (NotModifiedException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
-            return;
-        } catch (InternalServerErrorException e) {
-            System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
-            return;
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to unpause: ");
+            int containerNumber = scanner.nextInt() - 1;
+            // Check if the number is valid
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+            try {
+                // Unpause the specified container
+                System.out.println("Unpausing the container " + container.getNames()[0].substring(1) + "...");
+                Main.dockerClient.unpauseContainerCmd(container.getId()).exec();
+                System.out.println("Container unpaused successfully.");
+            } catch (InternalServerErrorException e) {
+                System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is not paused." + "\033[0m");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
     }
 
@@ -323,32 +344,35 @@ public class ExecutorThread implements Runnable {
             System.out.println("\nThere are no containers to rename");
             return;
         }
-
-
-        // Get the container number from the user
-        System.out.print("\nEnter the number of the container to rename: ");
-        int containerNumber = scanner.nextInt() - 1;
-        scanner.nextLine();
-        // Check if the number is valid
-        if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-            System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-            return;
-        }
-
-        // Retrieve the Container object corresponding to the containerName
-        Container container = getContainerByNumber(containerNumber);
-
-        System.out.print("Enter the new name for the container: ");
-        String newName = scanner.nextLine();
         try {
-            // Rename the specified container
-            Main.dockerClient.renameContainerCmd(container.getId())
-                    .withName(newName)
-                    .exec();
-            System.out.println("Container renamed successfully.");
-        } catch (ConflictException e) {
-            // If the container is already running
-            System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+            // Get the container number from the user
+            System.out.print("\nEnter the number of the container to rename: ");
+            int containerNumber = scanner.nextInt() - 1;
+            scanner.nextLine();
+            // Check if the number is valid
+            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
+                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
+                return;
+            }
+
+            // Retrieve the Container object corresponding to the containerName
+            Container container = getContainerByNumber(containerNumber);
+
+            System.out.print("Enter the new name for the container: ");
+            String newName = scanner.nextLine();
+            try {
+                // Rename the specified container
+                Main.dockerClient.renameContainerCmd(container.getId())
+                        .withName(newName)
+                        .exec();
+                System.out.println("Container renamed successfully.");
+            } catch (ConflictException e) {
+                // If the container is already running
+                System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Please enter a valid integer.");
+            scanner.next();
         }
     }
 
@@ -368,7 +392,7 @@ public class ExecutorThread implements Runnable {
             // Get the source port from the user
             Integer sourcePort = null;
             while (sourcePort == null || sourcePort < 1 || sourcePort > 65535) {
-                System.out.print("Enter the source port number (1-65535): ");
+                System.out.print("Enter the source port number (1-65535) or 0 if you want no specific ports: ");
                 try {
                     sourcePort = scanner.nextInt();
                     if (sourcePort == 0) {
@@ -426,18 +450,24 @@ public class ExecutorThread implements Runnable {
                 // Print the container ID
                 System.out.println("Container started and running successfully. Container ID: " + container.getId());
             } catch (InterruptedException a) {
-                System.out.println("Container creation or start operation was interrupted.");
-                a.printStackTrace();
+                System.out.println("Image pull operation was interrupted.");
+                e.printStackTrace();
+            } catch (NotFoundException a) {
+                System.out.println("The image you are trying to pull does not exist");
             } catch (Exception a) {
-                System.out.println("Error pulling or running the image: " + a.getMessage());
-                a.printStackTrace();
+                System.err.println("Error pulling the image: " + e.getMessage());
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            System.out.println("Container creation or start operation was interrupted.");
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Error pulling or running the image: " + e.getMessage());
-            e.printStackTrace();
+        } catch (InterruptedException a) {
+            System.out.println("Image pull operation was interrupted.");
+            a.printStackTrace();
+        } catch (NotFoundException a) {
+            System.err.println("The image you are trying to pull does not exist");
+        } catch (InternalServerErrorException a) {
+            System.err.println("Port already in use try using another source port");
+        } catch (Exception a) {
+            System.err.println("Error pulling the image: " + a.getMessage());
+            a.printStackTrace();
         }
     }
 
@@ -457,8 +487,10 @@ public class ExecutorThread implements Runnable {
         } catch (InterruptedException e) {
             System.out.println("Image pull operation was interrupted.");
             e.printStackTrace();
+        } catch (NotFoundException e) {
+            System.err.println("The image you are trying to pull does not exist");
         } catch (Exception e) {
-            System.out.println("Error pulling the image: " + e.getMessage());
+            System.err.println("Error pulling the image: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -476,16 +508,31 @@ public class ExecutorThread implements Runnable {
 
         // Show the Docker Instances
         System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
-        for (MyInstance instance: Main.myInstancesList) {
-            System.out.println("\u001B[33m" + instance + "\u001B[0m");
+        for (MyInstance instance : Main.myInstancesList) {
+            System.out.println("\u001B[33m" + "Name: " + instance.getName().substring(1) + "\u001B[0m");
+            System.out.println("\u001B[33m" +"ID: " + instance.getId()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Image: " + instance.getImage()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Status: " + instance.getStatus()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Port(s): " + instance.getPorts()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"CPU Usage: " + String.format("%.2f", instance.getCpuUsage() * 100) + " %"+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Memory Usage: " + String.format("%.2f", (double) instance.getMemoryUsage()) + " MB"+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"PIDs: " + instance.getPids()+ "\u001B[0m");
+            System.out.println("\u001B[33m" +"Block I/0: " + String.format("%.2f", instance.getBlockI()) + " MB/" + String.format("%.2f", instance.getBlockO()) + " MB"+ "\u001B[0m");
+            System.out.println();
         }
 
         // Show the Docker Images
         System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
-        for (MyImage myImage: Main.myImagesList) {
-            System.out.println("\u001B[32m" + myImage + "\u001B[0m");
+        for (MyImage myImage : Main.myImagesList) {
+            System.out.println("\u001B[32m" + "Name: " + myImage.getName() + "\u001B[0m");
+            System.out.println("\u001B[32m" +"ID: " + myImage.getId().substring(7)+ "\u001B[0m");
+            System.out.println("\u001B[32m" +"Size: " + String.format("%.2f", (double) myImage.getSize() / (1024 * 1024)) + " MB"+ "\u001B[0m");
+            System.out.println("\u001B[32m" +"Status: " + myImage.getStatus()+ "\u001B[0m");
+            System.out.println();
         }
     }
+
+
 
     // Method to show the Docker summary
     public void showDockerSummary() {
@@ -495,7 +542,7 @@ public class ExecutorThread implements Runnable {
         int imagesInUse = 0;
 
         for (MyInstance instance: Main.myInstancesList) {
-            if (instance.getStatus().startsWith("running")) {
+            if (instance.getStatus().startsWith("Up")) {
                 runningContainers++;
             }
         }

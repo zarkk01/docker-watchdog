@@ -2,7 +2,6 @@ package gr.aueb.dmst.dockerWatchdog;
 
 import java.sql.*;
 import java.util.Date;
-import java.util.List;
 
 public class DatabaseThread implements Runnable {
 
@@ -10,9 +9,7 @@ public class DatabaseThread implements Runnable {
     private static final String USER = "root";
     private static final String PASS = "epoca2023";
 
-    private List<MyInstance> instances;
-
-    private static boolean firstTime = false;
+    private static boolean firstTime = true;
 
     @Override
     public void run() {
@@ -21,7 +18,7 @@ public class DatabaseThread implements Runnable {
             // Establish a connection
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            if (!firstTime) {
+            if (firstTime) {
 
                 // Drop the Instances table if it exists
                 String dropInstancesTable = "DROP TABLE IF EXISTS Instances";
@@ -33,7 +30,7 @@ public class DatabaseThread implements Runnable {
                 PreparedStatement dropMetricsStmt = conn.prepareStatement(dropMetricsTable);
                 dropMetricsStmt.execute();
 
-                firstTime = true;
+                firstTime = false;
             }
 
             // Create the metrics table if it doesn't exist
