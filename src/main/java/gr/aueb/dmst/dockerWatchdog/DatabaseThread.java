@@ -91,8 +91,8 @@ public class DatabaseThread implements Runnable {
                 upsertInstanceStmt.setDouble(9, instance.getBlockO());
                 upsertInstanceStmt.setInt(10, metricId);
                 upsertInstanceStmt.executeUpdate();
-            }
 
+            }
             // Close the connection
             conn.close();
         } catch (SQLException e) {

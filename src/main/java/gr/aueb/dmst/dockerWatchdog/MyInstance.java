@@ -102,6 +102,9 @@ public class MyInstance {
         return cpuUsage;
     }
 
+    //Getter for ports
+    public String getPorts() {return ports;}
+
     // Setter for cpuUsage
     public void setCpuUsage(double cpuUsage) {
         this.cpuUsage = cpuUsage;
@@ -136,6 +139,8 @@ public class MyInstance {
     public void setBlockO(double blockO) {
         this.blockO = blockO;
     }
+
+
 
     // Given an ID of an instance, return the instance
     public static MyInstance getInstanceByid(String id) {
