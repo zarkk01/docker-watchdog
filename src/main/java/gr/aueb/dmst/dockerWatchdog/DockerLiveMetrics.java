@@ -13,7 +13,7 @@ import java.util.List;
 public class DockerLiveMetrics {
 
     // Method liveMeasure that keeps track of CPU Usage, Memory Usage, Block I/O and PIDs
-    public static void liveMeasure() throws Exception{
+    public static void liveMeasure() {
 
         // Set the root logger level to INFO to reduce the amount of logging output
         ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
