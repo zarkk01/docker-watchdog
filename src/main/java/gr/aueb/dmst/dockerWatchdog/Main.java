@@ -25,9 +25,6 @@ public class Main {
 
         try {
 
-            // Calling liveMeasure so to keep track of CPU Usage, Memory Usage, Block I/O, and PIDs
-            DockerLiveMetrics.liveMeasure();
-
             // Initiate and start newMonitorThread
             MonitorThread newDockerMonitor = new MonitorThread();
             Thread newMonitorThread = new Thread(newDockerMonitor);

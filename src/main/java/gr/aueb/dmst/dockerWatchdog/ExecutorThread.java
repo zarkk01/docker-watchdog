@@ -433,7 +433,7 @@ public class ExecutorThread implements Runnable {
 
             // Calling liveMeasureForNewContainer for this container so start a callback for CPU,Memory etc
             // for this container too
-            DockerLiveMetrics.liveMeasureForNewContainer(container.getId());
+            MonitorThread.liveMeasureForNewContainer(container.getId());
 
             // Print the container ID
             System.out.println("Container started and running successfully. Container ID: " + container.getId() + "on port: " + sourcePort + ":" + targetPort);

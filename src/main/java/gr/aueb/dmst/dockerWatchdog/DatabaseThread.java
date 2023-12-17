@@ -7,7 +7,7 @@ public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "root";
-    private static final String PASS = "Zarko1213";
+    private static final String PASS = "password";
 
     private static boolean firstTime = true;
 
@@ -59,7 +59,6 @@ public class DatabaseThread implements Runnable {
                     "name VARCHAR(255), " +
                     "image VARCHAR(255), " +
                     "status VARCHAR(255), " +
-                    "size BIGINT, " +
                     "memoryUsage BIGINT, " +
                     "pids BIGINT, " +
                     "cpuUsage DOUBLE, " +
@@ -75,7 +74,7 @@ public class DatabaseThread implements Runnable {
                 // Insert or update the instance in the Instances table
                 String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryUsage, pids, cpuUsage, blockI, blockO, metricId) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image), status = VALUES(status), size = VALUES(size), " +
+                        "ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image), status = VALUES(status), " +
                         "memoryUsage = VALUES(memoryUsage), pids = VALUES(pids), cpuUsage = VALUES(cpuUsage), blockI = VALUES(blockI), " +
                         "blockO = VALUES(blockO), metricId = VALUES(metricId)";
                 PreparedStatement upsertInstanceStmt = conn.prepareStatement(upsertInstance);
