@@ -381,8 +381,6 @@ public class ExecutorThread implements Runnable {
         String imageName = null;
         try {
 
-            ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
-
             // Get the image name from the user
             System.out.print("Enter the name and the version of the image (ex format: nginx:latest )." +
                     "\nDon't worry if you have not pulled it, I will do it for you :) : ");
@@ -473,7 +471,6 @@ public class ExecutorThread implements Runnable {
 
     // Method to pull an image
     public void pullImage() {
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         // Get the image name from the user
         System.out.print("Enter the name and the version of the image to pull (ex format: nginx:latest ): ");
@@ -504,8 +501,6 @@ public class ExecutorThread implements Runnable {
     // Method to show the Docker info
     public void showDockerInfo() {
         showDockerSummary();
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
-
         // Show the Docker Instances
         System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
         for (MyInstance instance : Main.myInstancesList) {

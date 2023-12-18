@@ -15,7 +15,6 @@ public class MonitorThread implements Runnable {
 
     @Override
     public void run() {
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
         fillLists();
         liveMeasure();
         startListening();
@@ -261,9 +260,6 @@ public class MonitorThread implements Runnable {
     }
 
     public static void liveMeasure() {
-
-        // Set the root logger level to INFO to reduce the amount of logging output
-        ((ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         // Lists of all containers of docker desktop using dockerClient that is initiated in Main.java
         List < Container > containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
