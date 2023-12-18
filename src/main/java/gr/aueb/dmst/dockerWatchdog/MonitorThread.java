@@ -117,7 +117,6 @@ public class MonitorThread implements Runnable {
                         container.getName(),
                         MyImage.getImageByID(container.getImageId()).getName(),
                         container.getState().getStatus(),
-                        container.getConfig().getLabels(),
                         0, 0, 0, 0, 0,
                         getContainerPorts(container.getId())
                 );
@@ -210,7 +209,6 @@ public class MonitorThread implements Runnable {
                     containerInfo.getName(),
                     MyImage.getImageByID(containerInfo.getImageId()).getName(),
                     containerInfo.getState().getStatus(),
-                    containerInfo.getConfig().getLabels(),
                     0, 0, 0, 0, 0,
                     getContainerPorts(containerInfo.getId())
             );

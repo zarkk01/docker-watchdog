@@ -7,7 +7,7 @@ public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "root";
-    private static final String PASS = "PASSWORD";
+    private static final String PASS = "password";
 
     private static boolean firstTime = true;
 
@@ -65,6 +65,7 @@ public class DatabaseThread implements Runnable {
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
                     "metricId INT, " +
+                    "PRIMARY KEY(id), "+
                     "FOREIGN KEY(metricId) REFERENCES Metrics(id))";
             PreparedStatement createInstancesStmt = conn.prepareStatement(createInstancesTable);
             createInstancesStmt.execute();

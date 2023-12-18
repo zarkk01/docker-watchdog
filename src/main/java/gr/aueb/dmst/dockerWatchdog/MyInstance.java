@@ -9,7 +9,6 @@ import java.util.Map;
 public class MyInstance {
     private final String id; // ID of instance is final
     private String name; // Instance name
-    private Map < String, String > labels; // Labels of instance
     private final String image; // Image of instance
     private String status; // Status of instance
     private long pids; // PIDs of instance
@@ -20,14 +19,13 @@ public class MyInstance {
     private String ports; // Ports of instance
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, Map < String, String > labels, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports) {
+    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
         this.name = name;
         this.image = image;
         this.status = status;
-        this.labels = labels;
         this.memoryUsage = memoryUsage;
         this.pids = pids;
         this.cpuUsage = cpuUsage;
@@ -61,11 +59,6 @@ public class MyInstance {
     // Getter for name
     public String getName() {
         return name;
-    }
-
-    // Getter for labels
-    public Map < String, String > getLabels() {
-        return labels;
     }
 
     // Getter for memoryUsage
@@ -114,11 +107,6 @@ public class MyInstance {
     // Setter for image
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    // Setter for labels
-    public void setLabels(Map < String, String > labels) {
-        this.labels = labels;
     }
 
     // Setter for PIDs
