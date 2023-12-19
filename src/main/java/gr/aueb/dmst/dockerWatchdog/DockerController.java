@@ -16,18 +16,10 @@ public class DockerController {
 
     private final DockerService dockerService;
 
-    @Autowired
-    private InstansRepo instansRepo;
-
     public DockerController(DockerService dockerService) {
         this.dockerService = dockerService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Instans>> getAllInstances() {
-        List<Instans> instances = instansRepo.findAll();
-        return ResponseEntity.ok(instances);
-    }
     @GetMapping("/info")
     public ResponseEntity<String> getDockerInfo() {
         String dockerInfo = dockerService.getDockerInfo();
