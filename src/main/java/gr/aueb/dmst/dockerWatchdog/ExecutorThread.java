@@ -85,6 +85,7 @@ public class ExecutorThread implements Runnable {
                 System.out.println("Starting the container " + container.getNames()[0].substring(1) + "...");
                 Main.dockerClient.startContainerCmd(container.getId()).exec();
                 System.out.println("Container started successfully.");
+
             } catch (NotModifiedException e) {
                 // If the container is already running
                 System.out.println("\033[0;31m" + container.getNames()[0].substring(1) + " is already running please try again with another container" + "\033[0m");
