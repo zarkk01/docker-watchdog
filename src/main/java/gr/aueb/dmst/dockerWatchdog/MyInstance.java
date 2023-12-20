@@ -1,11 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import com.github.dockerjava.api.command.InspectContainerResponse;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
-
-import java.util.Map;
-
 public class MyInstance {
     private final String id; // ID of instance is final
     private String name; // Instance name
