@@ -9,25 +9,22 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DockerService {
     ExecutorThread e = new ExecutorThread();
     private final DockerClient dockerClient;
+    private final InstanceRepository instanceRepository;
 
-    public DockerService() {
+    public DockerService(InstanceRepository instanceRepository) {
         this.dockerClient = DockerClientBuilder.getInstance().build();
-    }
-
-    public String getDockerInfo() {
-        // Execute the Docker info command using Docker Java API
-        // Return the Docker information as a string
-        return dockerClient.infoCmd().exec().toString();
+        this.instanceRepository = instanceRepository;
     }
 
     public void startContainer() {
         e.startContainer();
     }
-
 
     public void stopContainer(String containerId) {
         dockerClient.stopContainerCmd(containerId).exec();
@@ -37,8 +34,6 @@ public class DockerService {
         RenameContainerCmd renameCmd = dockerClient.renameContainerCmd(oldContainerName)
                 .withName(newContainerName);
         renameCmd.exec();
-
-
     }
 
     public void runContainer(String imageName, String command, String containerName, int port) {
@@ -76,6 +71,8 @@ public class DockerService {
         pullCmd.exec(new PullImageResultCallback()).awaitSuccess();
     }
 
-
+    public List<Instance> getAllInstances() {
+        return instanceRepository.findAll();
+    }
 
 }

@@ -59,25 +59,25 @@ public class DatabaseThread implements Runnable {
                     "name VARCHAR(255), " +
                     "image VARCHAR(255), " +
                     "status VARCHAR(255), " +
-                    "memoryUsage BIGINT, " +
+                    "memoryusage BIGINT, " +
                     "pids BIGINT, " +
-                    "cpuUsage DOUBLE, " +
+                    "cpuusage DOUBLE, " +
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
-                    "metricId INT, " +
-                    "FOREIGN KEY(metricId) REFERENCES Metrics(id), "+
-                    "PRIMARY KEY(id,MetricId))";
+                    "metricid INT, " +
+                    "FOREIGN KEY(metricid) REFERENCES Metrics(id), "+
+                    "PRIMARY KEY(id,metricid))";
             PreparedStatement createInstancesStmt = conn.prepareStatement(createInstancesTable);
             createInstancesStmt.execute();
 
             // Iterate over the instances
             for (MyInstance instance : Main.myInstancesList) {
                 // Insert or update the instance in the Instances table
-                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryUsage, pids, cpuUsage, blockI, blockO, metricId) " +
+                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, metricid) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image), status = VALUES(status), " +
-                        "memoryUsage = VALUES(memoryUsage), pids = VALUES(pids), cpuUsage = VALUES(cpuUsage), blockI = VALUES(blockI), " +
-                        "blockO = VALUES(blockO), metricId = VALUES(metricId)";
+                        "memoryusage = VALUES(memoryusage), pids = VALUES(pids), cpuUsage = VALUES(cpuusage), blockI = VALUES(blockI), " +
+                        "blockO = VALUES(blockO), metricid = VALUES(metricid)";
                 PreparedStatement upsertInstanceStmt = conn.prepareStatement(upsertInstance);
                 upsertInstanceStmt.setString(1, instance.getId());
                 upsertInstanceStmt.setString(2, instance.getName());

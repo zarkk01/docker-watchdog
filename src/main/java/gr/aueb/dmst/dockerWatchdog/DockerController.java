@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/containers")
 public class DockerController {
@@ -16,11 +18,6 @@ public class DockerController {
         this.dockerService = dockerService;
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<String> getDockerInfo() {
-        String dockerInfo = dockerService.getDockerInfo();
-        return ResponseEntity.ok(dockerInfo);
-    }
     @PostMapping("/run")
     public ResponseEntity<String> runContainer(@RequestParam String imageName, @RequestParam String command, @RequestParam String containerName, @RequestParam int port) {
         dockerService.runContainer(imageName, command, containerName, port);
@@ -62,6 +59,10 @@ public class DockerController {
     public ResponseEntity<String> pullImage(@RequestParam String imageName) {
         dockerService.pullImage(imageName);
         return ResponseEntity.ok("Image pulled successfully");
+    }
+    @GetMapping("/instances")
+    public List<Instance> getAllInstances() {
+        return dockerService.getAllInstances();
     }
 
 }

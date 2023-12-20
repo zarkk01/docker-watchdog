@@ -24,6 +24,9 @@ public class DesktopApp {
         JTextField containerIdField = new JTextField();
         containerIdField.setPreferredSize(new Dimension(200, 20));
 
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+
         JButton startButton = new JButton("Start Container");
         startButton.addActionListener(e -> {
             try {
@@ -44,11 +47,22 @@ public class DesktopApp {
             }
         });
 
+        JButton refreshButton = new JButton("Refresh Instances");
+        refreshButton.addActionListener(e -> {
+            try {
+                String instances = getAllInstances();
+                textArea.setText(instances);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
 
         JPanel panel = new JPanel();
         panel.add(containerIdField);
         panel.add(startButton);
         panel.add(stopButton);
+        panel.add(refreshButton);
+        panel.add(new JScrollPane(textArea));
 
         frame.getContentPane().add(panel, BorderLayout.CENTER);
         frame.setVisible(true);
@@ -60,10 +74,7 @@ public class DesktopApp {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Response code: " + response.statusCode());
-        System.out.println("Response body: " + response.body());
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public void stopContainer(String containerId) throws Exception {
@@ -72,11 +83,17 @@ public class DesktopApp {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Response code: " + response.statusCode());
-        System.out.println("Response body: " + response.body());
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    public String getAllInstances() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/instances"))
+                .GET()
+                .build();
 
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
 }
