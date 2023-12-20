@@ -38,8 +38,7 @@ public class Main {
             // start dbThread
             dbThread.start();
 
-//            DockerApp.main(args);
-            new DesktopApp().start();
+//            new DesktopApp().start();
 
         } catch (Exception e) {
             // Handle exceptions here

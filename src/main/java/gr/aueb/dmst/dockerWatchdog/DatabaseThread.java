@@ -65,8 +65,8 @@ public class DatabaseThread implements Runnable {
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
                     "metricId INT, " +
-                    "PRIMARY KEY(id), "+
-                    "FOREIGN KEY(metricId) REFERENCES Metrics(id))";
+                    "FOREIGN KEY(metricId) REFERENCES Metrics(id), "+
+                    "PRIMARY KEY(id,MetricId))";
             PreparedStatement createInstancesStmt = conn.prepareStatement(createInstancesTable);
             createInstancesStmt.execute();
 
