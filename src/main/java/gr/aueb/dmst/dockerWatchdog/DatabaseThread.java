@@ -124,7 +124,7 @@ public class DatabaseThread implements Runnable {
                     updateInstancesStmt.setString(1, instance.getName());
                     updateInstancesStmt.setString(2, instance.getImage());
                     updateInstancesStmt.setString(3, instance.getStatus());
-                    updateInstancesStmt.setLong(4, instance.getMemoryUsage());
+                    updateInstancesStmt.setDouble(4, instance.getMemoryUsage());
                     updateInstancesStmt.setLong(5, instance.getPids());
                     updateInstancesStmt.setDouble(6, instance.getCpuUsage());
                     updateInstancesStmt.setDouble(7, instance.getBlockI());
