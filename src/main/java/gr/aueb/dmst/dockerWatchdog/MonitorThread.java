@@ -15,7 +15,12 @@ public class MonitorThread implements Runnable {
 
     @Override
     public void run() {
-        fillLists();
+        try {
+            fillLists();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error in filllists");
+        }
         liveMeasure();
         startListening();
     }

@@ -40,6 +40,10 @@ public class Main {
 
             new DesktopApp().start();
 
+            // Wait for 2 seconds and then start live updates of metrics
+            Thread.sleep(2000);
+            DatabaseThread.updateLiveMetcrics();
+
         } catch (Exception e) {
             // Handle exceptions here
             e.printStackTrace();
