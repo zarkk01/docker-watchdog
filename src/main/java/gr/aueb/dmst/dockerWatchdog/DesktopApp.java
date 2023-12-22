@@ -1,5 +1,12 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -7,13 +14,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
-import javax.swing.*;
-import java.awt.*;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
-public class DesktopApp {
+public class DesktopApp extends Application {
 
     private HttpClient client;
 
@@ -21,23 +25,24 @@ public class DesktopApp {
         this.client = HttpClient.newHttpClient();
     }
 
-    public void start() {
-        JFrame frame = new JFrame("Docker Control");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600);
-        frame.setLocationRelativeTo(null);
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Docker Control");
 
-        JTextField containerIdField = new JTextField();
-        containerIdField.setPreferredSize(new Dimension(200, 20));
+        VBox vbox = new VBox();
+        vbox.setPadding(new Insets(10));
+        vbox.setSpacing(8);
 
-        JTextArea instancesTextArea = new JTextArea(10, 30);
+        TextField containerIdField = new TextField();
+
+        TextArea instancesTextArea = new TextArea();
         instancesTextArea.setEditable(false);
 
-        JTextArea metricsTextArea = new JTextArea(10, 30);
+        TextArea metricsTextArea = new TextArea();
         metricsTextArea.setEditable(false);
 
-        JButton startButton = new JButton("Start Container");
-        startButton.addActionListener(e -> {
+        Button startButton = new Button("Start Container");
+        startButton.setOnAction(e -> {
             try {
                 String containerId = containerIdField.getText();
                 startContainer(containerId);
@@ -46,8 +51,8 @@ public class DesktopApp {
             }
         });
 
-        JButton stopButton = new JButton("Stop Container");
-        stopButton.addActionListener(e -> {
+        Button stopButton = new Button("Stop Container");
+        stopButton.setOnAction(e -> {
             try {
                 String containerId = containerIdField.getText();
                 stopContainer(containerId);
@@ -56,8 +61,8 @@ public class DesktopApp {
             }
         });
 
-        JButton refreshInstancesButton = new JButton("Refresh Instances");
-        refreshInstancesButton.addActionListener(e -> {
+        Button refreshInstancesButton = new Button("Refresh Instances");
+        refreshInstancesButton.setOnAction(e -> {
             try {
                 String instances = getAllInstances();
                 instancesTextArea.setText(instances);
@@ -66,16 +71,14 @@ public class DesktopApp {
             }
         });
 
-        JLabel startDateLabel = new JLabel("Start Date:");
-        JTextField startDateField = new JTextField();
-        startDateField.setPreferredSize(new Dimension(200, 20));
+        Label startDateLabel = new Label("Start Date:");
+        TextField startDateField = new TextField();
 
-        JLabel endDateLabel = new JLabel("End Date:");
-        JTextField endDateField = new JTextField();
-        endDateField.setPreferredSize(new Dimension(200, 20));
+        Label endDateLabel = new Label("End Date:");
+        TextField endDateField = new TextField();
 
-        JButton showMetricsButton = new JButton("Show Metrics between dates");
-        showMetricsButton.addActionListener(e -> {
+        Button showMetricsButton = new Button("Show Metrics between dates");
+        showMetricsButton.setOnAction(e -> {
             try {
                 String startDateString = startDateField.getText();
                 String endDateString = endDateField.getText();
@@ -88,35 +91,25 @@ public class DesktopApp {
             }
         });
 
-        JTextField runningInstancesField = new JTextField();
+        TextField runningInstancesField = new TextField();
         runningInstancesField.setEditable(false);
 
-        JPanel panel = new JPanel();
-        panel.add(containerIdField);
-        panel.add(startButton);
-        panel.add(stopButton);
-        panel.add(refreshInstancesButton);
-        panel.add(new JScrollPane(instancesTextArea));
-        panel.add(startDateLabel);
-        panel.add(startDateField);
-        panel.add(endDateLabel);
-        panel.add(endDateField);
-        panel.add(showMetricsButton);
-        panel.add(new JScrollPane(metricsTextArea));
-        panel.add(runningInstancesField);
-        try {
-            String instances = getAllInstances();
-            int runningCount = getRunningInstancesCount();
-            runningInstancesField.setText("Running instances: " + runningCount);
-            instancesTextArea.setText(instances);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+        vbox.getChildren().addAll(containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
 
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        Platform.runLater(() -> {
+            try {
+                String instances = getAllInstances();
+                int runningCount = getRunningInstancesCount();
+                runningInstancesField.setText("Running instances: " + runningCount);
+                instancesTextArea.setText(instances);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
 
+        Scene scene = new Scene(vbox, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public void startContainer(String containerId) throws Exception {

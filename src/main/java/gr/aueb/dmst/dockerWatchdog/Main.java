@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import javafx.application.Application;
 import org.springframework.boot.SpringApplication;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class Main {
             // start dbThread
             dbThread.start();
 
-            new DesktopApp().start();
+            Application.launch(DesktopApp.class, args);
 
             DatabaseThread.updateLiveMetcrics();
 
