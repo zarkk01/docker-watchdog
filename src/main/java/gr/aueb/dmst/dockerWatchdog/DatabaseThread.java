@@ -6,8 +6,8 @@ import java.util.Date;
 public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
-    private static final String USER = "root";
-    private static final String PASS = "Zarko1213";
+    private static final String USER = "docker_db";
+    private static final String PASS = "dockerW4tchd0g$";
 
     private static boolean firstTime = true;
 
@@ -142,6 +142,5 @@ public class DatabaseThread implements Runnable {
         } catch (InterruptedException e1) {
         e1.printStackTrace();
         }
-
     }
 }
