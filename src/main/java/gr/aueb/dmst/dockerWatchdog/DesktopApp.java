@@ -10,6 +10,7 @@ import java.net.http.HttpResponse;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Timestamp;
 
 public class DesktopApp {
 
@@ -20,66 +21,97 @@ public class DesktopApp {
     }
 
     public void start() {
-    JFrame frame = new JFrame("Docker Control");
-    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize(800, 600);
-    frame.setLocationRelativeTo(null);
+        JFrame frame = new JFrame("Docker Control");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLocationRelativeTo(null);
 
-    JTextField containerIdField = new JTextField();
-    containerIdField.setPreferredSize(new Dimension(200, 20));
+        JTextField containerIdField = new JTextField();
+        containerIdField.setPreferredSize(new Dimension(200, 20));
 
-    JTextArea textArea = new JTextArea(20, 50); // 20 rows, 50 columns
-    textArea.setEditable(false);
+        JTextArea instancesTextArea = new JTextArea(10, 30);
+        instancesTextArea.setEditable(false);
 
-    JButton startButton = new JButton("Start Container");
-    startButton.addActionListener(e -> {
-        try {
-            String containerId = containerIdField.getText();
-            startContainer(containerId);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    });
+        JTextArea metricsTextArea = new JTextArea(10, 30);
+        metricsTextArea.setEditable(false);
 
-    JButton stopButton = new JButton("Stop Container");
-    stopButton.addActionListener(e -> {
-        try {
-            String containerId = containerIdField.getText();
-            stopContainer(containerId);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    });
+        JButton startButton = new JButton("Start Container");
+        startButton.addActionListener(e -> {
+            try {
+                String containerId = containerIdField.getText();
+                startContainer(containerId);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
 
-    JButton refreshButton = new JButton("Refresh Instances");
-    refreshButton.addActionListener(e -> {
+        JButton stopButton = new JButton("Stop Container");
+        stopButton.addActionListener(e -> {
+            try {
+                String containerId = containerIdField.getText();
+                stopContainer(containerId);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        JButton refreshInstancesButton = new JButton("Refresh Instances");
+        refreshInstancesButton.addActionListener(e -> {
+            try {
+                String instances = getAllInstances();
+                instancesTextArea.setText(instances);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        JLabel startDateLabel = new JLabel("Start Date:");
+        JTextField startDateField = new JTextField();
+        startDateField.setPreferredSize(new Dimension(200, 20));
+
+        JLabel endDateLabel = new JLabel("End Date:");
+        JTextField endDateField = new JTextField();
+        endDateField.setPreferredSize(new Dimension(200, 20));
+
+        JButton showMetricsButton = new JButton("Show Metrics between dates");
+        showMetricsButton.addActionListener(e -> {
+            try {
+                String startDateString = startDateField.getText();
+                String endDateString = endDateField.getText();
+                Timestamp startDate = Timestamp.valueOf(startDateString);
+                Timestamp endDate = Timestamp.valueOf(endDateString);
+                String metrics = getAllMetrics(startDate, endDate);
+                metricsTextArea.setText(metrics);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        JPanel panel = new JPanel();
+        panel.add(containerIdField);
+        panel.add(startButton);
+        panel.add(stopButton);
+        panel.add(refreshInstancesButton);
+        panel.add(new JScrollPane(instancesTextArea));
+        panel.add(startDateLabel);
+        panel.add(startDateField);
+        panel.add(endDateLabel);
+        panel.add(endDateField);
+        panel.add(showMetricsButton);
+        panel.add(new JScrollPane(metricsTextArea));
+
         try {
             String instances = getAllInstances();
-            textArea.setText(instances);
+            instancesTextArea.setText(instances);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-    });
 
-    JPanel panel = new JPanel();
-    panel.add(containerIdField);
-    panel.add(startButton);
-    panel.add(stopButton);
-    panel.add(refreshButton);
-    panel.add(new JScrollPane(textArea));
+        frame.getContentPane().add(panel, BorderLayout.CENTER);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
 
-    frame.getContentPane().add(panel, BorderLayout.CENTER);
-    frame.setLocationRelativeTo(null);
-    frame.setVisible(true);
-
-    // Fetch and display instances when the application starts
-    try {
-        String instances = getAllInstances();
-        textArea.setText(instances);
-    } catch (Exception exception) {
-        exception.printStackTrace();
     }
-}
 
     public void startContainer(String containerId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -114,7 +146,25 @@ public class DesktopApp {
             formattedResponse.append(jsonObject.toString(4)); // 4 is the number of spaces for indentation
             formattedResponse.append("\n");
         }
-
         return formattedResponse.toString();
     }
+
+    public String getAllMetrics(Timestamp startDate, Timestamp endDate) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/metrics?startDate=" + startDate.toString() + "&endDate=" + endDate.toString()))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JSONArray jsonArray = new JSONArray(response.body());
+        StringBuilder formattedResponse = new StringBuilder();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            formattedResponse.append(jsonObject.toString(4)); // 4 is the number of spaces for indentation
+            formattedResponse.append("\n");
+        }
+        return formattedResponse.toString();
+    }
+
 }
