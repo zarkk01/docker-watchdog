@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ExecutorThread implements Runnable {
-
     // Initiate and create scanner
     Scanner scanner = new Scanner(System.in);
 
@@ -35,8 +34,25 @@ public class ExecutorThread implements Runnable {
         }
 
     }
-
     // Method to start a container
+    public void startContainer(String containerId) {
+        try {
+            // Start the container with the provided ID
+            System.out.println("Starting the container with ID " + containerId + "...");
+            Main.dockerClient.startContainerCmd(containerId).exec();
+            System.out.println("Container started successfully.");
+        } catch (NotFoundException e) {
+            // If the container is not found
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
+        } catch (NotModifiedException e) {
+            // If the container is already running
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already running." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
+    }
+    /*
     public void startContainer() {
 
         System.out.println("\nAvailable containers to start : ");
@@ -94,9 +110,27 @@ public class ExecutorThread implements Runnable {
             System.out.println("Please enter a valid integer.");
             scanner.next();
         }
-    }
+    }*/
 
     // Method to stop a container
+    public void stopContainer(String containerId) {
+        try {
+            // Stop the container with the provided ID
+            System.out.println("Stopping the container with ID " + containerId + "...");
+            Main.dockerClient.stopContainerCmd(containerId).exec();
+            System.out.println("Container stopped successfully.");
+        } catch (NotFoundException e) {
+            // If the container is not found
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
+        } catch (NotModifiedException e) {
+            // If the container is already stopped
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already stopped." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
+    }
+    /*
     public void stopContainer() {
         System.out.println("\nAvailable containers to stop : ");
         int c = 0;
@@ -152,9 +186,28 @@ public class ExecutorThread implements Runnable {
             System.out.println("Please enter a valid integer.");
             scanner.next();
         }
-    }
+    }*/
 
     // Method to remove a container
+    public void removeContainer(String containerId) {
+        try {
+            // Remove the container with the provided ID
+            System.out.println("Removing the container with ID " + containerId + "...");
+            Main.dockerClient.removeContainerCmd(containerId).exec();
+            System.out.println("Container removed successfully.");
+        } catch (NotFoundException e) {
+            // If the container is not found
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
+        } catch (ConflictException e) {
+            // If the container is already running
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is currently running. Try stopping it first." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
+    }
+
+    /*
     public void removeContainer() {
 
         // Show the available containers to remove
@@ -211,7 +264,27 @@ public class ExecutorThread implements Runnable {
             scanner.next();
         }
 
+    }*/
+
+    public void pauseContainer(String containerId) {
+        try {
+            // Pause the specified container
+            System.out.println("Pausing the container with ID " + containerId + "...");
+            Main.dockerClient.pauseContainerCmd(containerId).exec();
+            System.out.println("Container paused successfully.");
+        } catch (NotFoundException e) {
+            // If the container is not found
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
+        } catch (ConflictException e) {
+            // If the container is already paused or exited
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already paused or exited." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
     }
+
+    /*
 
     public void pauseContainer() {
         System.out.println("\nAvailable containers to pause : ");
@@ -266,7 +339,25 @@ public class ExecutorThread implements Runnable {
             System.out.println("Please enter a valid integer.");
             scanner.next();
         }
+    }*/
+    public void unpauseContainer(String containerId) {
+        try {
+            // Unpause the specified container
+            System.out.println("Unpausing the container with ID " + containerId + "...");
+            Main.dockerClient.unpauseContainerCmd(containerId).exec();
+            System.out.println("Container unpaused successfully.");
+        } catch (NotFoundException e) {
+            // If the container is not found
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
+        } catch (ConflictException e) {
+            // If the container is not paused
+            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is not paused." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
     }
+/*
     public void unpauseContainer() {
         System.out.println("\nAvailable containers to unpause : ");
         int c = 0;
@@ -320,10 +411,10 @@ public class ExecutorThread implements Runnable {
             System.out.println("Please enter a valid integer.");
             scanner.next();
         }
-    }
+    }*/
 
     // Method to rename a container
-    public void renameContainer() {
+   /* public void renameContainer() {
 
         int c = 0;
 
@@ -376,8 +467,45 @@ public class ExecutorThread implements Runnable {
             scanner.next();
         }
     }
-
+*/
     // Method to run a container
+    /*
+    public void runContainer(String imageName, int sourcePort, int targetPort) {
+        try {
+            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+
+            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
+            Ports portBindings = new Ports();
+            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
+
+            CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
+                    .withCmd("sleep", "infinity")
+                    .withExposedPorts(tcp22)
+                    .withPortBindings(portBindings)
+                    .exec();
+
+            // Create and start a container based on the pulled image
+            Main.dockerClient.startContainerCmd(container.getId()).exec();
+
+            // Calling liveMeasureForNewContainer for this container to start a callback for CPU, Memory, etc.
+            MonitorThread.liveMeasureForNewContainer(container.getId());
+
+            // Print the container ID
+            System.out.println("Container started and running successfully. Container ID: " + container.getId() + " on port: " + sourcePort + ":" + targetPort);
+        } catch (InterruptedException | NoPortException | NotFoundException | InternalServerErrorException e1) {
+            handleRunContainerException(e1);
+        } catch (Exception e2) {
+            handleRunContainerException(e2);
+        }
+    }
+
+    private void handleRunContainerException(Exception e) {
+        System.err.println("Error running the container: " + e.getMessage());
+        e.printStackTrace();
+    }
+
+
+    */
     public void runContainer() {
         String imageName = null;
         try {
@@ -468,6 +596,7 @@ public class ExecutorThread implements Runnable {
             System.err.println("Error pulling the image: " + a.getMessage());
             a.printStackTrace();
         }
+
     }
 
     // Method to pull an image
@@ -496,8 +625,21 @@ public class ExecutorThread implements Runnable {
     // Method to get a Container object based on the container list number
     private Container getContainerByNumber(int containerNumber) {
         List < Container > containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+
         return containers.get(containerNumber);
     }
+    private Container getContainerById(String containerId) {
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+
+        // Iterate through the list of containers and find the one with the matching ID
+        for (Container container : containers) {
+            if (container.getId().equals(containerId)) {
+                return container;
+            }
+        }
+        return null;
+    }
+
 
     // Method to show the Docker info
     public void showDockerInfo() {
@@ -571,23 +713,24 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to do the appropriate action based on the user's choice
+
     private void doDependsOnChoice(int choice) {
         switch (choice) {
             case 1:
                 showDockerInfo();
                 break;
-            case 2:
-                startContainer();
+           /* case 2:
+                startContainer(String containerId);
                 break;
             case 3:
-                stopContainer();
+                stopContainer(String containerId);
                 break;
             case 4:
-                runContainer();
+                runContainer(String containerId);
                 break;
             case 5:
                 System.out.println("Please be careful, the container will be permanently removed!!");
-                removeContainer();
+                removeContainer(String containerId);
                 break;
             case 6:
                 renameContainer();
@@ -607,5 +750,6 @@ public class ExecutorThread implements Runnable {
             default:
                 System.out.println("Invalid choice. Please try again.");
         }
-    }
-}
+    */
+        }
+}}
