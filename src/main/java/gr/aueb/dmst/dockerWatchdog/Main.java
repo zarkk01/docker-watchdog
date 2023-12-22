@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import org.springframework.boot.SpringApplication;
 
 import java.util.ArrayList;
 
@@ -40,8 +41,6 @@ public class Main {
 
             new DesktopApp().start();
 
-            // Wait for 2 seconds and then start live updates of metrics
-            Thread.sleep(2000);
             DatabaseThread.updateLiveMetcrics();
 
         } catch (Exception e) {

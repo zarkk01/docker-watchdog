@@ -20,7 +20,7 @@ public class DockerService {
     }
 
     public void startContainer(String containerId) {
-        dockerClient.startContainerCmd(containerId);
+        dockerClient.startContainerCmd(containerId).exec();
     }
 
     public void stopContainer(String containerId) {

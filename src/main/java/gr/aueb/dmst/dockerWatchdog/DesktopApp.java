@@ -1,5 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -17,56 +20,66 @@ public class DesktopApp {
     }
 
     public void start() {
-        JFrame frame = new JFrame("Docker Control");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
+    JFrame frame = new JFrame("Docker Control");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(800, 600);
+    frame.setLocationRelativeTo(null);
 
-        JTextField containerIdField = new JTextField();
-        containerIdField.setPreferredSize(new Dimension(200, 20));
+    JTextField containerIdField = new JTextField();
+    containerIdField.setPreferredSize(new Dimension(200, 20));
 
-        JTextArea textArea = new JTextArea();
-        textArea.setEditable(false);
+    JTextArea textArea = new JTextArea(20, 50); // 20 rows, 50 columns
+    textArea.setEditable(false);
 
-        JButton startButton = new JButton("Start Container");
-        startButton.addActionListener(e -> {
-            try {
-                String containerId = containerIdField.getText();
-                startContainer(containerId);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+    JButton startButton = new JButton("Start Container");
+    startButton.addActionListener(e -> {
+        try {
+            String containerId = containerIdField.getText();
+            startContainer(containerId);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    });
 
-        JButton stopButton = new JButton("Stop Container");
-        stopButton.addActionListener(e -> {
-            try {
-                String containerId = containerIdField.getText();
-                stopContainer(containerId);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+    JButton stopButton = new JButton("Stop Container");
+    stopButton.addActionListener(e -> {
+        try {
+            String containerId = containerIdField.getText();
+            stopContainer(containerId);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    });
 
-        JButton refreshButton = new JButton("Refresh Instances");
-        refreshButton.addActionListener(e -> {
-            try {
-                String instances = getAllInstances();
-                textArea.setText(instances);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+    JButton refreshButton = new JButton("Refresh Instances");
+    refreshButton.addActionListener(e -> {
+        try {
+            String instances = getAllInstances();
+            textArea.setText(instances);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    });
 
-        JPanel panel = new JPanel();
-        panel.add(containerIdField);
-        panel.add(startButton);
-        panel.add(stopButton);
-        panel.add(refreshButton);
-        panel.add(new JScrollPane(textArea));
+    JPanel panel = new JPanel();
+    panel.add(containerIdField);
+    panel.add(startButton);
+    panel.add(stopButton);
+    panel.add(refreshButton);
+    panel.add(new JScrollPane(textArea));
 
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
-        frame.setVisible(true);
+    frame.getContentPane().add(panel, BorderLayout.CENTER);
+    frame.setLocationRelativeTo(null);
+    frame.setVisible(true);
+
+    // Fetch and display instances when the application starts
+    try {
+        String instances = getAllInstances();
+        textArea.setText(instances);
+    } catch (Exception exception) {
+        exception.printStackTrace();
     }
+}
 
     public void startContainer(String containerId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -94,6 +107,14 @@ public class DesktopApp {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        return response.body();
+        JSONArray jsonArray = new JSONArray(response.body());
+        StringBuilder formattedResponse = new StringBuilder();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            formattedResponse.append(jsonObject.toString(4)); // 4 is the number of spaces for indentation
+            formattedResponse.append("\n");
+        }
+
+        return formattedResponse.toString();
     }
 }
