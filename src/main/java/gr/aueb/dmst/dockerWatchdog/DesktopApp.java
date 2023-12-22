@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class DesktopApp {
 
@@ -87,6 +88,9 @@ public class DesktopApp {
             }
         });
 
+        JTextField runningInstancesField = new JTextField();
+        runningInstancesField.setEditable(false);
+
         JPanel panel = new JPanel();
         panel.add(containerIdField);
         panel.add(startButton);
@@ -99,9 +103,11 @@ public class DesktopApp {
         panel.add(endDateField);
         panel.add(showMetricsButton);
         panel.add(new JScrollPane(metricsTextArea));
-
+        panel.add(runningInstancesField);
         try {
             String instances = getAllInstances();
+            int runningCount = getRunningInstancesCount();
+            runningInstancesField.setText("Running instances: " + runningCount);
             instancesTextArea.setText(instances);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -150,8 +156,11 @@ public class DesktopApp {
     }
 
     public String getAllMetrics(Timestamp startDate, Timestamp endDate) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd%20HH:mm:ss");
+        String startDateString = dateFormat.format(startDate);
+        String endDateString = dateFormat.format(endDate);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/metrics?startDate=" + startDate.toString() + "&endDate=" + endDate.toString()))
+                .uri(new URI("http://localhost:8080/api/containers/metrics?startDate=" + startDateString + "&endDate=" + endDateString))
                 .GET()
                 .build();
 
@@ -167,4 +176,22 @@ public class DesktopApp {
         return formattedResponse.toString();
     }
 
+    public int getRunningInstancesCount() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/instances"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JSONArray jsonArray = new JSONArray(response.body());
+        int runningCount = 0;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            if ("running".equals(jsonObject.getString("status"))) {
+                runningCount++;
+            }
+        }
+        return runningCount;
+    }
 }
