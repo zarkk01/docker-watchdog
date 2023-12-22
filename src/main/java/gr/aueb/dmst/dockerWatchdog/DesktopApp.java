@@ -61,11 +61,16 @@ public class DesktopApp extends Application {
             }
         });
 
+        TextField runningInstancesField = new TextField();
+        runningInstancesField.setEditable(false);
+
         Button refreshInstancesButton = new Button("Refresh Instances");
         refreshInstancesButton.setOnAction(e -> {
             try {
                 String instances = getAllInstances();
                 instancesTextArea.setText(instances);
+                int runningCount = getRunningInstancesCount();
+                runningInstancesField.setText("Running instances: " + runningCount);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -90,9 +95,6 @@ public class DesktopApp extends Application {
                 exception.printStackTrace();
             }
         });
-
-        TextField runningInstancesField = new TextField();
-        runningInstancesField.setEditable(false);
 
         vbox.getChildren().addAll(containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
 
