@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.service;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DockerClientBuilder;
+import gr.aueb.dmst.dockerWatchdog.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.model.Instance;
 import gr.aueb.dmst.dockerWatchdog.model.Metric;
 import gr.aueb.dmst.dockerWatchdog.repositories.InstanceRepository;
@@ -25,11 +26,11 @@ public class DockerService {
     }
 
     public void startContainer(String containerId) {
-        dockerClient.startContainerCmd(containerId).exec();
+        ExecutorThread.startContainer(containerId);
     }
 
     public void stopContainer(String containerId) {
-        dockerClient.stopContainerCmd(containerId).exec();
+        ExecutorThread.stopContainer(containerId);
     }
 
     public List<Instance> getAllInstancesMaxId() {

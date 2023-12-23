@@ -13,29 +13,30 @@ import com.github.dockerjava.api.model.Ports;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ExecutorThread implements Runnable {
     // Initiate and create scanner
     Scanner scanner = new Scanner(System.in);
 
+    private final BlockingQueue<Integer> commandQueue = new LinkedBlockingQueue<>();
+
     @Override
     public void run() {
-
-        // Continuous loop showing menu and calling the appropriate method
         while (true) {
             try {
-                showMenuWithInteractions();
-                int choice = scanner.nextInt();
+                // Wait for a command from the GUI
+                int choice = commandQueue.take();
                 doDependsOnChoice(choice);
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid integer.");
-                scanner.next();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
     }
     // Method to start a container
-    public void startContainer(String containerId) {
+    public static void startContainer(String containerId) {
         try {
             // Start the container with the provided ID
             System.out.println("Starting the container with ID " + containerId + "...");
@@ -113,7 +114,7 @@ public class ExecutorThread implements Runnable {
     }*/
 
     // Method to stop a container
-    public void stopContainer(String containerId) {
+    public static void stopContainer(String containerId) {
         try {
             // Stop the container with the provided ID
             System.out.println("Stopping the container with ID " + containerId + "...");
@@ -641,115 +642,65 @@ public class ExecutorThread implements Runnable {
     }
 
 
-    // Method to show the Docker info
-    public void showDockerInfo() {
-        showDockerSummary();
-        // Show the Docker Instances
-        System.out.println("\n----" + "\u001B[33m" + "Containers" + "\u001B[0m" + "----");
-        for (MyInstance instance : Main.myInstancesList) {
-            System.out.println("\u001B[33m" + "Name: " + instance.getName().substring(1) + "\u001B[0m");
-            System.out.println("\u001B[33m" +"ID: " + instance.getId()+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"Image: " + instance.getImage()+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"Status: " + instance.getStatus()+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"Port(s): " + instance.getPorts()+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"CPU Usage: " + String.format("%.2f", instance.getCpuUsage() * 100) + " %"+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"Memory Usage: " + String.format("%.2f", (double) instance.getMemoryUsage()) + " MB"+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"PIDs: " + instance.getPids()+ "\u001B[0m");
-            System.out.println("\u001B[33m" +"Block I/0: " + String.format("%.2f", instance.getBlockI()) + " MB/" + String.format("%.2f", instance.getBlockO()) + " MB"+ "\u001B[0m");
-            System.out.println();
-        }
-
-        // Show the Docker Images
-        System.out.println("\n----" + "\u001B[32m" + "Images" + "\u001B[0m" + "----");
-        for (MyImage myImage : Main.myImagesList) {
-            System.out.println("\u001B[32m" + "Name: " + myImage.getName() + "\u001B[0m");
-            System.out.println("\u001B[32m" +"ID: " + myImage.getId().substring(7)+ "\u001B[0m");
-            System.out.println("\u001B[32m" +"Size: " + String.format("%.2f", (double) myImage.getSize() / (1024 * 1024)) + " MB"+ "\u001B[0m");
-            System.out.println("\u001B[32m" +"Status: " + myImage.getStatus()+ "\u001B[0m");
-            System.out.println();
-        }
-    }
 
 
 
-    // Method to show the Docker summary
-    public void showDockerSummary() {
-        int totalContainers = Main.myInstancesList.size();
-        int runningContainers = 0;
-        int images = Main.myImagesList.size();
-        int imagesInUse = 0;
-
-        for (MyInstance instance: Main.myInstancesList) {
-            if (instance.getStatus().startsWith("running")) {
-                runningContainers++;
-            }
-        }
-
-        for (MyImage image: Main.myImagesList) {
-            if (image.getStatus().startsWith("In")) {
-                imagesInUse++;
-            }
-        }
-        System.out.println("----" + "\u001B[35m" + "Docker Summary" + "\u001B[0m" + "----");
-        System.out.println("\u001B[35m" + "Total Containers: " + totalContainers);
-        System.out.println("Running Containers: " + runningContainers);
-        System.out.println("Total Images: " + images);
-        System.out.println("Images In Use: " + imagesInUse + "\u001B[0m");
-    }
-
-    // Method to show the menu with the available interactions
-    private void showMenuWithInteractions() {
-        System.out.println("\nChoose an option:");
-        System.out.println("1. View Docker Info");
-        System.out.println("2. Start a container");
-        System.out.println("3. Stop a container");
-        System.out.println("4. Run a container");
-        System.out.println("5. Remove a container");
-        System.out.println("6. Rename a container");
-        System.out.println("7. Pull an image");
-        System.out.println("8. Pause a container");
-        System.out.println("9. Unpause a container");
-        System.out.println("10. Exit");
-    }
-
-    // Method to do the appropriate action based on the user's choice
-
+    // Method to execute actions based on the choice received from the GUI
     private void doDependsOnChoice(int choice) {
         switch (choice) {
             case 1:
-                showDockerInfo();
+                // Start Container
+                // You can replace "containerId" with the actual container ID you want to start
+                startContainer("containerId");
                 break;
-           /* case 2:
-                startContainer(String containerId);
+
+            case 2:
+                // Stop Container
+                // You can replace "containerId" with the actual container ID you want to stop
+                stopContainer("containerId");
                 break;
+
             case 3:
-                stopContainer(String containerId);
+                // Remove Container
+                // You can replace "containerId" with the actual container ID you want to remove
+                removeContainer("containerId");
                 break;
+
             case 4:
-                runContainer(String containerId);
+                // Pause Container
+                // You can replace "containerId" with the actual container ID you want to pause
+                pauseContainer("containerId");
                 break;
+
             case 5:
-                System.out.println("Please be careful, the container will be permanently removed!!");
-                removeContainer(String containerId);
+                // Unpause Container
+                // You can replace "containerId" with the actual container ID you want to unpause
+                unpauseContainer("containerId");
                 break;
+
             case 6:
-                renameContainer();
+                // Run Container
+                runContainer();
                 break;
+
             case 7:
+                // Pull Image
                 pullImage();
                 break;
-            case 8:
-                pauseContainer();
-                break;
-            case 9:
-                unpauseContainer();
-                break;
-            case 10:
-                scanner.close();
-                System.exit(0);
+
             default:
+                // Handle invalid choice
                 System.out.println("Invalid choice. Please try again.");
         }
-    */
+    }
+    // Method to receive a command from the GUI
+    public void receiveCommand(int command) {
+        try {
+            // Put the received command into the queue
+            commandQueue.put(command);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
-}}
+    }
+}
+
