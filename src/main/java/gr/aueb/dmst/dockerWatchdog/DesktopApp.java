@@ -111,7 +111,7 @@ public class DesktopApp extends Application {
 
         vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
 
-        Scene scene = new Scene(vbox, 800, 600, Color.LIGHTBLUE);
+        Scene scene = new Scene(vbox, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
