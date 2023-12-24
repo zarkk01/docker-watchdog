@@ -43,9 +43,9 @@ public class Main {
             // start dbThread
             dbThread.start();
 
-            Application.launch(DesktopApp.class, args);
+            new Thread(DatabaseThread::updateLiveMetcrics).start();
 
-            DatabaseThread.updateLiveMetcrics();
+            Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
             // Handle exceptions here
