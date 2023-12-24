@@ -1,12 +1,17 @@
 package gr.aueb.dmst.dockerWatchdog.Application;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -36,8 +41,8 @@ public class DesktopApp extends Application {
         Label containerIdLabel = new Label("Container ID: ");
         TextField containerIdField = new TextField();
 
-        TextArea instancesTextArea = new TextArea();
-        instancesTextArea.setEditable(false);
+        ListView<String> instancesListView = new ListView<>();
+        ObservableList<String> instancesList = FXCollections.observableArrayList();
 
         TextArea metricsTextArea = new TextArea();
         metricsTextArea.setEditable(false);
@@ -69,13 +74,22 @@ public class DesktopApp extends Application {
         refreshInstancesButton.setOnAction(e -> {
             try {
                 String instances = getAllInstances();
-                instancesTextArea.setText(instances);
+                instancesList.clear();
+                instancesList.addAll(instances.split("\n"));
+                instancesListView.setItems(instancesList);
                 int runningCount = getRunningInstancesCount();
                 runningInstancesField.setText("Running instances: " + runningCount);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
+
+        // Create a Timeline that calls refreshInstancesButton's action every 0.5 seconds
+        Timeline autoRefresh = new Timeline(
+                new KeyFrame(Duration.seconds(2), e -> refreshInstancesButton.fire())
+        );
+        autoRefresh.setCycleCount(Timeline.INDEFINITE);
+        autoRefresh.play();
 
         Label startDateLabel = new Label("Start Date:");
         TextField startDateField = new TextField();
@@ -100,15 +114,16 @@ public class DesktopApp extends Application {
         Platform.runLater(() -> {
             try {
                 String instances = getAllInstances();
+                ObservableList<String> instancesL = FXCollections.observableArrayList(instances.split("\n"));
+                instancesListView.setItems(instancesL);
                 int runningCount = getRunningInstancesCount();
-                instancesTextArea.setText(instances);
                 runningInstancesField.setText("Running instances: " + runningCount);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
 
-        vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
+        vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, new ScrollPane(instancesListView), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
 
         Scene scene = new Scene(vbox, 800, 600);
         primaryStage.setScene(scene);
