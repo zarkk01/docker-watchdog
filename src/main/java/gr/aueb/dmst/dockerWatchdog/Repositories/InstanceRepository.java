@@ -1,6 +1,6 @@
-package gr.aueb.dmst.dockerWatchdog.repositories;
+package gr.aueb.dmst.dockerWatchdog.Repositories;
 
-import gr.aueb.dmst.dockerWatchdog.model.Instance;
+import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

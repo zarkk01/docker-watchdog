@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog.model;
+package gr.aueb.dmst.dockerWatchdog.Models;
 
 import java.io.Serializable;
 import java.util.Objects;

@@ -1,9 +1,8 @@
-package gr.aueb.dmst.dockerWatchdog.controller;
+package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import gr.aueb.dmst.dockerWatchdog.model.Metric;
-import gr.aueb.dmst.dockerWatchdog.service.DockerService;
-import gr.aueb.dmst.dockerWatchdog.model.Instance;
-import org.springframework.data.repository.query.Param;
+import gr.aueb.dmst.dockerWatchdog.Models.Metric;
+import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
+import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;

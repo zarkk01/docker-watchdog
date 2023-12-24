@@ -1,12 +1,12 @@
-package gr.aueb.dmst.dockerWatchdog.service;
+package gr.aueb.dmst.dockerWatchdog.Services;
 
 import com.github.dockerjava.api.DockerClient;
 import gr.aueb.dmst.dockerWatchdog.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.model.Instance;
-import gr.aueb.dmst.dockerWatchdog.model.Metric;
-import gr.aueb.dmst.dockerWatchdog.repositories.InstanceRepository;
-import gr.aueb.dmst.dockerWatchdog.repositories.MetricsRepository;
+import gr.aueb.dmst.dockerWatchdog.Models.Instance;
+import gr.aueb.dmst.dockerWatchdog.Models.Metric;
+import gr.aueb.dmst.dockerWatchdog.Repositories.InstanceRepository;
+import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;

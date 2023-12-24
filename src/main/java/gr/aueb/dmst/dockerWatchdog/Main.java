@@ -3,8 +3,8 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
 import javafx.application.Application;
-import org.springframework.boot.SpringApplication;
 
 import java.util.ArrayList;
 
