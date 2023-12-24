@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
@@ -9,6 +9,8 @@ import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Ports;
+import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.NoPortException;
 
 import java.util.InputMismatchException;
 import java.util.List;

@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import com.github.dockerjava.api.command.AsyncDockerCmd;
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -7,6 +7,10 @@ import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
 import com.github.dockerjava.core.command.EventsResultCallback;
+import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.MyImage;
+import gr.aueb.dmst.dockerWatchdog.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 
 import java.io.Closeable;
 import java.util.List;

@@ -1,4 +1,7 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Threads;
+
+import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.MyInstance;
 
 import java.sql.*;
 import java.util.Date;

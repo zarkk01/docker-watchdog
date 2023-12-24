@@ -4,6 +4,9 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
+import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
+import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
+import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import javafx.application.Application;
 
 import java.util.ArrayList;
