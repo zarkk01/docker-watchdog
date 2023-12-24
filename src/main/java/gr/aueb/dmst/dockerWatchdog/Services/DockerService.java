@@ -15,12 +15,10 @@ import java.util.List;
 @Service
 public class DockerService {
 
-    private final DockerClient dockerClient;
     private final InstanceRepository instanceRepository;
     private final MetricsRepository metricsRepository;
 
     public DockerService(InstanceRepository instanceRepository, MetricsRepository metricsRepository) {
-        this.dockerClient = Main.dockerClient;
         this.instanceRepository = instanceRepository;
         this.metricsRepository = metricsRepository;
     }
