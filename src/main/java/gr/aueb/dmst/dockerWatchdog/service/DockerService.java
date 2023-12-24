@@ -1,8 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog.service;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.ExecutorThread;
+import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.model.Instance;
 import gr.aueb.dmst.dockerWatchdog.model.Metric;
 import gr.aueb.dmst.dockerWatchdog.repositories.InstanceRepository;
@@ -20,7 +20,7 @@ public class DockerService {
     private final MetricsRepository metricsRepository;
 
     public DockerService(InstanceRepository instanceRepository, MetricsRepository metricsRepository) {
-        this.dockerClient = DockerClientBuilder.getInstance().build();
+        this.dockerClient = Main.dockerClient;
         this.instanceRepository = instanceRepository;
         this.metricsRepository = metricsRepository;
     }

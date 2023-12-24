@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,6 +34,7 @@ public class DesktopApp extends Application {
         vbox.setPadding(new Insets(10));
         vbox.setSpacing(8);
 
+        Label containerIdLabel = new Label("Container ID: ");
         TextField containerIdField = new TextField();
 
         TextArea instancesTextArea = new TextArea();
@@ -96,20 +98,20 @@ public class DesktopApp extends Application {
             }
         });
 
-        vbox.getChildren().addAll(containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
-
         Platform.runLater(() -> {
             try {
                 String instances = getAllInstances();
                 int runningCount = getRunningInstancesCount();
-                runningInstancesField.setText("Running instances: " + runningCount);
                 instancesTextArea.setText(instances);
+                runningInstancesField.setText("Running instances: " + runningCount);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
         });
 
-        Scene scene = new Scene(vbox, 800, 600);
+        vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, refreshInstancesButton, new ScrollPane(instancesTextArea), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
+
+        Scene scene = new Scene(vbox, 800, 600, Color.LIGHTBLUE);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
