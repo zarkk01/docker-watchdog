@@ -242,15 +242,5 @@ public class ExecutorThread implements Runnable {
                 System.out.println("Invalid choice. Please try again.");
         }
     }
-
-//    // Method to receive a command from the GUI
-//    public void receiveCommand(int command) {
-//        try {
-//            // Put the received command into the queue
-//            commandQueue.put(command);
-//        } catch (InterruptedException e) {
-//            Thread.currentThread().interrupt();
-//        }
-//    }
 }
 
