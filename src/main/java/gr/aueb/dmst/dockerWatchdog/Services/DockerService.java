@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DockerService {
@@ -35,7 +36,14 @@ public class DockerService {
         return instanceRepository.findAllByMaxMetricId();
     }
 
-    public List<Metric> getMetrics(Timestamp startDate, Timestamp endDate){
-        return metricsRepository.findAllByDatetimeBetween(startDate, endDate);
+    public List<Long> getMetrics(Timestamp chosenDate){
+        long manyMetric = metricsRepository.countByDatetimeBefore(chosenDate);
+        Optional<Metric> metricOptional = metricsRepository.findFirstByDatetimeBeforeOrderByDatetimeDesc(chosenDate);
+        int wantedId = 0;
+        if(metricOptional.isPresent()){
+            wantedId =  metricOptional.get().getId();
+        }
+        long runningContainers = instanceRepository.countByMetricIdAndStatusRunning(wantedId);
+        return List.of(manyMetric, runningContainers);
     }
 }

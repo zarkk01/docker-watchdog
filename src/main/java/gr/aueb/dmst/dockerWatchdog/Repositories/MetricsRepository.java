@@ -7,10 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 public interface MetricsRepository extends JpaRepository<Metric, Integer> {
 
-    @Query("SELECT m FROM Metric m WHERE m.datetime BETWEEN :startDate AND :endDate")
-    List<Metric> findAllByDatetimeBetween(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+    @Query("SELECT count(m) FROM Metric m WHERE m.datetime < :datetime")
+    long countByDatetimeBefore(@Param("datetime") Timestamp datetime);
+
+    Optional<Metric> findFirstByDatetimeBeforeOrderByDatetimeDesc(Timestamp datetime);
 
 }

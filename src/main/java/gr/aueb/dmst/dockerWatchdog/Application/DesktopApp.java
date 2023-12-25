@@ -21,6 +21,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DesktopApp extends Application {
 
@@ -91,20 +93,16 @@ public class DesktopApp extends Application {
         autoRefresh.setCycleCount(Timeline.INDEFINITE);
         autoRefresh.play();
 
-        Label startDateLabel = new Label("Start Date:");
-        TextField startDateField = new TextField();
+        Label dateLabel = new Label("Date:");
+        TextField dateField = new TextField();
 
-        Label endDateLabel = new Label("End Date:");
-        TextField endDateField = new TextField();
-
-        Button showMetricsButton = new Button("Show Metrics between dates");
+        Button showMetricsButton = new Button("Show how many metrics had done " +
+                "and how many containers was running in the date you choose");
         showMetricsButton.setOnAction(e -> {
             try {
-                String startDateString = startDateField.getText();
-                String endDateString = endDateField.getText();
-                Timestamp startDate = Timestamp.valueOf(startDateString);
-                Timestamp endDate = Timestamp.valueOf(endDateString);
-                String metrics = getAllMetrics(startDate, endDate);
+                String dateString = dateField.getText();
+                Timestamp date = Timestamp.valueOf(dateString);
+                String metrics = getMetricsAndRunningCon(date);
                 metricsTextArea.setText(metrics);
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -123,7 +121,7 @@ public class DesktopApp extends Application {
             }
         });
 
-        vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, new ScrollPane(instancesListView), startDateLabel, startDateField, endDateLabel, endDateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
+        vbox.getChildren().addAll(containerIdLabel,containerIdField, startButton, stopButton, new ScrollPane(instancesListView), dateLabel, dateField, showMetricsButton, new ScrollPane(metricsTextArea), runningInstancesField);
 
         Scene scene = new Scene(vbox, 800, 600);
         primaryStage.setScene(scene);
@@ -166,25 +164,29 @@ public class DesktopApp extends Application {
         return formattedResponse.toString();
     }
 
-    public String getAllMetrics(Timestamp startDate, Timestamp endDate) throws Exception {
+    public String getMetricsAndRunningCon(Timestamp chosenDate) throws Exception {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd%20HH:mm:ss");
-        String startDateString = dateFormat.format(startDate);
-        String endDateString = dateFormat.format(endDate);
+        String chosenDateString = dateFormat.format(chosenDate);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/metrics?startDate=" + startDateString + "&endDate=" + endDateString))
+                .uri(new URI("http://localhost:8080/api/containers/metrics?chosenDate=" + chosenDateString))
                 .GET()
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Parse the response body into a List<Long>
         JSONArray jsonArray = new JSONArray(response.body());
-        StringBuilder formattedResponse = new StringBuilder();
+        List<Long> metricsList = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            formattedResponse.append(jsonObject.toString(4)); // 4 is the number of spaces for indentation
-            formattedResponse.append("\n");
+            metricsList.add(jsonArray.getLong(i));
         }
-        return formattedResponse.toString();
+
+        // Convert the List<Long> into a JSON object
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("How many metrics were be done then ", metricsList.get(0));
+        jsonObject.put("How many containers were running then ", metricsList.get(1));
+
+        return jsonObject.toString(4); // 4 is the number of spaces for indentation
     }
 
     public int getRunningInstancesCount() throws Exception {

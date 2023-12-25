@@ -40,9 +40,8 @@ public class DockerController {
     }
 
     @GetMapping("/metrics")
-    public List<Metric> getMetrics(@RequestParam("startDate") String startDateString, @RequestParam("endDate") String endDateString) {
-        Timestamp startDate = Timestamp.valueOf(startDateString);
-        Timestamp endDate = Timestamp.valueOf(endDateString);
-        return dockerService.getMetrics(startDate, endDate);
+    public List<Long> getMetrics(@RequestParam("chosenDate") String chosenDateString) {
+        Timestamp chosenDate = Timestamp.valueOf(chosenDateString);
+        return dockerService.getMetrics(chosenDate);
     }
 }
