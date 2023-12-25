@@ -1,8 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Services;
 
-import com.github.dockerjava.api.DockerClient;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
-import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import gr.aueb.dmst.dockerWatchdog.Repositories.InstanceRepository;

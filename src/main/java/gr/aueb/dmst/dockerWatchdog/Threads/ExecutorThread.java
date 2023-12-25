@@ -22,19 +22,19 @@ public class ExecutorThread implements Runnable {
     // Initiate and create scanner
     Scanner scanner = new Scanner(System.in);
 
-    private final BlockingQueue<Integer> commandQueue = new LinkedBlockingQueue<>();
+//    private final BlockingQueue<Integer> commandQueue = new LinkedBlockingQueue<>();
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                // Wait for a command from the GUI
-                int choice = commandQueue.take();
-                doDependsOnChoice(choice);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+//        while (true) {
+//            try {
+//                // Wait for a command from the GUI
+//                int choice = commandQueue.take();
+//                doDependsOnChoice(choice);
+//            } catch (InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
 
     }
 
@@ -134,97 +134,21 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to rename a container
-   /* public void renameContainer() {
-
-        int c = 0;
-
-        // Show the available containers to rename
-        System.out.println("\nAvailable containers to rename : ");
-        for (int i = 1; i < Main.dockerClient.listContainersCmd().withShowAll(true).exec().size() + 1; i++) {
-            Container curIns = Main.dockerClient.listContainersCmd().withShowAll(true).exec().get(i - 1);
-            System.out.println(i + "." + " NAME = " + curIns.getNames()[0].substring(1) + " , ID = " + curIns.getId().substring(0, 8) + "...");
-            c++;
-        }
-
-        if (c == 0) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // If there are no containers to rename
-            System.out.println("\nThere are no containers to rename");
-            return;
-        }
-        try {
-            // Get the container number from the user
-            System.out.print("\nEnter the number of the container to rename: ");
-            int containerNumber = scanner.nextInt() - 1;
-            scanner.nextLine();
-            // Check if the number is valid
-            if (containerNumber < 0 || containerNumber >= Main.dockerClient.listContainersCmd().withShowAll(true).exec().size()) {
-                System.out.println("\033[0;31m" + "Invalid container number. Please enter a valid number." + "\033[0m");
-                return;
-            }
-
-            // Retrieve the Container object corresponding to the containerName
-            Container container = getContainerByNumber(containerNumber);
-
-            System.out.print("Enter the new name for the container: ");
-            String newName = scanner.nextLine();
-            try {
-                // Rename the specified container
-                Main.dockerClient.renameContainerCmd(container.getId())
-                        .withName(newName)
-                        .exec();
-                System.out.println("Container renamed successfully.");
-            } catch (ConflictException e) {
-                // If the container is already running
-                System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("Please enter a valid integer.");
-            scanner.next();
-        }
-    }*/
+   public void renameContainer(String containerId, String newName) {
+       try {
+           // Rename the specified container
+           Main.dockerClient.renameContainerCmd(containerId)
+                   .withName(newName)
+                   .exec();
+           System.out.println("Container renamed successfully.");
+       } catch (ConflictException e) {
+           // If there is a container with the same name
+           System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+       }
+   }
 
     // Method to run a container
-    public void runContainer() {
-        String imageName = null;
-        try {
-
-            // Get the image name from the user
-            System.out.print("Enter the name and the version of the image (ex format: nginx:latest )." +
-                    "\nDon't worry if you have not pulled it, I will do it for you :) : ");
-            scanner.nextLine();
-            imageName = scanner.nextLine();
-
-            // Get the source port from the user
-            Integer sourcePort = null;
-            while (sourcePort == null || sourcePort < 1 || sourcePort > 65535) {
-                System.out.print("Enter the source port number (1-65535) or 0 if you want no specific ports: ");
-                try {
-                    sourcePort = scanner.nextInt();
-                    if (sourcePort == 0) {
-                        throw new NoPortException();
-                    }
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                    scanner.next();
-                }
-            }
-
-            // Get the target port from the user
-            Integer targetPort = null;
-            while (targetPort == null || targetPort < 0 || targetPort > 65535) {
-                System.out.print("Enter the target port number (1-65535): ");
-                try {
-                    targetPort = scanner.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                    scanner.next();
-                }
-            }
+    public void runContainer(String imageName,Integer sourcePort,Integer targetPort) throws InterruptedException {
 
             Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
 
@@ -247,48 +171,10 @@ public class ExecutorThread implements Runnable {
 
             // Print the container ID
             System.out.println("Container started and running successfully. Container ID: " + container.getId() + "on port: " + sourcePort + ":" + targetPort);
-        } catch (NoPortException e) {
-            try {
-                CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName).exec();
-
-                // Pull the specified Docker image
-                Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
-
-                // Create and start a container based on the pulled image
-                Main.dockerClient.startContainerCmd(container.getId()).exec();
-
-                // Print the container ID
-                System.out.println("Container started and running successfully. Container ID: " + container.getId());
-            } catch (InterruptedException a) {
-                System.out.println("Image pull operation was interrupted.");
-                e.printStackTrace();
-            } catch (NotFoundException a) {
-                System.out.println("The image you are trying to pull does not exist");
-            } catch (Exception a) {
-                System.err.println("Error pulling the image: " + e.getMessage());
-                e.printStackTrace();
-            }
-        } catch (InterruptedException a) {
-            System.out.println("Image pull operation was interrupted.");
-            a.printStackTrace();
-        } catch (NotFoundException a) {
-            System.err.println("The image you are trying to pull does not exist");
-        } catch (InternalServerErrorException a) {
-            System.err.println("Port already in use try using another source port");
-        } catch (Exception a) {
-            System.err.println("Error pulling the image: " + a.getMessage());
-            a.printStackTrace();
-        }
-
     }
 
     // Method to pull an image
-    public void pullImage() {
-
-        // Get the image name from the user
-        System.out.print("Enter the name and the version of the image to pull (ex format: nginx:latest ): ");
-        scanner.nextLine();
-        String imageName = scanner.nextLine();
+    public void pullImage(String imageName) {
 
         // Pull the specified Docker image
         try {
@@ -303,24 +189,6 @@ public class ExecutorThread implements Runnable {
             System.err.println("Error pulling the image: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    // Method to get a Container object based on the container list number
-    private Container getContainerByNumber(int containerNumber) {
-        List < Container > containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
-
-        return containers.get(containerNumber);
-    }
-    private Container getContainerById(String containerId) {
-        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
-
-        // Iterate through the list of containers and find the one with the matching ID
-        for (Container container : containers) {
-            if (container.getId().equals(containerId)) {
-                return container;
-            }
-        }
-        return null;
     }
 
     // Method to execute actions based on the choice received from the GUI
@@ -358,12 +226,15 @@ public class ExecutorThread implements Runnable {
 
             case 6:
                 // Run Container
-                runContainer();
+                try {
+                    runContainer("imageName", 22, 22);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
-
             case 7:
                 // Pull Image
-                pullImage();
+                pullImage("imageName");
                 break;
 
             default:
@@ -372,14 +243,14 @@ public class ExecutorThread implements Runnable {
         }
     }
 
-    // Method to receive a command from the GUI
-    public void receiveCommand(int command) {
-        try {
-            // Put the received command into the queue
-            commandQueue.put(command);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-    }
+//    // Method to receive a command from the GUI
+//    public void receiveCommand(int command) {
+//        try {
+//            // Put the received command into the queue
+//            commandQueue.put(command);
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//        }
+//    }
 }
 
