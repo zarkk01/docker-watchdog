@@ -8,8 +8,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
 
 public class HelloApplication extends Application {
+    public static HttpClient client;
+    public HelloApplication() {
+        client = HttpClient.newHttpClient();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/containersScene.fxml"));
