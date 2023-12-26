@@ -49,7 +49,7 @@
    <top>
       <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker WatchDog" wrappingWidth="202.21630859375">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="202.21630859375">
                <font>
                   <Font size="22.0" />
                </font>

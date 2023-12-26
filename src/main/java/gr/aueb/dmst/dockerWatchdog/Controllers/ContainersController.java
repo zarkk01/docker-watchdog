@@ -1,17 +1,19 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.InstanceScene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -20,43 +22,53 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.HelloApplication.client;
 
 public class ContainersController implements Initializable {
     @FXML
     public TableView instancesTableView;
-
     @FXML
-    private Label containerName;
+    public TableColumn<InstanceScene, String> idColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> nameColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> imageColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> statusColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> cpuUsageColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> pidsColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> memoryUsageColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> blockOColumn;
+    @FXML
+    public TableColumn<InstanceScene, String> blockIColumn;
+
     private Stage stage;
     private Parent root;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            List<InstanceScene> instances = getAllInstances();
-
-            // Create TableColumn instances
-            TableColumn<InstanceScene, String> idColumn = new TableColumn<>("ID");
             idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-            TableColumn<InstanceScene, String> nameColumn = new TableColumn<>("Name");
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-            TableColumn<InstanceScene, String> statusColumn = new TableColumn<>("Status");
+            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+            cpuUsageColumn.setCellValueFactory(new PropertyValueFactory<>("cpuUsage"));
+            pidsColumn.setCellValueFactory(new PropertyValueFactory<>("pids"));
+            memoryUsageColumn.setCellValueFactory(new PropertyValueFactory<>("memoryUsage"));
+            blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
+            blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
 
-            // Add TableColumn instances to the TableView
-            instancesTableView.getColumns().add(idColumn);
-            instancesTableView.getColumns().add(nameColumn);
-            instancesTableView.getColumns().add(statusColumn);
-
-            // Add the instances to the TableView
+            List<InstanceScene> instances = getAllInstances();
             instancesTableView.getItems().addAll(instances);
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -81,17 +93,14 @@ public class ContainersController implements Initializable {
         changeScene(actionEvent, "statisticsScene.fxml");
     }
 
-    public List<InstanceScene> parseJsonToContainerInstances(String json) {
-        JSONArray jsonArray = new JSONArray(json);
-        List<InstanceScene> instances = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String id = jsonObject.getString("id");
-            String name = jsonObject.getString("name");
-            String status = jsonObject.getString("status");
-            instances.add(new InstanceScene(id, name, status));
+    public void refreshInstances(){
+        try {
+            List<InstanceScene> instances = getAllInstances();
+            instancesTableView.getItems().clear();
+            instancesTableView.getItems().addAll(instances);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return instances;
     }
 
     public List<InstanceScene> getAllInstances() throws Exception {
@@ -106,8 +115,14 @@ public class ContainersController implements Initializable {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String id = jsonObject.getString("id");
             String name = jsonObject.getString("name");
+            String image = jsonObject.getString("image");
             String status = jsonObject.getString("status");
-            instances.add(new InstanceScene(id, name, status));
+            Long memoryUsage = jsonObject.getLong("memoryUsage");
+            Long pids = jsonObject.getLong("pids");
+            Double cpuUsage = jsonObject.getDouble("cpuUsage");
+            Double blockI = jsonObject.getDouble("blockI");
+            Double blockO = jsonObject.getDouble("blockO");
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO));
         }
         return instances;
     }
