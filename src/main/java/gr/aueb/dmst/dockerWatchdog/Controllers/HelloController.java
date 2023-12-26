@@ -50,14 +50,13 @@ public class HelloController {
     }
 
     private void loadPage(String page) {
-         Parent root = null;
+        Parent root = null;
 
         try {
-            root = FXMLLoader.load(getClass().getResource(page+".fxml"));
+            root = FXMLLoader.load(getClass().getResource("/" + page + ".fxml"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         borderPane.setCenter(root);
     }
-
 }
