@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -43,6 +44,7 @@
                   <Font size="21.0" />
                </font>
             </Text>
+            <ListView fx:id="myContainers" layoutX="137.0" layoutY="86.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: blue;" />
          </children>
       </AnchorPane>
    </center>

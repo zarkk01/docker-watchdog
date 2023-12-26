@@ -11,6 +11,8 @@ import java.io.IOException;
 
 public class ContainersController {
 
+
+
     private Stage stage;
     private Parent root;
 
@@ -22,7 +24,7 @@ public class ContainersController {
     }
 
     public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "ImagesScene.fxml");
+        changeScene(actionEvent, "imagesScene.fxml");
     }
 
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
