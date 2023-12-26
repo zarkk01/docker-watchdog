@@ -13,6 +13,7 @@ public class HelloApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/containersScene.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 920, 540);
         stage.setScene(scene);
+        stage.setTitle("Docker WatchDog");
         stage.show();
     }
 
