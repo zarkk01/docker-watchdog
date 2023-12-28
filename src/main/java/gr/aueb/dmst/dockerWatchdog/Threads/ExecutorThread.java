@@ -123,7 +123,7 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to rename a container
-   public void renameContainer(String containerId, String newName) {
+   public static void renameContainer(String containerId, String newName) {
        try {
            // Rename the specified container
            Main.dockerClient.renameContainerCmd(containerId)

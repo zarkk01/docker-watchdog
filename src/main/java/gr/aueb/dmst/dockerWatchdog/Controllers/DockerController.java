@@ -36,9 +36,14 @@ public class DockerController {
 
     @PostMapping("/{containerId}/delete")
     public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId){
-        System.out.println("hey");
         dockerService.deleteContainer(containerId);
         return ResponseEntity.ok(("Container " + containerId + " deleted"));
+    }
+
+    @PostMapping("/{containerId}/rename")
+    public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId,@RequestParam("newName") String newName){
+        dockerService.renameContainer(containerId,newName);
+        return ResponseEntity.ok(("Container " + containerId + " renamed"));
     }
 
     @GetMapping("/instances")

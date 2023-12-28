@@ -34,6 +34,9 @@ public class DockerService {
         ExecutorThread.removeContainer(containerId);
     }
 
+    public void renameContainer(String containerId, String newName){
+        ExecutorThread.renameContainer(containerId,newName);
+    }
     public List<Instance> getAllInstancesMaxId() {
         return instanceRepository.findAllByMaxMetricId();
     }
