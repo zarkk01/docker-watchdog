@@ -71,6 +71,9 @@ public class ContainersController implements Initializable {
     @FXML
     public Label runningInstancesLabel;
 
+    @FXML
+    public CheckBox runningInstancesCheckbox;
+
     private Stage stage;
     private Parent root;
 
@@ -202,27 +205,13 @@ public class ContainersController implements Initializable {
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
+
+            runningInstancesCheckbox.setOnAction(event -> {
+                refreshInstances();
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-
-    private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/stop"))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
@@ -244,11 +233,37 @@ public class ContainersController implements Initializable {
         changeScene(actionEvent, "statisticsScene.fxml");
     }
 
+    private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/stop"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     public void refreshInstances(){
         try {
             List<InstanceScene> instances = getAllInstances();
             instancesTableView.getItems().clear();
-            instancesTableView.getItems().addAll(instances);
+            for(InstanceScene instance : instances) {
+                if (runningInstancesCheckbox.isSelected()) {
+                    if (instance.getStatus().equals("running")) {
+                        instancesTableView.getItems().add(instance);
+                    }
+                } else {
+                    instancesTableView.getItems().add(instance);
+                }
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

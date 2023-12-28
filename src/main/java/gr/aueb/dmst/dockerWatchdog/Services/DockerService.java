@@ -45,6 +45,12 @@ public class DockerService {
     public void unpauseContainer(String containerId){
         ExecutorThread.unpauseContainer(containerId);
     }
+
+    public void restartContainer(String containerId){
+        ExecutorThread.stopContainer(containerId);
+        ExecutorThread.startContainer(containerId);
+    }
+
     public List<Instance> getAllInstancesMaxId() {
         return instanceRepository.findAllByMaxMetricId();
     }

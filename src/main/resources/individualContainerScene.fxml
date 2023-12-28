@@ -44,22 +44,26 @@
                         <Font size="21.0" />
                     </font>
                 </Text>
-                <VBox fx:id="infoCard" layoutX="154.0" layoutY="103.0" prefHeight="143.0" prefWidth="333.0" spacing="10">
-                    <Label fx:id="containerIdLabel" prefHeight="17.0" prefWidth="332.0">
+                <VBox fx:id="infoCard" layoutX="183.0" layoutY="78.0" prefHeight="472.0" prefWidth="333.0" spacing="10">
+                    <Label fx:id="containerIdLabel" prefHeight="17.0" prefWidth="332.0" text="id">
                   <font>
                      <Font size="11.0" />
                   </font></Label>
-                    <Label fx:id="containerNameLabel" prefHeight="17.0" prefWidth="298.0">
+                    <Label fx:id="containerNameLabel" prefHeight="21.0" prefWidth="298.0" text="name">
                   <font>
                      <Font size="11.0" />
                   </font></Label>
-                    <Label fx:id="containerStatusLabel" prefHeight="17.0" prefWidth="332.0">
+               <Label fx:id="containerImageLabel" prefHeight="17.0" prefWidth="371.0" text="image" />
+                    <Label fx:id="containerStatusLabel" prefHeight="17.0" prefWidth="332.0" text="status">
                   <font>
                      <Font size="11.0" />
                   </font></Label>
-                    <Button fx:id="renameButton" onAction="#renameContainer" text="Rename" />
-               <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" text="Pause" />
                <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" text="Unpause" />
+               <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" text="Stop" />
+               <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" text="Start" />
+               <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" text="Restart" />
+               <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" text="Pause" />
+                    <Button fx:id="renameButton" onAction="#renameContainer" text="Rename" />
                     <Button fx:id="removeButton" onAction="#removeContainer" text="Remove" />
                 </VBox>
             </children>

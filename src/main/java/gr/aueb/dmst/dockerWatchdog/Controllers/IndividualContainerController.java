@@ -37,6 +37,8 @@ public class IndividualContainerController {
     private Label containerNameLabel;
     @FXML
     private Label containerStatusLabel;
+    @FXML
+    private Label containerImageLabel;
 
     private InstanceScene instanceScene;
     private Stage stage;
@@ -47,17 +49,6 @@ public class IndividualContainerController {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
-    }
-
-    public void removeContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/delete"))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        changeScene(actionEvent, "containersScene.fxml");
     }
 
     public void changeToContainersScene(ActionEvent actionEvent) throws IOException {
@@ -82,10 +73,22 @@ public class IndividualContainerController {
         containerIdLabel.setText("ID: " + instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
+        containerImageLabel.setText("Image: " + instance.getImage());
         infoCard.setVisible(true);
     }
 
-    public void pauseContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
+    public void removeContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/delete"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        changeScene(actionEvent, "containersScene.fxml");
+    }
+
+    public void pauseContainer() throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/pause"))
                 .POST(HttpRequest.BodyPublishers.noBody())
@@ -107,7 +110,7 @@ public class IndividualContainerController {
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
 
-    public void renameContainer(ActionEvent actionEvent) {
+    public void renameContainer() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Rename Container");
         dialog.setHeaderText("Enter the new name for the container:");
@@ -135,5 +138,37 @@ public class IndividualContainerController {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void startContainer() throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/start"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.instanceScene.setStatus("running");
+        containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
+    }
+
+    public void stopContainer() throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/stop"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.instanceScene.setStatus("exited");
+        containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
+    }
+
+    public void restartContainer() throws IOException, InterruptedException, URISyntaxException {
+        System.out.println("Restarting the container with ID " + this.instanceScene.getId() + "...");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/restart"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

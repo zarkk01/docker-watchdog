@@ -34,6 +34,12 @@ public class DockerController {
         return ResponseEntity.ok("Container " + containerId + " stopped");
     }
 
+    @PostMapping("/{containerId}/restart")
+    public ResponseEntity<String> restartContainer(@PathVariable("containerId") String containerId) {
+        dockerService.restartContainer(containerId);
+        return ResponseEntity.ok("Container " + containerId + " restarted");
+    }
+
     @PostMapping("/{containerId}/delete")
     public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId){
         dockerService.deleteContainer(containerId);
