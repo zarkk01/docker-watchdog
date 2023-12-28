@@ -147,6 +147,26 @@ public class ContainersController implements Initializable {
 
             stopButtonColumn.setCellFactory(stopCellFactory);
 
+            instancesTableView.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!instancesTableView.getSelectionModel().isEmpty())) {
+                    InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
+                    System.out.println("Selected instance id: " + selectedInstance.getId());
+                }
+            });
+
+            instancesTableView.setRowFactory(tv -> {
+                TableRow<InstanceScene> row = new TableRow<>();
+                row.setOnMouseEntered(event -> {
+                    row.setScaleX(1.03);
+                    row.setScaleY(1.03);
+                });
+                row.setOnMouseExited(event -> {
+                    row.setScaleX(1.0);
+                    row.setScaleY(1.0);
+                });
+                return row;
+            });
+
             refreshInstances();
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
