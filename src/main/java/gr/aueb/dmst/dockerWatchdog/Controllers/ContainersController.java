@@ -9,8 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -20,8 +19,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.HelloApplication.client;
@@ -47,6 +50,15 @@ public class ContainersController implements Initializable {
     public TableColumn<InstanceScene, String> blockOColumn;
     @FXML
     public TableColumn<InstanceScene, String> blockIColumn;
+
+    @FXML
+    public TextField datetimeTextField;
+    @FXML
+    public Button datetimeButton;
+    @FXML
+    public Label metricsDoneLabel;
+    @FXML
+    public Label runningInstancesLabel;
 
     private Stage stage;
     private Parent root;
@@ -124,5 +136,28 @@ public class ContainersController implements Initializable {
             instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO));
         }
         return instances;
+    }
+
+    public void showDataThen(ActionEvent e) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            Date chosenDate = dateFormat.parse(datetimeTextField.getText());
+            String chosenDateString = URLEncoder.encode(dateFormat.format(chosenDate), "UTF-8");
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/containers/metrics?chosenDate=" + chosenDateString))
+                    .GET()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body();
+            String metricsDone = responseBody.split(",")[0].replaceAll("[^0-9]", "");
+            String runningInstances = responseBody.split(",")[1].replaceAll("[^0-9]", "");
+            metricsDoneLabel.setText("How many metrics were be done then: " + metricsDone);
+            runningInstancesLabel.setText("How many containers were running then: " + runningInstances);
+        } catch (ParseException pe) {
+            System.out.println("Error parsing date: " + pe.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error occurred: " + ex.getMessage());
+        }
     }
 }
