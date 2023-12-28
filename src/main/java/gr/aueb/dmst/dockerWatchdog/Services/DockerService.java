@@ -37,6 +37,14 @@ public class DockerService {
     public void renameContainer(String containerId, String newName){
         ExecutorThread.renameContainer(containerId,newName);
     }
+
+    public void pauseContainer(String containerId){
+        ExecutorThread.pauseContainer(containerId);
+    }
+
+    public void unpauseContainer(String containerId){
+        ExecutorThread.unpauseContainer(containerId);
+    }
     public List<Instance> getAllInstancesMaxId() {
         return instanceRepository.findAllByMaxMetricId();
     }

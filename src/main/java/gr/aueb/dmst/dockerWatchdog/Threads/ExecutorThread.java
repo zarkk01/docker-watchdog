@@ -85,7 +85,7 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to pause a container
-    public void pauseContainer(String containerId) {
+    public static void pauseContainer(String containerId) {
         try {
             // Pause the specified container
             System.out.println("Pausing the container with ID " + containerId + "...");
@@ -104,7 +104,7 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to unpause a container
-    public void unpauseContainer(String containerId) {
+    public static void unpauseContainer(String containerId) {
         try {
             // Unpause the specified container
             System.out.println("Unpausing the container with ID " + containerId + "...");

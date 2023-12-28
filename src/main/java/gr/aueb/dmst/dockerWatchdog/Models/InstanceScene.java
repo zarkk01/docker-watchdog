@@ -76,6 +76,9 @@ public class InstanceScene {
     public void setName(String name) {
         this.name = name;
     }
+    public void setStatus(String status) {
+        this.status = status;
+    }
     public void setBlockO(Double blockO) {
         this.blockO = blockO;
     }

@@ -85,6 +85,28 @@ public class IndividualContainerController {
         infoCard.setVisible(true);
     }
 
+    public void pauseContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/pause"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.instanceScene.setStatus("Paused");
+        containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
+    }
+
+    public void unpauseContainer() throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/unpause"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+        this.instanceScene.setStatus("Unpaused");
+        containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
+    }
+
     public void renameContainer(ActionEvent actionEvent) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Rename Container");

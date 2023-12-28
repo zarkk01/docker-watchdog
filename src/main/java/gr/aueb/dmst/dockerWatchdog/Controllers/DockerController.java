@@ -41,9 +41,21 @@ public class DockerController {
     }
 
     @PostMapping("/{containerId}/rename")
-    public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId,@RequestParam("newName") String newName){
+    public ResponseEntity<String> renameContainer(@PathVariable("containerId") String containerId,@RequestParam("newName") String newName){
         dockerService.renameContainer(containerId,newName);
         return ResponseEntity.ok(("Container " + containerId + " renamed"));
+    }
+
+    @PostMapping("/{containerId}/pause")
+    public ResponseEntity<String> pauseContainer(@PathVariable("containerId") String containerId){
+        dockerService.pauseContainer(containerId);
+        return ResponseEntity.ok(("Container " + containerId + "paused"));
+    }
+
+    @PostMapping("/{containerId}/unpause")
+    public ResponseEntity<String> unpauseContainer(@PathVariable("containerId") String containerId){
+        dockerService.unpauseContainer(containerId);
+        return ResponseEntity.ok(("Container " + containerId + "unpaused"));
     }
 
     @GetMapping("/instances")
