@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.MyImage;
 import gr.aueb.dmst.dockerWatchdog.MyInstance;
 
 import java.sql.*;
@@ -32,6 +33,10 @@ public class DatabaseThread implements Runnable {
                 String dropMetricsTable = "DROP TABLE IF EXISTS Metrics";
                 PreparedStatement dropMetricsStmt = conn.prepareStatement(dropMetricsTable);
                 dropMetricsStmt.execute();
+
+                String dropImagesTable = "DROP TABLE IF EXISTS Images";
+                PreparedStatement dropImagesStmt = conn.prepareStatement(dropImagesTable);
+                dropImagesStmt.execute();
 
                 firstTime = false;
             }
@@ -94,7 +99,30 @@ public class DatabaseThread implements Runnable {
                 upsertInstanceStmt.setDouble(9, instance.getBlockO());
                 upsertInstanceStmt.setInt(10, metricId);
                 upsertInstanceStmt.executeUpdate();
+            }
+            // Create the Instances table if it doesn't exist
+            String createImagesTable = "CREATE TABLE IF NOT EXISTS Images (" +
+                    "id VARCHAR(255), " +
+                    "name VARCHAR(255), " +
+                    "status VARCHAR(255), " +
+                    "size LONG, " +
+                    "PRIMARY KEY(id))";
+            PreparedStatement createImagesStmt = conn.prepareStatement(createImagesTable);
+            createImagesStmt.execute();
 
+            // Iterate over the images
+            for (MyImage image : Main.myImagesList) {
+                // Insert or update the images in the images table
+                String upsertImage = "INSERT INTO Images (id, name, size, status) " +
+                        "VALUES (?, ?, ?,?) " +
+                        "ON DUPLICATE KEY UPDATE id = VALUES(id),name = VALUES(name), size = VALUES(size), " +
+                        "status = VALUES(status)";
+                PreparedStatement upsertImageStmt = conn.prepareStatement(upsertImage);
+                upsertImageStmt.setString(1, image.getId());
+                upsertImageStmt.setString(2, image.getName());
+                upsertImageStmt.setLong(3, image.getSize());
+                upsertImageStmt.setString(4, image.getStatus());
+                upsertImageStmt.executeUpdate();
             }
             // Close the connection
             conn.close();
@@ -145,6 +173,70 @@ public class DatabaseThread implements Runnable {
             e.printStackTrace();
         } catch (InterruptedException e1) {
             e1.printStackTrace();
+        }
+    }
+
+    public static void keepTrackOfImages() throws SQLException {
+        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        try{
+            for (MyImage image : Main.myImagesList) {
+                // Insert or update the images in the images table
+                String upsertImage = "INSERT INTO Images (id, name, size, status) " +
+                        "VALUES (?, ?, ?,?) " +
+                        "ON DUPLICATE KEY UPDATE id = VALUES(id),name = VALUES(name), size = VALUES(size), " +
+                        "status = VALUES(status)";
+                PreparedStatement upsertImageStmt = conn.prepareStatement(upsertImage);
+                upsertImageStmt.setString(1, image.getId());
+                upsertImageStmt.setString(2, image.getName());
+                upsertImageStmt.setLong(3, image.getSize());
+                upsertImageStmt.setString(4, image.getStatus());
+                upsertImageStmt.executeUpdate();
+            }
+            conn.close();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addImage(MyImage image) {
+        try {
+            // Establish a connection
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Insert or update the image in the Images table
+            String upsertImage = "INSERT INTO Images (id, name, size, status) " +
+                    "VALUES (?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE name = VALUES(name), size = VALUES(size), " +
+                    "status = VALUES(status)";
+            PreparedStatement upsertImageStmt = conn.prepareStatement(upsertImage);
+            upsertImageStmt.setString(1, image.getId());
+            upsertImageStmt.setString(2, image.getName());
+            upsertImageStmt.setLong(3, image.getSize());
+            upsertImageStmt.setString(4, image.getStatus());
+            upsertImageStmt.executeUpdate();
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteImage(MyImage image) {
+        try {
+            // Establish a connection
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Delete the image from the Images table
+            String deleteImage = "DELETE FROM Images WHERE name = ?";
+            PreparedStatement deleteImageStmt = conn.prepareStatement(deleteImage);
+            deleteImageStmt.setString(1, image.getName());
+            deleteImageStmt.executeUpdate();
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -137,29 +137,25 @@ public class ExecutorThread implements Runnable {
    }
 
     // Method to run a container
-    public void runContainer(String imageName,Integer sourcePort,Integer targetPort) throws InterruptedException {
+    public static void runContainer(String imageName) throws InterruptedException {
 
             Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
 
-            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
-            Ports portBindings = new Ports();
-            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
+//            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
+//            Ports portBindings = new Ports();
+//            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
 
             CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
                     .withCmd("sleep", "infinity")
-                    .withExposedPorts(tcp22)
-                    .withPortBindings(portBindings)
+//                    .withExposedPorts(tcp22)
+//                    .withPortBindings(portBindings)
                     .exec();
 
             // Create and start a container based on the pulled image
             Main.dockerClient.startContainerCmd(container.getId()).exec();
 
-            // Calling liveMeasureForNewContainer for this container so start a callback for CPU,Memory etc
-            // for this container too
-            MonitorThread.liveMeasureForNewContainer(container.getId());
-
             // Print the container ID
-            System.out.println("Container started and running successfully. Container ID: " + container.getId() + "on port: " + sourcePort + ":" + targetPort);
+            System.out.println("Container started and running successfully. Container ID: " + container.getId());
     }
 
     // Method to pull an image

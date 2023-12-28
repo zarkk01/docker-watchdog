@@ -1,9 +1,11 @@
 package gr.aueb.dmst.dockerWatchdog.Services;
 
+import gr.aueb.dmst.dockerWatchdog.Models.Image;
+import gr.aueb.dmst.dockerWatchdog.Repositories.ImagesRepository;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
-import gr.aueb.dmst.dockerWatchdog.Repositories.InstanceRepository;
+import gr.aueb.dmst.dockerWatchdog.Repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,14 @@ import java.util.Optional;
 @Service
 public class DockerService {
 
-    private final InstanceRepository instanceRepository;
+    private final InstancesRepository instanceRepository;
     private final MetricsRepository metricsRepository;
+    private final ImagesRepository imagesRepository;
 
-    public DockerService(InstanceRepository instanceRepository, MetricsRepository metricsRepository) {
+    public DockerService(InstancesRepository instanceRepository, MetricsRepository metricsRepository, ImagesRepository imagesRepository) {
         this.instanceRepository = instanceRepository;
         this.metricsRepository = metricsRepository;
+        this.imagesRepository = imagesRepository;
     }
 
     public void startContainer(String containerId) {
@@ -64,5 +68,16 @@ public class DockerService {
         }
         long runningContainers = instanceRepository.countByMetricIdAndStatusRunning(wantedId);
         return List.of(manyMetric, runningContainers);
+    }
+
+    public List<Image> getAllImages() {
+        return imagesRepository.findAll();
+    }
+    public void createContainer(String imageName) {
+        try {
+            ExecutorThread.runContainer(imageName);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

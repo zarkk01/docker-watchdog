@@ -13,6 +13,7 @@ import gr.aueb.dmst.dockerWatchdog.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 
 import java.io.Closeable;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MonitorThread implements Runnable {
@@ -40,6 +41,11 @@ public class MonitorThread implements Runnable {
                 switch (eventType) {
                     case CONTAINER:
                         handleContainerEvent(eventAction, id,event);
+                        try {
+                            DatabaseThread.keepTrackOfImages();
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                         break;
                     case IMAGE:
                         handleImageEvent(eventAction, id,event);
@@ -163,17 +169,18 @@ public class MonitorThread implements Runnable {
                             getImageUsageStatus(image.getRepoTags().get(0))
                     );
                     Main.myImagesList.add(newImage);
+                    DatabaseThread.addImage(newImage);
                 }
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
                     Main.dbThread.start();
                 }
-
                 break;
             case "delete":
             case "untag":
-                MyImage imageToRemove = MyImage.getImageByName(imageName);
+                MyImage imageToRemove = MyImage.getImageByID(imageName);
                 if (imageToRemove != null) {
+                    DatabaseThread.deleteImage(imageToRemove);
                     Main.myImagesList.remove(imageToRemove);
                 }
                 if (!Main.dbThread.isAlive()) {

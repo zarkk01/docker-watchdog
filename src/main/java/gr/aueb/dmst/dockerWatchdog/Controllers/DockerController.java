@@ -1,6 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import gr.aueb.dmst.dockerWatchdog.Models.Metric;
+import gr.aueb.dmst.dockerWatchdog.Models.Image;
 import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/containers")
+@RequestMapping("/api")
 public class DockerController {
 
     private final DockerService dockerService;
@@ -22,54 +22,65 @@ public class DockerController {
         this.dockerService = dockerService;
     }
 
-    @PostMapping("/{containerId}/start")
+    @GetMapping("/images")
+    public List<Image> getAllImages() {
+        return dockerService.getAllImages();
+    }
+
+    @PostMapping("/images/create/{imageName}")
+    public ResponseEntity<String> createContainer(@PathVariable("imageName") String imageName) {
+        dockerService.createContainer(imageName);
+        return ResponseEntity.ok("Container created");
+    }
+
+    @PostMapping("/containers/{containerId}/start")
     public ResponseEntity<String> startContainer(@PathVariable("containerId") String containerId) {
         dockerService.startContainer(containerId);
         return ResponseEntity.ok("Container " + containerId + " started");
     }
 
-    @PostMapping("/{containerId}/stop")
+    @PostMapping("/containers/{containerId}/stop")
     public ResponseEntity<String> stopContainer(@PathVariable("containerId") String containerId) {
         dockerService.stopContainer(containerId);
         return ResponseEntity.ok("Container " + containerId + " stopped");
     }
 
-    @PostMapping("/{containerId}/restart")
+    @PostMapping("/containers/{containerId}/restart")
     public ResponseEntity<String> restartContainer(@PathVariable("containerId") String containerId) {
         dockerService.restartContainer(containerId);
         return ResponseEntity.ok("Container " + containerId + " restarted");
     }
 
-    @PostMapping("/{containerId}/delete")
+    @PostMapping("/containers/{containerId}/delete")
     public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId){
         dockerService.deleteContainer(containerId);
         return ResponseEntity.ok(("Container " + containerId + " deleted"));
     }
 
-    @PostMapping("/{containerId}/rename")
+    @PostMapping("/containers/{containerId}/rename")
     public ResponseEntity<String> renameContainer(@PathVariable("containerId") String containerId,@RequestParam("newName") String newName){
         dockerService.renameContainer(containerId,newName);
         return ResponseEntity.ok(("Container " + containerId + " renamed"));
     }
 
-    @PostMapping("/{containerId}/pause")
+    @PostMapping("/containers/{containerId}/pause")
     public ResponseEntity<String> pauseContainer(@PathVariable("containerId") String containerId){
         dockerService.pauseContainer(containerId);
         return ResponseEntity.ok(("Container " + containerId + "paused"));
     }
 
-    @PostMapping("/{containerId}/unpause")
+    @PostMapping("/containers/{containerId}/unpause")
     public ResponseEntity<String> unpauseContainer(@PathVariable("containerId") String containerId){
         dockerService.unpauseContainer(containerId);
         return ResponseEntity.ok(("Container " + containerId + "unpaused"));
     }
 
-    @GetMapping("/instances")
+    @GetMapping("/containers/instances")
     public List<Instance> getAllInstances() {
         return dockerService.getAllInstancesMaxId();
     }
 
-    @GetMapping("/metrics")
+    @GetMapping("/containers/metrics")
     public List<Long> getMetrics(@RequestParam("chosenDate") String chosenDateString) {
         Timestamp chosenDate = Timestamp.valueOf(chosenDateString);
         return dockerService.getMetrics(chosenDate);
