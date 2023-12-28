@@ -4,7 +4,6 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
-import gr.aueb.dmst.dockerWatchdog.Application.HelloApplication;
 import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
@@ -46,7 +45,7 @@ public class Main {
 
             new Thread(DatabaseThread::updateLiveMetcrics).start();
 
-            Application.launch(HelloApplication.class, args);
+            Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
             // Handle exceptions here

@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Models;
 
 public class InstanceScene {
     private String id;

@@ -1,6 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import gr.aueb.dmst.dockerWatchdog.InstanceScene;
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -12,22 +12,23 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static gr.aueb.dmst.dockerWatchdog.Application.HelloApplication.client;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 public class ContainersController implements Initializable {
     @FXML
@@ -50,6 +51,10 @@ public class ContainersController implements Initializable {
     public TableColumn<InstanceScene, String> blockOColumn;
     @FXML
     public TableColumn<InstanceScene, String> blockIColumn;
+    @FXML
+    private TableColumn<InstanceScene, Void> startButtonColumn;
+    @FXML
+    private TableColumn<InstanceScene, Void> stopButtonColumn;
 
     @FXML
     public TextField datetimeTextField;
@@ -62,6 +67,7 @@ public class ContainersController implements Initializable {
 
     private Stage stage;
     private Parent root;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -75,6 +81,72 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
 
+            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> startCellFactory = new Callback<>() {
+                @Override
+                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
+                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                        private final Button btn = new Button("Start");
+
+                        {
+                            btn.setOnAction((ActionEvent event) -> {
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                try {
+                                    startContainer(instance);
+                                } catch (IOException | InterruptedException | URISyntaxException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+
+            startButtonColumn.setCellFactory(startCellFactory);
+
+            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> stopCellFactory = new Callback<>() {
+                @Override
+                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
+                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                        private final Button btn = new Button("Stop");
+
+                        {
+                            btn.setOnAction((ActionEvent event) -> {
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                try {
+                                    stopContainer(instance);
+                                } catch (IOException | InterruptedException | URISyntaxException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+
+            stopButtonColumn.setCellFactory(stopCellFactory);
+
             refreshInstances();
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
@@ -83,6 +155,24 @@ public class ContainersController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/stop"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {

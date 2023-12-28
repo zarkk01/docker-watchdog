@@ -12,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="583.0" prefWidth="798.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="709.0" prefWidth="836.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
    <left>
-      <VBox prefHeight="400.0" prefWidth="126.0" style="-fx-background-color: #0D1824;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="514.0" prefWidth="125.0" style="-fx-background-color: #0D1824;" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Containers" textFill="WHITE">
                <font>
@@ -40,33 +40,35 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #14242B; -fx-border-color: #14242B;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="751.0" prefWidth="711.0" style="-fx-background-color: #14242B; -fx-border-color: #14242B;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" layoutX="183.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
+            <Text fill="WHITE" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
                <font>
                   <Font size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="instancesTableView" layoutX="6.0" layoutY="45.0" prefHeight="194.0" prefWidth="513.0">
+            <TableView fx:id="instancesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="694.0">
                <columns>
-                  <TableColumn fx:id="idColumn" prefWidth="53.0" text="ID" />
-                  <TableColumn fx:id="nameColumn" prefWidth="48.0" text="Name" />
-                  <TableColumn fx:id="imageColumn" prefWidth="43.0" text="Image" />
-                  <TableColumn fx:id="statusColumn" prefWidth="44.0" text="Status" />
-                  <TableColumn fx:id="cpuUsageColumn" prefWidth="73.0" text="CPU Usage" />
-                  <TableColumn fx:id="pidsColumn" prefWidth="30.0" text="PIDs" />
-                  <TableColumn fx:id="memoryUsageColumn" prefWidth="99.0" text="Memory Usage" />
-                  <TableColumn fx:id="blockOColumn" prefWidth="58.0" text="BlockO" />
-                  <TableColumn fx:id="blockIColumn" prefWidth="53.0" text="BlockI" />
+                  <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
+                  <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
+                  <TableColumn fx:id="imageColumn" minWidth="0.0" prefWidth="74.0" text="Image" />
+                  <TableColumn fx:id="statusColumn" prefWidth="67.0" text="Status" />
+                  <TableColumn fx:id="cpuUsageColumn" prefWidth="102.5" text="CPU Usage" />
+                  <TableColumn fx:id="pidsColumn" prefWidth="56.5" text="PIDs" />
+                  <TableColumn fx:id="memoryUsageColumn" prefWidth="89.0" text="Memory Usage" />
+                  <TableColumn fx:id="blockOColumn" prefWidth="56.5" text="BlockO" />
+                  <TableColumn fx:id="blockIColumn" prefWidth="48.5" text="BlockI" />
+                  <TableColumn fx:id="startButtonColumn" prefWidth="75.0" text="Start" />
+                  <TableColumn fx:id="stopButtonColumn" prefWidth="75.0" text="Stop" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <TextField fx:id="datetimeTextField" layoutX="14.0" layoutY="277.0" promptText="Write a datetime (ex. )" />
-            <Button fx:id="datetimeButton" layoutX="183.0" layoutY="278.0" mnemonicParsing="false" onAction="#showDataThen" text="Show data on this datetime " />
-            <Label fx:id="metricsDoneLabel" layoutX="14.0" layoutY="318.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="WHITE" />
-            <Label fx:id="runningInstancesLabel" layoutX="14.0" layoutY="341.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="WHITE" />
+            <TextField fx:id="datetimeTextField" layoutX="14.0" layoutY="476.0" promptText="Write a datetime (ex. )" />
+            <Button fx:id="datetimeButton" layoutX="183.0" layoutY="476.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" text="Show data " />
+            <Label fx:id="metricsDoneLabel" layoutX="15.0" layoutY="510.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="WHITE" />
+            <Label fx:id="runningInstancesLabel" layoutX="14.0" layoutY="527.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>
