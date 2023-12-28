@@ -72,7 +72,7 @@
 .table-row-cell .button {
     -fx-text-fill: white; /* White text color */
     -fx-font-size: 14px; /* Font size */
-    -fx-background-color: #808080; /* Grey color */
+    -fx-background-color: transparent; /* Grey color */
     -fx-background-radius: 5px; /* Curved edges */
     -fx-border-radius: 5px;
 }
@@ -85,13 +85,4 @@
     -fx-text-fill: white; /* Set the text color to white */
 }
 
-stateColumn.setCellValueFactory(cellData -> cellData.getValue().stateProperty());
-
-exampleTable.setRowFactory(tableView -> {
-    TableRow<Order> row = new TableRow<>();
-    return row;
-});
-
-row.pseudoClassStateChanged(PseudoClass.getPseudoClass("highlighted"),
-    newOrder.getCityPopulation() > 4e6);
 
