@@ -11,6 +11,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -27,6 +29,12 @@ import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+
+import javafx.scene.control.Button;
+
+
+import javax.swing.text.View;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
@@ -86,8 +94,13 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btn = new Button("Start");
+                        Image img = new Image(getClass().getResource("/play.png").toExternalForm());
+                        ImageView view = new ImageView(img);
 
                         {
+                            view.setFitHeight(20);
+                            view.setPreserveRatio(true);
+                            btn.setGraphic(view);
                             btn.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
@@ -120,7 +133,16 @@ public class ContainersController implements Initializable {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btn = new Button("Stop");
 
+                        //Creating a graphic (image)
+                        Image img = new Image(getClass().getResource("/stop.png").toExternalForm());
+                        ImageView view = new ImageView(img);
+
+
+
                         {
+                            view.setFitHeight(20);
+                            view.setPreserveRatio(true);
+                            btn.setGraphic(view);
                             btn.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
