@@ -135,6 +135,7 @@ public class MonitorThread implements Runnable {
                     }
                 }
                 Main.myInstancesList.add(newInstance);
+                liveMeasureForNewContainer(newInstance.getId());
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
                     Main.dbThread.start();

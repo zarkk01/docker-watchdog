@@ -68,7 +68,7 @@ public class DatabaseThread implements Runnable {
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
                     "metricid INT, " +
-                    "FOREIGN KEY(metricid) REFERENCES Metrics(id), "+
+                    "FOREIGN KEY(metricid) REFERENCES Metrics(id), " +
                     "PRIMARY KEY(id,metricid))";
             PreparedStatement createInstancesStmt = conn.prepareStatement(createInstancesTable);
             createInstancesStmt.execute();
@@ -105,7 +105,7 @@ public class DatabaseThread implements Runnable {
     public static void updateLiveMetcrics() {
         try {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            while (true){
+            while (true) {
                 // Find the largest metricId from the Metrics table
                 String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
                 Statement findLatestMetricIdStmt = conn.createStatement();
@@ -141,9 +141,9 @@ public class DatabaseThread implements Runnable {
                 Thread.sleep(2000);
             }
         } catch (SQLException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         } catch (InterruptedException e1) {
-        e1.printStackTrace();
+            e1.printStackTrace();
         }
     }
 }

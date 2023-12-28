@@ -63,8 +63,7 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
 
-            List<InstanceScene> instances = getAllInstances();
-            instancesTableView.getItems().addAll(instances);
+            refreshInstances();
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
             timeline.setCycleCount(Timeline.INDEFINITE);
