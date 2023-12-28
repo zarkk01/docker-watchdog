@@ -85,13 +85,4 @@
     -fx-text-fill: white; /* Set the text color to white */
 }
 
-stateColumn.setCellValueFactory(cellData -> cellData.getValue().stateProperty());
-
-exampleTable.setRowFactory(tableView -> {
-    TableRow<Order> row = new TableRow<>();
-    return row;
-});
-
-row.pseudoClassStateChanged(PseudoClass.getPseudoClass("highlighted"),
-    newOrder.getCityPopulation() > 4e6);
 
