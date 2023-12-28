@@ -14,9 +14,9 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="709.0" prefWidth="836.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
    <left>
-      <VBox prefHeight="514.0" prefWidth="125.0" style="-fx-background-color: #0D1824;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="514.0" prefWidth="125.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Containers" textFill="WHITE">
+            <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px 2px 0px;" text="Containers" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -40,14 +40,14 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="751.0" prefWidth="711.0" style="-fx-background-color: #14242B; -fx-border-color: #14242B;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="751.0" prefWidth="711.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
                <font>
                   <Font size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="instancesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="694.0">
+            <TableView fx:id="instancesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="694.0" stylesheets="@styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -67,8 +67,8 @@
             </TableView>
             <TextField fx:id="datetimeTextField" layoutX="14.0" layoutY="476.0" promptText="Write a datetime (ex. )" />
             <Button fx:id="datetimeButton" layoutX="183.0" layoutY="476.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" text="Show data " />
-            <Label fx:id="metricsDoneLabel" layoutX="15.0" layoutY="510.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="WHITE" />
-            <Label fx:id="runningInstancesLabel" layoutX="14.0" layoutY="527.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="WHITE" />
+            <Label fx:id="metricsDoneLabel" layoutX="15.0" layoutY="510.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="#4a2929" />
+            <Label fx:id="runningInstancesLabel" layoutX="14.0" layoutY="527.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
          </children>
       </AnchorPane>
    </center>

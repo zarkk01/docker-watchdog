@@ -157,8 +157,8 @@ public class ContainersController implements Initializable {
             instancesTableView.setRowFactory(tv -> {
                 TableRow<InstanceScene> row = new TableRow<>();
                 row.setOnMouseEntered(event -> {
-                    row.setScaleX(1.03);
-                    row.setScaleY(1.03);
+                    row.setScaleX(1.00);
+                    row.setScaleY(1.00);
                 });
                 row.setOnMouseExited(event -> {
                     row.setScaleX(1.0);
