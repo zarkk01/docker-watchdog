@@ -30,6 +30,10 @@ public class DockerService {
         ExecutorThread.stopContainer(containerId);
     }
 
+    public void deleteContainer(String containerId){
+        ExecutorThread.removeContainer(containerId);
+    }
+
     public List<Instance> getAllInstancesMaxId() {
         return instanceRepository.findAllByMaxMetricId();
     }

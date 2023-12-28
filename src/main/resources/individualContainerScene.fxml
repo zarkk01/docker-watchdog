@@ -39,17 +39,26 @@
     <center>
         <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Individual Container" wrappingWidth="107.3505859375">
+                <Text fx:id="headTextContainer" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Individual Container" wrappingWidth="107.3505859375">
                     <font>
                         <Font size="21.0" />
                     </font>
                 </Text>
                 <VBox fx:id="infoCard" layoutX="154.0" layoutY="103.0" prefHeight="143.0" prefWidth="333.0" spacing="10">
-                    <Label fx:id="containerIdLabel" prefHeight="17.0" prefWidth="121.0" />
-                    <Label fx:id="containerNameLabel" prefHeight="17.0" prefWidth="119.0" />
-                    <Label fx:id="containerStatusLabel" prefHeight="17.0" prefWidth="128.0" />
+                    <Label fx:id="containerIdLabel" prefHeight="17.0" prefWidth="332.0">
+                  <font>
+                     <Font size="11.0" />
+                  </font></Label>
+                    <Label fx:id="containerNameLabel" prefHeight="17.0" prefWidth="298.0">
+                  <font>
+                     <Font size="11.0" />
+                  </font></Label>
+                    <Label fx:id="containerStatusLabel" prefHeight="17.0" prefWidth="332.0">
+                  <font>
+                     <Font size="11.0" />
+                  </font></Label>
                     <Button fx:id="renameButton" text="Rename" />
-                    <Button fx:id="removeButton" text="Remove" />
+                    <Button fx:id="removeButton" onAction="#removeContainer" text="Remove" />
                 </VBox>
             </children>
         </AnchorPane>

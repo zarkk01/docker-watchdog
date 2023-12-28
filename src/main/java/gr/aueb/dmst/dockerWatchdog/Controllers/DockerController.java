@@ -34,6 +34,13 @@ public class DockerController {
         return ResponseEntity.ok("Container " + containerId + " stopped");
     }
 
+    @PostMapping("/{containerId}/delete")
+    public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId){
+        System.out.println("hey");
+        dockerService.deleteContainer(containerId);
+        return ResponseEntity.ok(("Container " + containerId + " deleted"));
+    }
+
     @GetMapping("/instances")
     public List<Instance> getAllInstances() {
         return dockerService.getAllInstancesMaxId();

@@ -25,18 +25,7 @@ public class ExecutorThread implements Runnable {
 //    private final BlockingQueue<Integer> commandQueue = new LinkedBlockingQueue<>();
 
     @Override
-    public void run() {
-//        while (true) {
-//            try {
-//                // Wait for a command from the GUI
-//                int choice = commandQueue.take();
-//                doDependsOnChoice(choice);
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//            }
-//        }
-
-    }
+    public void run() {}
 
     // Method to start a container
     public static void startContainer(String containerId) {
@@ -77,7 +66,7 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to remove a container
-    public void removeContainer(String containerId) {
+    public static void removeContainer(String containerId) {
         try {
             // Remove the container with the provided ID
             System.out.println("Removing the container with ID " + containerId + "...");
@@ -188,58 +177,6 @@ public class ExecutorThread implements Runnable {
         } catch (Exception e) {
             System.err.println("Error pulling the image: " + e.getMessage());
             e.printStackTrace();
-        }
-    }
-
-    // Method to execute actions based on the choice received from the GUI
-    private void doDependsOnChoice(int choice) {
-        switch (choice) {
-            case 1:
-                // Start Container
-                // You can replace "containerId" with the actual container ID you want to start
-                startContainer("containerId");
-                break;
-
-            case 2:
-                // Stop Container
-                // You can replace "containerId" with the actual container ID you want to stop
-                stopContainer("containerId");
-                break;
-
-            case 3:
-                // Remove Container
-                // You can replace "containerId" with the actual container ID you want to remove
-                removeContainer("containerId");
-                break;
-
-            case 4:
-                // Pause Container
-                // You can replace "containerId" with the actual container ID you want to pause
-                pauseContainer("containerId");
-                break;
-
-            case 5:
-                // Unpause Container
-                // You can replace "containerId" with the actual container ID you want to unpause
-                unpauseContainer("containerId");
-                break;
-
-            case 6:
-                // Run Container
-                try {
-                    runContainer("imageName", 22, 22);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            case 7:
-                // Pull Image
-                pullImage("imageName");
-                break;
-
-            default:
-                // Handle invalid choice
-                System.out.println("Invalid choice. Please try again.");
         }
     }
 }
