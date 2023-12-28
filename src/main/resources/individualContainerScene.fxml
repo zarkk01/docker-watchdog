@@ -57,7 +57,7 @@
                   <font>
                      <Font size="11.0" />
                   </font></Label>
-                    <Button fx:id="renameButton" text="Rename" />
+                    <Button fx:id="renameButton" text="Rename" onAction="#renameContainer"/>
                     <Button fx:id="removeButton" onAction="#removeContainer" text="Remove" />
                 </VBox>
             </children>

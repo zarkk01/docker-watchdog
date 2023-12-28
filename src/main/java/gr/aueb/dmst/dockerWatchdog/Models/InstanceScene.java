@@ -73,7 +73,9 @@ public class InstanceScene {
         this.blockI = blockI;
     }
 
-
+    public void setName(String name) {
+        this.name = name;
+    }
     public void setBlockO(Double blockO) {
         this.blockO = blockO;
     }

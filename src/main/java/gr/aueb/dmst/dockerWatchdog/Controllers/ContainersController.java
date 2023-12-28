@@ -34,8 +34,6 @@ import java.util.*;
 import javafx.scene.control.Button;
 
 
-import javax.swing.text.View;
-
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 public class ContainersController implements Initializable {
@@ -94,7 +92,7 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btn = new Button("Start");
-                        Image img = new Image(getClass().getResource("/play.png").toExternalForm());
+                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
                         {
@@ -134,7 +132,7 @@ public class ContainersController implements Initializable {
                         private final Button btn = new Button("Stop");
 
                         //Creating a graphic (image)
-                        Image img = new Image(getClass().getResource("/stop.png").toExternalForm());
+                        Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
 
