@@ -150,7 +150,17 @@ public class ContainersController implements Initializable {
             instancesTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!instancesTableView.getSelectionModel().isEmpty())) {
                     InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
-                    System.out.println("Selected instance id: " + selectedInstance.getId());
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/individualContainerScene.fxml"));
+                    try {
+                        root = loader.load();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    IndividualContainerController individualContainerController = loader.getController();
+                    individualContainerController.onInstanceDoubleClick(selectedInstance);
+                    stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                    stage.getScene().setRoot(root);
+                    stage.show();
                 }
             });
 
