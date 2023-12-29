@@ -16,6 +16,7 @@ public class Main {
     // Initiate myInstancesList and myImagesList
     public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
     public static ArrayList<MyImage> myImagesList = new ArrayList<>();
+    public static ArrayList<MyVolume> myVolumesList = new ArrayList<>();
 
     // Initiate dockerClient
     public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -45,7 +46,7 @@ public class Main {
 
             new Thread(DatabaseThread::updateLiveMetcrics).start();
 
-            Application.launch(DesktopApp.class, args);
+//            Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
             // Handle exceptions here

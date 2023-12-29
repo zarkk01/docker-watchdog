@@ -1,5 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog;
 
+import java.util.ArrayList;
+
 public class MyInstance {
     private final String id; // ID of instance is final
     private String name; // Instance name
@@ -11,9 +13,10 @@ public class MyInstance {
     private double blockI; // Block I of instance in MB
     private double blockO; // Block O of instance in MB
     private String ports; // Ports of instance
+    private ArrayList<String> volumes; // Volumes of instance
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports) {
+    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports,ArrayList<String> volumes) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
@@ -26,13 +29,17 @@ public class MyInstance {
         this.blockI = blockI;
         this.blockO = blockO;
         this.ports = ports;
+        this.volumes = volumes;
     }
 
     // Method toString that returns a string with the values of the instance variables
     @Override
     public String toString() {
         return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
-                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/" + String.format("%.2f", blockO) + "MB";
+                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
+                " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" +
+                " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) +
+                "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes;
     }
 
     // Getter for id
@@ -118,7 +125,17 @@ public class MyInstance {
         this.blockO = blockO;
     }
 
+    public ArrayList<String> getVolumes() {
+        return volumes;
+    }
 
+    public void setVolume(ArrayList<String> volumes) {
+        this.volumes = volumes;
+    }
+
+    public void addVolume(String volumeName) {
+        this.volumes.add(volumeName);
+    }
 
     // Given an ID of an instance, return the instance
     public static MyInstance getInstanceByid(String id) {
