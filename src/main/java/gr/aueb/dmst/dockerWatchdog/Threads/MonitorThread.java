@@ -37,7 +37,7 @@ public class MonitorThread implements Runnable {
 
                 switch (eventType) {
                     case VOLUME:
-//                        handleVolumeEvent(eventAction, id,event);
+                        handleVolumeEvent(eventAction, id,event);
                         break;
                     case CONTAINER:
                         handleContainerEvent(eventAction, id,event);
@@ -191,6 +191,48 @@ public class MonitorThread implements Runnable {
                 if (imageToRemove != null) {
                     DatabaseThread.deleteImage(imageToRemove);
                     Main.myImagesList.remove(imageToRemove);
+                }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
+                break;
+        }
+    }
+
+    public void handleVolumeEvent(String eventAction, String id, Event event){
+        switch (eventAction) {
+            case "create":
+                // Add the new volume to the list
+                InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(id).exec();
+                boolean isThere = false;
+                for(MyVolume vol : Main.myVolumesList){
+                    if(vol.getName().equals(volume.getName())){
+                        isThere = true;
+                    }
+                }
+                if (!isThere) {
+                    MyVolume newVolume = new MyVolume(
+                            volume.getName(),
+                            volume.getDriver(),
+                            volume.getMountpoint(),
+                            volume.getOptions(),
+                            new ArrayList<String>()
+                    );
+                    Main.myVolumesList.add(newVolume);
+//                    DatabaseThread.addVolume(newVolume);
+                }
+                if (!Main.dbThread.isAlive()) {
+                    Main.dbThread = new Thread(new DatabaseThread());
+                    Main.dbThread.start();
+                }
+                break;
+            case "destroy":
+                // Remove the corresponding volume from the list
+                MyVolume volumeToRemove = MyVolume.getVolumeByName(id);
+                if (volumeToRemove != null) {
+//                    DatabaseThread.deleteVolume(volumeToRemove);
+                    Main.myVolumesList.remove(volumeToRemove);
                 }
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());

@@ -47,4 +47,18 @@ public class MyVolume {
     public void setContainerNamesUsing(ArrayList<String> containerNamesUsing) {
         this.containerNamesUsing = containerNamesUsing;
     }
+
+    public static MyVolume getVolumeByName(String name) {
+        MyVolume volumeToReturn = null;
+        for (MyVolume volume: Main.myVolumesList) {
+            if (name.equals(volume.getName())) {
+                volumeToReturn = volume;
+            }
+        }
+        if (volumeToReturn != null) {
+            return volumeToReturn;
+        } else {
+            return null;
+        }
+    }
 }
