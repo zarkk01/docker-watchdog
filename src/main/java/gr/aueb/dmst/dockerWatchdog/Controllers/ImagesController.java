@@ -171,6 +171,7 @@ public class ImagesController implements Initializable {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
+        image.setStatus("In use");
         refreshImages();
     }
 }

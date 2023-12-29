@@ -59,7 +59,6 @@
                </columnResizePolicy>
             </TableView>
             <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
-            <Button fx:id="refreshButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#refreshImages" prefHeight="5.0" prefWidth="70.0" text="Refresh " />
          </children>
       </AnchorPane>
    </center>
