@@ -8,6 +8,7 @@ import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.MyImage;
 import gr.aueb.dmst.dockerWatchdog.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.MyVolume;
+
 import java.io.Closeable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class MonitorThread implements Runnable {
             e.printStackTrace();
             System.out.println("Error in fill lists");
         }
+        DatabaseThread.keepTrackOfVolumes();
         liveMeasure();
         startListening();
     }
@@ -36,9 +38,6 @@ public class MonitorThread implements Runnable {
                 String id = event.getActor().getId();
 
                 switch (eventType) {
-                    case VOLUME:
-                        handleVolumeEvent(eventAction, id,event);
-                        break;
                     case CONTAINER:
                         handleContainerEvent(eventAction, id,event);
                         try {
@@ -49,6 +48,9 @@ public class MonitorThread implements Runnable {
                         break;
                     case IMAGE:
                         handleImageEvent(eventAction, id,event);
+                        break;
+                    case VOLUME:
+                        handleVolumeEvent(eventAction, id,event);
                         break;
                 }
 
@@ -125,6 +127,7 @@ public class MonitorThread implements Runnable {
                     Main.dbThread = new Thread(new DatabaseThread());
                     Main.dbThread.start();
                 }
+                DatabaseThread.keepTrackOfVolumes();
                 break;
             case "create":
                 // Add the new instance to the list
@@ -141,9 +144,12 @@ public class MonitorThread implements Runnable {
                 if(container.getMounts() != null){
                     for(InspectContainerResponse.Mount volumeName : container.getMounts()){
                         newInstance.addVolume(volumeName.getName());
+                        MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
+                        assert vol != null;
+                        vol.addContainerNameUsing(newInstance.getName());
+                        DatabaseThread.keepTrackOfVolumes();
                     }
                 }
-
                 for(MyImage image : Main.myImagesList) {
                     if(newInstance.getImage().equals(image.getName())){
                         image.setStatus("In use");
@@ -200,38 +206,36 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    public void handleVolumeEvent(String eventAction, String id, Event event){
+    public void handleVolumeEvent(String eventAction, String name, Event event){
         switch (eventAction) {
             case "create":
                 // Add the new volume to the list
-                InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(id).exec();
-                boolean isThere = false;
-                for(MyVolume vol : Main.myVolumesList){
-                    if(vol.getName().equals(volume.getName())){
-                        isThere = true;
+                InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(name).exec();
+                MyVolume newVolume = new MyVolume(
+                        volume.getName(),
+                        volume.getDriver(),
+                        volume.getMountpoint(),
+                        new ArrayList<String>()
+                );
+                for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
+                    for(ContainerMount volumeName : container.getMounts()){
+                        if(volumeName.equals(volume.getName())){
+                            newVolume.addContainerNameUsing(container.getNames()[0]);
+                        }
                     }
                 }
-                if (!isThere) {
-                    MyVolume newVolume = new MyVolume(
-                            volume.getName(),
-                            volume.getDriver(),
-                            volume.getMountpoint(),
-                            volume.getOptions(),
-                            new ArrayList<String>()
-                    );
-                    Main.myVolumesList.add(newVolume);
-//                    DatabaseThread.addVolume(newVolume);
-                }
+                Main.myVolumesList.add(newVolume);
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
                     Main.dbThread.start();
                 }
+                DatabaseThread.keepTrackOfVolumes();
                 break;
             case "destroy":
                 // Remove the corresponding volume from the list
-                MyVolume volumeToRemove = MyVolume.getVolumeByName(id);
+                MyVolume volumeToRemove = MyVolume.getVolumeByName(name);
                 if (volumeToRemove != null) {
-//                    DatabaseThread.deleteVolume(volumeToRemove);
+                    DatabaseThread.deleteVolume(volumeToRemove);
                     Main.myVolumesList.remove(volumeToRemove);
                 }
                 if (!Main.dbThread.isAlive()) {
@@ -303,13 +307,12 @@ public class MonitorThread implements Runnable {
                     volume.getName(),
                     volume.getDriver(),
                     volume.getMountpoint(),
-                    volume.getOptions(),
                     new ArrayList<String>()
             );
             for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
                 for(ContainerMount volumeName : container.getMounts()){
-                    if(volumeName.equals(volume.getName())){
-                        newVolume.getContainerNamesUsing().add(container.getNames()[0]);
+                    if(volumeName.getName().equals(volume.getName())){
+                        newVolume.addContainerNameUsing(container.getNames()[0]);
                     }
                 }
             }

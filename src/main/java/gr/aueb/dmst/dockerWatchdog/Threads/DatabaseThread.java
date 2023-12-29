@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog.Threads;
 import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.MyImage;
 import gr.aueb.dmst.dockerWatchdog.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.MyVolume;
 
 import java.sql.*;
 import java.util.Date;
@@ -37,6 +38,10 @@ public class DatabaseThread implements Runnable {
                 String dropImagesTable = "DROP TABLE IF EXISTS Images";
                 PreparedStatement dropImagesStmt = conn.prepareStatement(dropImagesTable);
                 dropImagesStmt.execute();
+
+                String dropVolumesTable = "DROP TABLE IF EXISTS Volumes";
+                PreparedStatement dropVolumesStmt = conn.prepareStatement(dropVolumesTable);
+                dropVolumesStmt.execute();
 
                 firstTime = false;
             }
@@ -73,6 +78,7 @@ public class DatabaseThread implements Runnable {
                     "cpuusage DOUBLE, " +
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
+                    "volumes VARCHAR(750)," +
                     "metricid INT, " +
                     "FOREIGN KEY(metricid) REFERENCES Metrics(id), " +
                     "PRIMARY KEY(id,metricid))";
@@ -81,12 +87,16 @@ public class DatabaseThread implements Runnable {
 
             // Iterate over the instances
             for (MyInstance instance : Main.myInstancesList) {
+                String volumesUsing = "";
+                for (String volumeName : instance.getVolumes()) {
+                    volumesUsing += volumeName + ",";
+                }
                 // Insert or update the instance in the Instances table
-                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, metricid) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, volumes, metricid) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?) " +
                         "ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image), status = VALUES(status), " +
                         "memoryusage = VALUES(memoryusage), pids = VALUES(pids), cpuUsage = VALUES(cpuusage), blockI = VALUES(blockI), " +
-                        "blockO = VALUES(blockO), metricid = VALUES(metricid)";
+                        "blockO = VALUES(blockO), volumes = VALUES(volumes), metricid = VALUES(metricid)";
                 PreparedStatement upsertInstanceStmt = conn.prepareStatement(upsertInstance);
                 upsertInstanceStmt.setString(1, instance.getId());
                 upsertInstanceStmt.setString(2, instance.getName());
@@ -97,10 +107,11 @@ public class DatabaseThread implements Runnable {
                 upsertInstanceStmt.setDouble(7, instance.getCpuUsage());
                 upsertInstanceStmt.setDouble(8, instance.getBlockI());
                 upsertInstanceStmt.setDouble(9, instance.getBlockO());
-                upsertInstanceStmt.setInt(10, metricId);
+                upsertInstanceStmt.setString(10, volumesUsing);
+                upsertInstanceStmt.setInt(11, metricId);
                 upsertInstanceStmt.executeUpdate();
             }
-            // Create the Instances table if it doesn't exist
+            // Create the Images table if it doesn't exist
             String createImagesTable = "CREATE TABLE IF NOT EXISTS Images (" +
                     "id VARCHAR(255), " +
                     "name VARCHAR(255), " +
@@ -124,6 +135,16 @@ public class DatabaseThread implements Runnable {
                 upsertImageStmt.setString(4, image.getStatus());
                 upsertImageStmt.executeUpdate();
             }
+
+            // Create the Volumes table if it doesn't exist
+            String createVolumesTable = "CREATE TABLE IF NOT EXISTS Volumes (" +
+                    "name VARCHAR(255), " +
+                    "driver VARCHAR(255), " +
+                    "mountpoint VARCHAR(255), " +
+                    "containerNamesUsing VARCHAR(750), " +
+                    "PRIMARY KEY(name))";
+            PreparedStatement createVolumesStmt = conn.prepareStatement(createVolumesTable);
+            createVolumesStmt.execute();
             // Close the connection
             conn.close();
         } catch (SQLException e) {
@@ -148,10 +169,14 @@ public class DatabaseThread implements Runnable {
 
                 // Update instances with the latest metricId
                 String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
-                        "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ? WHERE metricid = ? && id = ?";
+                        "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ? WHERE metricid = ? && id = ?";
                 PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
 
                 for (MyInstance instance : Main.myInstancesList) {
+                    String volumesUsing = "";
+                    for (String volumeName : instance.getVolumes()) {
+                        volumesUsing += volumeName + ",";
+                    }
                     // Set parameters for the update query
                     updateInstancesStmt.setString(1, instance.getName());
                     updateInstancesStmt.setString(2, instance.getImage());
@@ -161,8 +186,9 @@ public class DatabaseThread implements Runnable {
                     updateInstancesStmt.setDouble(6, instance.getCpuUsage());
                     updateInstancesStmt.setDouble(7, instance.getBlockI());
                     updateInstancesStmt.setDouble(8, instance.getBlockO());
-                    updateInstancesStmt.setInt(9, latestMetricId);
-                    updateInstancesStmt.setString(10, instance.getId());
+                    updateInstancesStmt.setString(9, volumesUsing);
+                    updateInstancesStmt.setInt(10, latestMetricId);
+                    updateInstancesStmt.setString(11, instance.getId());
 
                     // Execute the update query
                     updateInstancesStmt.executeUpdate();
@@ -237,6 +263,86 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void addVolume(MyVolume volume) {
+        try {
+            // Establish a connection
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            String containerNamesUsing = "";
+            for (String containerName : volume.getContainerNamesUsing()) {
+                containerNamesUsing += containerName + ",";
+            }
+
+            System.out.println("containerNamesUsing: " + containerNamesUsing);
+
+            // Insert or update the volume in the Volumes table
+            String upsertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) " +
+                    "VALUES (?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE driver = VALUES(driver), mountpoint = VALUES(mountpoint), " +
+                    "containerNamesUsing = VALUES(containerNamesUsing)";
+            PreparedStatement upsertVolumeStmt = conn.prepareStatement(upsertVolume);
+            upsertVolumeStmt.setString(1, volume.getName());
+            upsertVolumeStmt.setString(2, volume.getDriver());
+            upsertVolumeStmt.setString(3, volume.getMountpoint());
+            upsertVolumeStmt.setString(4, containerNamesUsing);
+            upsertVolumeStmt.executeUpdate();
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteVolume(MyVolume volume) {
+        try {
+            // Establish a connection
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Delete the volume from the Volumes table
+            String deleteVolume = "DELETE FROM Volumes WHERE name = ?";
+            PreparedStatement deleteVolumeStmt = conn.prepareStatement(deleteVolume);
+            deleteVolumeStmt.setString(1, volume.getName());
+            deleteVolumeStmt.executeUpdate();
+
+            // Close the connection
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void keepTrackOfVolumes(){
+        try {
+            // Establish a connection
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Iterate over the volumes
+            for (MyVolume volume : Main.myVolumesList) {
+
+                String containerNamesUsing = "";
+                for (String containerName : volume.getContainerNamesUsing()) {
+                    containerNamesUsing += containerName + ",";
+                }
+
+                // Insert or update the images in the images table
+                String upsertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) " +
+                        "VALUES (?, ?, ?,?) " +
+                        "ON DUPLICATE KEY UPDATE name = VALUES(name),driver = VALUES(driver), mountpoint = VALUES(mountpoint), " +
+                        "containerNamesUsing = VALUES(containerNamesUsing)";
+                PreparedStatement upsertVolumeStmt = conn.prepareStatement(upsertVolume);
+                upsertVolumeStmt.setString(1, volume.getName());
+                upsertVolumeStmt.setString(2, volume.getDriver());
+                upsertVolumeStmt.setString(3, volume.getMountpoint());
+                upsertVolumeStmt.setString(4, containerNamesUsing);
+                upsertVolumeStmt.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }

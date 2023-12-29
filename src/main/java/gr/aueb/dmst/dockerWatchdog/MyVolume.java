@@ -8,20 +8,18 @@ public class MyVolume {
     private final String name;
     private final String driver;
     private final String mountpoint;
-    private final Map<String,String> options;
     private ArrayList<String> containerNamesUsing;
 
-    public MyVolume(String name, String driver, String mountpoint, Map<String,String> options,ArrayList<String> containerNamesUsing) {
+    public MyVolume(String name, String driver, String mountpoint,ArrayList<String> containerNamesUsing) {
         this.name = name;
         this.driver = driver;
         this.mountpoint = mountpoint;
-        this.options = options;
         this.containerNamesUsing = containerNamesUsing;
     }
 
     @Override
     public String toString() {
-        return "Name = " + name + " , Driver = " + driver + " , Mountpoint = " + mountpoint + " , Options = " + options;
+        return "Name = " + name + " , Driver = " + driver + " , Mountpoint = " + mountpoint;
     }
 
     public String getName() {
@@ -36,12 +34,12 @@ public class MyVolume {
         return mountpoint;
     }
 
-    public Map<String,String> getOptions() {
-        return options;
-    }
-
     public ArrayList<String> getContainerNamesUsing() {
         return containerNamesUsing;
+    }
+
+    public void addContainerNameUsing(String containerName) {
+        this.containerNamesUsing.add(containerName);
     }
 
     public void setContainerNamesUsing(ArrayList<String> containerNamesUsing) {
