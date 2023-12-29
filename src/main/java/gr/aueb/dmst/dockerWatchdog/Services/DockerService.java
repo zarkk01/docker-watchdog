@@ -1,7 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog.Services;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
+import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Repositories.ImagesRepository;
+import gr.aueb.dmst.dockerWatchdog.Repositories.VolumesRepository;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
@@ -19,11 +21,13 @@ public class DockerService {
     private final InstancesRepository instanceRepository;
     private final MetricsRepository metricsRepository;
     private final ImagesRepository imagesRepository;
+    private final VolumesRepository volumesRepository;
 
-    public DockerService(InstancesRepository instanceRepository, MetricsRepository metricsRepository, ImagesRepository imagesRepository) {
+    public DockerService(InstancesRepository instanceRepository, MetricsRepository metricsRepository, ImagesRepository imagesRepository, VolumesRepository volumesRepository) {
         this.instanceRepository = instanceRepository;
         this.metricsRepository = metricsRepository;
         this.imagesRepository = imagesRepository;
+        this.volumesRepository = volumesRepository;
     }
 
     public void startContainer(String containerId) {
@@ -72,6 +76,9 @@ public class DockerService {
 
     public List<Image> getAllImages() {
         return imagesRepository.findAll();
+    }
+    public List<Volume> getAllVolumes() {
+        return volumesRepository.findAll();
     }
     public void createContainer(String imageName) {
         try {

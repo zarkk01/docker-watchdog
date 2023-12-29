@@ -1,9 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -124,8 +120,8 @@ public class ImagesController implements Initializable {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
 
-    public void changeToStatisticsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "statisticsScene.fxml");
+    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "volumesScene.fxml");
     }
 
     public void refreshImages() {

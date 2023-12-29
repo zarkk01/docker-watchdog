@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
@@ -59,8 +58,8 @@ public class IndividualContainerController {
         changeScene(actionEvent, "imagesScene.fxml");
     }
 
-    public void changeToStatisticsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "statisticsScene.fxml");
+    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "volumesScene.fxml");
     }
 
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {

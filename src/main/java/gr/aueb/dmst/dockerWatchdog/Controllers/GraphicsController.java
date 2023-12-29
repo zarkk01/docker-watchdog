@@ -1,12 +1,10 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -30,7 +28,7 @@ public class GraphicsController {
         changeScene(actionEvent, "imagesScene.fxml");
     }
 
-    public void changeToStatisticsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "statisticsScene.fxml");
+    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "volumesScene.fxml");
     }
 }

@@ -25,7 +25,7 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="statisticsButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToStatisticsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Statistics" textFill="WHITE">
+            <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Volumes" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -41,7 +41,7 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
+            <Text fill="BLACK" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
                   <Font size="21.0" />
                </font>
@@ -58,7 +58,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" />
          </children>
       </AnchorPane>
    </center>

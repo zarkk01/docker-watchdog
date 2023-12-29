@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
+import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,11 @@ public class DockerController {
     @GetMapping("/images")
     public List<Image> getAllImages() {
         return dockerService.getAllImages();
+    }
+
+    @GetMapping("/volumes")
+    public List<Volume> getAllVolumes() {
+        return dockerService.getAllVolumes();
     }
 
     @PostMapping("/images/create/{imageName}")

@@ -229,8 +229,8 @@ public class ContainersController implements Initializable {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
 
-    public void changeToStatisticsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "statisticsScene.fxml");
+    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "volumesScene.fxml");
     }
 
     private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
