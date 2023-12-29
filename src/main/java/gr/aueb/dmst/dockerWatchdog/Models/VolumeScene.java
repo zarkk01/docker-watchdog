@@ -4,13 +4,13 @@ public class VolumeScene {
     private String name;
     private String driver;
     private String mountpoint;
-    private String containerNamesUsing;
+    private String containernamesusing;
 
-    public VolumeScene(String name, String driver,String mountpoint, String containerNamesUsing) {
+    public VolumeScene(String name, String driver,String mountpoint, String containernamesusing) {
         this.name = name;
         this.driver = driver;
         this.mountpoint = mountpoint;
-        this.containerNamesUsing = containerNamesUsing;
+        this.containernamesusing = containernamesusing;
     }
 
     public String getName() {
@@ -38,10 +38,10 @@ public class VolumeScene {
     }
 
     public String getContainerNamesUsing() {
-        return containerNamesUsing;
+        return containernamesusing;
     }
 
-    public void setContainerNamesUsing(String containerNamesUsing) {
-        this.containerNamesUsing = containerNamesUsing;
+    public void setContainerNamesUsing(String containernamesusing) {
+        this.containernamesusing = containernamesusing;
     }
 }

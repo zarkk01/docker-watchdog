@@ -230,6 +230,14 @@ public class ContainersController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        VolumesController volumesController = loader.getController();
+        volumesController.refreshVolumes();
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
