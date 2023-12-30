@@ -57,9 +57,14 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="331.0" prefWidth="592.0">
                                  <children>
+<<<<<<< HEAD
                                     <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" />
                                  </children>
                               </AnchorPane>
+=======
+                                    <VBox fx:id="notificationBox" layoutX="270.0" layoutY="66.0" prefHeight="63.0" prefWidth="193.0" />
+                                 </children></AnchorPane>
+>>>>>>> f3ef05a (Add back notificationBox)
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="331.0" prefWidth="378.0">
                                  <children>
                                     <GridPane layoutX="15.0" layoutY="12.0" prefHeight="219.0" prefWidth="338.0">
