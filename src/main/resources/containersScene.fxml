@@ -43,12 +43,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" layoutX="302.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
+            <Text fill="#3c8acf" layoutX="368.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
                <font>
-                  <Font size="21.0" />
+                  <Font name="System Bold" size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="instancesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles.css">
+            <TableView fx:id="instancesTableView" layoutX="3.0" layoutY="47.0" prefHeight="366.0" prefWidth="746.0" stylesheets="@styles.css" AnchorPane.bottomAnchor="259.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="46.0">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
