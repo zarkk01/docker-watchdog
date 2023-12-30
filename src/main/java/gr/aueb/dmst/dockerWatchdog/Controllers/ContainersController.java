@@ -103,7 +103,7 @@ public class ContainersController implements Initializable {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button("Start");
+                        private final Button btn = new Button();
                         Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
@@ -141,7 +141,7 @@ public class ContainersController implements Initializable {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button("Stop");
+                        private final Button btn = new Button();
 
                         //Creating a graphic (image)
                         Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
