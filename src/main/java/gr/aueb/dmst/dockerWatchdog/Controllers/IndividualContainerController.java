@@ -54,6 +54,10 @@ public class IndividualContainerController {
     @FXML
     private Label containerImageLabel;
     @FXML
+    private Label containerSubnetLabel;
+    @FXML
+    private Label containerGatewayLabel;
+    @FXML
     private VBox notificationBox;
 
     @FXML
@@ -96,12 +100,21 @@ public class IndividualContainerController {
 
     public void onInstanceDoubleClick(InstanceScene instance) {
         this.instanceScene = instance;
+        String subnet = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpAddress();
+        int prefixLen = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpPrefixLen();
+        String gateway = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getGateway();
         headTextContainer.setText("Container: " + instance.getName());
         containerIdLabel.setText("ID: " + instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
+        containerSubnetLabel.setText("Subnet:" + subnet + "/" + prefixLen);
+        containerGatewayLabel.setText("Gateway:" + gateway);
+        containerLogInfoAppender(instance);
+        infoCard.setVisible(true);
+    }
 
+    public void containerLogInfoAppender(InstanceScene instance) {
         // Specify container ID or name
         String containerId = instance.getId();
 
@@ -122,7 +135,6 @@ public class IndividualContainerController {
                         });
                     }
                 });
-        infoCard.setVisible(true);
     }
 
     public void removeContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
