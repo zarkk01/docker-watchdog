@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -53,6 +54,22 @@
                <yAxis>
                   <NumberAxis minorTickCount="10" side="LEFT" tickLabelGap="5.0" upperBound="3.0" />
                </yAxis>
+            </LineChart>
+            <BarChart fx:id="pidsChart" layoutX="464.0" layoutY="26.0" prefHeight="302.0" prefWidth="495.0" title="PIDs ">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" upperBound="50.0" />
+              </yAxis>
+            </BarChart>
+            <LineChart fx:id="memoryChart" layoutX="182.0" layoutY="330.0" prefHeight="323.0" prefWidth="576.0" title="Total Memory Usage in MB">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" upperBound="2000.0" />
+              </yAxis>
             </LineChart>
          </children>
       </AnchorPane>

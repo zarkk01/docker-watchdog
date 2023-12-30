@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.JSONArray;
@@ -38,16 +35,30 @@ public class GraphicsController implements Initializable {
     @FXML
     private LineChart<String,Number> cpuChart;
 
-    private XYChart.Series<String, Number> series;
+    @FXML
+    private BarChart<String,Number> pidsChart;
+
+    @FXML
+    private LineChart<String,Number> memoryChart;
+    private XYChart.Series<String, Number> cpuSeries;
+    private XYChart.Series<String, Number> pidsSeries;
+    private XYChart.Series<String, Number> memorySeries;
+
     private LocalDateTime currentTime;
 
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-        series = new XYChart.Series<>();
-        cpuChart.getData().add(series);
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
+        startCharts();
+
+        try {
+            updateCharts();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
             try {
-                updateLineChart();
+                updateCharts();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -55,6 +66,16 @@ public class GraphicsController implements Initializable {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
+
+    public void startCharts(){
+        cpuSeries = new XYChart.Series<>();
+        cpuChart.getData().add(cpuSeries);
+
+        pidsSeries = new XYChart.Series<>();
+        pidsChart.getData().add(pidsSeries);
+
+        memorySeries = new XYChart.Series<>();
+        memoryChart.getData().add(memorySeries);}
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
@@ -106,7 +127,8 @@ public class GraphicsController implements Initializable {
         }
         return instances;
     }
-    private void updateLineChart() throws Exception {
+
+    public void updateCharts() throws Exception {
         List<InstanceScene> instances = getAllInstances();
         double totalCpuUsage = 0;
         currentTime = LocalDateTime.now();
@@ -114,8 +136,23 @@ public class GraphicsController implements Initializable {
         for (InstanceScene instance : instances) {
             totalCpuUsage += instance.getCpuUsage();
         }
-        series.getData().add(new XYChart.Data<>(formattedTime, totalCpuUsage*100));
+        if(totalCpuUsage*100>50){
+            updateCharts();
+        }
+        cpuSeries.getData().add(new XYChart.Data<>(formattedTime, totalCpuUsage*100));
+
+        double totalMemoryUsage = 0;
+        currentTime = LocalDateTime.now();
+        String formatTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        for (InstanceScene instance : instances) {
+            totalMemoryUsage += instance.getMemoryUsage();
+        }
+        memorySeries.getData().add(new XYChart.Data<>(formatTime, totalMemoryUsage));
+
+        List<InstanceScene> instan = getAllInstances();
+        for (InstanceScene instance : instan) {
+            XYChart.Data<String, Number> data = new XYChart.Data<>(instance.getName(), instance.getPids());
+            pidsSeries.getData().add(data);
+        }
     }
-
-
 }
