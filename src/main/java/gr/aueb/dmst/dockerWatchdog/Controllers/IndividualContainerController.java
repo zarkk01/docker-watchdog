@@ -4,6 +4,7 @@ import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
+import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -100,20 +101,12 @@ public class IndividualContainerController {
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
-        dockerClient = DockerClientBuilder.getInstance().build();
-
 
         // Specify container ID or name
         String containerId = instance.getId();
 
-        // Create LogContainerCmd
-        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
-                .withStdErr(true)
-                .withStdOut(true)
-                .withFollowStream(true);
-
         // Execute the command and update the TextArea with each log frame
-        dockerClient.logContainerCmd(containerId)
+        Main.dockerClient.logContainerCmd(containerId)
                 .withStdErr(true)
                 .withStdOut(true)
                 .withFollowStream(true)
