@@ -1,5 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import com.github.dockerjava.api.command.LogContainerCmd;
+import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +15,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,11 +35,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class IndividualContainerController {
 
     @FXML
-    private VBox infoCard;
+    private SplitPane infoCard;
 
     @FXML
     private Text headTextContainer;
@@ -47,6 +54,9 @@ public class IndividualContainerController {
     private Label containerImageLabel;
     @FXML
     private VBox notificationBox;
+
+    @FXML
+    TextArea textArea;
 
     private InstanceScene instanceScene;
     private Stage stage;
@@ -90,6 +100,35 @@ public class IndividualContainerController {
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
+        dockerClient = DockerClientBuilder.getInstance().build();
+
+
+        // Specify container ID or name
+        String containerId = instance.getId();
+
+        // Create LogContainerCmd
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withFollowStream(true);
+
+        // Execute the command and update the TextArea with each log frame
+        dockerClient.logContainerCmd(containerId)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withFollowStream(true)
+                .exec(new LogContainerResultCallback() {
+                    @Override
+                    public void onNext(Frame item) {
+                        // Process each log frame
+                        String logLine = item.toString();
+
+                        // Update the TextArea on the JavaFX Application Thread
+                        javafx.application.Platform.runLater(() -> {
+                            textArea.appendText(logLine + "\n");
+                        });
+                    }
+                });
         infoCard.setVisible(true);
     }
 
