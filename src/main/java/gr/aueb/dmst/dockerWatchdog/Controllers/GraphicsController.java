@@ -17,11 +17,14 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.boot.origin.SystemEnvironmentOrigin;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,26 +36,18 @@ public class GraphicsController implements Initializable {
     private Parent root;
 
     @FXML
-    private LineChart<Number, Number> cpuChart;
+    private LineChart<String,Number> cpuChart;
 
-    private XYChart.Series<Number, Number> series;
-    private Number currentTime = 0;
+    private XYChart.Series<String, Number> series;
+    private LocalDateTime currentTime;
 
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-        // Initialize the LineChart object
-        NumberAxis yAxis = new NumberAxis();
-        yAxis.setLowerBound(0.0);
-        yAxis.setUpperBound(1.0);
-        yAxis.setTickUnit(0.1);
-
-        cpuChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         series = new XYChart.Series<>();
         cpuChart.getData().add(series);
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
             try {
-                updateChart();
+                updateLineChart();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -111,14 +106,16 @@ public class GraphicsController implements Initializable {
         }
         return instances;
     }
-
-    private void updateChart() throws Exception {
+    private void updateLineChart() throws Exception {
         List<InstanceScene> instances = getAllInstances();
         double totalCpuUsage = 0;
+        currentTime = LocalDateTime.now();
+        String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         for (InstanceScene instance : instances) {
             totalCpuUsage += instance.getCpuUsage();
         }
-        series.getData().add(new XYChart.Data<>(currentTime, totalCpuUsage));
-        currentTime = currentTime.intValue() + 10;
+        series.getData().add(new XYChart.Data<>(formattedTime, totalCpuUsage*100));
     }
+
+
 }

@@ -46,12 +46,12 @@
                   <Font size="21.0" />
                </font>
             </Text>
-            <LineChart fx:id="cpuChart" prefHeight="193.0" prefWidth="335.0">
+            <LineChart fx:id="cpuChart" layoutX="24.0" layoutY="22.0" prefHeight="304.0" prefWidth="440.0" title="Total CPU Usage in %">
                <xAxis>
                   <CategoryAxis side="BOTTOM" />
                </xAxis>
                <yAxis>
-                  <NumberAxis side="LEFT" upperBound="1.0" />
+                  <NumberAxis minorTickCount="10" side="LEFT" tickLabelGap="5.0" upperBound="3.0" />
                </yAxis>
             </LineChart>
          </children>
