@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -179,7 +180,7 @@ public class ContainersController implements Initializable {
             stopButtonColumn.setCellFactory(stopCellFactory);
 
             instancesTableView.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!instancesTableView.getSelectionModel().isEmpty())) {
+                if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
                     InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/individualContainerScene.fxml"));
                     try {
@@ -197,14 +198,8 @@ public class ContainersController implements Initializable {
 
             instancesTableView.setRowFactory(tv -> {
                 TableRow<InstanceScene> row = new TableRow<>();
-                row.setOnMouseEntered(event -> {
-                    row.setScaleX(1.00);
-                    row.setScaleY(1.00);
-                });
-                row.setOnMouseExited(event -> {
-                    row.setScaleX(1.0);
-                    row.setScaleY(1.0);
-                });
+                row.setOnMouseEntered(event -> row.setCursor(Cursor.HAND));
+                row.setOnMouseExited(event -> row.setCursor(Cursor.DEFAULT));
                 return row;
             });
 
