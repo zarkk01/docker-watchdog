@@ -12,13 +12,13 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -29,16 +29,18 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
-public class IndividualContainerController {
+public class IndividualContainerController implements Initializable {
 
     @FXML
     private SplitPane infoCard;
@@ -59,6 +61,8 @@ public class IndividualContainerController {
     private Label containerGatewayLabel;
     @FXML
     private VBox notificationBox;
+    @FXML
+    private Button backButton;
 
     @FXML
     TextArea textArea;
@@ -66,6 +70,17 @@ public class IndividualContainerController {
     private InstanceScene instanceScene;
     private Stage stage;
     private Parent root;
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
+        ImageView view = new ImageView(img);
+        view.setFitHeight(20);
+        view.setPreserveRatio(true);
+
+        backButton.setGraphic(view);
+
+    }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
