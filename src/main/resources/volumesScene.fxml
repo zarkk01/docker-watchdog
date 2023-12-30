@@ -45,7 +45,7 @@
                   <Font size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="volumesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles.css">
+            <TableView fx:id="volumesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="nameColumn" prefWidth="110.0" text="Name" />
                   <TableColumn fx:id="driverColumn" minWidth="0.0" prefWidth="75.0" text="Driver" />

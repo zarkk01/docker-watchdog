@@ -49,7 +49,7 @@
                   <Font name="System Bold" size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="instancesTableView" layoutX="5.0" layoutY="50.0" prefHeight="228.0" prefWidth="965.0" stylesheets="@styles.css" AnchorPane.bottomAnchor="394.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="49.0">
+            <TableView fx:id="instancesTableView" layoutX="5.0" layoutY="50.0" prefHeight="228.0" prefWidth="965.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="394.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="49.0">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -73,7 +73,7 @@
             <Label fx:id="runningInstancesLabel" layoutX="18.0" layoutY="614.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
             <CheckBox fx:id="runningInstancesCheckbox" layoutX="18.0" layoutY="531.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
             <VBox fx:id="notificationBox" layoutX="554.0" layoutY="572.0" prefHeight="52.0" prefWidth="167.0" />
-            <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bebab3;">
+            <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bebab3;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
                      <font>
@@ -82,7 +82,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #5cb25d;">
+            <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #5cb25d;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
                      <font>
@@ -91,7 +91,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bc2023;">
+            <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bc2023;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
                      <font>

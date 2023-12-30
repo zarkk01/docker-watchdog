@@ -46,7 +46,7 @@
                   <Font size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
