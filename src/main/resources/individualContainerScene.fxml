@@ -65,6 +65,7 @@
                <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" text="Pause" />
                     <Button fx:id="renameButton" onAction="#renameContainer" text="Rename" />
                     <Button fx:id="removeButton" onAction="#removeContainer" text="Remove" />
+               <VBox fx:id="notificationBox" prefHeight="79.0" prefWidth="257.0" />
                 </VBox>
             </children>
         </AnchorPane>

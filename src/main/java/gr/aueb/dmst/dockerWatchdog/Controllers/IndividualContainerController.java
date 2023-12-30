@@ -1,16 +1,23 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URI;
@@ -38,6 +45,8 @@ public class IndividualContainerController {
     private Label containerStatusLabel;
     @FXML
     private Label containerImageLabel;
+    @FXML
+    private VBox notificationBox;
 
     private InstanceScene instanceScene;
     private Stage stage;
@@ -101,7 +110,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has pause.");
+        }
+
         this.instanceScene.setStatus("Paused");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -112,7 +126,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has unpause.");
+        }
+
         this.instanceScene.setStatus("Unpaused");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -135,9 +154,12 @@ public class IndividualContainerController {
                         .POST(HttpRequest.BodyPublishers.noBody())
                         .build();
 
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                // Update the container name label and the instanceScene object
+                if (response.statusCode() == 200) {
+                    showNotification("Container Event", "Container " + this.instanceScene.getName() + " has renamed to " + newName + ".");
+                }
+
                 containerNameLabel.setText("Name: " + newName);
                 this.instanceScene.setName(newName);
                 headTextContainer.setText("Container: " + newName);
@@ -153,7 +175,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has started.");
+        }
+
         this.instanceScene.setStatus("running");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -164,7 +191,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has stopped.");
+        }
+
         this.instanceScene.setStatus("exited");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -176,6 +208,41 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has restarted.");
+        }
+
+    }
+
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a Popup
+            Popup notification = new Popup();
+
+            // Create a Label for the title and content
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Add the Labels to a VBox
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup
+            notification.getContent().add(box);
+
+            // Get the screen coordinates of the VBox
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup at the specified position
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Set a timeline to hide the Popup after 3 seconds
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
     }
 }

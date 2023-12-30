@@ -59,6 +59,7 @@
                </columnResizePolicy>
             </TableView>
             <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" />
+            <VBox fx:id="notificationBox" layoutX="202.0" layoutY="419.0" prefHeight="53.0" prefWidth="165.0" />
          </children>
       </AnchorPane>
    </center>
