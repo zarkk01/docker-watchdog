@@ -16,8 +16,8 @@ public class Volume {
     @Column(name = "mountpoint")
     private String mountpoint;
 
-    @Column(name = "containerNamesUsing")
-    private String containerNamesUsing;
+    @Column(name = "containernamesusing")
+    private String containernamesusing;
 
     public String getName() {
         return name;
@@ -44,10 +44,10 @@ public class Volume {
     }
 
     public String getContainerNamesUsing() {
-        return containerNamesUsing;
+        return containernamesusing;
     }
 
-    public void setContainerNamesUsing(String containerNamesUsing) {
-        this.containerNamesUsing = containerNamesUsing;
+    public void setContainerNamesUsing(String containernamesusing) {
+        this.containernamesusing = containernamesusing;
     }
 }

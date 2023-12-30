@@ -54,12 +54,12 @@ public class VolumesController implements Initializable {
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             driverColumn.setCellValueFactory(new PropertyValueFactory<>("driver"));
             mountpointColumn.setCellValueFactory(new PropertyValueFactory<>("mountpoint"));
-            containerNamesUsingColumn.setCellValueFactory(new PropertyValueFactory<>("Container Using"));
+            containerNamesUsingColumn.setCellValueFactory(new PropertyValueFactory<>("containerNamesUsing"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-//        refreshVolumes();
+        refreshVolumes();
     }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
@@ -81,17 +81,17 @@ public class VolumesController implements Initializable {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
 
-//    public void refreshVolumes() {
-//        try {
-//            List<VolumeScene> volumes = getAllVolumes();
-//
-//            volumesTableView.getItems().clear();
-//
-//            volumesTableView.getItems().addAll(volumes);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public void refreshVolumes() {
+        try {
+            List<VolumeScene> volumes = getAllVolumes();
+
+            volumesTableView.getItems().clear();
+
+            volumesTableView.getItems().addAll(volumes);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public List<VolumeScene> getAllVolumes() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()

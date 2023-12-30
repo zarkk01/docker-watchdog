@@ -1,43 +1,39 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import com.github.dockerjava.api.command.LogContainerCmd;
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.command.LogContainerResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class IndividualContainerController {
 
     @FXML
-    private SplitPane infoCard;
+    private VBox infoCard;
 
     @FXML
     private Text headTextContainer;
@@ -49,13 +45,12 @@ public class IndividualContainerController {
     private Label containerStatusLabel;
     @FXML
     private Label containerImageLabel;
+    @FXML
+    private VBox notificationBox;
 
     private InstanceScene instanceScene;
     private Stage stage;
     private Parent root;
-    @FXML
-    private TextArea textArea;
-
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
@@ -73,6 +68,14 @@ public class IndividualContainerController {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        VolumesController volumesController = loader.getController();
+        volumesController.refreshVolumes();
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
@@ -87,35 +90,6 @@ public class IndividualContainerController {
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
-        dockerClient = DockerClientBuilder.getInstance().build();
-
-
-        // Specify container ID or name
-        String containerId = instance.getId();
-
-        // Create LogContainerCmd
-        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
-                .withStdErr(true)
-                .withStdOut(true)
-                .withFollowStream(true);
-
-        // Execute the command and update the TextArea with each log frame
-        dockerClient.logContainerCmd(containerId)
-                .withStdErr(true)
-                .withStdOut(true)
-                .withFollowStream(true)
-                .exec(new LogContainerResultCallback() {
-                    @Override
-                    public void onNext(Frame item) {
-                        // Process each log frame
-                        String logLine = item.toString();
-
-                        // Update the TextArea on the JavaFX Application Thread
-                        javafx.application.Platform.runLater(() -> {
-                            textArea.appendText(logLine + "\n");
-                        });
-                    }
-                });
         infoCard.setVisible(true);
     }
 
@@ -136,7 +110,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has pause.");
+        }
+
         this.instanceScene.setStatus("Paused");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -147,7 +126,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has unpause.");
+        }
+
         this.instanceScene.setStatus("Unpaused");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -170,9 +154,12 @@ public class IndividualContainerController {
                         .POST(HttpRequest.BodyPublishers.noBody())
                         .build();
 
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                // Update the container name label and the instanceScene object
+                if (response.statusCode() == 200) {
+                    showNotification("Container Event", "Container " + this.instanceScene.getName() + " has renamed to " + newName + ".");
+                }
+
                 containerNameLabel.setText("Name: " + newName);
                 this.instanceScene.setName(newName);
                 headTextContainer.setText("Container: " + newName);
@@ -188,7 +175,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has started.");
+        }
+
         this.instanceScene.setStatus("running");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -199,7 +191,12 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has stopped.");
+        }
+
         this.instanceScene.setStatus("exited");
         containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
     }
@@ -211,6 +208,41 @@ public class IndividualContainerController {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + this.instanceScene.getName() + " has restarted.");
+        }
+
+    }
+
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a Popup
+            Popup notification = new Popup();
+
+            // Create a Label for the title and content
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Add the Labels to a VBox
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup
+            notification.getContent().add(box);
+
+            // Get the screen coordinates of the VBox
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup at the specified position
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Set a timeline to hide the Popup after 3 seconds
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
     }
 }

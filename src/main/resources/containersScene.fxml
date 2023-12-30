@@ -71,6 +71,7 @@
             <Label fx:id="metricsDoneLabel" layoutX="15.0" layoutY="510.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="#4a2929" />
             <Label fx:id="runningInstancesLabel" layoutX="14.0" layoutY="527.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
             <CheckBox fx:id="runningInstancesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
+            <VBox fx:id="notificationBox" layoutX="322.0" layoutY="448.0" prefHeight="52.0" prefWidth="167.0" />
          </children>
       </AnchorPane>
    </center>

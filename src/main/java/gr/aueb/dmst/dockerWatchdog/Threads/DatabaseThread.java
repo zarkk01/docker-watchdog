@@ -152,7 +152,7 @@ public class DatabaseThread implements Runnable {
         }
     }
 
-    public static void updateLiveMetcrics() {
+    public static synchronized void updateLiveMetcrics() {
         try {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
             while (true) {

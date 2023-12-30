@@ -1,18 +1,26 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,6 +43,9 @@ public class ImagesController implements Initializable {
 
     @FXML
     private CheckBox usedImagesCheckbox;
+
+    @FXML
+    private VBox notificationBox;
 
     @FXML
     private TableColumn<ImageScene,String> idColumn;
@@ -121,6 +132,14 @@ public class ImagesController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        VolumesController volumesController = loader.getController();
+        volumesController.refreshVolumes();
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
@@ -166,8 +185,39 @@ public class ImagesController implements Initializable {
                 .uri(new URI("http://localhost:8080/api/images/create/" + image.getName()))
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Success", "Container created successfully");
+        } else {
+            showNotification("Error", "Container creation failed");
+        }
+
         image.setStatus("In use");
         refreshImages();
+    }
+
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            Popup notification = new Popup();
+
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+
+            notification.getContent().add(box);
+
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
     }
 }

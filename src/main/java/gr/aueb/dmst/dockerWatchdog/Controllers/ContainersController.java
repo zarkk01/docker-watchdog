@@ -3,10 +3,12 @@ package gr.aueb.dmst.dockerWatchdog.Controllers;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -30,9 +32,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 
 import javafx.scene.control.Button;
-
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
@@ -61,6 +66,9 @@ public class ContainersController implements Initializable {
     private TableColumn<InstanceScene, Void> startButtonColumn;
     @FXML
     private TableColumn<InstanceScene, Void> stopButtonColumn;
+
+    @FXML
+    private VBox notificationBox;
 
     @FXML
     public TextField datetimeTextField;
@@ -230,6 +238,14 @@ public class ContainersController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        VolumesController volumesController = loader.getController();
+        volumesController.refreshVolumes();
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
@@ -239,7 +255,11 @@ public class ContainersController implements Initializable {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + instance.getName() + " has started.");
+        }
     }
 
     private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
@@ -248,7 +268,11 @@ public class ContainersController implements Initializable {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Container Event", "Container " + instance.getName() + " has stopped.");
+        }
     }
 
     public void refreshInstances(){
@@ -314,5 +338,28 @@ public class ContainersController implements Initializable {
         } catch (Exception ex) {
             System.out.println("Error occurred: " + ex.getMessage());
         }
+    }
+
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            Popup notification = new Popup();
+
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+
+            notification.getContent().add(box);
+
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
     }
 }

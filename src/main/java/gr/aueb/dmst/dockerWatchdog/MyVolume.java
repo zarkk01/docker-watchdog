@@ -46,6 +46,10 @@ public class MyVolume {
         this.containerNamesUsing = containerNamesUsing;
     }
 
+    public void removeContainerNameUsing(String containerName) {
+        this.containerNamesUsing.remove(containerName);
+    }
+
     public static MyVolume getVolumeByName(String name) {
         MyVolume volumeToReturn = null;
         for (MyVolume volume: Main.myVolumesList) {
