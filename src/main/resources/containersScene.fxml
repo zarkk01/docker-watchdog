@@ -71,7 +71,7 @@
             <Label fx:id="metricsDoneLabel" layoutX="19.0" layoutY="597.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="#4a2929" />
             <Label fx:id="runningInstancesLabel" layoutX="18.0" layoutY="614.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
             <CheckBox fx:id="runningInstancesCheckbox" layoutX="18.0" layoutY="531.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
-            <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bebab3;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
                      <font>
@@ -80,16 +80,16 @@
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #5cb25d;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label fx:id="runningContainersText" layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
+                  <Label fx:id="runningContainersText" alignment="CENTER" layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
                      <font>
                         <Font size="90.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bc2023;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label fx:id="stoppedContainersText" layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
                      <font>

@@ -85,4 +85,12 @@
     -fx-text-fill: white; /* Set the text color to white */
 }
 
+.default-color0.chart-series-line {
+    -fx-stroke: #81c483;
+}
+.default-color0.chart-line-symbol {
+    -fx-background-color: #81c483, white;
+}
+
+
 

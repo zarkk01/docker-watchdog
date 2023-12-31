@@ -49,7 +49,6 @@ import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class IndividualContainerController {
-
     @FXML
     private SplitPane infoCard;
 
@@ -71,6 +70,9 @@ public class IndividualContainerController {
     private VBox notificationBox;
     @FXML
     private Button backButton;
+
+    @FXML
+    public Label logsLabel;
 
     @FXML
     TextArea textArea;
@@ -120,7 +122,7 @@ public class IndividualContainerController {
         int prefixLen = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpPrefixLen();
         String gateway = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getGateway();
         headTextContainer.setText("Container: " + instance.getName());
-        containerIdLabel.setText(instance.getId());
+        containerIdLabel.setText("ID : " + instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
@@ -131,6 +133,10 @@ public class IndividualContainerController {
 
         individualCpuSeries = new XYChart.Series<>();
         individualCpuChart.getData().add(individualCpuSeries);
+        individualCpuChart.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
+        individualCpuChart.setTitle("CPU Usage of " + this.instanceScene.getName() + " in %");
+
+        logsLabel.setText("Logs of " + instance.getName());
 
         Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
         ImageView view = new ImageView(img);

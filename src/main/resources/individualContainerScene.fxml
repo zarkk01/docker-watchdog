@@ -62,12 +62,12 @@
                                             <children>
                                                 <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" />
                                     <VBox fx:id="notificationBox" layoutX="251.0" layoutY="66.0" prefHeight="76.0" prefWidth="177.0" />
-                                    <LineChart fx:id="individualCpuChart" layoutX="96.0" layoutY="25.0" prefHeight="277.0" prefWidth="447.0" title="CPU Usage of &quot;containerName&quot; in %">
+                                    <LineChart fx:id="individualCpuChart" layoutX="96.0" layoutY="25.0" prefHeight="277.0" prefWidth="447.0">
                                       <xAxis>
                                         <CategoryAxis side="BOTTOM" />
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis side="LEFT" upperBound="1.5" />
+                                        <NumberAxis side="LEFT" upperBound="2.75" />
                                       </yAxis>
                                     </LineChart>
                                             </children>
@@ -85,15 +85,15 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" text="Start" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0" text="Stop" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0" text="Pause" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="160.0" text="Unpause" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="56.0" prefWidth="149.0" text="Restart" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="57.0" prefWidth="161.0" text="Rename" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" style="-fx-background-color: #4272F1;"  text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0"  style="-fx-background-color: #4272F1;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="pauseContainerButton"  mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0"  style="-fx-background-color: #4272F1;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="160.0" style="-fx-background-color: #4272F1;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="56.0" prefWidth="149.0" style="-fx-background-color: #4272F1;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="57.0" prefWidth="161.0" style="-fx-background-color: #4272F1;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
-                                                <Button fx:id="removeButton" layoutX="107.0" layoutY="233.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="142.0" text="Remove" />
+                                                <Button fx:id="removeButton" layoutX="107.0" layoutY="233.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="142.0" style="-fx-background-color: #4272F1;" text="Remove" textFill="WHITE" />
                                             </children>
                                         </AnchorPane>
                                     </items>
@@ -140,7 +140,12 @@
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                             <children>
-                                                <TextArea fx:id="textArea" layoutX="2.0" layoutY="2.0" prefHeight="328.0" prefWidth="676.0" />
+                                                <TextArea fx:id="textArea" layoutX="-1.0" layoutY="30.0" prefHeight="300.0" prefWidth="679.0" />
+                                    <Label fx:id="logsLabel" layoutX="5.0" layoutY="-2.0" prefHeight="33.0" prefWidth="396.0" text="Logs of ">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
                                             </children>
                                         </AnchorPane>
                                     </items>
