@@ -103,18 +103,33 @@ public class ContainersController implements Initializable {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
-                        ImageView view = new ImageView(img);
+                        private final Button btnStart = new Button();
+                        private final Button btnStop = new Button();
+                        Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
+                        Image imgStop = new Image(getClass().getResource("/images/stop.png").toExternalForm());
+                        ImageView viewStart = new ImageView(imgStart);
+                        ImageView viewStop = new ImageView(imgStop);
 
                         {
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(view);
-                            btn.setOnAction((ActionEvent event) -> {
+                            viewStart.setFitHeight(20);
+                            viewStart.setPreserveRatio(true);
+                            btnStart.setGraphic(viewStart);
+                            btnStart.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
                                     startContainer(instance);
+                                } catch (IOException | InterruptedException | URISyntaxException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+
+                            viewStop.setFitHeight(20);
+                            viewStop.setPreserveRatio(true);
+                            btnStop.setGraphic(viewStop);
+                            btnStop.setOnAction((ActionEvent event) -> {
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                try {
+                                    stopContainer(instance);
                                 } catch (IOException | InterruptedException | URISyntaxException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -127,7 +142,14 @@ public class ContainersController implements Initializable {
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                setGraphic(btn);
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                if ("running".equals(instance.getStatus())) {
+                                    // If the container is running, show only the stop button
+                                    setGraphic(btnStop);
+                                } else {
+                                    // If the container is not running, show only the start button
+                                    setGraphic(btnStart);
+                                }
                             }
                         }
                     };
@@ -137,7 +159,7 @@ public class ContainersController implements Initializable {
 
             startButtonColumn.setCellFactory(startCellFactory);
 
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> stopCellFactory = new Callback<>() {
+/*            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> stopCellFactory = new Callback<>() {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
@@ -169,7 +191,13 @@ public class ContainersController implements Initializable {
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                setGraphic(btn);
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                if ("running".equals(instance.getStatus())) {
+                                    // If the container is running, show only the stop button
+                                    setGraphic(btn);
+                                } else {
+                                    setGraphic(null);
+                                }
                             }
                         }
                     };
@@ -178,7 +206,7 @@ public class ContainersController implements Initializable {
             };
 
             stopButtonColumn.setCellFactory(stopCellFactory);
-
+*/
             instancesTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
                     InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
