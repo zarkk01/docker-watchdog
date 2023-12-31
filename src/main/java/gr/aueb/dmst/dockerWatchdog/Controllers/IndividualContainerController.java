@@ -16,6 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,6 +27,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -34,13 +38,17 @@ import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
-public class IndividualContainerController implements Initializable {
+public class IndividualContainerController {
 
     @FXML
     private SplitPane infoCard;
@@ -67,20 +75,13 @@ public class IndividualContainerController implements Initializable {
     @FXML
     TextArea textArea;
 
+    @FXML
+    private LineChart<String,Number> individualCpuChart;
+    private XYChart.Series<String, Number> individualCpuSeries;
+
     private InstanceScene instanceScene;
     private Stage stage;
     private Parent root;
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
-        ImageView view = new ImageView(img);
-        view.setFitHeight(20);
-        view.setPreserveRatio(true);
-
-        backButton.setGraphic(view);
-
-    }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
@@ -119,7 +120,7 @@ public class IndividualContainerController implements Initializable {
         int prefixLen = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpPrefixLen();
         String gateway = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getGateway();
         headTextContainer.setText("Container: " + instance.getName());
-        containerIdLabel.setText("ID: " + instance.getId());
+        containerIdLabel.setText(instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
@@ -127,6 +128,32 @@ public class IndividualContainerController implements Initializable {
         containerGatewayLabel.setText("Gateway:" + gateway);
         containerLogInfoAppender(instance);
         infoCard.setVisible(true);
+
+        individualCpuSeries = new XYChart.Series<>();
+        individualCpuChart.getData().add(individualCpuSeries);
+
+        Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
+        ImageView view = new ImageView(img);
+        view.setFitHeight(20);
+        view.setPreserveRatio(true);
+
+        backButton.setGraphic(view);
+
+        try {
+            updateIndividualCpuChart();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
+            try {
+                updateIndividualCpuChart();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
     public void containerLogInfoAppender(InstanceScene instance) {
@@ -277,31 +304,65 @@ public class IndividualContainerController implements Initializable {
 
     public void showNotification(String title, String content) {
         Platform.runLater(() -> {
-            // Create a Popup
             Popup notification = new Popup();
 
-            // Create a Label for the title and content
             Label titleLabel = new Label(title);
             titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
             Label contentLabel = new Label(content);
             contentLabel.setTextFill(Color.WHITE);
 
-            // Add the Labels to a VBox
             VBox box = new VBox(titleLabel, contentLabel);
             box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
 
-            // Add the VBox to the Popup
             notification.getContent().add(box);
 
-            // Get the screen coordinates of the VBox
             Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
 
-            // Show the Popup at the specified position
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
-            // Set a timeline to hide the Popup after 3 seconds
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
             timeline.play();
         });
+    }
+
+    public List<InstanceScene> getAllInstances() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/instances"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        JSONArray jsonArray = new JSONArray(response.body());
+        List<InstanceScene> instances = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("name");
+            String image = jsonObject.getString("image");
+            String status = jsonObject.getString("status");
+            Long memoryUsage = jsonObject.getLong("memoryUsage");
+            Long pids = jsonObject.getLong("pids");
+            Double cpuUsage = jsonObject.getDouble("cpuUsage");
+            Double blockI = jsonObject.getDouble("blockI");
+            Double blockO = jsonObject.getDouble("blockO");
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO));
+        }
+        return instances;
+    }
+
+    public void updateIndividualCpuChart() throws Exception {
+        List<InstanceScene> instances = getAllInstances();
+        Double individualCpuUsage = 0.0;
+        for (InstanceScene instance : instances) {
+            if (instance.getId().equals(this.instanceScene.getId())) {
+                individualCpuUsage = instance.getCpuUsage();
+            }
+        }
+        LocalDateTime currentTime = LocalDateTime.now();
+        String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        if(individualCpuUsage*100>20){
+            updateIndividualCpuChart();
+        } else {
+            individualCpuSeries.getData().add(new XYChart.Data<>(formattedTime, individualCpuUsage*100));
+        }
     }
 }

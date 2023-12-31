@@ -15,4 +15,7 @@ public interface InstancesRepository extends JpaRepository<Instance, Long> {
 
     @Query("SELECT count(i) FROM Instance i WHERE i.metricid = :metricid AND i.status = 'running'")
     long countByMetricIdAndStatusRunning(@Param("metricid") Integer metricid);
+
+    @Query("SELECT i FROM Instance i WHERE i.id = :containerid")
+    Instance findByContainerId(@Param("containerid") String containerid);
 }

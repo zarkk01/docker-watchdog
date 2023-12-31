@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
@@ -59,6 +62,14 @@
                                             <children>
                                                 <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" />
                                     <VBox fx:id="notificationBox" layoutX="251.0" layoutY="66.0" prefHeight="76.0" prefWidth="177.0" />
+                                    <LineChart fx:id="individualCpuChart" layoutX="96.0" layoutY="25.0" prefHeight="277.0" prefWidth="447.0" title="CPU Usage of &quot;containerName&quot; in %">
+                                      <xAxis>
+                                        <CategoryAxis side="BOTTOM" />
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis side="LEFT" upperBound="1.5" />
+                                      </yAxis>
+                                    </LineChart>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="331.0" prefWidth="378.0">
@@ -95,22 +106,22 @@
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                             <children>
-                                                <Label fx:id="containerIdLabel" layoutX="8.0" layoutY="5.0" prefHeight="50.0" prefWidth="281.0" text="id">
+                                                <Label fx:id="containerIdLabel" layoutX="8.0" layoutY="5.0" prefHeight="50.0" prefWidth="281.0" text="ID ">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerNameLabel" layoutX="6.0" layoutY="56.0" prefHeight="38.0" prefWidth="262.0" text="name">
+                                                <Label fx:id="containerNameLabel" layoutX="6.0" layoutY="56.0" prefHeight="38.0" prefWidth="262.0" text="Name">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerImageLabel" layoutX="7.0" layoutY="158.0" prefHeight="49.0" prefWidth="260.0" text="image">
+                                                <Label fx:id="containerImageLabel" layoutX="7.0" layoutY="158.0" prefHeight="49.0" prefWidth="260.0" text="Image">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerStatusLabel" layoutX="5.0" layoutY="104.0" prefHeight="49.0" prefWidth="261.0" text="status">
+                                                <Label fx:id="containerStatusLabel" layoutX="5.0" layoutY="104.0" prefHeight="49.0" prefWidth="261.0" text="Status">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>

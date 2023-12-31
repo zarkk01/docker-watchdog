@@ -91,4 +91,9 @@ public class DockerController {
         Timestamp chosenDate = Timestamp.valueOf(chosenDateString);
         return dockerService.getMetrics(chosenDate);
     }
+
+    @GetMapping("/containers/{containerId}/info")
+    public Instance getInstanceInfo(@PathVariable("containerId") String containerId) {
+        return dockerService.getInstanceInfo(containerId);
+    }
 }

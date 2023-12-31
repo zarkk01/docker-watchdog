@@ -45,7 +45,6 @@ public class GraphicsController implements Initializable {
     private XYChart.Series<String, Number> memorySeries;
 
     private LocalDateTime currentTime;
-
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         startCharts();
