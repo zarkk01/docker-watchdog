@@ -49,6 +49,7 @@ import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class IndividualContainerController {
+    private static final String BASE_URL = "http://localhost:8080/api/";
     @FXML
     private SplitPane infoCard;
 
@@ -85,6 +86,13 @@ public class IndividualContainerController {
     private Stage stage;
     private Parent root;
 
+    /**
+     * Changes the scene to the specified FXML file.
+     *
+     * @param actionEvent The ActionEvent triggering the scene change.
+     * @param fxmlFile    The name of the FXML file to load.
+     * @throws IOException If an I/O error occurs during loading.
+     */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -116,6 +124,11 @@ public class IndividualContainerController {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
 
+    /**
+     * Handles a double click on a container instance.
+     *
+     * @param instance The selected container instance.
+     */
     public void onInstanceDoubleClick(InstanceScene instance) {
         this.instanceScene = instance;
         String subnet = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpAddress();
@@ -162,6 +175,11 @@ public class IndividualContainerController {
         timeline.play();
     }
 
+    /**
+     * Appends log information to the text area for the specified container instance.
+     *
+     * @param instance The container instance.
+     */
     public void containerLogInfoAppender(InstanceScene instance) {
         // Specify container ID or name
         String containerId = instance.getId();
@@ -185,6 +203,15 @@ public class IndividualContainerController {
                 });
     }
 
+    /**
+     * Removes the selected container.
+     *
+     * @param actionEvent The ActionEvent triggering the removal.
+     * @throws IOException            If an I/O error occurs.
+     * @throws InterruptedException   If the operation is interrupted.
+     * @throws URISyntaxException      If the URI is invalid.
+     */
+
     public void removeContainer(ActionEvent actionEvent) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/delete"))
@@ -196,6 +223,13 @@ public class IndividualContainerController {
         changeScene(actionEvent, "containersScene.fxml");
     }
 
+    /**
+     * Pauses the selected container.
+     *
+     * @throws IOException           If an I/O error occurs.
+     * @throws InterruptedException  If the operation is interrupted.
+     * @throws URISyntaxException     If the URI is invalid.
+     */
     public void pauseContainer() throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/" + this.instanceScene.getId() + "/pause"))
@@ -308,6 +342,14 @@ public class IndividualContainerController {
 
     }
 
+
+
+    /**
+     * Shows a notification with the specified title and content.
+     *
+     * @param title   The title of the notification.
+     * @param content The content of the notification.
+     */
     public void showNotification(String title, String content) {
         Platform.runLater(() -> {
             Popup notification = new Popup();
@@ -333,7 +375,7 @@ public class IndividualContainerController {
 
     public List<InstanceScene> getAllInstances() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/instances"))
+                .uri(new URI(BASE_URL + "containers/instances"))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -355,6 +397,11 @@ public class IndividualContainerController {
         return instances;
     }
 
+    /**
+     * Updates the individual CPU chart for the selected container instance.
+     *
+     * @throws Exception If an error occurs during the HTTP request.
+     */
     public void updateIndividualCpuChart() throws Exception {
         List<InstanceScene> instances = getAllInstances();
         Double individualCpuUsage = 0.0;

@@ -10,12 +10,14 @@ import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import gr.aueb.dmst.dockerWatchdog.Repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class DockerService {
 
     private final InstancesRepository instanceRepository;
@@ -23,7 +25,10 @@ public class DockerService {
     private final ImagesRepository imagesRepository;
     private final VolumesRepository volumesRepository;
 
-    public DockerService(InstancesRepository instanceRepository, MetricsRepository metricsRepository, ImagesRepository imagesRepository, VolumesRepository volumesRepository) {
+    public DockerService(InstancesRepository instanceRepository,
+                         MetricsRepository metricsRepository,
+                         ImagesRepository imagesRepository,
+                         VolumesRepository volumesRepository) {
         this.instanceRepository = instanceRepository;
         this.metricsRepository = metricsRepository;
         this.imagesRepository = imagesRepository;
@@ -88,7 +93,8 @@ public class DockerService {
         try {
             ExecutorThread.runContainer(imageName);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 }

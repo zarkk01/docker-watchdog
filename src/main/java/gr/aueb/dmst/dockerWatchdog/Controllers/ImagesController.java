@@ -61,13 +61,16 @@ public class ImagesController implements Initializable {
     private Stage stage;
     private Parent root;
 
+    //Initialize the controller
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            //Set up table columns
             idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+            //Set up the create container column with a button
             Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startCellFactory = new Callback<>() {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
@@ -81,6 +84,7 @@ public class ImagesController implements Initializable {
                             view.setPreserveRatio(true);
                             btn.setGraphic(view);
                             btn.setOnAction((ActionEvent event) -> {
+                                // Handle button click to create a container
                                 ImageScene image = getTableView().getItems().get(getIndex());
                                 try {
                                     createContainer(image);
@@ -106,6 +110,7 @@ public class ImagesController implements Initializable {
 
             createContainerCollumn.setCellFactory(startCellFactory);
 
+            // Initialize the table and set up event listeners
             refreshImages();
 
             usedImagesCheckbox.setOnAction(event -> {
@@ -116,6 +121,7 @@ public class ImagesController implements Initializable {
         }
     }
 
+    // Change the scene to the specified FXML file
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
@@ -123,14 +129,17 @@ public class ImagesController implements Initializable {
         stage.show();
     }
 
+    // Navigate to the Containers scene
     public void changeToContainersScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "containersScene.fxml");
     }
 
+    // Navigate to the Graphics scene
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
 
+    // Navigate to the Volumes scene
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
         try {
@@ -143,6 +152,7 @@ public class ImagesController implements Initializable {
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
+    // Refresh the list of images based on the checkbox selection
     public void refreshImages() {
         try {
             List<ImageScene> images = getAllImages();
@@ -161,6 +171,7 @@ public class ImagesController implements Initializable {
         }
     }
 
+    // Get a list of all images
     public List<ImageScene> getAllImages() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/images"))
@@ -180,6 +191,7 @@ public class ImagesController implements Initializable {
         return images;
     }
 
+    // Create a container based on the selected image
     public void createContainer(ImageScene image) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/images/create/" + image.getName()))
@@ -198,6 +210,7 @@ public class ImagesController implements Initializable {
         refreshImages();
     }
 
+    // Display a notification to the user
     public void showNotification(String title, String content) {
         Platform.runLater(() -> {
             Popup notification = new Popup();
