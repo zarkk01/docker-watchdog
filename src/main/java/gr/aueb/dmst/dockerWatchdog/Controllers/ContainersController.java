@@ -16,6 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -80,6 +81,13 @@ public class ContainersController implements Initializable {
 
     @FXML
     public CheckBox runningInstancesCheckbox;
+
+    @FXML
+    public Label totalContainersText;
+    @FXML
+    public Label runningContainersText;
+    @FXML
+    public Label stoppedContainersText;
 
     private Stage stage;
     private Parent root;
@@ -233,6 +241,7 @@ public class ContainersController implements Initializable {
         if (response.statusCode() == 200) {
             showNotification("Container Event", "Container " + instance.getName() + " has started.");
         }
+        refreshInstances();
     }
 
     private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
@@ -246,13 +255,18 @@ public class ContainersController implements Initializable {
         if (response.statusCode() == 200) {
             showNotification("Container Event", "Container " + instance.getName() + " has stopped.");
         }
+        refreshInstances();
     }
 
     public void refreshInstances(){
         try {
             List<InstanceScene> instances = getAllInstances();
             instancesTableView.getItems().clear();
+            int totalContainers = instances.size();
+            int runningContainers = 0;
+            int stoppedContainers = 0;
             for(InstanceScene instance : instances) {
+                int running = instance.getStatus().equals("running") ? runningContainers++ : stoppedContainers++;
                 if (runningInstancesCheckbox.isSelected()) {
                     if (instance.getStatus().equals("running")) {
                         instancesTableView.getItems().add(instance);
@@ -261,6 +275,9 @@ public class ContainersController implements Initializable {
                     instancesTableView.getItems().add(instance);
                 }
             }
+            totalContainersText.setText(String.valueOf(totalContainers));
+            runningContainersText.setText(String.valueOf(runningContainers));
+            stoppedContainersText.setText(String.valueOf(stoppedContainers));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

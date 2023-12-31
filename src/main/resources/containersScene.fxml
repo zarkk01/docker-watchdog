@@ -71,10 +71,9 @@
             <Label fx:id="metricsDoneLabel" layoutX="19.0" layoutY="597.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="#4a2929" />
             <Label fx:id="runningInstancesLabel" layoutX="18.0" layoutY="614.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
             <CheckBox fx:id="runningInstancesCheckbox" layoutX="18.0" layoutY="531.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
-            <VBox fx:id="notificationBox" layoutX="554.0" layoutY="572.0" prefHeight="52.0" prefWidth="167.0" />
             <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bebab3;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
+                  <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
                      <font>
                         <Font size="90.0" />
                      </font>
@@ -83,7 +82,7 @@
             </Pane>
             <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #5cb25d;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
+                  <Label fx:id="runningContainersText" layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
                      <font>
                         <Font size="90.0" />
                      </font>
@@ -92,24 +91,24 @@
             </Pane>
             <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #bc2023;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
+                  <Label fx:id="stoppedContainersText" layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
                      <font>
                         <Font size="90.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Text fill="#3c8acf" layoutX="120.0" layoutY="331.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
+            <Text fill="#3c8acf" layoutX="118.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
-            <Text fill="#3c8acf" layoutX="394.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
+            <Text fill="#3c8acf" layoutX="394.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
-            <Text fill="#3c8acf" layoutX="686.0" layoutY="330.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
+            <Text fill="#3c8acf" layoutX="686.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
@@ -125,6 +124,7 @@
                   <Font size="22.0" />
                </font>
             </Text>
+            <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
          </children>
       </HBox>
    </top>
