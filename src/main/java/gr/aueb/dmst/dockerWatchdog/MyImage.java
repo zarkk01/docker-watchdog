@@ -20,8 +20,9 @@ public class MyImage {
     // Method toString that returns a string with the values of the instance variables
     @Override
     public String toString() {
-        return "Name = " + name + " , ID = " + id.substring(7) + " , Size = " + String.format("%.2f", (double) size / (1024 * 1024)) + " MB" + " , Status = " + status;
+        return String.format("Name = %s, ID = %s, Size = %.2f MB, Status = %s", name, id.substring(7), (double) size / (1024 * 1024), status);
     }
+
 
     // Getter for id
     public String getId() {
@@ -48,21 +49,31 @@ public class MyImage {
         this.status = status;
     }
 
-    public static MyImage getImageByName(String name){
-        for(MyImage image : Main.myImagesList){
-            if(image.getName().equals(name)){
-                return image;
-            }
-        }
-        return null;
+
+    /**
+     * Retrieves a MyImage instance from the myImagesList based on its name.
+     *
+     * @param name The name of the image to search for.
+     * @return The MyImage instance with the specified name, or null if not found.
+     */
+    public static MyImage getImageByName(String name) {
+        return Main.myImagesList.stream()
+                .filter(image -> image.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
-    public static MyImage getImageByID(String id){
-        for(MyImage image : Main.myImagesList){
-            if(image.getId().equals(id)){
-                return image;
-            }
-        }
-        return null;
+    /**
+     * Retrieves a MyImage instance from the myImagesList based on its ID.
+     *
+     * @param id The ID of the image to search for.
+     * @return The MyImage instance with the specified ID, or null if not found.
+     */
+    public static MyImage getImageByID(String id) {
+        return Main.myImagesList.stream()
+                .filter(image -> image.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
+
 }

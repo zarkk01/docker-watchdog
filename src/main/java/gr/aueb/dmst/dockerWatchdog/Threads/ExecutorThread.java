@@ -123,39 +123,39 @@ public class ExecutorThread implements Runnable {
     }
 
     // Method to rename a container
-   public static void renameContainer(String containerId, String newName) {
-       try {
-           // Rename the specified container
-           Main.dockerClient.renameContainerCmd(containerId)
-                   .withName(newName)
-                   .exec();
-           System.out.println("Container renamed successfully.");
-       } catch (ConflictException e) {
-           // If there is a container with the same name
-           System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
-       }
-   }
+    public static void renameContainer(String containerId, String newName) {
+        try {
+            // Rename the specified container
+            Main.dockerClient.renameContainerCmd(containerId)
+                    .withName(newName)
+                    .exec();
+            System.out.println("Container renamed successfully.");
+        } catch (ConflictException e) {
+            // If there is a container with the same name
+            System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+        }
+    }
 
     // Method to run a container
     public static void runContainer(String imageName) throws InterruptedException {
 
-            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
+        Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
 
 //            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
 //            Ports portBindings = new Ports();
 //            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
 
-            CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
-                    .withCmd("sleep", "infinity")
+        CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
+                .withCmd("sleep", "infinity")
 //                    .withExposedPorts(tcp22)
 //                    .withPortBindings(portBindings)
-                    .exec();
+                .exec();
 
-            // Create and start a container based on the pulled image
-            Main.dockerClient.startContainerCmd(container.getId()).exec();
+        // Create and start a container based on the pulled image
+        Main.dockerClient.startContainerCmd(container.getId()).exec();
 
-            // Print the container ID
-            System.out.println("Container started and running successfully. Container ID: " + container.getId());
+        // Print the container ID
+        System.out.println("Container started and running successfully. Container ID: " + container.getId());
     }
 
     // Method to pull an image
