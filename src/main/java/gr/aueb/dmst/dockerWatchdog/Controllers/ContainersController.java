@@ -64,9 +64,7 @@ public class ContainersController implements Initializable {
     @FXML
     public TableColumn<InstanceScene, String> blockIColumn;
     @FXML
-    private TableColumn<InstanceScene, Void> startButtonColumn;
-    @FXML
-    private TableColumn<InstanceScene, Void> stopButtonColumn;
+    private TableColumn<InstanceScene, Void> actionButtonColumn;
 
     @FXML
     private VBox notificationBox;
@@ -99,7 +97,7 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
 
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> startCellFactory = new Callback<>() {
+            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
@@ -157,56 +155,8 @@ public class ContainersController implements Initializable {
                 }
             };
 
-            startButtonColumn.setCellFactory(startCellFactory);
+            actionButtonColumn.setCellFactory(actionCellFactory);
 
-/*            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> stopCellFactory = new Callback<>() {
-                @Override
-                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
-                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-
-                        //Creating a graphic (image)
-                        Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
-                        ImageView view = new ImageView(img);
-
-
-
-                        {
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(view);
-                            btn.setOnAction((ActionEvent event) -> {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                try {
-                                    stopContainer(instance);
-                                } catch (IOException | InterruptedException | URISyntaxException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                if ("running".equals(instance.getStatus())) {
-                                    // If the container is running, show only the stop button
-                                    setGraphic(btn);
-                                } else {
-                                    setGraphic(null);
-                                }
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
-
-            stopButtonColumn.setCellFactory(stopCellFactory);
-*/
             instancesTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
                     InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
