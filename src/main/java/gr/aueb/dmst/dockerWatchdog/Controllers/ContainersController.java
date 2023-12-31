@@ -64,12 +64,13 @@ public class ContainersController implements Initializable {
     @FXML
     public TableColumn<InstanceScene, String> blockIColumn;
     @FXML
-    private TableColumn<InstanceScene, Void> startButtonColumn;
-    @FXML
-    private TableColumn<InstanceScene, Void> stopButtonColumn;
+    private TableColumn<InstanceScene, Void> actionButtonColumn;
 
     @FXML
     private VBox notificationBox;
+
+    @FXML
+    private TextField searchField;
 
     @FXML
     public TextField datetimeTextField;
@@ -82,6 +83,13 @@ public class ContainersController implements Initializable {
 
     @FXML
     public CheckBox runningInstancesCheckbox;
+
+    @FXML
+    public Label totalContainersText;
+    @FXML
+    public Label runningContainersText;
+    @FXML
+    public Label stoppedContainersText;
 
     private Stage stage;
     private Parent root;
@@ -99,19 +107,22 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
 
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> startCellFactory = new Callback<>() {
+            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
-                        ImageView view = new ImageView(img);
+                        private final Button btnStart = new Button();
+                        private final Button btnStop = new Button();
+                        Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
+                        Image imgStop = new Image(getClass().getResource("/images/stop.png").toExternalForm());
+                        ImageView viewStart = new ImageView(imgStart);
+                        ImageView viewStop = new ImageView(imgStop);
 
                         {
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(view);
-                            btn.setOnAction((ActionEvent event) -> {
+                            viewStart.setFitHeight(20);
+                            viewStart.setPreserveRatio(true);
+                            btnStart.setGraphic(viewStart);
+                            btnStart.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
                                     startContainer(instance);
@@ -119,41 +130,11 @@ public class ContainersController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
-                        }
 
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(btn);
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
-
-            startButtonColumn.setCellFactory(startCellFactory);
-
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> stopCellFactory = new Callback<>() {
-                @Override
-                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
-                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-
-                        //Creating a graphic (image)
-                        Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
-                        ImageView view = new ImageView(img);
-
-
-
-                        {
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(view);
-                            btn.setOnAction((ActionEvent event) -> {
+                            viewStop.setFitHeight(20);
+                            viewStop.setPreserveRatio(true);
+                            btnStop.setGraphic(viewStop);
+                            btnStop.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
                                     stopContainer(instance);
@@ -169,7 +150,14 @@ public class ContainersController implements Initializable {
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                setGraphic(btn);
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                if ("running".equals(instance.getStatus())) {
+                                    // If the container is running, show only the stop button
+                                    setGraphic(btnStop);
+                                } else {
+                                    // If the container is not running, show only the start button
+                                    setGraphic(btnStart);
+                                }
                             }
                         }
                     };
@@ -177,7 +165,7 @@ public class ContainersController implements Initializable {
                 }
             };
 
-            stopButtonColumn.setCellFactory(stopCellFactory);
+            actionButtonColumn.setCellFactory(actionCellFactory);
 
             instancesTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
@@ -212,6 +200,7 @@ public class ContainersController implements Initializable {
             runningInstancesCheckbox.setOnAction(event -> {
                 refreshInstances();
             });
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -255,6 +244,7 @@ public class ContainersController implements Initializable {
         if (response.statusCode() == 200) {
             showNotification("Container Event", "Container " + instance.getName() + " has started.");
         }
+        refreshInstances();
     }
 
     private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
@@ -268,21 +258,32 @@ public class ContainersController implements Initializable {
         if (response.statusCode() == 200) {
             showNotification("Container Event", "Container " + instance.getName() + " has stopped.");
         }
+        refreshInstances();
     }
 
     public void refreshInstances(){
         try {
             List<InstanceScene> instances = getAllInstances();
             instancesTableView.getItems().clear();
+            int totalContainers = instances.size();
+            int runningContainers = 0;
+            int stoppedContainers = 0;
+
             for(InstanceScene instance : instances) {
-                if (runningInstancesCheckbox.isSelected()) {
-                    if (instance.getStatus().equals("running")) {
+                int running = instance.getStatus().equals("running") ? runningContainers++ : stoppedContainers++;
+                if (instance.getName().contains(searchField.getText())) {
+                    if (runningInstancesCheckbox.isSelected()) {
+                        if (instance.getStatus().equals("running")) {
+                            instancesTableView.getItems().add(instance);
+                        }
+                    } else {
                         instancesTableView.getItems().add(instance);
                     }
-                } else {
-                    instancesTableView.getItems().add(instance);
                 }
             }
+            totalContainersText.setText(String.valueOf(totalContainers));
+            runningContainersText.setText(String.valueOf(runningContainers));
+            stoppedContainersText.setText(String.valueOf(stoppedContainers));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
