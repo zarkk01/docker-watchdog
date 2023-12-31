@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -69,6 +68,9 @@ public class ContainersController implements Initializable {
 
     @FXML
     private VBox notificationBox;
+
+    @FXML
+    private TextField searchField;
 
     @FXML
     public TextField datetimeTextField;
@@ -198,6 +200,7 @@ public class ContainersController implements Initializable {
             runningInstancesCheckbox.setOnAction(event -> {
                 refreshInstances();
             });
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -265,14 +268,17 @@ public class ContainersController implements Initializable {
             int totalContainers = instances.size();
             int runningContainers = 0;
             int stoppedContainers = 0;
+
             for(InstanceScene instance : instances) {
                 int running = instance.getStatus().equals("running") ? runningContainers++ : stoppedContainers++;
-                if (runningInstancesCheckbox.isSelected()) {
-                    if (instance.getStatus().equals("running")) {
+                if (instance.getName().contains(searchField.getText())) {
+                    if (runningInstancesCheckbox.isSelected()) {
+                        if (instance.getStatus().equals("running")) {
+                            instancesTableView.getItems().add(instance);
+                        }
+                    } else {
                         instancesTableView.getItems().add(instance);
                     }
-                } else {
-                    instancesTableView.getItems().add(instance);
                 }
             }
             totalContainersText.setText(String.valueOf(totalContainers));

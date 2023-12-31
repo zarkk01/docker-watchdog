@@ -113,6 +113,7 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
+            <TextField fx:id="searchField" layoutX="10.0" layoutY="15.0" promptText="Search for a container..." />
          </children>
       </AnchorPane>
    </center>
