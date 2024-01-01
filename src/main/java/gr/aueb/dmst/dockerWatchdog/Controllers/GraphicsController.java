@@ -128,7 +128,9 @@ public class GraphicsController implements Initializable {
     }
 
     public void updateCharts() throws Exception {
+
         List<InstanceScene> instances = getAllInstances();
+
         double totalCpuUsage = 0;
         currentTime = LocalDateTime.now();
         String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -148,10 +150,11 @@ public class GraphicsController implements Initializable {
         }
         memorySeries.getData().add(new XYChart.Data<>(formatTime, totalMemoryUsage));
 
-        List<InstanceScene> instan = getAllInstances();
-        for (InstanceScene instance : instan) {
-            XYChart.Data<String, Number> data = new XYChart.Data<>(instance.getName(), instance.getPids());
-            pidsSeries.getData().add(data);
+        pidsChart.getData().clear();
+//        pidsSeries = new XYChart.Series<>();
+        for (InstanceScene instance : instances) {
+            pidsSeries.getData().add(new XYChart.Data<>(instance.getName(), instance.getPids()));
         }
+        pidsChart.getData().add(pidsSeries);
     }
 }
