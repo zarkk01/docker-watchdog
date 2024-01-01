@@ -12,6 +12,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -370,7 +371,7 @@ public class ContainersController implements Initializable {
     }
 
 
-    public void handleUploadFile() {
+    public void handleUploadFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
         fileChooser.getExtensionFilters().add(extFilter);
@@ -381,17 +382,15 @@ public class ContainersController implements Initializable {
         if (file != null) {
             try {
                 String dockerComposeFilePath = file.getAbsolutePath();
-                ProcessBuilder processBuilder = new ProcessBuilder("docker-compose", "-f", dockerComposeFilePath, "up", "-d");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/composeScene.fxml"));
+                Parent root = loader.load();
 
-                Process process = processBuilder.start();
+                ComposeController controller = loader.getController();
+                controller.setYamlFilePath(dockerComposeFilePath);
 
-                int exitCode = process.waitFor();
-
-                if (exitCode == 0) {
-                    System.out.println("Docker Compose file ran successfully");
-                } else {
-                    System.out.println("Error running Docker Compose file");
-                }
+                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
