@@ -114,6 +114,7 @@
                </font>
             </Text>
             <TextField fx:id="searchField" layoutX="10.0" layoutY="15.0" promptText="Search for a container..." />
+            <Button fx:id="uploadButton" layoutX="357.0" layoutY="551.0" mnemonicParsing="false" onAction="#handleUploadFile" text="Upload" />
          </children>
       </AnchorPane>
    </center>

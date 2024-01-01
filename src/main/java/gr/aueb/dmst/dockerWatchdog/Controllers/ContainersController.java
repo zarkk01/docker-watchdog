@@ -16,19 +16,23 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,6 +45,9 @@ import javafx.stage.Popup;
 import javafx.scene.control.Button;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+import okhttp3.*;
+import org.yaml.snakeyaml.Yaml;
+
 
 public class ContainersController implements Initializable {
     @FXML
@@ -90,6 +97,9 @@ public class ContainersController implements Initializable {
     public Label runningContainersText;
     @FXML
     public Label stoppedContainersText;
+
+    @FXML
+    public Button uploadButton;
 
     private Stage stage;
     private Parent root;
@@ -357,5 +367,34 @@ public class ContainersController implements Initializable {
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
             timeline.play();
         });
+    }
+
+
+    public void handleUploadFile() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        Stage stage = (Stage) uploadButton.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file != null) {
+            try {
+                String dockerComposeFilePath = file.getAbsolutePath();
+                ProcessBuilder processBuilder = new ProcessBuilder("docker-compose", "-f", dockerComposeFilePath, "up", "-d");
+
+                Process process = processBuilder.start();
+
+                int exitCode = process.waitFor();
+
+                if (exitCode == 0) {
+                    System.out.println("Docker Compose file ran successfully");
+                } else {
+                    System.out.println("Error running Docker Compose file");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
