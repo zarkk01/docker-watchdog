@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -27,7 +29,7 @@
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="graphicsButton" onAction="#changeToGraphicsScene" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Graphics" textFill="WHITE">
+                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Graphics" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -43,11 +45,34 @@
     <center>
         <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="BLACK" layoutX="183.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="107.3505859375">
+                <Text fill="BLACK" layoutX="444.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="107.3505859375">
                     <font>
                         <Font size="21.0" />
                     </font>
                 </Text>
+            <TextArea fx:id="podsTextArea" layoutX="14.0" layoutY="88.0" prefHeight="550.0" prefWidth="164.0" />
+            <Label layoutX="68.0" layoutY="56.0" prefHeight="30.0" prefWidth="68.0" text="PODS">
+               <font>
+                  <Font size="24.0" />
+               </font></Label>
+            <TextArea fx:id="servicesTextArea" layoutX="185.0" layoutY="88.0" prefHeight="551.0" prefWidth="180.0" />
+            <Label layoutX="217.0" layoutY="58.0" text="SERVICES">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="deploymentsTextArea" layoutX="374.0" layoutY="87.0" prefHeight="550.0" prefWidth="189.0" />
+            <Label layoutX="382.0" layoutY="58.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="statefulSetsTextArea" layoutX="571.0" layoutY="86.0" prefHeight="551.0" prefWidth="215.0" />
+            <Label layoutX="586.0" layoutY="57.0" text="STATEFUL SETS">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
             </children>
         </AnchorPane>
     </center>

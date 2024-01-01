@@ -3,19 +3,84 @@ package gr.aueb.dmst.dockerWatchdog.Controllers;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Config;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-public class KubernetesController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class KubernetesController implements Initializable {
     private Stage stage;
     private Parent root;
+    @FXML
+    private TextArea podsTextArea;
+    @FXML
+    private TextArea servicesTextArea;
+    @FXML
+    private TextArea deploymentsTextArea;
+    @FXML
+    private TextArea statefulSetsTextArea;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            ApiClient client = Config.defaultClient();
+            Configuration.setDefaultApiClient(client);
+
+            CoreV1Api api = new CoreV1Api();
+            AppsV1Api appsApi = new AppsV1Api();
+
+            V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null,null,null);
+            StringBuilder podsData = new StringBuilder();
+            for (V1Pod pod : list.getItems()) {
+                podsData.append("Pod Name: ").append(pod.getMetadata().getName()).append("\n");
+                podsData.append("Namespace: ").append(pod.getMetadata().getNamespace()).append("\n");
+                podsData.append("Status: ").append(pod.getStatus().getPhase()).append("\n\n");
+            }
+            podsTextArea.setText(podsData.toString());
+
+            V1ServiceList serviceList = api.listServiceForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
+            StringBuilder servicesData = new StringBuilder();
+            for (V1Service service : serviceList.getItems()) {
+                servicesData.append("Service Name: ").append(service.getMetadata().getName()).append("\n");
+                servicesData.append("Namespace: ").append(service.getMetadata().getNamespace()).append("\n");
+                servicesData.append("Type: ").append(service.getSpec().getType()).append("\n\n");
+            }
+            servicesTextArea.setText(servicesData.toString());
+
+            V1DeploymentList deploymentList = appsApi.listDeploymentForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
+            StringBuilder deploymentsData = new StringBuilder();
+            for (V1Deployment deployment : deploymentList.getItems()) {
+                deploymentsData.append("Deployment Name: ").append(deployment.getMetadata().getName()).append("\n");
+                deploymentsData.append("Namespace: ").append(deployment.getMetadata().getNamespace()).append("\n");
+                deploymentsData.append("Replicas: ").append(deployment.getSpec().getReplicas()).append("\n\n");
+            }
+            deploymentsTextArea.setText(deploymentsData.toString());
+
+            V1StatefulSetList statefulSetList = appsApi.listStatefulSetForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
+            StringBuilder statefulSetsData = new StringBuilder();
+            for (V1StatefulSet statefulSet : statefulSetList.getItems()) {
+                statefulSetsData.append("StatefulSet Name: ").append(statefulSet.getMetadata().getName()).append("\n");
+                statefulSetsData.append("Namespace: ").append(statefulSet.getMetadata().getNamespace()).append("\n");
+                statefulSetsData.append("Replicas: ").append(statefulSet.getSpec().getReplicas()).append("\n\n");
+            }
+            statefulSetsTextArea.setText(statefulSetsData.toString());
+        } catch (ApiException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Changes the scene to the specified FXML file.
      *
@@ -52,17 +117,5 @@ public class KubernetesController {
 
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
-    }
-    public void listPods() {
-        try {
-            ApiClient client = Config.defaultClient();
-            Configuration.setDefaultApiClient(client);
-
-            CoreV1Api api = new CoreV1Api();
-            V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null,null,null);
-            list.getItems().forEach(pod -> System.out.println(pod.getMetadata().getName()));
-        } catch (ApiException | IOException e) {
-            e.printStackTrace();
-        }
     }
 }
