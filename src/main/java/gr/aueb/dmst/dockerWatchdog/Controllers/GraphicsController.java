@@ -151,7 +151,6 @@ public class GraphicsController implements Initializable {
         memorySeries.getData().add(new XYChart.Data<>(formatTime, totalMemoryUsage));
 
         pidsChart.getData().clear();
-//        pidsSeries = new XYChart.Series<>();
         for (InstanceScene instance : instances) {
             pidsSeries.getData().add(new XYChart.Data<>(instance.getName(), instance.getPids()));
         }
