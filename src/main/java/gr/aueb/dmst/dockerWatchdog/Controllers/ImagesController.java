@@ -152,6 +152,10 @@ public class ImagesController implements Initializable {
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "kubernetesScene.fxml");
+    }
+
     // Refresh the list of images based on the checkbox selection
     public void refreshImages() {
         try {

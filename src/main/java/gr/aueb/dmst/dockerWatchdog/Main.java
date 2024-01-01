@@ -7,8 +7,15 @@ import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
 import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.util.Config;
 import javafx.application.Application;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
@@ -31,6 +38,8 @@ public class Main {
 
         try {
 
+            listPods();
+
             // Initiate and start newMonitorThread
             MonitorThread newDockerMonitor = new MonitorThread();
             Thread newMonitorThread = new Thread(newDockerMonitor);
@@ -50,6 +59,19 @@ public class Main {
 
         } catch (Exception e) {
             // Handle exceptions here
+            e.printStackTrace();
+        }
+    }
+
+    public static void listPods() {
+        try {
+            ApiClient client = Config.defaultClient();
+            Configuration.setDefaultApiClient(client);
+
+            CoreV1Api api = new CoreV1Api();
+            V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null,null,null);
+            list.getItems().forEach(pod -> System.out.println(pod.getMetadata().getName()));
+        } catch (ApiException | IOException e) {
             e.printStackTrace();
         }
     }

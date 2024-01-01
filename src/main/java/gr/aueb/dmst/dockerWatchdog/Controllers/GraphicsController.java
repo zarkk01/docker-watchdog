@@ -92,7 +92,7 @@ public class GraphicsController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("volumesScene.fxml"));
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -101,6 +101,10 @@ public class GraphicsController implements Initializable {
         VolumesController volumesController = loader.getController();
         volumesController.refreshVolumes();
         changeScene(actionEvent, "volumesScene.fxml");
+    }
+
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
     public List<InstanceScene> getAllInstances() throws Exception {

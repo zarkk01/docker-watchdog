@@ -64,6 +64,9 @@ public class ComposeController {
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "kubernetesScene.fxml");
+    }
 
     public void setYamlFilePath(String yamlFilePath) {
         this.yamlFilePath = yamlFilePath;

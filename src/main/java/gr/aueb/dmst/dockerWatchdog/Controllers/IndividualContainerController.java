@@ -123,6 +123,9 @@ public class IndividualContainerController {
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
     }
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "kubernetesScene.fxml");
+    }
 
     /**
      * Handles a double click on a container instance.
