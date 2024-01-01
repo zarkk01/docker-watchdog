@@ -10,8 +10,12 @@ public class InstanceScene {
     private Double blockI;
     private Double blockO;
     private String image;
+    private String volumes;
+    private String subnet;
+    private String gateway;
+    private Integer prefixLen;
 
-    public InstanceScene(String id, String name,String image, String status, Long memoryUsage, Long pids, Double cpuUsage, Double blockI, Double blockO) {
+    public InstanceScene(String id, String name,String image, String status, Long memoryUsage, Long pids, Double cpuUsage, Double blockI, Double blockO, String volumes, String subnet, String gateway, Integer prefixLen) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -21,6 +25,10 @@ public class InstanceScene {
         this.cpuUsage = cpuUsage;
         this.blockI = blockI;
         this.blockO = blockO;
+        this.volumes = volumes;
+        this.subnet = subnet;
+        this.gateway = gateway;
+        this.prefixLen = prefixLen;
     }
 
     public Long getMemoryUsage() {
@@ -81,5 +89,35 @@ public class InstanceScene {
     }
     public void setBlockO(Double blockO) {
         this.blockO = blockO;
+    }
+    public String getVolumes() {
+        return volumes;
+    }
+
+    public void setVolumes(String volumes) {
+        this.volumes = volumes;
+    }
+
+    public String getSubnet() {
+        return subnet;
+    }
+
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    public Integer getPrefixLen() {
+        return prefixLen;
+    }
+
+    public void setPrefixLen(Integer prefixLen) {
+        this.prefixLen = prefixLen;
     }
 }

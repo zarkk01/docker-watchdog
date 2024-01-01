@@ -79,6 +79,9 @@ public class DatabaseThread implements Runnable {
                     "blockI DOUBLE, " +
                     "blockO DOUBLE, " +
                     "volumes VARCHAR(750)," +
+                    "subnet VARCHAR(255)," +
+                    "gateway VARCHAR(255)," +
+                    "prefixlen INT," +
                     "metricid INT, " +
                     "FOREIGN KEY(metricid) REFERENCES Metrics(id), " +
                     "PRIMARY KEY(id,metricid))";
@@ -92,11 +95,11 @@ public class DatabaseThread implements Runnable {
                     volumesUsing += volumeName + ",";
                 }
                 // Insert or update the instance in the Instances table
-                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, volumes, metricid) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?) " +
+                String upsertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, volumes, subnet, gateway, prefixlen, metricid) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?) " +
                         "ON DUPLICATE KEY UPDATE name = VALUES(name), image = VALUES(image), status = VALUES(status), " +
                         "memoryusage = VALUES(memoryusage), pids = VALUES(pids), cpuUsage = VALUES(cpuusage), blockI = VALUES(blockI), " +
-                        "blockO = VALUES(blockO), volumes = VALUES(volumes), metricid = VALUES(metricid)";
+                        "blockO = VALUES(blockO), volumes = VALUES(volumes),subnet = VALUES(subnet),gateway = VALUES(gateway),prefixlen = VALUES(prefixlen), metricid = VALUES(metricid)";
                 PreparedStatement upsertInstanceStmt = conn.prepareStatement(upsertInstance);
                 upsertInstanceStmt.setString(1, instance.getId());
                 upsertInstanceStmt.setString(2, instance.getName());
@@ -108,7 +111,10 @@ public class DatabaseThread implements Runnable {
                 upsertInstanceStmt.setDouble(8, instance.getBlockI());
                 upsertInstanceStmt.setDouble(9, instance.getBlockO());
                 upsertInstanceStmt.setString(10, volumesUsing);
-                upsertInstanceStmt.setInt(11, metricId);
+                upsertInstanceStmt.setString(11, instance.getSubnet());
+                upsertInstanceStmt.setString(12, instance.getGateway());
+                upsertInstanceStmt.setInt(13, instance.getPrefixLen());
+                upsertInstanceStmt.setInt(14, metricId);
                 upsertInstanceStmt.executeUpdate();
             }
             // Create the Images table if it doesn't exist
@@ -169,7 +175,7 @@ public class DatabaseThread implements Runnable {
 
                 // Update instances with the latest metricId
                 String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
-                        "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ? WHERE metricid = ? && id = ?";
+                        "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
                 PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
 
                 for (MyInstance instance : Main.myInstancesList) {
@@ -187,8 +193,11 @@ public class DatabaseThread implements Runnable {
                     updateInstancesStmt.setDouble(7, instance.getBlockI());
                     updateInstancesStmt.setDouble(8, instance.getBlockO());
                     updateInstancesStmt.setString(9, volumesUsing);
-                    updateInstancesStmt.setInt(10, latestMetricId);
-                    updateInstancesStmt.setString(11, instance.getId());
+                    updateInstancesStmt.setString(10, instance.getSubnet());
+                    updateInstancesStmt.setString(11, instance.getGateway());
+                    updateInstancesStmt.setInt(12, instance.getPrefixLen());
+                    updateInstancesStmt.setInt(13, latestMetricId);
+                    updateInstancesStmt.setString(14, instance.getId());
 
                     // Execute the update query
                     updateInstancesStmt.executeUpdate();
@@ -258,37 +267,6 @@ public class DatabaseThread implements Runnable {
             PreparedStatement deleteImageStmt = conn.prepareStatement(deleteImage);
             deleteImageStmt.setString(1, image.getName());
             deleteImageStmt.executeUpdate();
-
-            // Close the connection
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void addVolume(MyVolume volume) {
-        try {
-            // Establish a connection
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            String containerNamesUsing = "";
-            for (String containerName : volume.getContainerNamesUsing()) {
-                containerNamesUsing += containerName + ",";
-            }
-
-            System.out.println("containerNamesUsing: " + containerNamesUsing);
-
-            // Insert or update the volume in the Volumes table
-            String upsertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) " +
-                    "VALUES (?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE driver = VALUES(driver), mountpoint = VALUES(mountpoint), " +
-                    "containerNamesUsing = VALUES(containerNamesUsing)";
-            PreparedStatement upsertVolumeStmt = conn.prepareStatement(upsertVolume);
-            upsertVolumeStmt.setString(1, volume.getName());
-            upsertVolumeStmt.setString(2, volume.getDriver());
-            upsertVolumeStmt.setString(3, volume.getMountpoint());
-            upsertVolumeStmt.setString(4, containerNamesUsing);
-            upsertVolumeStmt.executeUpdate();
 
             // Close the connection
             conn.close();

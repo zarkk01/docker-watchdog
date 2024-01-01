@@ -90,9 +90,9 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" style="-fx-background-color: #4272F1;"  text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0"  style="-fx-background-color: #4272F1;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="pauseContainerButton"  mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0"  style="-fx-background-color: #4272F1;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" style="-fx-background-color: #4272F1;" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0" style="-fx-background-color: #4272F1;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0" style="-fx-background-color: #4272F1;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                                                         <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="160.0" style="-fx-background-color: #4272F1;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                                                         <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="56.0" prefWidth="149.0" style="-fx-background-color: #4272F1;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                         <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="57.0" prefWidth="161.0" style="-fx-background-color: #4272F1;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
@@ -116,31 +116,36 @@
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerNameLabel" layoutX="6.0" layoutY="56.0" prefHeight="38.0" prefWidth="262.0" text="Name">
+                                                <Label fx:id="containerNameLabel" layoutX="6.0" layoutY="46.0" prefHeight="38.0" prefWidth="262.0" text="Name">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerImageLabel" layoutX="7.0" layoutY="158.0" prefHeight="49.0" prefWidth="260.0" text="Image">
+                                                <Label fx:id="containerImageLabel" layoutX="4.0" layoutY="116.0" prefHeight="49.0" prefWidth="260.0" text="Image">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerStatusLabel" layoutX="5.0" layoutY="104.0" prefHeight="49.0" prefWidth="261.0" text="Status">
+                                                <Label fx:id="containerStatusLabel" layoutX="5.0" layoutY="80.0" prefHeight="49.0" prefWidth="261.0" text="Status">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerSubnetLabel" layoutX="5.0" layoutY="211.0" prefHeight="50.0" prefWidth="281.0" text="Subnet">
+                                                <Label fx:id="containerSubnetLabel" layoutX="5.0" layoutY="154.0" prefHeight="50.0" prefWidth="281.0" text="Subnet">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="containerGatewayLabel" layoutX="5.0" layoutY="264.0" prefHeight="50.0" prefWidth="281.0" text="Gateway">
+                                                <Label fx:id="containerGatewayLabel" layoutX="6.0" layoutY="191.0" prefHeight="50.0" prefWidth="281.0" text="Gateway">
                                                     <font>
                                                         <Font size="24.0" />
                                                     </font>
                                                 </Label>
+                                    <Label fx:id="containerVolumesLabel" layoutX="7.0" layoutY="235.0" prefHeight="35.0" prefWidth="276.0" text="Volumes">
+                                       <font>
+                                          <Font size="24.0" />
+                                       </font>
+                                    </Label>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

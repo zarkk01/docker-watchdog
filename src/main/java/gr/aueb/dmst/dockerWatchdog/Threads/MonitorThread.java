@@ -143,7 +143,9 @@ public class MonitorThread implements Runnable {
                         MyImage.getImageByID(container.getImageId()).getName(),
                         container.getState().getStatus(),
                         0, 0, 0, 0, 0,
-                        getContainerPorts(container.getId()), new ArrayList<String>()
+                        getContainerPorts(container.getId()), new ArrayList<String>(),
+                        container.getNetworkSettings().getIpAddress(),container.getNetworkSettings().getGateway(),
+                        container.getNetworkSettings().getIpPrefixLen()
                 );
 
                 if(container.getMounts() != null){
@@ -289,6 +291,9 @@ public class MonitorThread implements Runnable {
                     containerInfo.getState().getStatus(),
                     0, 0, 0, 0, 0,
                     getContainerPorts(containerInfo.getId()), new ArrayList<String>()
+                    ,containerInfo.getNetworkSettings().getIpAddress(),
+                    containerInfo.getNetworkSettings().getGateway(),
+                    containerInfo.getNetworkSettings().getIpPrefixLen()
             );
 
             if(containerInfo.getMounts() != null){

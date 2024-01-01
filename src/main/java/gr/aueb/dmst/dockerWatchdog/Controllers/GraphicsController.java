@@ -126,7 +126,11 @@ public class GraphicsController implements Initializable {
             Double cpuUsage = jsonObject.getDouble("cpuUsage");
             Double blockI = jsonObject.getDouble("blockI");
             Double blockO = jsonObject.getDouble("blockO");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO));
+            String volumes = jsonObject.getString("volumes");
+            String subnets = jsonObject.getString("subnets");
+            String gateway = jsonObject.getString("gateway");
+            Integer prefixlen = jsonObject.getInt("prefixlen");
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, volumes, subnets, gateway, prefixlen));
         }
         return instances;
     }

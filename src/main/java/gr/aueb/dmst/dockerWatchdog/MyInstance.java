@@ -14,9 +14,12 @@ public class MyInstance {
     private double blockO; // Block O of instance in MB
     private String ports; // Ports of instance
     private ArrayList<String> volumes; // Volumes of instance
+    private String subnet;
+    private String gateway;
+    private int prefixLen;
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports,ArrayList<String> volumes) {
+    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports,ArrayList<String> volumes,String subnet,String gateway,int prefixLen) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
@@ -30,6 +33,9 @@ public class MyInstance {
         this.blockO = blockO;
         this.ports = ports;
         this.volumes = volumes;
+        this.subnet = subnet;
+        this.gateway = gateway;
+        this.prefixLen = prefixLen;
     }
 
     // Method toString that returns a string with the values of the instance variables
@@ -39,7 +45,7 @@ public class MyInstance {
                 " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
                 " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" +
                 " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) +
-                "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes;
+                "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes + " , Subnet : " + subnet + " , Gateway : " + gateway + " , PrefixLen : " + prefixLen;
     }
 
     // Getter for id
@@ -135,6 +141,30 @@ public class MyInstance {
 
     public void addVolume(String volumeName) {
         this.volumes.add(volumeName);
+    }
+
+    public String getSubnet() {
+        return subnet;
+    }
+
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    public int getPrefixLen() {
+        return prefixLen;
+    }
+
+    public void setPrefixLen(int prefixLen) {
+        this.prefixLen = prefixLen;
     }
 
     // Given an ID of an instance, return the instance

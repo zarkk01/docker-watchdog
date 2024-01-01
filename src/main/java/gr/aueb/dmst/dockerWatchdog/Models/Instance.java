@@ -39,6 +39,54 @@ public class Instance {
     @Column(name = "blockO")
     private Double blockO;
 
+    @Column(name = "volumes")
+    private String volumes;
+
+    @Column(name = "subnet")
+    private String subnet;
+
+    @Column(name = "gateway")
+    private String gateway;
+
+    public void setMetricid(Integer metricid) {
+        this.metricid = metricid;
+    }
+
+    public String getVolumes() {
+        return volumes;
+    }
+
+    public void setVolumes(String volumes) {
+        this.volumes = volumes;
+    }
+
+    public String getSubnet() {
+        return subnet;
+    }
+
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    public Integer getPrefixLen() {
+        return prefixLen;
+    }
+
+    public void setPrefixLen(Integer prefixLen) {
+        this.prefixLen = prefixLen;
+    }
+
+    @Column(name = "prefixlen")
+    private Integer prefixLen;
+
     // Getters
     public String getId() {
         return id;

@@ -68,6 +68,8 @@ public class IndividualContainerController {
     @FXML
     private Label containerGatewayLabel;
     @FXML
+    private Label containerVolumesLabel;
+    @FXML
     private VBox notificationBox;
     @FXML
     private Button backButton;
@@ -134,16 +136,14 @@ public class IndividualContainerController {
      */
     public void onInstanceDoubleClick(InstanceScene instance) {
         this.instanceScene = instance;
-        String subnet = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpAddress();
-        int prefixLen = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getIpPrefixLen();
-        String gateway = dockerClient.inspectContainerCmd(instance.getId()).exec().getNetworkSettings().getGateway();
         headTextContainer.setText("Container: " + instance.getName());
         containerIdLabel.setText("ID : " + instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());
         containerImageLabel.setText("Image: " + instance.getImage());
-        containerSubnetLabel.setText("Subnet:" + subnet + "/" + prefixLen);
-        containerGatewayLabel.setText("Gateway:" + gateway);
+        containerVolumesLabel.setText("Volumes: " + instance.getVolumes());
+        containerSubnetLabel.setText("Subnet:" + instance.getSubnet() + "/" + instance.getPrefixLen());
+        containerGatewayLabel.setText("Gateway:" + instance.getGateway());
         containerLogInfoAppender(instance);
         infoCard.setVisible(true);
 
@@ -395,7 +395,11 @@ public class IndividualContainerController {
             Double cpuUsage = jsonObject.getDouble("cpuUsage");
             Double blockI = jsonObject.getDouble("blockI");
             Double blockO = jsonObject.getDouble("blockO");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO));
+            String volumes = jsonObject.getString("volumes");
+            String subnet = jsonObject.getString("subnet");
+            String gateway = jsonObject.getString("gateway");
+            Integer prefixLen = jsonObject.getInt("prefixLen");
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, volumes, subnet, gateway, prefixLen));
         }
         return instances;
     }
