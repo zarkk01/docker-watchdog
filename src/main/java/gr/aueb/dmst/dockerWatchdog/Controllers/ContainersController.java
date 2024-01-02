@@ -298,6 +298,13 @@ public class ContainersController implements Initializable {
             // Update the HashMap with the new states (in case some containers were deleted)
             updateCheckboxStates(checkboxStates);
 
+            if (checkboxStates.containsValue(true)) {
+                removeButton.visibleProperty().setValue(true);
+            } else {
+                removeButton.visibleProperty().setValue(false);
+            }
+
+
             // Refresh the instances table
             refreshInstances();
         } catch (Exception e) {
