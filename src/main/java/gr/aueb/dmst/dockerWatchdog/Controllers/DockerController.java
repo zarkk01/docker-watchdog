@@ -94,6 +94,11 @@ public class DockerController {
         return dockerService.getMetrics(chosenDate);
     }
 
+    @GetMapping("/containers/lastMetricId")
+    public Integer getLastMetricId() {
+        return dockerService.getLastMetricId();
+    }
+
     @GetMapping("/containers/{containerId}/info")
     public ResponseEntity<?> getInstanceInfo(@PathVariable("containerId") String containerId) {
         try {

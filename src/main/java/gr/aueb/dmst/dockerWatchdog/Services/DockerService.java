@@ -71,7 +71,9 @@ public class DockerService {
     public Instance getInstanceInfo(String id) {
         return instanceRepository.findByContainerId(id);
     }
-
+    public Integer getLastMetricId(){
+        return metricsRepository.findLastMetricId();
+    }
     public List<Long> getMetrics(Timestamp chosenDate){
         long manyMetric = metricsRepository.countByDatetimeBefore(chosenDate);
         Optional<Metric> metricOptional = metricsRepository.findFirstByDatetimeBeforeOrderByDatetimeDesc(chosenDate);

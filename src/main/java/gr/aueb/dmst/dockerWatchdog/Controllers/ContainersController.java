@@ -85,7 +85,7 @@ public class ContainersController implements Initializable {
     @FXML
     public Button datetimeButton;
     @FXML
-    public Label metricsDoneLabel;
+    public Label metricsLabel;
 
     @FXML
     public CheckBox runningInstancesCheckbox;
@@ -278,6 +278,8 @@ public class ContainersController implements Initializable {
     public void refreshInstances(){
         try {
             List<InstanceScene> instances = getAllInstances();
+            Integer maxMetricId = getMaxMetricId();
+
             instancesTableView.getItems().clear();
             int totalContainers = instances.size();
             int runningContainers = 0;
@@ -299,10 +301,24 @@ public class ContainersController implements Initializable {
                 totalContainersText.setText(String.valueOf(totalContainers));
                 runningContainersText.setText(String.valueOf(runningContainers));
                 stoppedContainersText.setText(String.valueOf(stoppedContainers));
+                if(maxMetricId > 50){
+                    metricsLabel.setText("50+");
+                } else {
+                    metricsLabel.setText(String.valueOf(maxMetricId));
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Integer getMaxMetricId() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/lastMetricId"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return Integer.parseInt(response.body());
     }
 
     public List<InstanceScene> getAllInstances() throws Exception {
@@ -350,7 +366,7 @@ public class ContainersController implements Initializable {
             String runningInstances = responseBody.split(",")[1].replaceAll("[^0-9]", "");
             String totalInstances = responseBody.split(",")[2].replaceAll("[^0-9]", "");
             String stoppedInstances = responseBody.split(",")[3].replaceAll("[^0-9]", "");
-            metricsDoneLabel.setText("How many metrics were be done then: " + metricsDone);
+            metricsLabel.setText(metricsDone);
             runningContainersText.setText(runningInstances);
             totalContainersText.setText(totalInstances);
             stoppedContainersText.setText(stoppedInstances);

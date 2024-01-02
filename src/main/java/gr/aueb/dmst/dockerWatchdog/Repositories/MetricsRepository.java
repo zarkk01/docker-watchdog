@@ -16,4 +16,6 @@ public interface MetricsRepository extends JpaRepository<Metric, Integer> {
 
     Optional<Metric> findFirstByDatetimeBeforeOrderByDatetimeDesc(Timestamp datetime);
 
+    @Query("SELECT max(m.id) FROM Metric m")
+    Integer findLastMetricId();
 }
