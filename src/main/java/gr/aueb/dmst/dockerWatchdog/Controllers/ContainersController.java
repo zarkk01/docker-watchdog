@@ -346,7 +346,7 @@ public class ContainersController implements Initializable {
             String subnet = jsonObject.getString("subnet");
             String gateway = jsonObject.getString("gateway");
             Integer prefixLen = jsonObject.getInt("prefixLen");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, volumes, subnet, gateway, prefixLen));
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage * 100, blockI, blockO, volumes, subnet, gateway, prefixLen));
         }
         return instances;
     }

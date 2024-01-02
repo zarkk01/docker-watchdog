@@ -2,21 +2,12 @@ package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
-import com.github.dockerjava.api.exception.InternalServerErrorException;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
-import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.core.command.PullImageResultCallback;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
 import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.NoPortException;
 
-import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ExecutorThread implements Runnable {
     // Initiate and create scanner

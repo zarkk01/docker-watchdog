@@ -1,9 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.MyImage;
-import gr.aueb.dmst.dockerWatchdog.MyInstance;
-import gr.aueb.dmst.dockerWatchdog.MyVolume;
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
+import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 
 import java.sql.*;
 import java.util.Date;

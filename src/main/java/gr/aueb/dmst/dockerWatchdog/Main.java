@@ -4,18 +4,14 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
+import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
-import io.kubernetes.client.openapi.ApiClient;
-import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1PodList;
-import io.kubernetes.client.util.Config;
 import javafx.application.Application;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {

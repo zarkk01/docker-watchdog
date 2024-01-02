@@ -1,4 +1,6 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Models;
+
+import gr.aueb.dmst.dockerWatchdog.Main;
 
 public class MyImage {
 

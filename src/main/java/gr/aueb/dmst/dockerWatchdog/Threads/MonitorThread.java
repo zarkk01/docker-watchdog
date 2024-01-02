@@ -5,9 +5,9 @@ import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
 import com.github.dockerjava.core.command.EventsResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.MyImage;
-import gr.aueb.dmst.dockerWatchdog.MyInstance;
-import gr.aueb.dmst.dockerWatchdog.MyVolume;
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
+import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 
 import java.io.Closeable;
 import java.sql.SQLException;
@@ -110,28 +110,28 @@ public class MonitorThread implements Runnable {
             case "destroy":
                 // Remove the corresponding instance from the list
                 instance = MyInstance.getInstanceByid(containerId);
+                boolean isThere = false;
                 if (instance != null) {
                     Main.myInstancesList.remove(instance);
-                }
-                boolean isThere = false;
-                for(MyInstance inst : Main.myInstancesList){
-                    if(inst.getImage().equals(instance.getImage())){
-                        isThere = true;
+                    for(MyInstance inst : Main.myInstancesList){
+                        if(inst.getImage().equals(instance.getImage())){
+                            isThere = true;
+                        }
                     }
+                    if(!isThere){
+                        MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
+                        imageToSetUnused.setStatus("Unused");
+                    }
+                    if (!Main.dbThread.isAlive()) {
+                        Main.dbThread = new Thread(new DatabaseThread());
+                        Main.dbThread.start();
+                    }
+                    for(String volumeName : instance.getVolumes()){
+                        MyVolume vol = MyVolume.getVolumeByName(volumeName);
+                        if(vol != null){vol.removeContainerNameUsing(instance.getName());}
+                    }
+                    DatabaseThread.keepTrackOfVolumes();
                 }
-                if(!isThere){
-                    MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
-                    imageToSetUnused.setStatus("Unused");
-                }
-                if (!Main.dbThread.isAlive()) {
-                    Main.dbThread = new Thread(new DatabaseThread());
-                    Main.dbThread.start();
-                }
-                for(String volumeName : instance.getVolumes()){
-                    MyVolume vol = MyVolume.getVolumeByName(volumeName);
-                    if(vol != null){vol.removeContainerNameUsing(instance.getName());}
-                }
-                DatabaseThread.keepTrackOfVolumes();
                 break;
             case "create":
                 // Add the new instance to the list
