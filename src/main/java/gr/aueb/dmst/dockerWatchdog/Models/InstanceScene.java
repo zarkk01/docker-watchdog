@@ -1,5 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class InstanceScene {
     private String id;
     private String name;
@@ -14,8 +17,10 @@ public class InstanceScene {
     private String subnet;
     private String gateway;
     private Integer prefixLen;
+    private final BooleanProperty select;
 
-    public InstanceScene(String id, String name,String image, String status, Long memoryUsage, Long pids, Double cpuUsage, Double blockI, Double blockO, String volumes, String subnet, String gateway, Integer prefixLen) {
+
+    public InstanceScene(String id, String name,String image, String status, Long memoryUsage, Long pids, Double cpuUsage, Double blockI, Double blockO, String volumes, String subnet, String gateway, Integer prefixLen ,boolean select) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -29,6 +34,8 @@ public class InstanceScene {
         this.subnet = subnet;
         this.gateway = gateway;
         this.prefixLen = prefixLen;
+        this.select = new SimpleBooleanProperty(select);
+
     }
 
     public Long getMemoryUsage() {
@@ -119,5 +126,17 @@ public class InstanceScene {
 
     public void setPrefixLen(Integer prefixLen) {
         this.prefixLen = prefixLen;
+    }
+
+    public BooleanProperty selectProperty() {
+        return select;
+    }
+
+    public boolean isSelect() {
+        return select.get();
+    }
+
+    public void setSelect(boolean select) {
+        this.select.set(select);
     }
 }

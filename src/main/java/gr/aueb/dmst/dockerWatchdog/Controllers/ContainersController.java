@@ -73,6 +73,8 @@ public class ContainersController implements Initializable {
     public TableColumn<InstanceScene, String> blockIColumn;
     @FXML
     private TableColumn<InstanceScene, Void> actionButtonColumn;
+    @FXML
+    private TableColumn<InstanceScene, Void> selectColumn;
 
     @FXML
     private VBox notificationBox;
@@ -86,7 +88,8 @@ public class ContainersController implements Initializable {
     public Button datetimeButton;
     @FXML
     public Label metricsLabel;
-
+    @FXML
+    public Button removeButton;
     @FXML
     public CheckBox runningInstancesCheckbox;
 
@@ -105,6 +108,8 @@ public class ContainersController implements Initializable {
 
     private Boolean selectedDateTime = false;
 
+    private Map<String, Boolean> checkboxStates = new HashMap<>();
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -117,6 +122,7 @@ public class ContainersController implements Initializable {
             memoryUsageColumn.setCellValueFactory(new PropertyValueFactory<>("memoryUsage"));
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
+            removeButton.visibleProperty().setValue(false);
 
             Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
                 @Override
@@ -178,6 +184,49 @@ public class ContainersController implements Initializable {
 
             actionButtonColumn.setCellFactory(actionCellFactory);
 
+            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> selectCellFactory = new Callback<>() {
+                @Override
+                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
+                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                        private final CheckBox checkBox = new CheckBox();
+
+                        {
+                            checkBox.setOnAction(event -> {
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                // Handle checkbox action, e.g., update the model
+                                instance.setSelect(checkBox.isSelected());
+
+                                checkboxStates.put(instance.getId(), checkBox.isSelected());
+
+                                if (checkboxStates.containsValue(true)) {
+                                    removeButton.visibleProperty().setValue(true);
+                                } else {
+                                    removeButton.visibleProperty().setValue(false);
+                                }
+
+
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                InstanceScene instance = getTableView().getItems().get(getIndex());
+                                checkBox.setSelected(instance.isSelect());
+                                setGraphic(checkBox);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+
+// Assuming your "select" column is named selectColumn
+            selectColumn.setCellFactory(selectCellFactory);
+
             instancesTableView.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
                     InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
@@ -217,6 +266,52 @@ public class ContainersController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void removeSelectedContainers() {
+        try {
+            Map<String, Boolean> checkboxStates = getCheckboxStates();
+
+            for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
+                String id = entry.getKey();
+                boolean isSelected = entry.getValue();
+
+                if (isSelected) {
+                    HttpRequest request1 = HttpRequest.newBuilder()
+                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/stop"))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build();
+
+                    HttpResponse<String> response = client.send(request1, HttpResponse.BodyHandlers.ofString());
+
+                    HttpRequest request2 = HttpRequest.newBuilder()
+                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/delete"))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build();
+
+                    client.send(request2, HttpResponse.BodyHandlers.ofString());
+
+                    checkboxStates.put(id, false);  // Reset the checkbox state after deletion
+                }
+            }
+
+            // Update the HashMap with the new states (in case some containers were deleted)
+            updateCheckboxStates(checkboxStates);
+
+            // Refresh the instances table
+            refreshInstances();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void updateCheckboxStates(Map<String, Boolean> newStates) {
+        checkboxStates.clear();
+        checkboxStates.putAll(newStates);
+    }
+
+    private Map<String, Boolean> getCheckboxStates() {
+        return checkboxStates;
     }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
@@ -346,9 +441,13 @@ public class ContainersController implements Initializable {
             String subnet = jsonObject.getString("subnet");
             String gateway = jsonObject.getString("gateway");
             Integer prefixLen = jsonObject.getInt("prefixLen");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage * 100, blockI, blockO, volumes, subnet, gateway, prefixLen));
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage * 100, blockI, blockO, volumes, subnet, gateway, prefixLen, getCheckboxStateById(id) ));
         }
         return instances;
+    }
+
+    private boolean getCheckboxStateById(String id) {
+        return checkboxStates.getOrDefault(id, false);
     }
 
     public void showDataThen(ActionEvent e) {
