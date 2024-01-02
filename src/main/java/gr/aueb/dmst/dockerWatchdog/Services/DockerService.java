@@ -9,6 +9,7 @@ import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import gr.aueb.dmst.dockerWatchdog.Repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,6 +99,26 @@ public class DockerService {
         } catch (InterruptedException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
+        }
+    }
+
+    public void startAllContainers(String imageName) {
+        // Get all containers of the given image
+        List<Instance> containers = instanceRepository.findAllByImageName(imageName);
+
+        // Start each container
+        for (Instance container : containers) {
+            ExecutorThread.startContainer(container.getId());
+        }
+    }
+
+    public void stopAllContainers(String imageName) {
+        // Get all containers of the given image
+        List<Instance> containers = instanceRepository.findAllByImageName(imageName);
+
+        // Stop each container
+        for (Instance container : containers) {
+            ExecutorThread.stopContainer(container.getId());
         }
     }
 }

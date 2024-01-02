@@ -57,6 +57,10 @@ public class ImagesController implements Initializable {
     private TableColumn<ImageScene,Long> sizeColumn;
     @FXML
     private TableColumn<ImageScene,Void> createContainerCollumn;
+    @FXML
+    private TableColumn<ImageScene,Void> startAllCollumn;
+    @FXML
+    private TableColumn<ImageScene,Void> stopAllCollumn;
 
     private Stage stage;
     private Parent root;
@@ -70,7 +74,6 @@ public class ImagesController implements Initializable {
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-            //Set up the create container column with a button
             Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startCellFactory = new Callback<>() {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
@@ -107,12 +110,85 @@ public class ImagesController implements Initializable {
                     return cell;
                 }
             };
-            imagesTableView.setPlaceholder(new Label("No images available."));
             createContainerCollumn.setCellFactory(startCellFactory);
+            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startAllCellFactory = new Callback<>() {
+                @Override
+                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
+                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
+                        private final Button btn = new Button("Start All");
+                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
+                        ImageView view = new ImageView(img);
 
-            // Initialize the table and set up event listeners
+                        {
+                            view.setFitHeight(20);
+                            view.setPreserveRatio(true);
+                            btn.setGraphic(view);
+                            btn.setOnAction((ActionEvent event) -> {
+                                ImageScene image = getTableView().getItems().get(getIndex());
+                                try {
+                                    startAllContainers(image.getName());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+            startAllCollumn.setCellFactory(startAllCellFactory);
+
+            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> stopAllCellFactory = new Callback<>() {
+                @Override
+                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
+                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
+                        private final Button btn = new Button("Stop All");
+                        Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
+                        ImageView view = new ImageView(img);
+
+                        {
+                            view.setFitHeight(20);
+                            view.setPreserveRatio(true);
+                            btn.setGraphic(view);
+
+                            btn.setOnAction((ActionEvent event) -> {
+                                ImageScene image = getTableView().getItems().get(getIndex());
+                                try {
+                                    stopAllContainers(image.getName());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+            stopAllCollumn.setCellFactory(stopAllCellFactory);
+
             refreshImages();
 
+            imagesTableView.setPlaceholder(new Label("No images available."));
             usedImagesCheckbox.setOnAction(event -> {
                 refreshImages();
             });
@@ -152,11 +228,11 @@ public class ImagesController implements Initializable {
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
+    // Navigate to the Kubernetes scene
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
-    // Refresh the list of images based on the checkbox selection
     public void refreshImages() {
         try {
             List<ImageScene> images = getAllImages();
@@ -175,7 +251,6 @@ public class ImagesController implements Initializable {
         }
     }
 
-    // Get a list of all images
     public List<ImageScene> getAllImages() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/images"))
@@ -195,7 +270,6 @@ public class ImagesController implements Initializable {
         return images;
     }
 
-    // Create a container based on the selected image
     public void createContainer(ImageScene image) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/images/create/" + image.getName()))
@@ -236,5 +310,39 @@ public class ImagesController implements Initializable {
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
             timeline.play();
         });
+    }
+
+    public void startAllContainers(String imageName) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/startAll/" + imageName))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Success", "All containers started successfully");
+        } else {
+            showNotification("Error", "Container start failed");
+        }
+
+        refreshImages();
+    }
+
+    public void stopAllContainers(String imageName) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/stopAll/" + imageName))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            showNotification("Success", "All containers stopped successfully");
+        } else {
+            showNotification("Error", "Container stop failed");
+        }
+
+        refreshImages();
     }
 }

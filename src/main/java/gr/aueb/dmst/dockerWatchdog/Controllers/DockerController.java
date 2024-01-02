@@ -115,4 +115,16 @@ public class DockerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error"); // 500 Internal Server Error
         }
     }
+
+    @PostMapping("/containers/startAll/{imageName}")
+    public ResponseEntity<String> startAllContainers(@PathVariable("imageName") String imageName) {
+        dockerService.startAllContainers(imageName);
+        return ResponseEntity.ok("All containers started");
+    }
+
+    @PostMapping("/containers/stopAll/{imageName}")
+    public ResponseEntity<String> stopAllContainers(@PathVariable("imageName") String imageName) {
+        dockerService.stopAllContainers(imageName);
+        return ResponseEntity.ok("All containers stopped");
+    }
 }
