@@ -66,6 +66,7 @@
                   <TableColumn fx:id="blockOColumn" editable="false" prefWidth="59.5" text="BlockO" />
                   <TableColumn fx:id="blockIColumn" editable="false" prefWidth="48.5" text="BlockI" />
                   <TableColumn fx:id="actionButtonColumn" editable="false" prefWidth="75.0" text="Action" />
+                  <TableColumn fx:id="selectColumn" editable="false" prefWidth="75.0" text="Select" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -136,6 +137,7 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
+            <Button fx:id="removeButton" layoutX="865.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: red;" text="Remove" textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>
