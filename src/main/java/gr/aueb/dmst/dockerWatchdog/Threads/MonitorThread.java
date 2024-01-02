@@ -320,6 +320,7 @@ public class MonitorThread implements Runnable {
             );
             for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
                 for(ContainerMount volumeName : container.getMounts()){
+                    if(volumeName.getName() == null){continue;}
                     if(volumeName.getName().equals(volume.getName())){
                         newVolume.addContainerNameUsing(container.getNames()[0]);
                     }
