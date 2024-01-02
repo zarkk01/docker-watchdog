@@ -107,7 +107,7 @@ public class ImagesController implements Initializable {
                     return cell;
                 }
             };
-
+            imagesTableView.setPlaceholder(new Label("No images available."));
             createContainerCollumn.setCellFactory(startCellFactory);
 
             // Initialize the table and set up event listeners

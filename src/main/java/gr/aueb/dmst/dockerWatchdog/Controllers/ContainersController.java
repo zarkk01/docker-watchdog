@@ -195,6 +195,8 @@ public class ContainersController implements Initializable {
                 }
             });
 
+            instancesTableView.setPlaceholder(new Label("No containers available."));
+
             instancesTableView.setRowFactory(tv -> {
                 TableRow<InstanceScene> row = new TableRow<>();
                 row.setOnMouseEntered(event -> row.setCursor(Cursor.HAND));

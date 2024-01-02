@@ -149,6 +149,7 @@ public class MonitorThread implements Runnable {
 
                 if(container.getMounts() != null){
                     for(InspectContainerResponse.Mount volumeName : container.getMounts()){
+                        if(volumeName.getName() == null){continue;}
                         newInstance.addVolume(volumeName.getName());
                         MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
                         assert vol != null;

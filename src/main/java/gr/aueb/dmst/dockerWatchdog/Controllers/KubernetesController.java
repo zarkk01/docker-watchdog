@@ -1,5 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import gr.aueb.dmst.dockerWatchdog.Models.DeploymentScene;
+import gr.aueb.dmst.dockerWatchdog.Models.PodScene;
+import gr.aueb.dmst.dockerWatchdog.Models.ServiceScene;
+import gr.aueb.dmst.dockerWatchdog.Models.StatefulSetScene;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.Configuration;
@@ -7,13 +11,18 @@ import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Config;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,13 +33,33 @@ public class KubernetesController implements Initializable {
     private Stage stage;
     private Parent root;
     @FXML
-    private TextArea podsTextArea;
+    private TableView<PodScene> podsTableView;
     @FXML
-    private TextArea servicesTextArea;
+    private TableColumn<PodScene, String> podNameColumn;
     @FXML
-    private TextArea deploymentsTextArea;
+    private TableColumn<PodScene, String> podNamespaceColumn;
     @FXML
-    private TextArea statefulSetsTextArea;
+    private TableColumn<PodScene, String> podStatusColumn;
+    @FXML
+    private TableView<DeploymentScene> deploymentsTableView;
+    @FXML
+    private TableColumn<DeploymentScene, String> deploymentNameColumn;
+    @FXML
+    private TableColumn<DeploymentScene, String> deploymentNamespaceColumn;
+
+    @FXML
+    private TableView<StatefulSetScene> statefulSetsTableView;
+    @FXML
+    private TableColumn<StatefulSetScene, String> statefulSetNameColumn;
+    @FXML
+    private TableColumn<StatefulSetScene, String> statefulSetNamespaceColumn;
+
+    @FXML
+    private TableView<ServiceScene> servicesTableView;
+    @FXML
+    private TableColumn<ServiceScene, String> serviceNameColumn;
+    @FXML
+    private TableColumn<ServiceScene, String> serviceNamespaceColumn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -42,40 +71,54 @@ public class KubernetesController implements Initializable {
             AppsV1Api appsApi = new AppsV1Api();
 
             V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null,null,null);
-            StringBuilder podsData = new StringBuilder();
+            ObservableList<PodScene> podsData = FXCollections.observableArrayList();
             for (V1Pod pod : list.getItems()) {
-                podsData.append("Pod Name: ").append(pod.getMetadata().getName()).append("\n");
-                podsData.append("Namespace: ").append(pod.getMetadata().getNamespace()).append("\n");
-                podsData.append("Status: ").append(pod.getStatus().getPhase()).append("\n\n");
+                podsData.add(new PodScene(pod.getMetadata().getName(), pod.getMetadata().getNamespace(), pod.getStatus().getPhase()));
             }
-            podsTextArea.setText(podsData.toString());
 
-            V1ServiceList serviceList = api.listServiceForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
-            StringBuilder servicesData = new StringBuilder();
-            for (V1Service service : serviceList.getItems()) {
-                servicesData.append("Service Name: ").append(service.getMetadata().getName()).append("\n");
-                servicesData.append("Namespace: ").append(service.getMetadata().getNamespace()).append("\n");
-                servicesData.append("Type: ").append(service.getSpec().getType()).append("\n\n");
-            }
-            servicesTextArea.setText(servicesData.toString());
+            podNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            podNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
+            podStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+            podsTableView.setItems(podsData);
 
             V1DeploymentList deploymentList = appsApi.listDeploymentForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
-            StringBuilder deploymentsData = new StringBuilder();
+            ObservableList<DeploymentScene> deploymentsData = FXCollections.observableArrayList();
             for (V1Deployment deployment : deploymentList.getItems()) {
-                deploymentsData.append("Deployment Name: ").append(deployment.getMetadata().getName()).append("\n");
-                deploymentsData.append("Namespace: ").append(deployment.getMetadata().getNamespace()).append("\n");
-                deploymentsData.append("Replicas: ").append(deployment.getSpec().getReplicas()).append("\n\n");
+                deploymentsData.add(new DeploymentScene(deployment.getMetadata().getName(), deployment.getMetadata().getNamespace()));
             }
-            deploymentsTextArea.setText(deploymentsData.toString());
+
+            deploymentNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            deploymentNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
+
+            deploymentsTableView.setItems(deploymentsData);
 
             V1StatefulSetList statefulSetList = appsApi.listStatefulSetForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
-            StringBuilder statefulSetsData = new StringBuilder();
+            ObservableList<StatefulSetScene> statefulSetsData = FXCollections.observableArrayList();
             for (V1StatefulSet statefulSet : statefulSetList.getItems()) {
-                statefulSetsData.append("StatefulSet Name: ").append(statefulSet.getMetadata().getName()).append("\n");
-                statefulSetsData.append("Namespace: ").append(statefulSet.getMetadata().getNamespace()).append("\n");
-                statefulSetsData.append("Replicas: ").append(statefulSet.getSpec().getReplicas()).append("\n\n");
+                statefulSetsData.add(new StatefulSetScene(statefulSet.getMetadata().getName(), statefulSet.getMetadata().getNamespace()));
             }
-            statefulSetsTextArea.setText(statefulSetsData.toString());
+
+            statefulSetNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            statefulSetNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
+
+            statefulSetsTableView.setItems(statefulSetsData);
+
+            V1ServiceList serviceList = api.listServiceForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
+            ObservableList<ServiceScene> servicesData = FXCollections.observableArrayList();
+            for (V1Service service : serviceList.getItems()) {
+                servicesData.add(new ServiceScene(service.getMetadata().getName(), service.getMetadata().getNamespace()));
+            }
+
+            serviceNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            serviceNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
+
+            servicesTableView.setItems(servicesData);
+
+            podsTableView.setPlaceholder(new Label("No Pods available"));
+            deploymentsTableView.setPlaceholder(new Label("No Deployments available"));
+            statefulSetsTableView.setPlaceholder(new Label("No StatefulSets available"));
+            servicesTableView.setPlaceholder(new Label("No Services available"));
         } catch (ApiException | IOException e) {
             e.printStackTrace();
         }

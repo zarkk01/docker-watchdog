@@ -8,10 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -58,6 +55,7 @@ public class VolumesController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        volumesTableView.setPlaceholder(new Label("No volumes available."));
 
         refreshVolumes();
     }
