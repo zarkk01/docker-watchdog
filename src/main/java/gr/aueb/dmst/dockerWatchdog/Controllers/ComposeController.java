@@ -1,13 +1,16 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import org.yaml.snakeyaml.Yaml;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,6 +24,9 @@ public class ComposeController {
     private Parent root;
 
     private String yamlFilePath;
+
+    @FXML
+    private Button validateButton;
 
     public void initialize() {
     }
@@ -98,6 +104,19 @@ public class ComposeController {
             System.out.println("Docker Compose file stopped successfully");
         } else {
             System.out.println("Error stopping Docker Compose file");
+        }
+    }
+
+    public void validateYaml() {
+        try {
+            Yaml yaml = new Yaml();
+            yaml.load(new FileInputStream(yamlFilePath));
+            validateButton.setText("Valid");
+            validateButton.setStyle("-fx-background-color: green;");
+            validateButton.setDisable(true);
+        } catch (Exception e) {
+            validateButton.setText("Sorry not valid");
+            validateButton.setStyle("-fx-background-color: red;");
         }
     }
 }

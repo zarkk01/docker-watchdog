@@ -61,8 +61,9 @@
                    </font>
                 </Text>
                 <TextArea fx:id="yamlContentArea" layoutX="7.0" layoutY="64.0" prefHeight="374.0" prefWidth="800.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="64.0" />
-            <Button fx:id="startComposeButton" layoutX="52.0" layoutY="336.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="75.0" prefWidth="150.0" text="START" />
-            <Button fx:id="stopComposeButton" layoutX="278.0" layoutY="343.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="73.0" prefWidth="167.0" text="stop" />
+            <Button fx:id="startComposeButton" layoutX="52.0" layoutY="336.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="75.0" prefWidth="150.0" text="Start" />
+            <Button fx:id="stopComposeButton" layoutX="278.0" layoutY="343.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="73.0" prefWidth="167.0" text="Stop" />
+               <Button fx:id="validateButton" layoutX="500.0" layoutY="343.0" mnemonicParsing="false" onAction="#validateYaml" prefHeight="73.0" prefWidth="167.0" text="Validate" />
            </children>
        </AnchorPane>
    </center>

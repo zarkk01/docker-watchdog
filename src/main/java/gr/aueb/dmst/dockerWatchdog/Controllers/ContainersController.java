@@ -402,7 +402,7 @@ public class ContainersController implements Initializable {
 
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), evt -> notification.hide()));
             timeline.play();
         });
     }
