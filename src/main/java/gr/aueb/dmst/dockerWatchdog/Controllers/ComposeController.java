@@ -44,12 +44,7 @@ public class ComposeController {
     private Label savedLabel;
 
     public void initialize() {
-        yamlContentArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                savedLabel.setText("Unsaved");
-            }
-        });
+        yamlContentArea.textProperty().addListener((observable, oldValue, newValue) -> savedLabel.setText("Unsaved"));
     }
 
     private void loadYamlFile() {
