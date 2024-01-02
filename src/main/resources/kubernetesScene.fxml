@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.KubernetesController">
+    <left>
+        <VBox prefHeight="400.0" prefWidth="126.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px 2px 0px;" text="Containers" textFill="WHITE">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Images" textFill="WHITE">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Volumes" textFill="WHITE">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Graphics" textFill="WHITE">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Kubernetes" textFill="WHITE">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+            <children>
+                <Text fill="#3c8acf" layoutX="373.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="KUBERNETES" wrappingWidth="260.3033752441406">
+                    <font>
+                        <Font name="System Bold Italic" size="36.0" />
+                    </font>
+                </Text>
+                <SplitPane dividerPositions="0.4823232323232323" layoutX="-2.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="976.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="232.0" prefWidth="974.0">
+                            <children>
+                                <SplitPane layoutX="392.0" layoutY="-7.0" prefHeight="305.0" prefWidth="586.0">
+                                    <items>
+                                        <AnchorPane prefHeight="284.0" prefWidth="584.0">
+                                            <children>
+                                                <Label layoutX="197.0" layoutY="10.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS" textFill="#3c8acf">
+                                                    <font>
+                                                        <Font name="System Bold" size="24.0" />
+                                                    </font>
+                                                </Label>
+                                                <TableView fx:id="deploymentsTableView" layoutX="2.0" layoutY="39.0" prefHeight="261.0" prefWidth="580.0" stylesheets="@styles/styles.css">
+                                                    <columns>
+                                                        <TableColumn fx:id="deploymentNameColumn" prefWidth="288.25372314453125" text="Deployment Name" />
+                                                        <TableColumn fx:id="deploymentNamespaceColumn" prefWidth="267.7462158203125" text="Namespace" />
+                                                    </columns>
+                                                </TableView>
+                                            </children>
+                                        </AnchorPane>
+                                    </items>
+                                </SplitPane>
+                                <Label layoutX="135.0" layoutY="3.0" text="SERVICES" textFill="#3c8acf">
+                                    <font>
+                                        <Font name="System Bold" size="24.0" />
+                                    </font>
+                                </Label>
+                                <TableView fx:id="servicesTableView" layoutX="2.0" layoutY="33.0" prefHeight="257.0" prefWidth="390.0" stylesheets="@styles/styles.css">
+                                    <columns>
+                                        <TableColumn fx:id="serviceNameColumn" prefWidth="170.5" text="Service Name" />
+                                        <TableColumn fx:id="serviceNamespaceColumn" prefWidth="205.5" text="Namespace" />
+                                    </columns>
+                                </TableView>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                            <children>
+                                <SplitPane dividerPositions="0.6242331288343558" layoutX="-4.0" layoutY="-8.0" prefHeight="325.0" prefWidth="980.0">
+                                    <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                            <children>
+                                                <Label layoutX="278.0" layoutY="10.0" text="PODS" textFill="#3c8acf">
+                                                    <font>
+                                                        <Font name="System Bold" size="27.0" />
+                                                    </font>
+                                                </Label>
+                                                <TableView fx:id="podsTableView" layoutX="1.0" layoutY="43.0" prefHeight="274.0" prefWidth="606.0" stylesheets="@styles/styles.css">
+                                                    <columns>
+                                                        <TableColumn fx:id="podNameColumn" prefWidth="232.4896469116211" text="Pod Name" />
+                                                        <TableColumn fx:id="podNamespaceColumn" prefWidth="176.51034545898438" text="Namespace" />
+                                                        <TableColumn fx:id="podStatusColumn" prefWidth="183.20108032226562" text="Status" />
+                                                    </columns>
+                                                </TableView>
+                                            </children>
+                                        </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                            <children>
+                                                <Label layoutX="95.0" layoutY="14.0" text="STATEFUL SETS" textFill="#3c8acf">
+                                                    <font>
+                                                        <Font name="System Bold" size="24.0" />
+                                                    </font>
+                                                </Label>
+                                                <TableView fx:id="statefulSetsTableView" layoutX="-1.0" layoutY="43.0" prefHeight="275.0" prefWidth="365.0" stylesheets="@styles/styles.css">
+                                                    <columns>
+                                                        <TableColumn fx:id="statefulSetNameColumn" prefWidth="175.4495849609375" text="StatefulSet Name" />
+                                                        <TableColumn fx:id="statefulSetNamespaceColumn" prefWidth="172.0504150390625" text="Namespace" />
+                                                    </columns>
+                                                </TableView>
+                                            </children>
+                                        </AnchorPane>
+                                    </items>
+                                </SplitPane>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </children>
+        </AnchorPane>
+    </center>
+    <top>
+        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+            <children>
+                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="202.21630859375">
+                    <font>
+                        <Font size="22.0" />
+                    </font>
+                </Text>
+            </children>
+        </HBox>
+    </top>
+</BorderPane>

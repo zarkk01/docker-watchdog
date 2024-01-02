@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
+   <left>
+      <VBox prefHeight="514.0" prefWidth="125.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px 2px 0px;" text="Containers" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Images" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Volumes" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Graphics" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Kubernetes" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="#3c8acf" layoutX="379.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="134.00384521484375">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Text>
+            <TableView fx:id="instancesTableView" layoutX="7.0" layoutY="52.0" prefHeight="244.0" prefWidth="961.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="376.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="51.0">
+               <columns>
+                  <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
+                  <TableColumn fx:id="nameColumn" editable="false" minWidth="0.0" prefWidth="75.0" text="Name" />
+                  <TableColumn fx:id="imageColumn" editable="false" minWidth="0.0" prefWidth="74.0" text="Image" />
+                  <TableColumn fx:id="statusColumn" editable="false" prefWidth="67.0" text="Status" />
+                  <TableColumn fx:id="cpuUsageColumn" editable="false" prefWidth="102.5" text="CPU Usage (%)" />
+                  <TableColumn fx:id="pidsColumn" editable="false" prefWidth="56.5" text="PIDs" />
+                  <TableColumn fx:id="memoryUsageColumn" editable="false" prefWidth="125.0" text="Memory Usage (MB)" />
+                  <TableColumn fx:id="blockOColumn" editable="false" prefWidth="59.5" text="BlockO" />
+                  <TableColumn fx:id="blockIColumn" editable="false" prefWidth="48.5" text="BlockI" />
+                  <TableColumn fx:id="actionButtonColumn" editable="false" prefWidth="75.0" text="Action" />
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="323.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" />
+            <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #4272F1;" text="Show data " textFill="WHITE" />
+            <CheckBox fx:id="runningInstancesCheckbox" layoutX="765.0" layoutY="31.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
+            <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
+                     <font>
+                        <Font size="90.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane layoutX="282.0" layoutY="392.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Label fx:id="runningContainersText" alignment="CENTER" layoutX="58.0" layoutY="27.0" text="3" textFill="WHITE">
+                     <font>
+                        <Font size="90.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane layoutX="518.0" layoutY="393.0" prefHeight="160.0" prefWidth="163.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Label fx:id="stoppedContainersText" layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
+                     <font>
+                        <Font size="90.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Text fill="#3c8acf" layoutX="34.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+            <Text fill="#3c8acf" layoutX="286.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+            <Text fill="#3c8acf" layoutX="516.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+            <TextField fx:id="searchField" layoutX="10.0" layoutY="20.0" prefHeight="26.0" prefWidth="163.0" promptText="Search for a container... 🔍" />
+            <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #4272F1;" text="Inspect a .yaml file" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-background-color: #4272F1;" text="Clear" textFill="WHITE" />
+            <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Label fx:id="metricsLabel" layoutX="37.0" layoutY="24.0" text="20" textFill="WHITE">
+                     <font>
+                        <Font size="90.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Text fill="#3c8acf" layoutX="799.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metrics " wrappingWidth="87.0894775390625">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="202.21630859375">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Text>
+            <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
+         </children>
+      </HBox>
+   </top>
+</BorderPane>

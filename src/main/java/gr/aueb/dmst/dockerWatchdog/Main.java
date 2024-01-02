@@ -3,6 +3,14 @@ package gr.aueb.dmst.dockerWatchdog;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
+import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
+import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
+import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
+import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
+import javafx.application.Application;
 
 import java.util.ArrayList;
 
@@ -11,6 +19,7 @@ public class Main {
     // Initiate myInstancesList and myImagesList
     public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
     public static ArrayList<MyImage> myImagesList = new ArrayList<>();
+    public static ArrayList<MyVolume> myVolumesList = new ArrayList<>();
 
     // Initiate dockerClient
     public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -37,6 +46,10 @@ public class Main {
 
             // start dbThread
             dbThread.start();
+
+            new Thread(DatabaseThread::updateLiveMetcrics).start();
+
+            Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
             // Handle exceptions here

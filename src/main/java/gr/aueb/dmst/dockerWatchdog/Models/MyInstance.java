@@ -1,15 +1,12 @@
-package gr.aueb.dmst.dockerWatchdog;
+package gr.aueb.dmst.dockerWatchdog.Models;
 
-import com.github.dockerjava.api.command.InspectContainerResponse;
-import com.github.dockerjava.api.model.ExposedPort;
-import com.github.dockerjava.api.model.Ports;
+import gr.aueb.dmst.dockerWatchdog.Main;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public class MyInstance {
     private final String id; // ID of instance is final
     private String name; // Instance name
-    private Map < String, String > labels; // Labels of instance
     private final String image; // Image of instance
     private String status; // Status of instance
     private long pids; // PIDs of instance
@@ -18,29 +15,39 @@ public class MyInstance {
     private double blockI; // Block I of instance in MB
     private double blockO; // Block O of instance in MB
     private String ports; // Ports of instance
+    private ArrayList<String> volumes; // Volumes of instance
+    private String subnet;
+    private String gateway;
+    private int prefixLen;
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, Map < String, String > labels, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports) {
+    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports,ArrayList<String> volumes,String subnet,String gateway,int prefixLen) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
         this.name = name;
         this.image = image;
         this.status = status;
-        this.labels = labels;
         this.memoryUsage = memoryUsage;
         this.pids = pids;
         this.cpuUsage = cpuUsage;
         this.blockI = blockI;
         this.blockO = blockO;
         this.ports = ports;
+        this.volumes = volumes;
+        this.subnet = subnet;
+        this.gateway = gateway;
+        this.prefixLen = prefixLen;
     }
 
     // Method toString that returns a string with the values of the instance variables
     @Override
     public String toString() {
         return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
-                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) + "MB/" + String.format("%.2f", blockO) + "MB";
+                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
+                " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" +
+                " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) +
+                "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes + " , Subnet : " + subnet + " , Gateway : " + gateway + " , PrefixLen : " + prefixLen;
     }
 
     // Getter for id
@@ -61,11 +68,6 @@ public class MyInstance {
     // Getter for name
     public String getName() {
         return name;
-    }
-
-    // Getter for labels
-    public Map < String, String > getLabels() {
-        return labels;
     }
 
     // Getter for memoryUsage
@@ -116,11 +118,6 @@ public class MyInstance {
         this.status = status;
     }
 
-    // Setter for labels
-    public void setLabels(Map < String, String > labels) {
-        this.labels = labels;
-    }
-
     // Setter for PIDs
     public void setPids(long pids) {
         this.pids = pids;
@@ -136,7 +133,41 @@ public class MyInstance {
         this.blockO = blockO;
     }
 
+    public ArrayList<String> getVolumes() {
+        return volumes;
+    }
 
+    public void setVolume(ArrayList<String> volumes) {
+        this.volumes = volumes;
+    }
+
+    public void addVolume(String volumeName) {
+        this.volumes.add(volumeName);
+    }
+
+    public String getSubnet() {
+        return subnet;
+    }
+
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    public int getPrefixLen() {
+        return prefixLen;
+    }
+
+    public void setPrefixLen(int prefixLen) {
+        this.prefixLen = prefixLen;
+    }
 
     // Given an ID of an instance, return the instance
     public static MyInstance getInstanceByid(String id) {
