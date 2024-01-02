@@ -115,7 +115,7 @@ public class ImagesController implements Initializable {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button("Start All");
+                        private final Button btn = new Button();
                         Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
@@ -152,7 +152,7 @@ public class ImagesController implements Initializable {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button("Stop All");
+                        private final Button btn = new Button();
                         Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
