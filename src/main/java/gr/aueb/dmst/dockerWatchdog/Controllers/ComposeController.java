@@ -1,5 +1,10 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Label;
+import javafx.util.Duration;
 import org.yaml.snakeyaml.Yaml;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Map;
 
 public class ComposeController {
 
@@ -24,17 +31,33 @@ public class ComposeController {
     private Parent root;
 
     private String yamlFilePath;
+    private boolean isShowingConfig = false;
 
     @FXML
+    private Button showConfigButton;
+    @FXML
     private Button validateButton;
+    @FXML
+    private Label fileNameLabel;
+
+    @FXML
+    private Label savedLabel;
 
     public void initialize() {
+        yamlContentArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                savedLabel.setText("Unsaved");
+            }
+        });
     }
 
     private void loadYamlFile() {
         try {
             String yamlContent = new String(Files.readAllBytes(Paths.get(yamlFilePath)));
             yamlContentArea.setText(yamlContent);
+            String fileName = Paths.get(yamlFilePath).getFileName().toString();
+            fileNameLabel.setText(fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,6 +140,46 @@ public class ComposeController {
         } catch (Exception e) {
             validateButton.setText("Sorry not valid");
             validateButton.setStyle("-fx-background-color: red;");
+            validateButton.setDisable(true);
+        }
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> {
+            validateButton.setStyle(null);
+            validateButton.setDisable(false);
+            validateButton.setText("Validate");
+        });
+        pause.play();
+    }
+
+    public void saveYaml() {
+        try {
+            String yamlContent = yamlContentArea.getText();
+            Files.write(Paths.get(yamlFilePath), yamlContent.getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            savedLabel.setText("Saved");
+        } catch (Exception e) {
+            System.out.println("Error saving YAML file: " + e.getMessage());
+        }
+    }
+
+    public void showConfig() {
+        if (!isShowingConfig) {
+            try {
+                Yaml yaml = new Yaml();
+                Map<String, Object> yamlMap = yaml.load(new FileInputStream(yamlFilePath));
+                yamlContentArea.clear();
+                yamlContentArea.appendText("Config:\n");
+                for (Map.Entry<String, Object> entry : yamlMap.entrySet()) {
+                    yamlContentArea.appendText(entry.getKey() + ": " + entry.getValue().toString() + "\n");
+                }
+                isShowingConfig = true;
+                showConfigButton.setText("Show YAML");
+            } catch (Exception e) {
+                System.out.println("Error reading YAML file: " + e.getMessage());
+            }
+        } else {
+            loadYamlFile();
+            isShowingConfig = false;
+            showConfigButton.setText("Show Config");
         }
     }
 }
