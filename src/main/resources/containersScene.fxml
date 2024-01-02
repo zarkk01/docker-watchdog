@@ -49,12 +49,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="#3c8acf" layoutX="368.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="107.3505859375">
+            <Text fill="#3c8acf" layoutX="379.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="134.00384521484375">
                <font>
-                  <Font name="System Bold" size="21.0" />
+                  <Font name="System Bold" size="24.0" />
                </font>
             </Text>
-            <TableView fx:id="instancesTableView" layoutX="5.0" layoutY="50.0" prefHeight="228.0" prefWidth="965.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="394.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="49.0">
+            <TableView fx:id="instancesTableView" layoutX="7.0" layoutY="52.0" prefHeight="244.0" prefWidth="961.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="376.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="51.0">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -71,12 +71,11 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <TextField fx:id="datetimeTextField" layoutX="18.0" layoutY="563.0" promptText="Write a datetime (ex. )" />
-            <Button fx:id="datetimeButton" layoutX="187.0" layoutY="563.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" text="Show data " />
-            <Label fx:id="metricsDoneLabel" layoutX="19.0" layoutY="597.0" prefHeight="17.0" prefWidth="336.0" text="The metrics that had be done then was : " textFill="#4a2929" />
-            <Label fx:id="runningInstancesLabel" layoutX="18.0" layoutY="614.0" prefHeight="17.0" prefWidth="337.0" text="The running containers in that datetime was : " textFill="#513b3b" />
-            <CheckBox fx:id="runningInstancesCheckbox" layoutX="18.0" layoutY="531.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
-            <Pane layoutX="99.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+            <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="319.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" />
+            <Button fx:id="datetimeButton" layoutX="285.0" layoutY="319.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #4272F1;" text="Show data " textFill="WHITE" />
+            <Label fx:id="metricsDoneLabel" layoutX="494.0" layoutY="326.0" prefHeight="17.0" prefWidth="336.0" text="Metrics had be done then was : " textFill="#4a2929" />
+            <CheckBox fx:id="runningInstancesCheckbox" layoutX="765.0" layoutY="31.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" />
+            <Pane layoutX="99.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
                      <font>
@@ -85,16 +84,16 @@
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="384.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="384.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label fx:id="runningContainersText" alignment="CENTER" layoutX="58.0" layoutY="26.0" text="3" textFill="WHITE">
+                  <Label fx:id="runningContainersText" alignment="CENTER" layoutX="58.0" layoutY="27.0" text="3" textFill="WHITE">
                      <font>
                         <Font size="90.0" />
                      </font>
                   </Label>
                </children>
             </Pane>
-            <Pane layoutX="678.0" layoutY="343.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="678.0" layoutY="396.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #4272F1;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Label fx:id="stoppedContainersText" layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
                      <font>
@@ -103,23 +102,27 @@
                   </Label>
                </children>
             </Pane>
-            <Text fill="#3c8acf" layoutX="118.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
+            <Text fill="#3c8acf" layoutX="114.0" layoutY="380.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
-            <Text fill="#3c8acf" layoutX="394.0" layoutY="336.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
+            <Text fill="#3c8acf" layoutX="394.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
-            <Text fill="#3c8acf" layoutX="686.0" layoutY="337.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
+            <Text fill="#3c8acf" layoutX="682.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
                <font>
                   <Font name="System Bold" size="19.0" />
                </font>
             </Text>
-            <TextField fx:id="searchField" layoutX="10.0" layoutY="15.0" promptText="Search for a container..." />
-            <Button fx:id="uploadButton" layoutX="357.0" layoutY="551.0" mnemonicParsing="false" onAction="#handleUploadFile" text="Upload" />
+            <TextField fx:id="searchField" layoutX="10.0" layoutY="20.0" promptText="Search for a container..." />
+            <Button fx:id="uploadButton" layoutX="390.0" layoutY="573.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #4272F1;" text="Inspect a .yaml file" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="clearButton" layoutX="378.0" layoutY="318.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-background-color: #4272F1;" text="Clear" textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>

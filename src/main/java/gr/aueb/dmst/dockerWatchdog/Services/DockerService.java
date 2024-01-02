@@ -80,7 +80,8 @@ public class DockerService {
             wantedId =  metricOptional.get().getId();
         }
         long runningContainers = instanceRepository.countByMetricIdAndStatusRunning(wantedId);
-        return List.of(manyMetric, runningContainers);
+        long totalContainers = instanceRepository.findAllByMetricId(wantedId);
+        return List.of(manyMetric, runningContainers, totalContainers, totalContainers - runningContainers);
     }
 
     public List<Image> getAllImages() {

@@ -86,8 +86,6 @@ public class ContainersController implements Initializable {
     public Button datetimeButton;
     @FXML
     public Label metricsDoneLabel;
-    @FXML
-    public Label runningInstancesLabel;
 
     @FXML
     public CheckBox runningInstancesCheckbox;
@@ -104,6 +102,8 @@ public class ContainersController implements Initializable {
 
     private Stage stage;
     private Parent root;
+
+    private Boolean selectedDateTime = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -233,7 +233,7 @@ public class ContainersController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("volumesScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -295,9 +295,11 @@ public class ContainersController implements Initializable {
                     }
                 }
             }
-            totalContainersText.setText(String.valueOf(totalContainers));
-            runningContainersText.setText(String.valueOf(runningContainers));
-            stoppedContainersText.setText(String.valueOf(stoppedContainers));
+            if(!selectedDateTime){
+                totalContainersText.setText(String.valueOf(totalContainers));
+                runningContainersText.setText(String.valueOf(runningContainers));
+                stoppedContainersText.setText(String.valueOf(stoppedContainers));
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -334,6 +336,7 @@ public class ContainersController implements Initializable {
     public void showDataThen(ActionEvent e) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
+            selectedDateTime = true;
             Date chosenDate = dateFormat.parse(datetimeTextField.getText());
             String chosenDateString = URLEncoder.encode(dateFormat.format(chosenDate), "UTF-8");
             HttpRequest request = HttpRequest.newBuilder()
@@ -345,13 +348,22 @@ public class ContainersController implements Initializable {
             String responseBody = response.body();
             String metricsDone = responseBody.split(",")[0].replaceAll("[^0-9]", "");
             String runningInstances = responseBody.split(",")[1].replaceAll("[^0-9]", "");
+            String totalInstances = responseBody.split(",")[2].replaceAll("[^0-9]", "");
+            String stoppedInstances = responseBody.split(",")[3].replaceAll("[^0-9]", "");
             metricsDoneLabel.setText("How many metrics were be done then: " + metricsDone);
-            runningInstancesLabel.setText("How many containers were running then: " + runningInstances);
+            runningContainersText.setText(runningInstances);
+            totalContainersText.setText(totalInstances);
+            stoppedContainersText.setText(stoppedInstances);
         } catch (ParseException pe) {
             System.out.println("Error parsing date: " + pe.getMessage());
         } catch (Exception ex) {
             System.out.println("Error occurred: " + ex.getMessage());
         }
+    }
+
+    public void clearInfo(){
+        selectedDateTime = false;
+        refreshInstances();
     }
 
     public void showNotification(String title, String content) {

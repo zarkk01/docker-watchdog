@@ -129,8 +129,7 @@ public class MonitorThread implements Runnable {
                 }
                 for(String volumeName : instance.getVolumes()){
                     MyVolume vol = MyVolume.getVolumeByName(volumeName);
-                    assert vol != null;
-                    vol.removeContainerNameUsing(instance.getName());
+                    if(vol != null){vol.removeContainerNameUsing(instance.getName());}
                 }
                 DatabaseThread.keepTrackOfVolumes();
                 break;

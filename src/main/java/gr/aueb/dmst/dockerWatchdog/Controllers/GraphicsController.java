@@ -40,6 +40,7 @@ public class GraphicsController implements Initializable {
 
     @FXML
     private LineChart<String,Number> memoryChart;
+
     private XYChart.Series<String, Number> cpuSeries;
     private XYChart.Series<String, Number> pidsSeries;
     private XYChart.Series<String, Number> memorySeries;
@@ -92,7 +93,7 @@ public class GraphicsController implements Initializable {
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("volumesScene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -126,11 +127,7 @@ public class GraphicsController implements Initializable {
             Double cpuUsage = jsonObject.getDouble("cpuUsage");
             Double blockI = jsonObject.getDouble("blockI");
             Double blockO = jsonObject.getDouble("blockO");
-            String volumes = jsonObject.getString("volumes");
-            String subnets = jsonObject.getString("subnets");
-            String gateway = jsonObject.getString("gateway");
-            Integer prefixlen = jsonObject.getInt("prefixlen");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, volumes, subnets, gateway, prefixlen));
+            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, null, null, null, null));
         }
         return instances;
     }
