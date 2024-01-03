@@ -175,7 +175,6 @@
                         <Font name="System Bold" size="22.0" />
                     </font>
                 </Text>
-                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
             </children>
         </HBox>
     </top>
