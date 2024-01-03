@@ -39,6 +39,8 @@ public class Main {
             Thread newMonitorThread = new Thread(newDockerMonitor);
             newMonitorThread.start();
 
+            //Process finished with exit code 1
+
             // Initiate and start executorThread
             ExecutorThread dockerExecutor = new ExecutorThread();
             Thread executorThread = new Thread(dockerExecutor);
