@@ -16,7 +16,7 @@
     <left>
         <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" onAction="#changeToContainersScene" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -45,7 +45,7 @@
         </VBox>
     </left>
     <center>
-        <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+        <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="#3c8acf" layoutX="373.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="KUBERNETES" wrappingWidth="260.3033752441406">
                     <font>
@@ -54,11 +54,11 @@
                 </Text>
                 <SplitPane dividerPositions="0.4823232323232323" layoutX="-2.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="976.0">
                     <items>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="232.0" prefWidth="974.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="232.0" prefWidth="974.0" style="-fx-background-color: #525252;">
                             <children>
                                 <SplitPane layoutX="392.0" layoutY="-7.0" prefHeight="305.0" prefWidth="586.0">
                                     <items>
-                                        <AnchorPane prefHeight="284.0" prefWidth="584.0">
+                                        <AnchorPane prefHeight="284.0" prefWidth="584.0" style="-fx-background-color: #525252;">
                                             <children>
                                                 <Label layoutX="197.0" layoutY="10.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS" textFill="#3c8acf">
                                                     <font>
@@ -92,7 +92,7 @@
                             <children>
                                 <SplitPane dividerPositions="0.6242331288343558" layoutX="-4.0" layoutY="-8.0" prefHeight="325.0" prefWidth="980.0">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;">
                                             <children>
                                                 <Label layoutX="278.0" layoutY="10.0" text="PODS" textFill="#3c8acf">
                                                     <font>
@@ -108,7 +108,7 @@
                                                 </TableView>
                                             </children>
                                         </AnchorPane>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;">
                                             <children>
                                                 <Label layoutX="95.0" layoutY="14.0" text="STATEFUL SETS" textFill="#3c8acf">
                                                     <font>

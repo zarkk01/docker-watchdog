@@ -16,7 +16,7 @@
    <left>
       <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="containersButton" onAction="#changeToContainersScene" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+            <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -45,7 +45,7 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" layoutX="183.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graphics" wrappingWidth="107.3505859375">
                <font>

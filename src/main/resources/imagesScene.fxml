@@ -15,7 +15,7 @@
    <left>
       <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="containersButton" onAction="#changeToContainersScene" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+            <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -44,7 +44,7 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="BLACK" layoutX="418.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
@@ -66,7 +66,6 @@
                </columnResizePolicy>
             </TableView>
             <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" />
-            <VBox fx:id="notificationBox" layoutX="202.0" layoutY="419.0" prefHeight="53.0" prefWidth="165.0" />
          </children>
       </AnchorPane>
    </center>
