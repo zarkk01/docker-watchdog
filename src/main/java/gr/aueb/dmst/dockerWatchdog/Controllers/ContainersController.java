@@ -352,17 +352,31 @@ public class ContainersController implements Initializable {
     }
 
     private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
+        if(instance.getStatus().equals("paused")){
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/unpause"))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) {
-            showNotification("Container Event", "Container " + instance.getName() + " has started.");
+            if (response.statusCode() == 200) {
+                showNotification("Container Event", "Container " + instance.getName() + " has unpaused.");
+            }
+            refreshInstances();
+        } else {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                showNotification("Container Event", "Container " + instance.getName() + " has started.");
+            }
+            refreshInstances();
         }
-        refreshInstances();
     }
 
     private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
