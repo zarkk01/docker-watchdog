@@ -21,6 +21,7 @@ public class DesktopApp extends Application {
         Scene scene = new Scene(fxmlLoader.load(),1100,700);
         stage.setScene(scene);
         stage.setTitle("Docker Watchdog");
+        stage.setResizable(false);
         stage.show();
     }
 
