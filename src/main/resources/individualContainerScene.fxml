@@ -19,29 +19,29 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.IndividualContainerController">
     <left>
-        <VBox prefHeight="514.0" prefWidth="125.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 2px 0px 2px 0px;" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" onAction="#changeToContainersScene" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Images" textFill="WHITE">
+                <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Volumes" textFill="WHITE">
+                <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Volumes" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Graphics" textFill="WHITE">
+                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Kubernetes" textFill="WHITE">
+                <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -168,13 +168,14 @@
         </AnchorPane>
     </center>
     <top>
-        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #4272F1;" BorderPane.alignment="CENTER">
+        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="202.21630859375">
                     <font>
-                        <Font size="22.0" />
+                        <Font name="System Bold" size="22.0" />
                     </font>
                 </Text>
+                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
             </children>
         </HBox>
     </top>
