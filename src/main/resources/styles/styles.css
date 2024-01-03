@@ -13,7 +13,7 @@
 }
 
 .table-view .column-header-background{
-    -fx-background-color: linear-gradient(to bottom, #87CEEB, blue);
+    -fx-background-color: linear-gradient(to bottom, #EC625F, #EC625F);
     -fx-background-radius: 7px 7px 0px 0px;
     -fx-background-insets: 0 11px 0 0;
     -fx-padding: 0 0 5px 0;
@@ -26,20 +26,18 @@
 .table-view .table-cell{
     -fx-border-color: transparent;
     -fx-padding: 2 0 2 10px;
+    -fx-alignment: CENTER;
 }
 .table-row-cell: hover {
-    -fx-background-color: #93f9b911;
-    -fx-text-background-color: blue;
+    -fx-text-background-color: red;
 }
-.table-row-cell: odd{
-    -fx-background-color: #93f9b911;
+.table-row-cell {
+    -fx-background-color: #414141;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
-}
-.table-row-cell: even{
-    -fx-background-color: #1dbbdd11;
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em;
+    -fx-cell-size: 50px;
+    -fx-border-color: #525252;
+    -fx-border-width: 0 0 1 0;
 }
 
 .table-view .virtual-flow .scroll-bar:vertical,
@@ -58,10 +56,10 @@
 }
 
 .table-view .virtual-flow .scroll-bar:vertical .thumb{
-    -fx-background-color:  linear-gradient(to bottom, #1dbbdd44, blue);
+    -fx-background-color:  linear-gradient(to bottom, #EC625F, #EC625F);
 }
 .table-view .virtual-flow .scroll-bar:horizontal .thumb {
-    -fx-background-color:  linear-gradient(to right, #1dbbdd44, blue);
+    -fx-background-color:  linear-gradient(to right, #EC625F, #EC625F);
 }
 
 .table-row-cell: highlighted {
@@ -91,6 +89,12 @@
 .default-color0.chart-line-symbol {
     -fx-background-color: #81c483, white;
 }
-
+.table-view .table-row-cell .text {
+    -fx-fill: #b8bec3; /* Light grey text color */
+    -fx-font-size: 15px
+}
+.table-row-cell:hover {
+    -fx-background-color: #525252; /* Dark grey background color when hovering */
+}
 
 
