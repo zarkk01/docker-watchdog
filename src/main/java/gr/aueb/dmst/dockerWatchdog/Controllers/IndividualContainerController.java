@@ -362,7 +362,7 @@ public class IndividualContainerController {
             contentLabel.setTextFill(Color.WHITE);
 
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             notification.getContent().add(box);
 
