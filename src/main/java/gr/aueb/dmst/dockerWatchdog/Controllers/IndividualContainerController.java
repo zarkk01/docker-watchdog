@@ -136,7 +136,6 @@ public class IndividualContainerController {
      */
     public void onInstanceDoubleClick(InstanceScene instance) {
         this.instanceScene = instance;
-        headTextContainer.setText("Container: " + instance.getName());
         containerIdLabel.setText("ID : " + instance.getId());
         containerNameLabel.setText("Name: " + instance.getName());
         containerStatusLabel.setText("Status: " + instance.getStatus());

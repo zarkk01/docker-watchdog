@@ -50,36 +50,31 @@
         </VBox>
     </left>
     <center>
-        <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: white; -fx-border-color: white;" BorderPane.alignment="CENTER">
+        <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
             <children>
-                <Text fx:id="headTextContainer" layoutX="355.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Individual Container" wrappingWidth="227.3505859375">
-                    <font>
-                        <Font size="21.0" />
-                    </font>
-                </Text>
-                <SplitPane fx:id="infoCard" dividerPositions="0.5" orientation="VERTICAL" prefHeight="672.0" prefWidth="975.0">
+                <SplitPane fx:id="infoCard" dividerPositions="0.5" orientation="VERTICAL" prefHeight="672.0" prefWidth="975.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" stylesheets="@styles/splitPane.css">
                     <items>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-border-color: #525252;">
                             <children>
-                                <SplitPane dividerPositions="0.6231958762886598" prefHeight="333.0" prefWidth="972.0">
+                                <SplitPane dividerPositions="0.6231958762886598" prefHeight="333.0" prefWidth="972.0" style="-fx-border-color: #525252; -fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="331.0" prefWidth="592.0" style="-fx-background-color: #525252;">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="376.0" prefWidth="600.0" style="-fx-background-color: #525252; -fx-border-color: #525252;">
                                             <children>
-                                                <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" />
                                     <VBox fx:id="notificationBox" layoutX="251.0" layoutY="66.0" prefHeight="76.0" prefWidth="177.0" />
-                                    <LineChart fx:id="individualCpuChart" layoutX="96.0" layoutY="25.0" prefHeight="277.0" prefWidth="447.0">
+                                    <LineChart fx:id="individualCpuChart" layoutX="3.0" layoutY="20.0" prefHeight="347.0" prefWidth="561.0" style="-fx-background-color: #525252;" stylesheets="@styles/chartColor.css">
                                       <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
+                                        <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis side="LEFT" upperBound="2.75" />
+                                        <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="2.75" />
                                       </yAxis>
                                     </LineChart>
+                                                <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" style="-fx-background-color: #525252;" />
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="331.0" prefWidth="378.0" style="-fx-background-color: #525252;">
                                             <children>
-                                                <GridPane layoutX="15.0" layoutY="12.0" prefHeight="219.0" prefWidth="338.0">
+                                                <GridPane layoutX="12.0" layoutY="41.0" prefHeight="219.0" prefWidth="338.0">
                                                     <columnConstraints>
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="266.24810791015625" minWidth="10.0" prefWidth="161.21929931640625" />
                                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="380.0228576660156" minWidth="10.0" prefWidth="177.28070068359375" />
@@ -90,15 +85,15 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" style="-fx-background-color: #4272F1;" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0" style="-fx-background-color: #4272F1;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0" style="-fx-background-color: #4272F1;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="160.0" style="-fx-background-color: #4272F1;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="56.0" prefWidth="149.0" style="-fx-background-color: #4272F1;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="57.0" prefWidth="161.0" style="-fx-background-color: #4272F1;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="57.0" prefWidth="147.0" style="-fx-background-color: #414141;" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="58.0" prefWidth="159.0" style="-fx-background-color: #414141;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="56.0" prefWidth="147.0" style="-fx-background-color: #414141;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="160.0" style="-fx-background-color: #414141;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="56.0" prefWidth="149.0" style="-fx-background-color: #414141;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="57.0" prefWidth="161.0" style="-fx-background-color: #414141;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
-                                                <Button fx:id="removeButton" layoutX="107.0" layoutY="233.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="142.0" style="-fx-background-color: #4272F1;" text="Remove" textFill="WHITE" />
+                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-background-color: #414141;" text="Bin" textFill="WHITE" />
                                             </children>
                                         </AnchorPane>
                                     </items>
@@ -107,51 +102,55 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <SplitPane dividerPositions="0.29797979797979796" prefHeight="336.0" prefWidth="976.0">
+                                <SplitPane dividerPositions="0.43788501026694043" prefHeight="336.0" prefWidth="976.0" style="-fx-background-color: #525252;">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="334.0" prefWidth="439.0" style="-fx-background-color: #525252; -fx-border-color: #525252;">
                                             <children>
-                                                <Label fx:id="containerIdLabel" layoutX="8.0" layoutY="5.0" prefHeight="50.0" prefWidth="281.0" text="ID ">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label fx:id="containerNameLabel" layoutX="6.0" layoutY="46.0" prefHeight="38.0" prefWidth="262.0" text="Name">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label fx:id="containerImageLabel" layoutX="4.0" layoutY="116.0" prefHeight="49.0" prefWidth="260.0" text="Image">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label fx:id="containerStatusLabel" layoutX="5.0" layoutY="80.0" prefHeight="49.0" prefWidth="261.0" text="Status">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label fx:id="containerSubnetLabel" layoutX="5.0" layoutY="154.0" prefHeight="50.0" prefWidth="281.0" text="Subnet">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                                <Label fx:id="containerGatewayLabel" layoutX="6.0" layoutY="191.0" prefHeight="50.0" prefWidth="281.0" text="Gateway">
-                                                    <font>
-                                                        <Font size="24.0" />
-                                                    </font>
-                                                </Label>
-                                    <Label fx:id="containerVolumesLabel" layoutX="7.0" layoutY="235.0" prefHeight="35.0" prefWidth="276.0" text="Volumes">
-                                       <font>
-                                          <Font size="24.0" />
-                                       </font>
-                                    </Label>
+                                    <VBox layoutX="8.0" layoutY="5.0" prefHeight="328.0" prefWidth="409.0">
+                                       <children>
+                                                      <Label fx:id="containerIdLabel" prefHeight="50.0" prefWidth="409.0" text="ID " textFill="WHITE">
+                                                          <font>
+                                                              <Font size="22.0" />
+                                                          </font>
+                                                      </Label>
+                                                      <Label fx:id="containerNameLabel" prefHeight="38.0" prefWidth="410.0" text="Name" textFill="WHITE">
+                                                          <font>
+                                                              <Font size="24.0" />
+                                                          </font>
+                                                      </Label>
+                                                      <Label fx:id="containerImageLabel" prefHeight="49.0" prefWidth="409.0" text="Image" textFill="WHITE">
+                                                          <font>
+                                                              <Font size="24.0" />
+                                                          </font>
+                                                      </Label>
+                                                      <Label fx:id="containerStatusLabel" prefHeight="49.0" prefWidth="410.0" text="Status" textFill="WHITE">
+                                                          <font>
+                                                              <Font size="24.0" />
+                                                          </font>
+                                                      </Label>
+                                                      <Label fx:id="containerSubnetLabel" prefHeight="50.0" prefWidth="425.0" text="Subnet" textFill="WHITE">
+                                                          <font>
+                                                              <Font size="24.0" />
+                                                          </font>
+                                                      </Label>
+                                          <Label fx:id="containerVolumesLabel" prefHeight="35.0" prefWidth="408.0" text="Volumes" textFill="WHITE">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                                      <Label fx:id="containerGatewayLabel" prefHeight="50.0" prefWidth="429.0" text="Gateway" textFill="WHITE">
+                                                          <font>
+                                                              <Font size="24.0" />
+                                                          </font>
+                                                      </Label>
+                                       </children>
+                                    </VBox>
                                             </children>
                                         </AnchorPane>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;" stylesheets="@styles/styles.css">
                                             <children>
-                                                <TextArea fx:id="textArea" layoutX="-1.0" layoutY="30.0" prefHeight="300.0" prefWidth="679.0" style="-fx-background-color: #525252;" />
-                                    <Label fx:id="logsLabel" layoutX="5.0" layoutY="-2.0" prefHeight="33.0" prefWidth="396.0" text="Logs of ">
+                                                <TextArea fx:id="textArea" layoutX="2.0" layoutY="38.0" prefHeight="290.0" prefWidth="530.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" stylesheets="@styles/textArea.css" />
+                                    <Label fx:id="logsLabel" layoutX="5.0" layoutY="-2.0" prefHeight="33.0" prefWidth="396.0" text="Logs of " textFill="WHITE">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
@@ -168,11 +167,11 @@
         </AnchorPane>
     </center>
     <top>
-        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
+        <HBox prefHeight="36.0" prefWidth="1100.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="202.21630859375">
+                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="212.21630859375">
                     <font>
-                        <Font name="System Bold" size="22.0" />
+                        <Font name="System Bold" size="25.0" />
                     </font>
                 </Text>
             </children>

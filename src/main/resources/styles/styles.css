@@ -82,13 +82,6 @@
 .table-view .column-header .label {
     -fx-text-fill: white; /* Set the text color to white */
 }
-
-.default-color0.chart-series-line {
-    -fx-stroke: #81c483;
-}
-.default-color0.chart-line-symbol {
-    -fx-background-color: #81c483, white;
-}
 .table-view .table-row-cell .text {
     -fx-fill: #b8bec3; /* Light grey text color */
     -fx-font-size: 15px

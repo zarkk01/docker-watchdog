@@ -1,0 +1,23 @@
+.chart-plot-background {
+    -fx-background-color: #414141;
+}
+
+.chart .axis:top .axis-label,
+.chart .axis:bottom .axis-label,
+.chart .axis:left .axis-label,
+.chart .axis:right .axis-label {
+    -fx-text-fill: white; /* Set the text color for axis labels */
+}
+.chart-legend-item-symbol {
+-fx-background-color: transparent, transparent;
+}
+.default-color0.chart-series-line {
+    -fx-stroke: #EC625F;
+}
+.default-color0.chart-line-symbol {
+    -fx-background-color: #EC625F, #525252 ;
+}
+
+.chart-line-symbol {
+    -fx-background-color: transparent, transparent ;
+}
