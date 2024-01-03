@@ -19,27 +19,27 @@
 <left>
    <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
       <children>
-         <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+         <Button fx:id="containersButton" mnemonicParsing="false" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
             <font>
                <Font size="16.0" />
             </font>
          </Button>
-         <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="WHITE">
+         <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Images" textFill="WHITE">
             <font>
                <Font size="16.0" />
             </font>
          </Button>
-         <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Volumes" textFill="WHITE">
+         <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Volumes" textFill="WHITE">
             <font>
                <Font size="16.0" />
             </font>
          </Button>
-         <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="WHITE">
+         <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Graphics" textFill="WHITE">
             <font>
                <Font size="16.0" />
             </font>
          </Button>
-         <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="WHITE">
+         <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Kubernetes" textFill="WHITE">
             <font>
                <Font size="16.0" />
             </font>
@@ -50,10 +50,10 @@
 <center>
    <AnchorPane fx:id="anchorPane" prefHeight="615.0" prefWidth="975.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
       <children>
-         <Pane layoutX="6.0" layoutY="311.0" prefHeight="348.0" prefWidth="942.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
-         <Text fill="#b9c1c9" layoutX="379.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="134.00384521484375">
+         <Pane layoutX="5.0" layoutY="311.0" prefHeight="354.0" prefWidth="933.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+         <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
             <font>
-               <Font name="System Bold" size="24.0" />
+               <Font name="System Bold" size="36.0" />
             </font>
          </Text>
          <TableView fx:id="instancesTableView" layoutX="10.0" layoutY="61.0" prefHeight="244.0" prefWidth="957.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="367.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="60.0">
@@ -74,9 +74,9 @@
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
          </TableView>
-         <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="323.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
-         <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #525252;" text="Show data " textFill="WHITE" />
-         <CheckBox fx:id="runningInstancesCheckbox" layoutX="765.0" layoutY="31.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" textFill="#b2a7a7" />
+         <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="324.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
+         <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #525252; -fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
+         <CheckBox fx:id="runningInstancesCheckbox" layoutX="731.0" layoutY="36.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" style="-fx-text-fill: white;" text="Show only running containers" textFill="#b2a7a7" />
          <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #525252;">
             <children>
                <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
@@ -126,17 +126,17 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <Text fill="#b9c1c9" layoutX="516.0" layoutY="381.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
+         <Text fill="#b9c1c9" layoutX="519.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
             <font>
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <TextField fx:id="searchField" layoutX="10.0" layoutY="20.0" prefHeight="26.0" prefWidth="163.0" promptText="Search for a container... 🔍" style="-fx-background-color: #525252;" />
-         <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #EC625F;" text="Inspect a .yaml file" textFill="WHITE">
+         <TextField fx:id="searchField" layoutX="10.0" layoutY="25.0" prefHeight="26.0" prefWidth="163.0" promptText="Search for a container... 🔍" style="-fx-background-color: #525252; -fx-border-color: #313131; -fx-background-radius: 10; -fx-border-radius: 10;" />
+         <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #EC625F; -fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
             <font>
                <Font size="14.0" />
             </font></Button>
-         <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-background-color: #525252;" text="Clear" textFill="WHITE" />
+         <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-background-color: #525252; -fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
          <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0" style="-fx-background-color: #525252;">
             <children>
                <Label fx:id="metricsLabel" layoutX="37.0" layoutY="24.0" text="20" textFill="WHITE">
@@ -150,12 +150,12 @@
                   <URL value="@styles/hoverPane.css" />
                </stylesheets>
          </Pane>
-         <Text fill="#b9c1c9" layoutX="799.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Metrics " wrappingWidth="87.0894775390625">
+         <Text fill="#b9c1c9" layoutX="799.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Changes" wrappingWidth="87.0894775390625">
             <font>
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <Button fx:id="removeButton" layoutX="865.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: #EC625F;" text="Remove" textFill="#fff9f9" />
+         <Button fx:id="removeButton" layoutX="853.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: #EC625F; -fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Remove" textFill="#fff9f9" />
 
       </children>
    </AnchorPane>
