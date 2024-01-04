@@ -21,6 +21,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -52,9 +54,6 @@ public class IndividualContainerController {
     private static final String BASE_URL = "http://localhost:8080/api/";
     @FXML
     private SplitPane infoCard;
-
-    @FXML
-    private Text headTextContainer;
     @FXML
     private Label containerIdLabel;
     @FXML
@@ -74,6 +73,8 @@ public class IndividualContainerController {
     @FXML
     private Button backButton;
 
+    @FXML
+    private VBox notificationCopyBox;
     @FXML
     public Label logsLabel;
 
@@ -290,7 +291,6 @@ public class IndividualContainerController {
 
                 containerNameLabel.setText("Name: " + newName);
                 this.instanceScene.setName(newName);
-                headTextContainer.setText("Container: " + newName);
             } catch (IOException | InterruptedException | URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -362,7 +362,7 @@ public class IndividualContainerController {
             contentLabel.setTextFill(Color.WHITE);
 
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #4272F1; -fx-padding: 10px; -fx-border-color: black; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             notification.getContent().add(box);
 
@@ -371,6 +371,29 @@ public class IndividualContainerController {
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
+    }
+
+    public void showNotificationAboutCopy(String title, String content) {
+        Platform.runLater(() -> {
+            Popup notification = new Popup();
+
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            notification.getContent().add(box);
+
+            Point2D point = notificationCopyBox.localToScreen(notificationCopyBox.getWidth() - box.getWidth(), notificationCopyBox.getHeight() - box.getHeight());
+
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> notification.hide()));
             timeline.play();
         });
     }
@@ -423,5 +446,14 @@ public class IndividualContainerController {
         } else {
             individualCpuSeries.getData().add(new XYChart.Data<>(formattedTime, individualCpuUsage*100));
         }
+    }
+
+    public void copyId(){
+        String id = containerIdLabel.getText();
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(id.substring(5));
+        clipboard.setContent(content);
+        showNotificationAboutCopy("Copy", "Container ID copied to clipboard");
     }
 }

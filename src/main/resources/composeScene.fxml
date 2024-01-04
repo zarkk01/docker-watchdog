@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -14,27 +15,27 @@
     <left>
         <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Containers" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="WHITE">
+                <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Images" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Volumes" textFill="WHITE">
+                <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Volumes" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="WHITE">
+                <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Graphics" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="WHITE">
+                <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Kubernetes" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
@@ -57,23 +58,41 @@
    <center>
        <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
            <children>
-               <Text fill="BLACK" layoutX="300.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Compose" wrappingWidth="209.3505859375">
-                   <font>
-                       <Font size="21.0" />
-                   </font>
-                </Text>
-                <TextArea fx:id="yamlContentArea" layoutX="39.0" layoutY="99.0" prefHeight="447.0" prefWidth="306.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="126.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="631.0" AnchorPane.topAnchor="98.0" />
-            <Button fx:id="startComposeButton" layoutX="359.0" layoutY="69.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="75.0" prefWidth="150.0" text="Start" />
-            <Button fx:id="stopComposeButton" layoutX="359.0" layoutY="160.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="73.0" prefWidth="153.0" text="Stop" />
-               <Button fx:id="validateButton" layoutX="524.0" layoutY="70.0" mnemonicParsing="false" onAction="#validateYaml" prefHeight="73.0" prefWidth="167.0" text="Validate" />
-               <Button fx:id="saveButton" layoutX="524.0" layoutY="160.0" mnemonicParsing="false" onAction="#saveYaml" prefHeight="73.0" prefWidth="167.0" text="Save" />
-               <Button fx:id="showConfigButton" layoutX="524.0" layoutY="250.0" mnemonicParsing="false" onAction="#showConfig" prefHeight="73.0" prefWidth="167.0" text="Show Config" />
-            <Label fx:id="fileNameLabel" layoutX="47.0" layoutY="75.0" text="File Name">
+                <TextArea fx:id="yamlContentArea" layoutX="40.0" layoutY="100.0" prefHeight="445.0" prefWidth="414.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="492.0" AnchorPane.topAnchor="99.0">
+               <stylesheets>
+                  <URL value="@styles/styles.css" />
+                  <URL value="@styles/textArea.css" />
+               </stylesheets></TextArea>
+            <Button fx:id="startComposeButton" layoutX="512.0" layoutY="275.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" text="Start" textFill="WHITE">
                <font>
                   <Font size="18.0" />
+               </font></Button>
+            <Button fx:id="stopComposeButton" layoutX="734.0" layoutY="276.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black;" text="Stop" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+               <Button fx:id="validateButton" layoutX="734.0" layoutY="136.0" mnemonicParsing="false" onAction="#validateYaml" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" text="Validate" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+               <Button fx:id="saveButton" layoutX="513.0" layoutY="136.0" mnemonicParsing="false" onAction="#saveYaml" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10;" text="Save" textFill="WHITE">
+               <stylesheets>
+                  <URL value="@styles/buttons.css" />
+                  <URL value="@styles/styles.css" />
+               </stylesheets>
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+               <Button fx:id="showConfigButton" layoutX="513.0" layoutY="414.0" mnemonicParsing="false" onAction="#showConfig" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: black;" text="Show Config" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font></Button>
+            <Label fx:id="fileNameLabel" layoutX="45.0" layoutY="68.0" text="File Name" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
                </font>
             </Label>
-            <Label fx:id="savedLabel" layoutX="292.0" layoutY="547.0" text="Saved" />
+            <Label fx:id="savedLabel" layoutX="407.0" layoutY="549.0" text="Saved" textFill="WHITE" />
            </children>
        </AnchorPane>
    </center>

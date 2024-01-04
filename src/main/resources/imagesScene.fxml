@@ -15,27 +15,27 @@
    <left>
       <VBox prefHeight="671.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="WHITE">
+            <Button fx:id="containersButton" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="61.0" prefWidth="155.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Containers" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="WHITE">
+            <Button fx:id="imagesButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Images" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Volumes" textFill="WHITE">
+            <Button fx:id="volumesButton" layoutX="10.0" layoutY="71.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Volumes" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="WHITE">
+            <Button fx:id="graphicsButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Graphics" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="WHITE">
+            <Button fx:id="kubernetesButton" layoutX="10.0" layoutY="132.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="61.0" prefWidth="139.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px; -fx-cursor: hand;" text="Kubernetes" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -46,12 +46,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="BLACK" layoutX="418.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
+            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="433.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
-                  <Font size="21.0" />
+                  <Font name="System Bold Italic" size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="374.0" prefWidth="959.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="568.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="175.9436492919922" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="155.4744873046875" text="Name" />
@@ -65,7 +65,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="444.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" />
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="13.0" layoutY="618.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>
