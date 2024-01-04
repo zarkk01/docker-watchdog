@@ -59,7 +59,7 @@ public class MonitorThread implements Runnable {
         });
     }
 
-    private void handleContainerEvent(String eventAction, String containerId,Event event) {
+    public void handleContainerEvent(String eventAction, String containerId, Event event) {
         switch (eventAction) {
             case "start":
             case "unpause":

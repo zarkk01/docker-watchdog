@@ -1,5 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
 
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
+
 import java.sql.*;
 
 public class TestDataProvider {
@@ -12,7 +14,7 @@ public class TestDataProvider {
         try {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            // Insert test data into the Metrics table
+            // Insert test da/ta into the Metrics table
             String insertMetrics = "INSERT INTO Metrics (datetime) VALUES (?)";
             PreparedStatement insertMetricsStmt = conn.prepareStatement(insertMetrics);
             insertMetricsStmt.setTimestamp(1, getCurrentTimestamp());
@@ -163,5 +165,39 @@ public class TestDataProvider {
         }
 
         return containerName;
+    }
+
+    public static void addImage(MyImage image) {
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Check if the image with the given ID already exists
+            String checkImageExistsQuery = "SELECT * FROM Images WHERE id = ?";
+            PreparedStatement checkImageExistsStmt = conn.prepareStatement(checkImageExistsQuery);
+            checkImageExistsStmt.setString(1, image.getId());
+            ResultSet resultSet = checkImageExistsStmt.executeQuery();
+
+            if (resultSet.next()) {
+                // Update the existing image
+                String updateImageQuery = "UPDATE Images SET name = ?, size = ?, status = ? WHERE id = ?";
+                PreparedStatement updateImageStmt = conn.prepareStatement(updateImageQuery);
+                updateImageStmt.setString(1, image.getName());
+                updateImageStmt.setLong(2, image.getSize());
+                updateImageStmt.setString(3, image.getStatus());
+                updateImageStmt.setString(4, image.getId());
+                updateImageStmt.executeUpdate();
+            } else {
+                // Insert a new image
+                String insertImageQuery = "INSERT INTO Images (id, name, size, status) VALUES (?, ?, ?, ?)";
+                PreparedStatement insertImageStmt = conn.prepareStatement(insertImageQuery);
+                insertImageStmt.setString(1, image.getId());
+                insertImageStmt.setString(2, image.getName());
+                insertImageStmt.setLong(3, image.getSize());
+                insertImageStmt.setString(4, image.getStatus());
+                insertImageStmt.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

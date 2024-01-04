@@ -351,7 +351,7 @@ public class ContainersController implements Initializable {
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
-    private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+    void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
         if(instance.getStatus().equals("paused")){
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/unpause"))

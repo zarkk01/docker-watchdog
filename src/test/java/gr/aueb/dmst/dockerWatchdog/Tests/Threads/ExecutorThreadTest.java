@@ -1,12 +1,16 @@
 package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
 
+import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.NotFoundException;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
+import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.Tests.Threads.TestDataProvider;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -20,15 +24,28 @@ class ExecutorThreadTest {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "docker_db";
     private static final String PASS = "dockerW4tchd0g$";
+    private DockerClient dockerClient;
 
     @BeforeEach
     void setUp() {
-        // ... (similar setup logic as in DatabaseThreadTest)
+        DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                //          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
+                .build();
+        dockerClient = DockerClientBuilder.getInstance(builder).build();
+
+        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
+        TestDataProvider.insertTestImages();
+        TestDataProvider.insertTestMetrics();
+        TestDataProvider.insertTestVolumes();
     }
 
     @AfterEach
-    void tearDown() {
-        // ... (similar teardown logic as in DatabaseThreadTest)
+    void tearDown() throws IOException {
+
+        if (dockerClient != null) {
+            dockerClient.close();
+        }
     }
 
     @Test
