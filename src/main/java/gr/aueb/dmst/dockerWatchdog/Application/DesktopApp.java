@@ -1,7 +1,10 @@
 package gr.aueb.dmst.dockerWatchdog.Application;
 
 import gr.aueb.dmst.dockerWatchdog.Controllers.GraphicsController;
+import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,6 +26,11 @@ public class DesktopApp extends Application {
         stage.setTitle("Docker Watchdog");
         stage.setResizable(false);
         stage.show();
+
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
     public static void main(String[] args) {
