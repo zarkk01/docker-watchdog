@@ -11,10 +11,14 @@ import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import javafx.application.Application;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 
 public class Main {
+
+    public static ConfigurableApplicationContext springContext;
 
     // Initiate myInstancesList and myImagesList
     public static ArrayList<MyInstance> myInstancesList = new ArrayList<>();
@@ -33,6 +37,8 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+
+            springContext = SpringApplication.run(WebApp.class, args);
 
             // Initiate and start newMonitorThread
             MonitorThread newDockerMonitor = new MonitorThread();
