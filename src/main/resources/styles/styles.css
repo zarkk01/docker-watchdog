@@ -83,7 +83,7 @@
     -fx-text-fill: white; /* Set the text color to white */
 }
 .table-view .table-row-cell .text {
-    -fx-fill: #b8bec3; /* Light grey text color */
+    -fx-fill: #E1E1E1; /* Light grey text color */
     -fx-font-size: 15px
 }
 .table-row-cell:hover {
