@@ -50,10 +50,13 @@
 <center>
    <AnchorPane fx:id="anchorPane" prefHeight="615.0" prefWidth="975.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
       <children>
-         <Pane layoutX="6.0" layoutY="311.0" prefHeight="348.0" prefWidth="942.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+         <Pane layoutX="6.0" layoutY="311.0" prefHeight="348.0" prefWidth="927.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+               <children>
+               <Button fx:id="removeButton" layoutX="827.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: #EC625F;" text="Remove" textFill="#fff9f9" />
+               </children></Pane>
          <Text fill="#b9c1c9" layoutX="379.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="134.00384521484375">
             <font>
-               <Font name="System Bold" size="24.0" />
+               <Font name="System Bold Italic" size="24.0" />
             </font>
          </Text>
          <TableView fx:id="instancesTableView" layoutX="10.0" layoutY="61.0" prefHeight="244.0" prefWidth="957.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="367.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="60.0">
@@ -76,7 +79,6 @@
          </TableView>
          <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="323.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
          <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #525252;" text="Show data " textFill="WHITE" />
-         <CheckBox fx:id="runningInstancesCheckbox" layoutX="765.0" layoutY="31.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" textFill="#b2a7a7" />
          <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #525252;">
             <children>
                <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
@@ -131,7 +133,6 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <TextField fx:id="searchField" layoutX="10.0" layoutY="20.0" prefHeight="26.0" prefWidth="163.0" promptText="Search for a container... 🔍" style="-fx-background-color: #525252;" />
          <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #EC625F;" text="Inspect a .yaml file" textFill="WHITE">
             <font>
                <Font size="14.0" />
@@ -155,7 +156,16 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <Button fx:id="removeButton" layoutX="865.0" layoutY="323.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: #EC625F;" text="Remove" textFill="#fff9f9" />
+            <Pane layoutX="15.0" layoutY="16.0" prefHeight="31.0" prefWidth="160.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+               <children>
+               <TextField fx:id="searchField" layoutX="-1.0" layoutY="3.0" prefHeight="26.0" prefWidth="160.0" promptText="Search for a container... 🔍" style="-fx-background-color: transparent;" />
+               </children>
+            </Pane>
+            <Pane layoutX="724.0" layoutY="17.0" prefHeight="31.0" prefWidth="195.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+               <children>
+               <CheckBox fx:id="runningInstancesCheckbox" layoutX="7.0" layoutY="6.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only running containers" textFill="#b2a7a7" />
+               </children>
+            </Pane>
 
       </children>
    </AnchorPane>
