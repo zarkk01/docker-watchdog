@@ -141,15 +141,25 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btnStart = new Button();
+                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
+                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
+                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         private final Button btnStop = new Button();
                         Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         Image imgStop = new Image(getClass().getResource("/images/stop.png").toExternalForm());
-                        ImageView viewStart = new ImageView(imgStart);
                         ImageView viewStop = new ImageView(imgStop);
 
                         {
-                            viewStart.setFitHeight(20);
+                            viewStart.setFitHeight(30);
+                            viewStart.setFitHeight(30);
                             viewStart.setPreserveRatio(true);
+                            viewStartHover.setFitHeight(30);
+                            viewStartHover.setPreserveRatio(true);
+                            viewStartClick.setFitHeight(20);
+                            viewStartClick.setPreserveRatio(true);
+                            viewStart.setPreserveRatio(true);
+                            btnStart.setPrefSize(30, 30);  // Adjust the size as needed
+                            viewStart.setOpacity(0.8);
                             btnStart.setGraphic(viewStart);
                             btnStart.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
@@ -160,9 +170,16 @@ public class ContainersController implements Initializable {
                                 }
                             });
 
-                            viewStop.setFitHeight(20);
+                            viewStop.setFitHeight(30);
                             viewStop.setPreserveRatio(true);
                             btnStop.setGraphic(viewStop);
+                            viewStop.setFitHeight(30);
+                            viewStop.setFitWidth(30);
+                            viewStop.setPreserveRatio(true);
+                            btnStop.setPrefSize(30, 30);
+                            viewStop.setOpacity(0.8);
+                            btnStop.setGraphic(viewStop);
+
                             btnStop.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
@@ -171,6 +188,15 @@ public class ContainersController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+                            btnStart.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btnStart.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
+                            btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
+                            btnStart.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stop.png").toExternalForm())));
+                            btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
+                            btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+
                         }
 
                         @Override
