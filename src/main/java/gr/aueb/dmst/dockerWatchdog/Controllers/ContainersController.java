@@ -227,13 +227,28 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final CheckBox checkBox = new CheckBox();
-
+                        private final ImageView uncheckedImage = new ImageView(new Image(getClass().getResource("/images/Box.png").toExternalForm()));
+                        private final ImageView checkedImage = new ImageView(new Image(getClass().getResource("/images/checkbox.png").toExternalForm()));
+                        private final ImageView uncheckedHoverImage = new ImageView(new Image(getClass().getResource("/images/boxHover.png").toExternalForm()));
+                        private final ImageView checkedHoverImage = new ImageView(new Image(getClass().getResource("/images/checkboxHover.png").toExternalForm()));
+                        private final ImageView uncheckedClickImage = new ImageView(new Image(getClass().getResource("/images/boxClick.png").toExternalForm()));
+                        private final ImageView checkedClickImage = new ImageView(new Image(getClass().getResource("/images/checkboxClick.png").toExternalForm()));
                         {
+                            // Set initial state
+//                            setImageViewSize(uncheckedImage, 20, 20);
+//                            setImageViewSize(checkedImage, 20, 20);
+//                            setImageViewSize(uncheckedHoverImage, 20, 20);
+//                            setImageViewSize(checkedHoverImage, 20, 20);
+//                            setImageViewSize(uncheckedClickImage, 20, 20);
+//                            setImageViewSize(checkedClickImage, 20, 20);
+                            checkBox.setOpacity(0.8);
+                            checkBox.setMaxSize(20,20);
+//                            checkBox.setGraphic(uncheckedImage);
+
+                            // Handle checkbox action
                             checkBox.setOnAction(event -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
-                                // Handle checkbox action, e.g., update the model
                                 instance.setSelect(checkBox.isSelected());
-
                                 checkboxStates.put(instance.getId(), checkBox.isSelected());
 
                                 if (checkboxStates.containsValue(true)) {
@@ -241,10 +256,20 @@ public class ContainersController implements Initializable {
                                 } else {
                                     removeButton.visibleProperty().setValue(false);
                                 }
-
-
                             });
+
+                            // Handle hover and click states
+//                            checkBox.setOnMouseEntered(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedHoverImage : uncheckedHoverImage));
+//                            checkBox.setOnMouseExited(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedImage : uncheckedImage));
+//                            checkBox.setOnMousePressed(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedClickImage : uncheckedClickImage));
+//                            checkBox.setOnMouseReleased(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedHoverImage : uncheckedHoverImage));
                         }
+                        private void setImageViewSize(ImageView imageView, double fitWidth, double fitHeight) {
+                            imageView.setFitWidth(fitWidth);
+                            imageView.setFitHeight(fitHeight);
+                            imageView.setPreserveRatio(true);
+                        }
+
 
                         @Override
                         public void updateItem(Void item, boolean empty) {
@@ -261,7 +286,6 @@ public class ContainersController implements Initializable {
                     return cell;
                 }
             };
-
 // Assuming your "select" column is named selectColumn
             selectColumn.setCellFactory(selectCellFactory);
 
