@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -7,26 +8,25 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
-<?import java.net.URL?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.IndividualContainerController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" onAction="#changeToContainersScene" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
                     <font>
                         <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
@@ -146,15 +146,15 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="55.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="55.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
-                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Bin" textFill="WHITE" />
+                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Bin" textFill="WHITE" />
                                             </children>
                                         </AnchorPane>
                                     </items>
@@ -206,7 +206,7 @@
                                                       </Label>
                                        </children>
                                     </VBox>
-                                    <Button fx:id="copyButton" layoutX="348.0" layoutY="15.0" mnemonicParsing="false" onAction="#copyId" prefHeight="26.0" prefWidth="69.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="COPY" textFill="WHITE" />
+                                    <Button fx:id="copyButton" layoutX="348.0" layoutY="15.0" mnemonicParsing="false" onAction="#copyId" prefHeight="26.0" prefWidth="69.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="COPY" textFill="WHITE" />
                                     <VBox fx:id="notificationCopyBox" layoutX="348.0" layoutY="45.0" prefHeight="28.0" prefWidth="71.0" />
                                             </children>
                                         </AnchorPane>
