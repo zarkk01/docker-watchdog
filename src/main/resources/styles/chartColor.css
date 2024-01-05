@@ -1,13 +1,6 @@
 .chart-plot-background {
     -fx-background-color: #414141;
 }
-
-.chart .axis:top .axis-label,
-.chart .axis:bottom .axis-label,
-.chart .axis:left .axis-label,
-.chart .axis:right .axis-label {
-    -fx-text-fill: white; /* Set the text color for axis labels */
-}
 .chart-legend-item-symbol {
 -fx-background-color: transparent, transparent;
 }
@@ -20,4 +13,8 @@
 
 .chart-line-symbol {
     -fx-background-color: transparent, transparent ;
+}
+
+.chart-title {
+    -fx-text-fill: white;
 }
