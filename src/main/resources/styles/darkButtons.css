@@ -1,0 +1,12 @@
+/* Apply styles directly to the button without a custom class */
+Button {
+    -fx-background-color: #414141; /* Red color */
+}
+
+Button:hover {
+    -fx-background-color: #696969; /* Lighter red when hovered */
+}
+
+Button:pressed {
+    -fx-background-color: #7A7A7A; /* Even lighter red when pressed */
+}

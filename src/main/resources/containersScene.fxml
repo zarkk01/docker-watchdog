@@ -138,8 +138,8 @@
             </columnResizePolicy>
          </TableView>
          <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="324.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
-         <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-background-color: #525252; -fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
-         <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #525252;">
+         <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
+         <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0">
             <children>
                <Label fx:id="totalContainersText" layoutX="58.0" layoutY="27.0" text="4" textFill="WHITE">
                   <font>
@@ -152,7 +152,7 @@
                   <URL value="@styles/hoverPane.css" />
                </stylesheets>
          </Pane>
-         <Pane layoutX="282.0" layoutY="392.0" prefHeight="160.0" prefWidth="169.0" style="-fx-background-color: #525252;">
+         <Pane layoutX="282.0" layoutY="392.0" prefHeight="160.0" prefWidth="169.0">
             <children>
                <Label fx:id="runningContainersText" alignment="CENTER" layoutX="58.0" layoutY="27.0" text="3" textFill="WHITE">
                   <font>
@@ -165,7 +165,7 @@
                   <URL value="@styles/hoverPane.css" />
                </stylesheets>
          </Pane>
-         <Pane layoutX="518.0" layoutY="393.0" prefHeight="160.0" prefWidth="163.0" style="-fx-background-color: #525252;">
+         <Pane layoutX="518.0" layoutY="393.0" prefHeight="160.0" prefWidth="163.0">
             <children>
                <Label fx:id="stoppedContainersText" layoutX="61.0" layoutY="24.0" text="1" textFill="WHITE">
                   <font>
@@ -193,12 +193,12 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #EC625F; -fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
+         <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
             <font>
                <Font size="14.0" />
             </font></Button>
-         <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-background-color: #525252; -fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
-         <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0" style="-fx-background-color: #525252;">
+         <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
+         <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0">
             <children>
                <Label fx:id="metricsLabel" layoutX="37.0" layoutY="24.0" text="20" textFill="WHITE">
                   <font>
@@ -223,7 +223,7 @@
             </Pane>
             <Pane layoutX="711.0" layoutY="18.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
-               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10;" text="Show only running containers" textFill="#b2a7a7" />
+               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7" />
                </children>
             </Pane>
 
