@@ -158,6 +158,20 @@ public class IndividualContainerController {
         ImageView view = new ImageView(img);
         view.setFitHeight(20);
         view.setPreserveRatio(true);
+        Image imgHover = new Image(getClass().getResource("/images/backHover.png").toExternalForm());
+        backButton.setGraphic(view);
+
+        backButton.setOnMouseEntered(event -> {
+            // Change image on hover
+            view.setImage(imgHover);
+            view.setOpacity(0.8);
+        });
+
+        backButton.setOnMouseExited(event -> {
+            // Change back to default image when not hovered
+            view.setImage(img);
+        });
+
 
         backButton.setGraphic(view);
 
