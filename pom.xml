@@ -123,6 +123,14 @@
       <artifactId>javafx-fxml</artifactId>
       <version>21</version>
     </dependency>
+
+      <dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-junit</artifactId>
+        <version>4.0.1-alpha</version>
+        <scope>test</scope>
+      </dependency>
+
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
@@ -155,5 +163,23 @@
           <version>RELEASE</version>
           <scope>test</scope>
       </dependency>
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
+          <version>5.7.0</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-test-autoconfigure</artifactId>
+          <version>3.2.0</version>
+          <scope>test</scope>
+      </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>6.1.1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

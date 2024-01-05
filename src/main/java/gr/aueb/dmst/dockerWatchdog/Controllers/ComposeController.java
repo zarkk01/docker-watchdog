@@ -25,23 +25,23 @@ import java.util.Map;
 public class ComposeController {
 
     @FXML
-    private TextArea yamlContentArea;
+    TextArea yamlContentArea;
 
     private Stage stage;
     private Parent root;
 
     private String yamlFilePath;
-    private boolean isShowingConfig = false;
+    boolean isShowingConfig = false;
 
     @FXML
-    private Button showConfigButton;
+    Button showConfigButton;
     @FXML
-    private Button validateButton;
+    Button validateButton;
     @FXML
     private Label fileNameLabel;
 
     @FXML
-    private Label savedLabel;
+    Label savedLabel;
 
     public void initialize() {
         yamlContentArea.textProperty().addListener((observable, oldValue, newValue) -> savedLabel.setText("Unsaved"));

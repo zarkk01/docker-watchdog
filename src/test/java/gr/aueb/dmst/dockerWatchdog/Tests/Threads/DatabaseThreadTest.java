@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
 
+import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -163,6 +164,28 @@ class DatabaseThreadTest {
             return false;
         }
         }
+    @Test
+    void testAddImage() {
+        // Arrange
+        MyImage testImage = new MyImage("nginx", "a6bd71f48f6839d9faae1f29d3babef831e76bc213107682c5cc80f0cbb30866", 1024L, "active");
 
+        // Act
+        TestDataProvider.addImage(testImage);
+
+        // Assert
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+             Statement stmt = conn.createStatement()) {
+            ResultSet resultSet = stmt.executeQuery("SELECT * FROM Images WHERE id = 'test_image_id'");
+            assertTrue(resultSet.next());
+
+            // Check if the data was correctly inserted or updated
+            assertEquals("test_image_id", resultSet.getString("id"));
+            assertEquals("nginx:latest", resultSet.getString("name"));
+            assertEquals(1024L, resultSet.getLong("size"));
+            assertEquals("active", resultSet.getString("status"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
