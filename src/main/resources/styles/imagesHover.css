@@ -1,0 +1,16 @@
+/* style.css */
+
+.button:hover {
+    -fx-text-fill: white; /* Change text color to red on hover */
+}
+.button {
+    -fx-text-fill: #909090; /* Set the default text color to gray */
+}
+.button .image-view {
+    -fx-graphic: url("/images/imageGrey.png"); /* Set the path to your default image */
+}
+
+.button:hover .image-view {
+    -fx-graphic: url("/images/image.png"); /* Set the path to your hover image */
+}
+

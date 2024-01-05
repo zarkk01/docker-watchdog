@@ -102,6 +102,16 @@ public class ContainersController implements Initializable {
 
     @FXML
     public Button uploadButton;
+    @FXML
+    public Button containersButton;
+    @FXML
+    public Button imagesButton;
+    @FXML
+    public Button graphicsButton;
+    @FXML
+    public Button kubernetesButton;
+    @FXML
+    public Button volumesButton;
 
     private Stage stage;
     private Parent root;
@@ -123,21 +133,33 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
             removeButton.visibleProperty().setValue(false);
+            hoveredSideBarImages();
+
 
             Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
                 @Override
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btnStart = new Button();
+                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
+                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
+                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         private final Button btnStop = new Button();
                         Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         Image imgStop = new Image(getClass().getResource("/images/stop.png").toExternalForm());
-                        ImageView viewStart = new ImageView(imgStart);
                         ImageView viewStop = new ImageView(imgStop);
 
                         {
-                            viewStart.setFitHeight(20);
+                            viewStart.setFitHeight(30);
+                            viewStart.setFitHeight(30);
                             viewStart.setPreserveRatio(true);
+                            viewStartHover.setFitHeight(30);
+                            viewStartHover.setPreserveRatio(true);
+                            viewStartClick.setFitHeight(20);
+                            viewStartClick.setPreserveRatio(true);
+                            viewStart.setPreserveRatio(true);
+                            btnStart.setPrefSize(30, 30);  // Adjust the size as needed
+                            viewStart.setOpacity(0.8);
                             btnStart.setGraphic(viewStart);
                             btnStart.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
@@ -148,9 +170,16 @@ public class ContainersController implements Initializable {
                                 }
                             });
 
-                            viewStop.setFitHeight(20);
+                            viewStop.setFitHeight(30);
                             viewStop.setPreserveRatio(true);
                             btnStop.setGraphic(viewStop);
+                            viewStop.setFitHeight(30);
+                            viewStop.setFitWidth(30);
+                            viewStop.setPreserveRatio(true);
+                            btnStop.setPrefSize(30, 30);
+                            viewStop.setOpacity(0.8);
+                            btnStop.setGraphic(viewStop);
+
                             btnStop.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 try {
@@ -159,6 +188,15 @@ public class ContainersController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+                            btnStart.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btnStart.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
+                            btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
+                            btnStart.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stop.png").toExternalForm())));
+                            btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
+                            btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+
                         }
 
                         @Override
@@ -189,13 +227,28 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final CheckBox checkBox = new CheckBox();
-
+                        private final ImageView uncheckedImage = new ImageView(new Image(getClass().getResource("/images/Box.png").toExternalForm()));
+                        private final ImageView checkedImage = new ImageView(new Image(getClass().getResource("/images/checkbox.png").toExternalForm()));
+                        private final ImageView uncheckedHoverImage = new ImageView(new Image(getClass().getResource("/images/boxHover.png").toExternalForm()));
+                        private final ImageView checkedHoverImage = new ImageView(new Image(getClass().getResource("/images/checkboxHover.png").toExternalForm()));
+                        private final ImageView uncheckedClickImage = new ImageView(new Image(getClass().getResource("/images/boxClick.png").toExternalForm()));
+                        private final ImageView checkedClickImage = new ImageView(new Image(getClass().getResource("/images/checkboxClick.png").toExternalForm()));
                         {
+                            // Set initial state
+//                            setImageViewSize(uncheckedImage, 20, 20);
+//                            setImageViewSize(checkedImage, 20, 20);
+//                            setImageViewSize(uncheckedHoverImage, 20, 20);
+//                            setImageViewSize(checkedHoverImage, 20, 20);
+//                            setImageViewSize(uncheckedClickImage, 20, 20);
+//                            setImageViewSize(checkedClickImage, 20, 20);
+                            checkBox.setOpacity(0.8);
+                            checkBox.setMaxSize(20,20);
+//                            checkBox.setGraphic(uncheckedImage);
+
+                            // Handle checkbox action
                             checkBox.setOnAction(event -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
-                                // Handle checkbox action, e.g., update the model
                                 instance.setSelect(checkBox.isSelected());
-
                                 checkboxStates.put(instance.getId(), checkBox.isSelected());
 
                                 if (checkboxStates.containsValue(true)) {
@@ -203,10 +256,20 @@ public class ContainersController implements Initializable {
                                 } else {
                                     removeButton.visibleProperty().setValue(false);
                                 }
-
-
                             });
+
+                            // Handle hover and click states
+//                            checkBox.setOnMouseEntered(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedHoverImage : uncheckedHoverImage));
+//                            checkBox.setOnMouseExited(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedImage : uncheckedImage));
+//                            checkBox.setOnMousePressed(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedClickImage : uncheckedClickImage));
+//                            checkBox.setOnMouseReleased(e -> checkBox.setGraphic(checkBox.isSelected() ? checkedHoverImage : uncheckedHoverImage));
                         }
+                        private void setImageViewSize(ImageView imageView, double fitWidth, double fitHeight) {
+                            imageView.setFitWidth(fitWidth);
+                            imageView.setFitHeight(fitHeight);
+                            imageView.setPreserveRatio(true);
+                        }
+
 
                         @Override
                         public void updateItem(Void item, boolean empty) {
@@ -223,7 +286,6 @@ public class ContainersController implements Initializable {
                     return cell;
                 }
             };
-
 // Assuming your "select" column is named selectColumn
             selectColumn.setCellFactory(selectCellFactory);
 
@@ -266,6 +328,86 @@ public class ContainersController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void hoveredSideBarImages() {
+        // Load your original image
+        Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
+
+        // Load your hovered image
+        Image hoveredImage = new Image(getClass().getResourceAsStream("/images/image.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+
+        // Attach event handlers
+        imagesButton.setOnMouseEntered(event -> {
+            imagesButton.getStyleClass().add("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(hoveredImage);
+        });
+
+        imagesButton.setOnMouseExited(event -> {
+            imagesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+        });
+
+        Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
+
+        // Load your hovered image
+        Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+
+        // Attach event handlers
+        volumesButton.setOnMouseEntered(event -> {
+            volumesButton.getStyleClass().add("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
+        });
+
+        volumesButton.setOnMouseExited(event -> {
+            volumesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+        });
+
+
+        Image originalGraphics = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
+
+        // Load your hovered image
+        Image hoveredGraphics = new Image(getClass().getResourceAsStream("/images/graphics.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
+
+        // Attach event handlers
+        graphicsButton.setOnMouseEntered(event -> {
+            graphicsButton.getStyleClass().add("button-hovered");
+            ((ImageView) graphicsButton.getGraphic()).setImage(hoveredGraphics);
+        });
+
+        graphicsButton.setOnMouseExited(event -> {
+            graphicsButton.getStyleClass().remove("button-hovered");
+            ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
+        });
+
+        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
+
+        // Load your hovered image
+        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/graphics.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
+
+        // Attach event handlers
+        kubernetesButton.setOnMouseEntered(event -> {
+            kubernetesButton.getStyleClass().add("button-hovered");
+            ((ImageView) kubernetesButton.getGraphic()).setImage(hoveredKubernetes);
+        });
+
+        kubernetesButton.setOnMouseExited(event -> {
+            kubernetesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
+        });
     }
 
     public void removeSelectedContainers() {

@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog.Controllers;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +24,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
@@ -41,6 +43,9 @@ public class GraphicsController implements Initializable {
     @FXML
     private LineChart<String,Number> memoryChart;
 
+    @FXML
+    private PieChart pieChartImages;
+
     private XYChart.Series<String, Number> cpuSeries;
     private XYChart.Series<String, Number> pidsSeries;
     private XYChart.Series<String, Number> memorySeries;
@@ -48,10 +53,15 @@ public class GraphicsController implements Initializable {
     private LocalDateTime currentTime;
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
-        startCharts();
+        try {
+            startCharts();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             updateCharts();
+            updatePidsChart();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -65,9 +75,19 @@ public class GraphicsController implements Initializable {
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        Timeline timeline2 = new Timeline(new KeyFrame(Duration.seconds(30), event -> {
+            try {
+                updatePidsChart();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        timeline2.setCycleCount(Timeline.INDEFINITE);
+        timeline2.play();
     }
 
-    public void startCharts(){
+    public void startCharts() throws Exception {
         cpuSeries = new XYChart.Series<>();
         cpuChart.getData().add(cpuSeries);
 
@@ -75,7 +95,10 @@ public class GraphicsController implements Initializable {
         pidsChart.getData().add(pidsSeries);
 
         memorySeries = new XYChart.Series<>();
-        memoryChart.getData().add(memorySeries);}
+        memoryChart.getData().add(memorySeries);
+
+        startPieChart();
+    }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
@@ -155,10 +178,43 @@ public class GraphicsController implements Initializable {
         }
         memorySeries.getData().add(new XYChart.Data<>(formatTime, totalMemoryUsage));
 
+    }
+    public void updatePidsChart() throws Exception {
+        List<InstanceScene> instances = getAllInstances();
         pidsChart.getData().clear();
         for (InstanceScene instance : instances) {
-            pidsSeries.getData().add(new XYChart.Data<>(instance.getName(), instance.getPids()));
+            String simplerName;
+            if(instance.getName().length() > 10){
+                simplerName = instance.getName().substring(0, 8) + "...";
+            } else {
+                simplerName = instance.getName();
+            }
+            pidsSeries.getData().add(new XYChart.Data<>(simplerName, instance.getPids()));
         }
         pidsChart.getData().add(pidsSeries);
+    }
+
+    public void startPieChart() throws Exception {
+        List<InstanceScene> instances = getAllInstances();
+        HashMap<String, Integer> images = new HashMap<>();
+        for (InstanceScene instance : instances) {
+            String image = instance.getImage();
+            if(images.containsKey(image)){
+                images.put(image, images.get(image) + 1);
+            } else {
+                images.put(image, 1);
+            }
+        }
+        for (String image : images.keySet()) {
+            pieChartImages.getData().add(new PieChart.Data(image, images.get(image)));
+        }
+
+        pieChartImages.getData().forEach(data -> {
+            data.nameProperty().bind(
+                    Bindings.concat(
+                            data.getName(), " : ", (int) data.pieValueProperty().get()
+                    )
+            );
+        });
     }
 }

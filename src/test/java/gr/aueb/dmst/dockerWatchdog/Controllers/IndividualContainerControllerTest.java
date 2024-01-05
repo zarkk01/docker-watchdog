@@ -12,6 +12,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -76,7 +77,7 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     @Test
     void testRemoveContainer() throws IOException, InterruptedException, URISyntaxException {
         // Mock necessary dependencies and set up the scene for this test
-        DesktopApp.client = mock(HttpClient.class);
+        client = mock(HttpClient.class);
         when(client.send(any(), any())).thenReturn(HttpResponse.ok(""));
 
         clickOn("#removeButton"); // Assuming you have a button with this ID
@@ -88,7 +89,7 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     @Test
     void testPauseContainer() throws IOException, InterruptedException, URISyntaxException {
         // Mock necessary dependencies and set up the scene for this test
-        DesktopApp.client = mock(HttpClient.class);
+        client = mock(HttpClient.class);
         when(client.send(any(), any())).thenReturn(HttpResponse.ok(""));
 
         clickOn("#pauseButton"); // Assuming you have a button with this ID
@@ -100,7 +101,7 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     @Test
     void testUnpauseContainer() throws IOException, InterruptedException, URISyntaxException {
         // Mock necessary dependencies and set up the scene for this test
-        DesktopApp.client = mock(HttpClient.class);
+        client = mock(HttpClient.class);
         when(client.send(any(), any())).thenReturn(HttpResponse.ok(""));
 
         clickOn("#unpauseButton"); // Assuming you have a button with this ID
@@ -118,7 +119,7 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     @Test
     void testStartContainer() throws IOException, InterruptedException, URISyntaxException {
         // Mock necessary dependencies and set up the scene for this test
-        DesktopApp.client = mock(HttpClient.class);
+        client = mock(HttpClient.class);
         when(client.send(any(), any())).thenReturn(HttpResponse.ok(""));
 
         clickOn("#startButton"); // Assuming you have a button with this ID
@@ -130,7 +131,7 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     @Test
     void testStopContainer() throws IOException, InterruptedException, URISyntaxException {
         // Mock necessary dependencies and set up the scene for this test
-        DesktopApp.client = mock(HttpClient.class);
+        client = mock(HttpClient.class);
         when(client.send(any(), any())).thenReturn(HttpResponse.ok(""));
 
         clickOn("#stopButton"); // Assuming you have a button with this ID
@@ -138,6 +139,6 @@ public class IndividualContainerControllerTest extends ApplicationTest {
         // Add verifications based on expected changes in the UI elements or notifications
         verifyThat("#containerStatusLabel", hasText("Status: exited"));
     }
-
+}
    
 */
