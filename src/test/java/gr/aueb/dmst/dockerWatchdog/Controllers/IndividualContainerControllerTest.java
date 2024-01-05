@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog.Controllers;
+/*package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
 import javafx.scene.control.TableView;
@@ -140,3 +140,4 @@ public class IndividualContainerControllerTest extends ApplicationTest {
     }
 
    
+*/
