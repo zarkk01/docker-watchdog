@@ -7,8 +7,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -19,37 +17,46 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import java.net.URL?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.IndividualContainerController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" onAction="#changeToContainersScene" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
                     <font>
-                        <Font name="Sama Devanagari Medium" size="16.0" />
+                        <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@images/container.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="imagesButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Images" textFill="#909090">
+                <Button fx:id="imagesButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="36.0" prefWidth="153.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="#909090">
                     <font>
-                        <Font name="Sama Devanagari Medium" size="16.0" />
+                        <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
                     <graphic>
-                        <ImageView fitHeight="27.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@images/imageGrey.png" />
                             </image>
                         </ImageView>
                     </graphic>
+                    <stylesheets>
+                        <URL value="@styles/buttons.css" />
+                        <URL value="@styles/imagesHover.css" />
+                    </stylesheets>
                 </Button>
-                <Button fx:id="volumesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="260.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Volumes" textFill="#909090">
+                <Button fx:id="volumesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="260.0" mnemonicParsing="false" onAction="#changeToVolumesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Volumes" textFill="#909090">
                     <font>
-                        <Font name="Sama Devanagari Medium" size="16.0" />
+                        <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -58,10 +65,14 @@
                             </image>
                         </ImageView>
                     </graphic>
+                    <stylesheets>
+                        <URL value="@styles/buttons.css" />
+                        <URL value="@styles/volumesHover.css" />
+                    </stylesheets>
                 </Button>
-                <Button fx:id="graphicsButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="310.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Graphics" textFill="#909090">
+                <Button fx:id="graphicsButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="310.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="#909090">
                     <font>
-                        <Font name="Sama Devanagari Medium" size="16.0" />
+                        <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -70,10 +81,14 @@
                             </image>
                         </ImageView>
                     </graphic>
+                    <stylesheets>
+                        <URL value="@styles/buttons.css" />
+                        <URL value="@styles/graphicsHover.css" />
+                    </stylesheets>
                 </Button>
-                <Button fx:id="kubernetesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="360.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Kubernetes" textFill="#909090">
+                <Button fx:id="kubernetesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="360.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="#909090">
                     <font>
-                        <Font name="Sama Devanagari Medium" size="16.0" />
+                        <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -82,7 +97,16 @@
                             </image>
                         </ImageView>
                     </graphic>
+                    <stylesheets>
+                        <URL value="@styles/buttons.css" />
+                        <URL value="@styles/kubernetesHover.css" />
+                    </stylesheets>
                 </Button>
+                <Pane prefHeight="123.0" prefWidth="155.0">
+                    <children>
+                        <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
+                    </children>
+                </Pane>
             </children>
         </VBox>
     </left>
@@ -122,15 +146,15 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="55.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
-                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="startButton" mnemonicParsing="false" onAction="#startContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Start" textFill="WHITE" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Stop" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                                                        <Button fx:id="pauseContainerButton" mnemonicParsing="false" onAction="#pauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Pause" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="unpauseButton" mnemonicParsing="false" onAction="#unpauseContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Unpause" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                                                        <Button fx:id="restartButton" mnemonicParsing="false" onAction="#restartContainer" prefHeight="55.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Restart" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+                                                        <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
-                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Bin" textFill="WHITE" />
+                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="Bin" textFill="WHITE" />
                                             </children>
                                         </AnchorPane>
                                     </items>
@@ -182,7 +206,7 @@
                                                       </Label>
                                        </children>
                                     </VBox>
-                                    <Button fx:id="copyButton" layoutX="348.0" layoutY="15.0" mnemonicParsing="false" onAction="#copyId" prefHeight="26.0" prefWidth="69.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="COPY" textFill="WHITE" />
+                                    <Button fx:id="copyButton" layoutX="348.0" layoutY="15.0" mnemonicParsing="false" onAction="#copyId" prefHeight="26.0" prefWidth="69.0" style="-fx-background-color: #414141; -fx-cursor: hand;" text="COPY" textFill="WHITE" />
                                     <VBox fx:id="notificationCopyBox" layoutX="348.0" layoutY="45.0" prefHeight="28.0" prefWidth="71.0" />
                                             </children>
                                         </AnchorPane>
