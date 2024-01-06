@@ -117,7 +117,7 @@
                               <Font size="11.0" />
                            </font>
                         </Text>
-                        <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="113.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="113.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/watchdog.png" />
                            </image>
@@ -266,7 +266,7 @@
                <Font name="System Bold" size="22.0" />
             </font>
          </Text>
-            <ImageView fx:id="watchdogImage" fitHeight="30.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/watchdog.png" />
                </image>
