@@ -349,8 +349,7 @@ public class ContainersController implements Initializable {
         }
     }
 
-    public void hoveredSideBarImages() {
-        // Load your original image
+    private void hoveredSideBarImages() {
         Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
 
         // Load your hovered image
@@ -409,10 +408,10 @@ public class ContainersController implements Initializable {
             ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
         });
 
-        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
+        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetesGrey.png"));
 
         // Load your hovered image
-        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/graphics.png"));
+        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetes.png"));
 
         // Set the original image to the ImageView
         ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);

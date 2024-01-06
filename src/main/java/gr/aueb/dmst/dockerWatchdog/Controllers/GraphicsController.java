@@ -11,6 +11,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.chart.*;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.JSONArray;
@@ -45,6 +48,16 @@ public class GraphicsController implements Initializable {
 
     @FXML
     private PieChart pieChartImages;
+    @FXML
+    public Button containersButton;
+    @FXML
+    public Button imagesButton;
+    @FXML
+    public Button graphicsButton;
+    @FXML
+    public Button kubernetesButton;
+    @FXML
+    public Button volumesButton;
 
     private XYChart.Series<String, Number> cpuSeries;
     private XYChart.Series<String, Number> pidsSeries;
@@ -55,6 +68,7 @@ public class GraphicsController implements Initializable {
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         try {
             startCharts();
+            hoveredSideBarImages();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -113,6 +127,84 @@ public class GraphicsController implements Initializable {
 
     public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "imagesScene.fxml");
+    }
+    private void hoveredSideBarImages() {
+        Image originalContainers = new Image(getClass().getResourceAsStream("/images/containerGrey.png"));
+
+        // Load your hovered image
+        Image hoveredContainers = new Image(getClass().getResourceAsStream("/images/container.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
+
+        // Attach event handlers
+        containersButton.setOnMouseEntered(event -> {
+            containersButton.getStyleClass().add("button-hovered");
+            ((ImageView) containersButton.getGraphic()).setImage(hoveredContainers);
+        });
+
+        containersButton.setOnMouseExited(event -> {
+            containersButton.getStyleClass().remove("button-hovered");
+            ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
+        });
+    // Load your original image
+        Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
+
+        // Load your hovered image
+        Image hoveredImage = new Image(getClass().getResourceAsStream("/images/image.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+
+        // Attach event handlers
+        imagesButton.setOnMouseEntered(event -> {
+            imagesButton.getStyleClass().add("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(hoveredImage);
+        });
+
+        imagesButton.setOnMouseExited(event -> {
+            imagesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+        });
+
+        Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
+
+        // Load your hovered image
+        Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+
+        // Attach event handlers
+        volumesButton.setOnMouseEntered(event -> {
+            volumesButton.getStyleClass().add("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
+        });
+
+        volumesButton.setOnMouseExited(event -> {
+            volumesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+        });
+
+
+        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetesGrey.png"));
+
+        // Load your hovered image
+        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetes.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
+
+        // Attach event handlers
+        kubernetesButton.setOnMouseEntered(event -> {
+            kubernetesButton.getStyleClass().add("button-hovered");
+            ((ImageView) kubernetesButton.getGraphic()).setImage(hoveredKubernetes);
+        });
+
+        kubernetesButton.setOnMouseExited(event -> {
+            kubernetesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
+        });
     }
 
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {

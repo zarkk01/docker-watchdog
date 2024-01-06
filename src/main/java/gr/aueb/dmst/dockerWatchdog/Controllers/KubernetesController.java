@@ -19,10 +19,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -61,11 +64,24 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableColumn<ServiceScene, String> serviceNamespaceColumn;
 
+    @FXML
+    public Button containersButton;
+    @FXML
+    public Button imagesButton;
+    @FXML
+    public Button graphicsButton;
+    @FXML
+    public Button kubernetesButton;
+    @FXML
+    public Button volumesButton;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             ApiClient client = Config.defaultClient();
             Configuration.setDefaultApiClient(client);
+
+            hoveredSideBarImages();
 
             CoreV1Api api = new CoreV1Api();
             AppsV1Api appsApi = new AppsV1Api();
@@ -136,6 +152,85 @@ public class KubernetesController implements Initializable {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
+    }
+
+    private void hoveredSideBarImages() {
+        Image originalContainers = new Image(getClass().getResourceAsStream("/images/containerGrey.png"));
+
+        // Load your hovered image
+        Image hoveredContainers = new Image(getClass().getResourceAsStream("/images/container.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
+
+        // Attach event handlers
+        containersButton.setOnMouseEntered(event -> {
+            containersButton.getStyleClass().add("button-hovered");
+            ((ImageView) containersButton.getGraphic()).setImage(hoveredContainers);
+        });
+
+        containersButton.setOnMouseExited(event -> {
+            containersButton.getStyleClass().remove("button-hovered");
+            ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
+        });
+    // Load your original image
+        Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
+
+        // Load your hovered image
+        Image hoveredImage = new Image(getClass().getResourceAsStream("/images/image.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+
+        // Attach event handlers
+        imagesButton.setOnMouseEntered(event -> {
+            imagesButton.getStyleClass().add("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(hoveredImage);
+        });
+
+        imagesButton.setOnMouseExited(event -> {
+            imagesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
+        });
+
+        Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
+
+        // Load your hovered image
+        Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+
+        // Attach event handlers
+        volumesButton.setOnMouseEntered(event -> {
+            volumesButton.getStyleClass().add("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
+        });
+
+        volumesButton.setOnMouseExited(event -> {
+            volumesButton.getStyleClass().remove("button-hovered");
+            ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
+        });
+
+
+        Image originalGraphics = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
+
+        // Load your hovered image
+        Image hoveredGraphics = new Image(getClass().getResourceAsStream("/images/graphics.png"));
+
+        // Set the original image to the ImageView
+        ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
+
+        // Attach event handlers
+        graphicsButton.setOnMouseEntered(event -> {
+            graphicsButton.getStyleClass().add("button-hovered");
+            ((ImageView) graphicsButton.getGraphic()).setImage(hoveredGraphics);
+        });
+
+        graphicsButton.setOnMouseExited(event -> {
+            graphicsButton.getStyleClass().remove("button-hovered");
+            ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
+        });
     }
 
     public void changeToContainersScene(ActionEvent actionEvent) throws IOException {

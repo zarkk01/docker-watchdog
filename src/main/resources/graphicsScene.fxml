@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -15,15 +14,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.shape.Line?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.GraphicsController">
    <left>
       <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="containersButton" onAction="#changeToContainersScene" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="#909090">
+            <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                <font>
                   <Font name="Sama Devanagari Medium" size="13.0" />
                </font>
@@ -34,6 +33,10 @@
                      </image>
                   </ImageView>
                </graphic>
+               <stylesheets>
+                  <URL value="@styles/buttons.css" />
+                  <URL value="@styles/containersHover.css" />
+               </stylesheets>
             </Button>
             <Button fx:id="imagesButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="36.0" prefWidth="153.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="#909090">
                <font>
@@ -67,7 +70,7 @@
                   <URL value="@styles/volumesHover.css" />
                </stylesheets>
             </Button>
-            <Button fx:id="graphicsButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="WHITE">
+            <Button fx:id="graphicsButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="310.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Graphics" textFill="WHITE">
                <font>
                   <Font name="Sama Devanagari Medium" size="13.0" />
                </font>
@@ -78,10 +81,6 @@
                      </image>
                   </ImageView>
                </graphic>
-               <stylesheets>
-                  <URL value="@styles/buttons.css" />
-                  <URL value="@styles/graphicsHover.css" />
-               </stylesheets>
             </Button>
             <Button fx:id="kubernetesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="360.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="#909090">
                <font>
