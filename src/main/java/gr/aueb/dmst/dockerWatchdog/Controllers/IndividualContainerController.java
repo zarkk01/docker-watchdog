@@ -74,6 +74,9 @@ public class IndividualContainerController {
     private Button backButton;
 
     @FXML
+    private Button removeButton;
+
+    @FXML
     private VBox notificationCopyBox;
     @FXML
     public Label logsLabel;
@@ -170,6 +173,26 @@ public class IndividualContainerController {
         backButton.setOnMouseExited(event -> {
             // Change back to default image when not hovered
             view.setImage(img);
+            view.setOpacity(1);
+        });
+
+        Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
+        ImageView binView = new ImageView(binImg);
+        binView.setFitHeight(50);
+        binView.setPreserveRatio(true);
+        Image binHover = new Image(getClass().getResource("/images/binHover.png").toExternalForm());
+        removeButton.setGraphic(binView);
+
+        removeButton.setOnMouseEntered(event -> {
+            // Change image on hover
+            binView.setImage(binHover);
+            binView.setOpacity(0.8);
+        });
+
+        removeButton.setOnMouseExited(event -> {
+            // Change back to default image when not hovered
+            binView.setImage(binImg);
+            binView.setOpacity(1);
         });
 
 

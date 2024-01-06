@@ -135,6 +135,25 @@ public class ContainersController implements Initializable {
             removeButton.visibleProperty().setValue(false);
             hoveredSideBarImages();
 
+            Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
+            ImageView binView = new ImageView(binImg);
+            binView.setFitHeight(40);
+            binView.setPreserveRatio(true);
+            Image binHover = new Image(getClass().getResource("/images/binHover.png").toExternalForm());
+            removeButton.setGraphic(binView);
+
+            removeButton.setOnMouseEntered(event -> {
+                // Change image on hover
+                binView.setImage(binHover);
+                binView.setOpacity(0.8);
+            });
+
+            removeButton.setOnMouseExited(event -> {
+                // Change back to default image when not hovered
+                binView.setImage(binImg);
+                binView.setOpacity(1);
+            });
+
 
             Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
                 @Override

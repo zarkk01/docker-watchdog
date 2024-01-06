@@ -111,7 +111,7 @@
       <children>
          <Pane layoutX="5.0" layoutY="311.0" prefHeight="344.0" prefWidth="927.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
-               <Button fx:id="removeButton" layoutX="837.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="26.0" prefWidth="76.0" style="-fx-background-color: #EC625F; -fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Remove" textFill="#fff9f9" />
+               <Button fx:id="removeButton" layoutX="864.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="39.0" prefWidth="44.0" style="-fx-background-color: transparent; -fx-cursor: hand;" textFill="#fff9f9" />
                </children>
             </Pane>
          <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
