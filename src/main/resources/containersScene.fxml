@@ -135,6 +135,11 @@
          <Pane layoutX="5.0" layoutY="311.0" prefHeight="344.0" prefWidth="927.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
                <Button fx:id="removeButton" layoutX="864.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="39.0" prefWidth="44.0" style="-fx-background-color: transparent; -fx-cursor: hand;" textFill="#fff9f9" />
+               <Button fx:id="uploadButton" layoutX="413.0" layoutY="277.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="41.0" prefWidth="132.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+                  </Button>
                </children>
             </Pane>
          <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
@@ -216,10 +221,6 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-         <Button fx:id="uploadButton" layoutX="415.0" layoutY="577.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="50.0" prefWidth="150.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
-            <font>
-               <Font size="14.0" />
-            </font></Button>
          <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
          <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0">
             <children>
