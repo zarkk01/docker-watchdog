@@ -72,6 +72,8 @@ public class IndividualContainerController {
     private VBox notificationBox;
     @FXML
     private Button backButton;
+    @FXML
+    private Button copyButton;
 
     @FXML
     private Button removeButton;
@@ -195,8 +197,24 @@ public class IndividualContainerController {
             binView.setOpacity(1);
         });
 
+        Image copy = new Image(getClass().getResource("/images/copy.png").toExternalForm());
+        ImageView copyView = new ImageView(copy);
+        copyView.setFitHeight(38);
+        copyView.setPreserveRatio(true);
+        Image copyHover = new Image(getClass().getResource("/images/copyHover.png").toExternalForm());
+        copyButton.setGraphic(copyView);
 
-        backButton.setGraphic(view);
+        copyButton.setOnMouseEntered(event -> {
+            // Change image on hover
+            copyView.setImage(copyHover);
+        });
+
+        copyButton.setOnMouseExited(event -> {
+            // Change back to default image when not hovered
+            copyView.setImage(copy);
+            copyView.setOpacity(1);
+        });
+        copyButton.setGraphic(copyView);
 
         try {
             updateIndividualCpuChart();

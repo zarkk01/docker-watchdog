@@ -167,9 +167,9 @@
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="334.0" prefWidth="409.0" style="-fx-background-color: #525252; -fx-border-color: #525252;">
                                             <children>
-                                    <VBox layoutX="8.0" layoutY="5.0" prefHeight="328.0" prefWidth="336.0">
+                                    <VBox layoutX="8.0" layoutY="5.0" prefHeight="328.0" prefWidth="369.0">
                                        <children>
-                                                      <Label fx:id="containerIdLabel" prefHeight="50.0" prefWidth="339.0" text="ID " textFill="WHITE">
+                                                      <Label fx:id="containerIdLabel" prefHeight="50.0" prefWidth="385.0" text="ID " textFill="WHITE">
                                                           <font>
                                                               <Font size="22.0" />
                                                           </font>
@@ -206,7 +206,7 @@
                                                       </Label>
                                        </children>
                                     </VBox>
-                                    <Button fx:id="copyButton" layoutX="348.0" layoutY="15.0" mnemonicParsing="false" onAction="#copyId" prefHeight="26.0" prefWidth="69.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="COPY" textFill="WHITE" />
+                                    <Button fx:id="copyButton" layoutX="372.0" layoutY="6.0" mnemonicParsing="false" onAction="#copyId" prefHeight="34.0" prefWidth="39.0" style="-fx-cursor: hand; -fx-background-color: transparent;" textFill="WHITE" />
                                     <VBox fx:id="notificationCopyBox" layoutX="348.0" layoutY="45.0" prefHeight="28.0" prefWidth="71.0" />
                                             </children>
                                         </AnchorPane>
