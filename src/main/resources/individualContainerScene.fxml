@@ -154,7 +154,7 @@
                                                         <Button fx:id="renameButton" onAction="#renameContainer" prefHeight="54.0" prefWidth="159.0" style="-fx-cursor: hand;" stylesheets="@styles/darkButtons.css" text="Rename" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
                                                     </children>
                                                 </GridPane>
-                                                <Button fx:id="removeButton" layoutX="276.0" layoutY="260.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-cursor: hand; -fx-background-color: transparent;" textFill="WHITE" />
+                                                <Button fx:id="removeButton" layoutX="140.0" layoutY="257.0" onAction="#removeContainer" prefHeight="55.0" prefWidth="61.0" style="-fx-cursor: hand; -fx-background-color: transparent;" textFill="WHITE" />
                                             </children>
                                         </AnchorPane>
                                     </items>
