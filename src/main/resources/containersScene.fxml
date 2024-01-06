@@ -103,6 +103,29 @@
                   <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
                </children>
             </Pane>
+            <Pane prefHeight="306.0" prefWidth="155.0">
+               <children>
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #1573CB;">
+                     <children>
+                        <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/docker.png" />
+                           </image>
+                        </ImageView>
+                        <Text fill="WHITE" layoutX="33.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Watching">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="113.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/watchdog.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </Pane>
       </children>
    </VBox>
 </left>
@@ -218,7 +241,12 @@
          </Text>
             <Pane layoutX="18.0" layoutY="18.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="619.0" AnchorPane.topAnchor="17.0">
                <children>
-               <TextField fx:id="searchField" layoutX="3.0" layoutY="1.0" prefHeight="30.0" prefWidth="168.0" promptText="Search for a container... 🔍" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10;" />
+               <TextField fx:id="searchField" layoutX="29.0" layoutY="1.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10;" />
+                  <ImageView fitHeight="21.0" fitWidth="23.0" layoutX="9.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/search.png" />
+                     </image>
+                  </ImageView>
                </children>
             </Pane>
             <Pane layoutX="711.0" layoutY="18.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
