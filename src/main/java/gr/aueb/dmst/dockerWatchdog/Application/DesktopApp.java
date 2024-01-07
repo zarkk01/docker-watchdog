@@ -1,8 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog.Application;
 
-import gr.aueb.dmst.dockerWatchdog.Controllers.GraphicsController;
-import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

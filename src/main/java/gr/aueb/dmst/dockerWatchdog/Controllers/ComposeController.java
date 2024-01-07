@@ -1,8 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 import org.yaml.snakeyaml.Yaml;
@@ -21,13 +19,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
+import java.util.Objects;
 
 public class ComposeController {
 
     @FXML
     TextArea yamlContentArea;
 
-    private Stage stage;
     private Parent root;
 
     private String yamlFilePath;
@@ -59,8 +57,8 @@ public class ComposeController {
     }
 
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/" + fxmlFile)));
+        Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
     }
