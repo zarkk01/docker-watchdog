@@ -242,7 +242,7 @@
          </Text>
             <Pane layoutX="18.0" layoutY="18.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="619.0" AnchorPane.topAnchor="17.0">
                <children>
-               <TextField fx:id="searchField" layoutX="29.0" layoutY="1.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10;" />
+               <TextField fx:id="searchField" layoutX="29.0" layoutY="1.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                   <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="13.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@images/search.png" />

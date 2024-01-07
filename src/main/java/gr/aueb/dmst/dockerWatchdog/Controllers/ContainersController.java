@@ -4,6 +4,8 @@ import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -387,7 +389,6 @@ public class ContainersController implements Initializable {
             volumesButton.getStyleClass().remove("button-hovered");
             ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
         });
-
 
         Image originalGraphics = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
 
