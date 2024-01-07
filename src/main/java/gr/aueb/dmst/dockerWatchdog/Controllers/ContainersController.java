@@ -610,20 +610,49 @@ public class ContainersController implements Initializable {
         List<InstanceScene> instances = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
+
             String id = jsonObject.getString("id");
+
             String name = jsonObject.getString("name");
+
             String image = jsonObject.getString("image");
+
             String status = jsonObject.getString("status");
-            Long memoryUsage = jsonObject.getLong("memoryUsage");
-            Long pids = jsonObject.getLong("pids");
-            Double cpuUsage = jsonObject.getDouble("cpuUsage");
-            Double blockI = jsonObject.getDouble("blockI");
-            Double blockO = jsonObject.getDouble("blockO");
+
+            Long memoryUsageL = jsonObject.getLong("memoryUsage");
+            String memoryUsage = memoryUsageL +"MB";
+
+            Long pidsL = jsonObject.getLong("pids");
+            String pids = String.valueOf(pidsL);
+
+            Double cpuUsageD = jsonObject.getDouble("cpuUsage") * 100;
+            double roundedCpu = Math.round(cpuUsageD * 100.0) / 100.0;
+            String cpuUsage = roundedCpu + "%";
+
+            Double blockID = jsonObject.getDouble("blockI");
+            double roundedI = Math.round(blockID * 10.0) / 10.0;
+            String blockI = roundedI + "B";
+
+            Double blockOD = jsonObject.getDouble("blockO");
+            double rounded0 = Math.round(blockOD * 10.0) / 10.0;
+            String blockO = rounded0 + "B";
+
             String volumes = jsonObject.getString("volumes");
+
             String subnet = jsonObject.getString("subnet");
+
             String gateway = jsonObject.getString("gateway");
+
             Integer prefixLen = jsonObject.getInt("prefixLen");
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage * 100, blockI, blockO, volumes, subnet, gateway, prefixLen, getCheckboxStateById(id) ));
+
+            if (status.equals("running")) {
+                instances.add(new InstanceScene(id, name, image
+                        ,status, memoryUsage, pids, cpuUsage , blockI
+                        , blockO, volumes, subnet, gateway, prefixLen,
+                        getCheckboxStateById(id) ));
+            } else {
+                instances.add(new InstanceScene(id, name, image ,status, "N/A", "N/A", "N/A" , "N/A", "N/A", volumes, subnet, gateway, prefixLen, getCheckboxStateById(id) ));
+            }
         }
         return instances;
     }

@@ -153,11 +153,11 @@
                <TableColumn fx:id="nameColumn" editable="false" minWidth="0.0" prefWidth="75.0" text="Name" />
                <TableColumn fx:id="imageColumn" editable="false" minWidth="0.0" prefWidth="74.0" text="Image" />
                <TableColumn fx:id="statusColumn" editable="false" prefWidth="67.0" text="Status" />
-               <TableColumn fx:id="cpuUsageColumn" editable="false" prefWidth="102.5" text="CPU Usage (%)" />
-               <TableColumn fx:id="pidsColumn" editable="false" prefWidth="56.5" text="PIDs" />
-               <TableColumn fx:id="memoryUsageColumn" editable="false" prefWidth="125.0" text="Memory Usage (MB)" />
-               <TableColumn fx:id="blockOColumn" editable="false" prefWidth="59.5" text="BlockO" />
-               <TableColumn fx:id="blockIColumn" editable="false" prefWidth="48.5" text="BlockI" />
+               <TableColumn fx:id="cpuUsageColumn" editable="false" prefWidth="99.5" text="CPU Usage " />
+               <TableColumn fx:id="pidsColumn" editable="false" prefWidth="65.0" text="PIDs" />
+               <TableColumn fx:id="memoryUsageColumn" editable="false" prefWidth="90.5" text="Memory Usage" />
+               <TableColumn fx:id="blockOColumn" editable="false" prefWidth="86.5" text="BlockO" />
+               <TableColumn fx:id="blockIColumn" editable="false" prefWidth="79.5" text="BlockI" />
                <TableColumn fx:id="actionButtonColumn" editable="false" prefWidth="75.0" text="Action" />
                <TableColumn fx:id="selectColumn" editable="false" prefWidth="75.0" text="Select" />
             </columns>

@@ -467,11 +467,18 @@ public class IndividualContainerController {
             String name = jsonObject.getString("name");
             String image = jsonObject.getString("image");
             String status = jsonObject.getString("status");
-            Long memoryUsage = jsonObject.getLong("memoryUsage");
-            Long pids = jsonObject.getLong("pids");
-            Double cpuUsage = jsonObject.getDouble("cpuUsage");
-            Double blockI = jsonObject.getDouble("blockI");
-            Double blockO = jsonObject.getDouble("blockO");
+            Long memoryUsageL = jsonObject.getLong("memoryUsage");
+            String memoryUsage = memoryUsageL +"MB";
+            Long pidsL = jsonObject.getLong("pids");
+            String pids = String.valueOf(pidsL);
+            Double cpuUsageD = jsonObject.getDouble("cpuUsage");
+            String cpuUsage = String.valueOf(cpuUsageD);
+            Double blockID = jsonObject.getDouble("blockI");
+            double roundedI = Math.round(blockID * 10.0) / 10.0;
+            String blockI = roundedI + "B";
+            Double blockOD = jsonObject.getDouble("blockO");
+            double rounded0 = Math.round(blockOD * 10.0) / 10.0;
+            String blockO = rounded0 + "B";
             String volumes = jsonObject.getString("volumes");
             String subnet = jsonObject.getString("subnet");
             String gateway = jsonObject.getString("gateway");
@@ -491,7 +498,9 @@ public class IndividualContainerController {
         Double individualCpuUsage = 0.0;
         for (InstanceScene instance : instances) {
             if (instance.getId().equals(this.instanceScene.getId())) {
-                individualCpuUsage = instance.getCpuUsage();
+                String cpuUsage = instance.getCpuUsage();
+                Double num = Double.parseDouble(cpuUsage);
+                individualCpuUsage = num;
             }
         }
         LocalDateTime currentTime = LocalDateTime.now();

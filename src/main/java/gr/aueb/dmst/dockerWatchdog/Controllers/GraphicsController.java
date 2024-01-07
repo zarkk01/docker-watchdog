@@ -237,11 +237,18 @@ public class GraphicsController implements Initializable {
             String name = jsonObject.getString("name");
             String image = jsonObject.getString("image");
             String status = jsonObject.getString("status");
-            Long memoryUsage = jsonObject.getLong("memoryUsage");
-            Long pids = jsonObject.getLong("pids");
-            Double cpuUsage = jsonObject.getDouble("cpuUsage");
-            Double blockI = jsonObject.getDouble("blockI");
-            Double blockO = jsonObject.getDouble("blockO");
+            Long memoryUsageL = jsonObject.getLong("memoryUsage");
+            String memoryUsage = String.valueOf(memoryUsageL);
+            Long pidsL = jsonObject.getLong("pids");
+            String pids = String.valueOf(pidsL);
+            Double cpuUsageD = jsonObject.getDouble("cpuUsage");
+            String cpuUsage = String.valueOf(cpuUsageD);
+            Double blockID = jsonObject.getDouble("blockI");
+            double roundedI = Math.round(blockID * 10.0) / 10.0;
+            String blockI = roundedI + "B";
+            Double blockOD = jsonObject.getDouble("blockO");
+            double rounded0 = Math.round(blockOD * 10.0) / 10.0;
+            String blockO = rounded0 + "B";
             instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, null, null, null, null,false));
         }
         return instances;
@@ -255,7 +262,9 @@ public class GraphicsController implements Initializable {
         currentTime = LocalDateTime.now();
         String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         for (InstanceScene instance : instances) {
-            totalCpuUsage += instance.getCpuUsage();
+            String cpuUsage = instance.getCpuUsage();
+            Double num = Double.parseDouble(cpuUsage);
+            totalCpuUsage += num;
         }
         if(totalCpuUsage*100>50){
             updateCharts();
@@ -266,7 +275,8 @@ public class GraphicsController implements Initializable {
         currentTime = LocalDateTime.now();
         String formatTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
         for (InstanceScene instance : instances) {
-            totalMemoryUsage += instance.getMemoryUsage();
+            Double num = Double.parseDouble(instance.getMemoryUsage());
+            totalMemoryUsage += num;
         }
         memorySeries.getData().add(new XYChart.Data<>(formatTime, totalMemoryUsage));
 
@@ -281,7 +291,7 @@ public class GraphicsController implements Initializable {
             } else {
                 simplerName = instance.getName();
             }
-            pidsSeries.getData().add(new XYChart.Data<>(simplerName, instance.getPids()));
+            pidsSeries.getData().add(new XYChart.Data<>(simplerName, Long.parseLong(instance.getPids())));
         }
         pidsChart.getData().add(pidsSeries);
     }

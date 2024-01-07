@@ -7,11 +7,11 @@ public class InstanceScene {
     private String id;
     private String name;
     private String status;
-    private Long memoryUsage;
-    private Long pids;
-    private Double cpuUsage;
-    private Double blockI;
-    private Double blockO;
+    private String memoryUsage;
+    private String pids;
+    private String cpuUsage;
+    private String blockI;
+    private String blockO;
     private String image;
     private String volumes;
     private String subnet;
@@ -20,7 +20,7 @@ public class InstanceScene {
     private final BooleanProperty select;
 
 
-    public InstanceScene(String id, String name,String image, String status, Long memoryUsage, Long pids, Double cpuUsage, Double blockI, Double blockO, String volumes, String subnet, String gateway, Integer prefixLen ,boolean select) {
+    public InstanceScene(String id, String name,String image, String status, String memoryUsage, String pids, String cpuUsage, String blockI, String blockO, String volumes, String subnet, String gateway, Integer prefixLen ,boolean select) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -38,23 +38,23 @@ public class InstanceScene {
 
     }
 
-    public Long getMemoryUsage() {
+    public String getMemoryUsage() {
         return memoryUsage;
     }
 
-    public Long getPids() {
+    public String getPids() {
         return pids;
     }
 
-    public Double getCpuUsage() {
+    public String getCpuUsage() {
         return cpuUsage;
     }
 
-    public Double getBlockI() {
+    public String getBlockI() {
         return blockI;
     }
 
-    public Double getBlockO() {
+    public String getBlockO() {
         return blockO;
     }
     public String getId() {
@@ -69,22 +69,22 @@ public class InstanceScene {
         return status;
     }
 
-    public void setMemoryUsage(Long memoryUsage) {
+    public void setMemoryUsage(String memoryUsage) {
         this.memoryUsage = memoryUsage;
     }
 
-    public void setPids(Long pids) {
+    public void setPids(String pids) {
         this.pids = pids;
     }
     public String getImage() {
         return image;
     }
 
-    public void setCpuUsage(Double cpuUsage) {
+    public void setCpuUsage(String cpuUsage) {
         this.cpuUsage = cpuUsage;
     }
 
-    public void setBlockI(Double blockI) {
+    public void setBlockI(String blockI) {
         this.blockI = blockI;
     }
 
@@ -94,7 +94,7 @@ public class InstanceScene {
     public void setStatus(String status) {
         this.status = status;
     }
-    public void setBlockO(Double blockO) {
+    public void setBlockO(String blockO) {
         this.blockO = blockO;
     }
     public String getVolumes() {
