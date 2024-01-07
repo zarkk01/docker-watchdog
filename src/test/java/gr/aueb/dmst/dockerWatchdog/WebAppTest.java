@@ -14,6 +14,5 @@ public class WebAppTest {
         // Ensure that the Spring context loads successfully
         var context = SpringApplication.run(WebApp.class);
         assertNotNull(context);
-
     }
 }
