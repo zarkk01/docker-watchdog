@@ -7,14 +7,7 @@ import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.core.command.PullImageResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Main;
 
-import java.util.Scanner;
-
 public class ExecutorThread implements Runnable {
-    // Initiate and create scanner
-    Scanner scanner = new Scanner(System.in);
-
-//    private final BlockingQueue<Integer> commandQueue = new LinkedBlockingQueue<>();
-
     @Override
     public void run() {}
 
@@ -132,14 +125,8 @@ public class ExecutorThread implements Runnable {
 
         Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
 
-//            ExposedPort tcp22 = ExposedPort.tcp(sourcePort);
-//            Ports portBindings = new Ports();
-//            portBindings.bind(tcp22, Ports.Binding.bindPort(targetPort));
-
         CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
                 .withCmd("sleep", "infinity")
-//                    .withExposedPorts(tcp22)
-//                    .withPortBindings(portBindings)
                 .exec();
 
         // Create and start a container based on the pulled image
@@ -148,23 +135,4 @@ public class ExecutorThread implements Runnable {
         // Print the container ID
         System.out.println("Container started and running successfully. Container ID: " + container.getId());
     }
-
-    // Method to pull an image
-    public void pullImage(String imageName) {
-
-        // Pull the specified Docker image
-        try {
-            Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
-            System.out.println("Image pulled successfully.");
-        } catch (InterruptedException e) {
-            System.out.println("Image pull operation was interrupted.");
-            e.printStackTrace();
-        } catch (NotFoundException e) {
-            System.err.println("The image you are trying to pull does not exist");
-        } catch (Exception e) {
-            System.err.println("Error pulling the image: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }
-

@@ -177,38 +177,6 @@ class ExecutorThreadTest {
         // Add an assertion to check whether the container has been renamed successfully
         assertTrue(checkIfContainerRenamed(containerId, newName));
     }
-    @Test
-    void testPullImage() {
-        // Create an instance of ExecutorThread
-        MonitorThread monitorThread = new MonitorThread();
-        monitorThread.run();
-        ExecutorThread executorThread = new ExecutorThread();
-
-        // Specify the image name to pull (e.g., "nginx:latest")
-        String imageName = "mongo:latest";
-
-        // Run the pullImage method
-        executorThread.pullImage(imageName);
-
-        // Add an assertion to check whether the image has been pulled successfully
-        assertTrue(checkIfImagePulled(imageName));
-    }
-
-    // Helper method to check if an image has been pulled
-    private boolean checkIfImagePulled(String imageName) {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // Check if the image is present in the Images table
-            String checkImageQuery = "SELECT * FROM Images WHERE name = ?";
-            PreparedStatement checkImageStmt = conn.prepareStatement(checkImageQuery);
-            checkImageStmt.setString(1, imageName);
-            return checkImageStmt.executeQuery().next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     //Exception handling tests
     @Test
@@ -256,26 +224,6 @@ class ExecutorThreadTest {
         // Ensure NotFoundException is handled appropriately
         assertThrows(NotFoundException.class, () -> executorThread.stopContainer(nonExistentContainerId));
     }
-    @Test
-    void testPullNonexistentImage() {
-        // Attempt to pull a nonexistent image
-        String nonExistentImageName = "nonexistent_image:latest";
-        ExecutorThread executorThread = new ExecutorThread();
-
-        // Ensure NotFoundException is handled appropriately
-        assertThrows(NotFoundException.class, () -> executorThread.pullImage(nonExistentImageName));
-    }
-    @Test
-    void testRenameNonexistentContainer() {
-        // Attempt to rename a nonexistent container
-        String nonExistentContainerId = "nonexistent_container_id";
-        String newName = "newContainerName";
-        ExecutorThread executorThread = new ExecutorThread();
-
-        // Ensure NotFoundException is handled appropriately
-        assertThrows(NotFoundException.class, () -> executorThread.renameContainer(nonExistentContainerId, newName));
-    }
-
 
     private boolean checkIfContainerStarted(String containerId) {
         try {

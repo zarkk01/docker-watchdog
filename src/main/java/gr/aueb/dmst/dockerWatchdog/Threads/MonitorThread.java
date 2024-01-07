@@ -50,7 +50,7 @@ public class MonitorThread implements Runnable {
                         handleImageEvent(eventAction, id,event);
                         break;
                     case VOLUME:
-                        handleVolumeEvent(eventAction, id,event);
+                        handleVolumeEvent(eventAction, id);
                         break;
                 }
 
@@ -213,7 +213,7 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    public void handleVolumeEvent(String eventAction, String name, Event event){
+    public void handleVolumeEvent(String eventAction, String name){
         switch (eventAction) {
             case "create":
                 // Add the new volume to the list

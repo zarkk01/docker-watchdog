@@ -8,12 +8,7 @@ public class DeploymentScene {
         this.name = name;
         this.namespace = namespace;
     }
-
     public String getName() {
         return name;
-    }
-
-    public String getNamespace() {
-        return namespace;
     }
 }

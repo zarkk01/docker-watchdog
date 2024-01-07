@@ -48,9 +48,8 @@ public class Instance {
     @Column(name = "gateway")
     private String gateway;
 
-    public void setMetricid(Integer metricid) {
-        this.metricid = metricid;
-    }
+    @Column(name = "prefixlen")
+    private Integer prefixLen;
 
     public String getVolumes() {
         return volumes;
@@ -84,10 +83,6 @@ public class Instance {
         this.prefixLen = prefixLen;
     }
 
-    @Column(name = "prefixlen")
-    private Integer prefixLen;
-
-    // Getters
     public String getId() {
         return id;
     }
