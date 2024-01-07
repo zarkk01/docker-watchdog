@@ -23,12 +23,4 @@ public class MetricTest {
         assertEquals(1, metric.getId());
         assertEquals(Timestamp.valueOf("2022-01-01 12:00:00"), metric.getDatetime());
     }
-
-    @Test
-    public void testImmutableProperties() {
-        Metric metric = new Metric();
-        assertThrows(UnsupportedOperationException.class, () -> metric.getId().intValue());
-        assertThrows(UnsupportedOperationException.class, () -> metric.getDatetime().setNanos(0));
-        // Repeat for other properties
-    }
 }

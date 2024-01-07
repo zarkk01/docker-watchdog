@@ -5,7 +5,9 @@ import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import gr.aueb.dmst.dockerWatchdog.Tests.Threads.TestDataProvider;
+import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
+import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,6 @@ class ExecutorThreadTest {
                 .build();
         dockerClient = DockerClientBuilder.getInstance(builder).build();
 
-        TestDataProvider.insertTestContainer();
         TestDataProvider.insertTestInstances();
         TestDataProvider.insertTestImages();
         TestDataProvider.insertTestMetrics();
@@ -51,7 +52,7 @@ class ExecutorThreadTest {
     @Test
     void testStartContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -68,7 +69,7 @@ class ExecutorThreadTest {
     @Test
     void testStopContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -85,7 +86,7 @@ class ExecutorThreadTest {
     @Test
     void testRunContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -107,7 +108,7 @@ class ExecutorThreadTest {
     @Test
     void testRemoveContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -124,7 +125,7 @@ class ExecutorThreadTest {
     @Test
     void testPauseContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -141,7 +142,7 @@ class ExecutorThreadTest {
     @Test
     void testUnpauseContainer() {
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Create an instance of ExecutorThread
         ExecutorThread executorThread = new ExecutorThread();
@@ -161,7 +162,7 @@ class ExecutorThreadTest {
         ExecutorThread executorThread = new ExecutorThread();
 
         // Insert test data for container into the database
-        TestDataProvider.insertTestContainer();
+        TestDataProvider.insertTestInstances();
 
         // Get the container ID and original name from the database
         String containerId = TestDataProvider.getTestContainerId();
@@ -179,16 +180,34 @@ class ExecutorThreadTest {
     @Test
     void testPullImage() {
         // Create an instance of ExecutorThread
+        MonitorThread monitorThread = new MonitorThread();
+        monitorThread.run();
         ExecutorThread executorThread = new ExecutorThread();
 
         // Specify the image name to pull (e.g., "nginx:latest")
-        String imageName = "nginx:latest";
+        String imageName = "mongo:latest";
 
         // Run the pullImage method
         executorThread.pullImage(imageName);
 
         // Add an assertion to check whether the image has been pulled successfully
         assertTrue(checkIfImagePulled(imageName));
+    }
+
+    // Helper method to check if an image has been pulled
+    private boolean checkIfImagePulled(String imageName) {
+        try {
+            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Check if the image is present in the Images table
+            String checkImageQuery = "SELECT * FROM Images WHERE name = ?";
+            PreparedStatement checkImageStmt = conn.prepareStatement(checkImageQuery);
+            checkImageStmt.setString(1, imageName);
+            return checkImageStmt.executeQuery().next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     //Exception handling tests
@@ -263,7 +282,7 @@ class ExecutorThreadTest {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Check if the container is in the "running" state in the database
-            String checkContainerStateQuery = "SELECT * FROM Containers WHERE id = ? AND state = 'running'";
+            String checkContainerStateQuery = "SELECT * FROM Instances WHERE id = ? AND status = 'running'";
             PreparedStatement checkContainerStateStmt = conn.prepareStatement(checkContainerStateQuery);
             checkContainerStateStmt.setString(1, containerId);
             return checkContainerStateStmt.executeQuery().next();
@@ -332,22 +351,6 @@ class ExecutorThreadTest {
         }
     }
 
-
-    // Helper method to check if an image has been pulled
-    private boolean checkIfImagePulled(String imageName) {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // Check if the image is present in the Images table
-            String checkImageQuery = "SELECT * FROM Images WHERE name = ?";
-            PreparedStatement checkImageStmt = conn.prepareStatement(checkImageQuery);
-            checkImageStmt.setString(1, imageName);
-            return checkImageStmt.executeQuery().next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
     private boolean checkIfContainerPaused(String containerId) {
         try {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);

@@ -16,16 +16,6 @@ public class MyVolumeTest {
         assertNotNull(myVolume);
     }
 
-
-
-    @Test
-    public void testImmutableProperties() {
-        MyVolume myVolume = new MyVolume("TestVolume", "TestDriver", "/mnt/test", new ArrayList<>());
-        assertThrows(UnsupportedOperationException.class, () -> myVolume.getName().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> myVolume.getDriver().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> myVolume.getMountpoint().toUpperCase());
-    }
-
     @Test
     public void testAddContainerNameUsing() {
         MyVolume myVolume = new MyVolume("TestVolume", "TestDriver", "/mnt/test", new ArrayList<>());

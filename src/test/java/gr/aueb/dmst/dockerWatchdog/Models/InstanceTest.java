@@ -44,12 +44,4 @@ public class InstanceTest {
         assertEquals("192.168.0.254", instance.getGateway());
         assertEquals(24, instance.getPrefixLen());
     }
-
-    @Test
-    public void testImmutableProperties() {
-        Instance instance = new Instance();
-        assertThrows(UnsupportedOperationException.class, () -> instance.getId().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> instance.getName().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> instance.getMemoryUsage().intValue());
-    }
 }

@@ -8,7 +8,6 @@ public class MainTest {
 
     @Test
     public void testMainMethod() {
-        // Ensure that the main method initializes all necessary components
 
         // Mock the behavior of SpringApplication.run()
         Main.springContext = new MockConfigurableApplicationContext();
@@ -29,6 +28,7 @@ public class MainTest {
         assertNotNull(Main.dbThread);
 
         // Add more assertions based on your specific requirements
+
     }
 
     // Mock ConfigurableApplicationContext to use in the test

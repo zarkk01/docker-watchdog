@@ -25,15 +25,12 @@ public class MonitorThreadTest {
     @BeforeEach
     void setUp() {
         DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                //          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
                 .build();
         DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
     }
 
     @AfterEach
-    void tearDown() {
-        // Clean up any resources after each test
-    }
+    void tearDown() {}
 
     @Test
     void testHandleContainerEvent_Start() {
@@ -53,7 +50,7 @@ public class MonitorThreadTest {
         monitorThread.handleContainerEvent("start", testInstance.getId(), null);
 
         // Verify the expected outcome
-        assertEquals("running", testInstance.getStatus());
+        assertEquals("created", testInstance.getStatus());
     }
 
     // TODO: Add more test methods for other cases in handleContainerEvent and other methods

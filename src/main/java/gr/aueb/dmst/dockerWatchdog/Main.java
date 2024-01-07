@@ -27,7 +27,6 @@ public class Main {
 
     // Initiate dockerClient
     public static DefaultDockerClientConfig builder = DefaultDockerClientConfig.createDefaultConfigBuilder()
-            //          .withDockerHost("tcp://localhost:2375") // Use "tcp" for TCP connections
             .build();
     public static DockerClient dockerClient = DockerClientBuilder.getInstance(builder).build();
 

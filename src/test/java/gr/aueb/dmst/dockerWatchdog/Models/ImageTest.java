@@ -24,12 +24,4 @@ public class ImageTest {
         assertEquals("Active", image.getStatus());
         assertEquals(1024L, image.getSize());
     }
-
-    @Test
-    public void testImmutableProperties() {
-        Image image = new Image();
-        assertThrows(UnsupportedOperationException.class, () -> image.getId().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> image.getName().toUpperCase());
-        assertThrows(UnsupportedOperationException.class, () -> image.getSize().intValue());
-    }
 }

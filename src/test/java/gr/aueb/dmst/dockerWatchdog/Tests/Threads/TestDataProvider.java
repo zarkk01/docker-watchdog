@@ -3,6 +3,8 @@ package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 
 import java.sql.*;
+import java.util.Date;
+import java.util.Random;
 
 public class TestDataProvider {
 
@@ -15,9 +17,10 @@ public class TestDataProvider {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Insert test da/ta into the Metrics table
-            String insertMetrics = "INSERT INTO Metrics (datetime) VALUES (?)";
+            String insertMetrics = "INSERT INTO Metrics (id ,datetime) VALUES (?,?)";
             PreparedStatement insertMetricsStmt = conn.prepareStatement(insertMetrics);
-            insertMetricsStmt.setTimestamp(1, getCurrentTimestamp());
+            insertMetricsStmt.setInt(1, new Random().nextInt(1000));
+            insertMetricsStmt.setTimestamp(2,  new Timestamp(new Date().getTime()));
             insertMetricsStmt.executeUpdate();
 
             conn.close();
@@ -34,11 +37,20 @@ public class TestDataProvider {
             String insertInstance = "INSERT INTO Instances (id, name, image, status, memoryusage, pids, cpuusage, blockI, blockO, volumes, subnet, gateway, prefixlen, metricid) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement insertInstanceStmt = conn.prepareStatement(insertInstance);
-            insertInstanceStmt.setString(1, "yourInstanceId");
+            insertInstanceStmt.setString(1, Math.random() + "");
             insertInstanceStmt.setString(2, "InstanceName");
             insertInstanceStmt.setString(3, "ImageName");
-            // Set other values accordingly
-            insertInstanceStmt.setLong(13, getLatestMetricId());
+            insertInstanceStmt.setString(4, "running");
+            insertInstanceStmt.setInt(5, 100);
+            insertInstanceStmt.setInt(6, 9);
+            insertInstanceStmt.setDouble(7, 1.1);
+            insertInstanceStmt.setDouble(8, 3.3);
+            insertInstanceStmt.setDouble(9, 2.2);
+            insertInstanceStmt.setString(10, "Volume1,Volume2");
+            insertInstanceStmt.setString(11, "subnet");
+            insertInstanceStmt.setString(12, "gateway");
+            insertInstanceStmt.setInt(13, 24);
+            insertInstanceStmt.setInt(14, 3);
             insertInstanceStmt.executeUpdate();
 
             conn.close();
@@ -52,12 +64,12 @@ public class TestDataProvider {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Insert test data into the Images table
-            String insertImage = "INSERT INTO Images (id, name, size, status) VALUES (?, ?, ?, ?)";
+            String insertImage = "INSERT INTO Images (id, name, status, size) VALUES (?, ?, ?, ?)";
             PreparedStatement insertImageStmt = conn.prepareStatement(insertImage);
-            insertImageStmt.setString(1, "yourImageId");
+            insertImageStmt.setString(1, Math.random() + "");
             insertImageStmt.setString(2, "ImageName");
-            insertImageStmt.setLong(3, 1024); // Example size
-            insertImageStmt.setString(4, "active");
+            insertImageStmt.setString(4, "In use");
+            insertImageStmt.setLong(3, 1024);
             insertImageStmt.executeUpdate();
 
             conn.close();
@@ -73,43 +85,12 @@ public class TestDataProvider {
             // Insert test data into the Volumes table
             String insertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) VALUES (?, ?, ?, ?)";
             PreparedStatement insertVolumeStmt = conn.prepareStatement(insertVolume);
-            insertVolumeStmt.setString(1, "yourVolumeName");
+            insertVolumeStmt.setString(1, Math.random() + "");
             insertVolumeStmt.setString(2, "local");
             insertVolumeStmt.setString(3, "/mnt/data");
             insertVolumeStmt.setString(4, "Container1,Container2");
             insertVolumeStmt.executeUpdate();
 
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static java.sql.Timestamp getCurrentTimestamp() {
-        // Implement logic to get the current timestamp
-        // This depends on your specific requirements and database setup
-        return new java.sql.Timestamp(System.currentTimeMillis());
-    }
-
-    private static int getLatestMetricId() {
-        // Implement logic to get the latest metric ID from the Metrics table
-        // This depends on your specific requirements and database setup
-        return 1; // Replace with actual logic to retrieve the latest metric ID
-    }
-    // Method to insert test container data into the database
-    public static void insertTestContainer() {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // Insert test container data into the Containers table
-            String insertContainerQuery = "INSERT INTO Containers (id, state, created_at) VALUES (?, ?, ?)";
-            PreparedStatement insertContainerStmt = conn.prepareStatement(insertContainerQuery);
-            insertContainerStmt.setString(1, "test_container_id");
-            insertContainerStmt.setString(2, "created");
-            insertContainerStmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            insertContainerStmt.executeUpdate();
-
-            // Close the connection
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -122,7 +103,7 @@ public class TestDataProvider {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Query to get the ID of the test container
-            String getContainerIdQuery = "SELECT id FROM Containers WHERE state = 'created' ORDER BY created_at DESC LIMIT 1";
+            String getContainerIdQuery = "SELECT id FROM Instances WHERE status = 'running'";
             PreparedStatement getContainerIdStmt = conn.prepareStatement(getContainerIdQuery);
             var resultSet = getContainerIdStmt.executeQuery();
 
