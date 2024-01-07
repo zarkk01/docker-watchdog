@@ -153,12 +153,17 @@
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Label fx:id="fileNameLabel" layoutX="45.0" layoutY="68.0" text="File Name" textFill="WHITE">
+            <Label fx:id="fileNameLabel" layoutX="45.0" layoutY="68.0" text="File Name" textFill="WHITE" underline="true">
                <font>
                   <Font size="21.0" />
                </font>
             </Label>
-            <Label fx:id="savedLabel" layoutX="407.0" layoutY="549.0" text="Saved" textFill="WHITE" />
+            <Label fx:id="savedLabel" layoutX="403.0" layoutY="546.0" text="Saved" textFill="#dddddd" />
+            <Label layoutX="45.0" layoutY="544.0" text="Editor" textFill="#e1d8d8">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Label>
            </children>
        </AnchorPane>
    </center>

@@ -167,7 +167,7 @@ public class ContainersController implements Initializable {
                         private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         private final Button btnStop = new Button();
                         Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
-                        Image imgStop = new Image(getClass().getResource("/images/stop.png").toExternalForm());
+                        Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
                         ImageView viewStop = new ImageView(imgStop);
 
                         {
@@ -214,7 +214,7 @@ public class ContainersController implements Initializable {
                             btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
                             btnStart.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
                             btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stop.png").toExternalForm())));
+                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
                             btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
                             btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
 
