@@ -131,25 +131,25 @@
     <center>
         <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" layoutX="373.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="260.3033752441406">
+                <Text fill="WHITE" layoutX="325.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="260.3033752441406">
                     <font>
                         <Font name="System Bold Italic" size="36.0" />
                     </font>
                 </Text>
-                <SplitPane dividerPositions="0.4823232323232323" layoutX="-2.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="976.0" style="-fx-border-color: black;" stylesheets="@styles/splitPane.css">
+                <SplitPane dividerPositions="0.48036006546644844" layoutX="1.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="943.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="974.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
                             <children>
-                                <SplitPane layoutX="392.0" layoutY="-7.0" prefHeight="305.0" prefWidth="586.0" style="-fx-border-color: black;" stylesheets="@styles/splitPane.css">
+                                <SplitPane layoutX="392.0" layoutY="-7.0" prefHeight="305.0" prefWidth="586.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                                     <items>
-                                        <AnchorPane prefHeight="246.0" prefWidth="583.0" style="-fx-background-color: #525252; -fx-border-color: black;" stylesheets="@styles/splitPane.css">
+                                        <AnchorPane prefHeight="246.0" prefWidth="583.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
                                             <children>
                                                 <Label layoutX="197.0" layoutY="10.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS" textFill="WHITE">
                                                     <font>
                                                         <Font name="System Bold" size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <TableView fx:id="deploymentsTableView" layoutX="2.0" layoutY="39.0" prefHeight="261.0" prefWidth="574.0">
+                                                <TableView fx:id="deploymentsTableView" layoutX="31.0" layoutY="39.0" prefHeight="248.0" prefWidth="519.0">
                                                     <columns>
                                                         <TableColumn fx:id="deploymentNameColumn" prefWidth="288.25372314453125" text="Deployment Name" />
                                                         <TableColumn fx:id="deploymentNamespaceColumn" prefWidth="267.7462158203125" text="Namespace" />
@@ -163,35 +163,39 @@
                                         </AnchorPane>
                                     </items>
                                 </SplitPane>
-                                <Label layoutX="135.0" layoutY="3.0" text="SERVICES" textFill="WHITE">
-                                    <font>
-                                        <Font name="System Bold" size="24.0" />
-                                    </font>
-                                </Label>
-                                <TableView fx:id="servicesTableView" layoutX="2.0" layoutY="33.0" prefHeight="257.0" prefWidth="390.0">
-                                    <columns>
-                                        <TableColumn fx:id="serviceNameColumn" prefWidth="170.5" text="Service Name" />
-                                        <TableColumn fx:id="serviceNamespaceColumn" prefWidth="205.5" text="Namespace" />
-                                    </columns>
-                           <stylesheets>
-                              <URL value="@styles/styles.css" />
-                              <URL value="@styles/splitPane.css" />
-                           </stylesheets>
-                                </TableView>
+                        <AnchorPane layoutY="-2.0" prefHeight="303.0" prefWidth="398.0">
+                           <children>
+                                      <Label layoutX="139.0" layoutY="7.0" text="SERVICES" textFill="WHITE">
+                                          <font>
+                                              <Font name="System Bold" size="24.0" />
+                                          </font>
+                                      </Label>
+                                      <TableView fx:id="servicesTableView" layoutY="35.0" prefHeight="248.0" prefWidth="390.0">
+                                          <columns>
+                                              <TableColumn fx:id="serviceNamespaceColumn" prefWidth="205.5" text="Namespace" />
+                                              <TableColumn fx:id="serviceNameColumn" prefWidth="170.5" text="Service Name" />
+                                          </columns>
+                                 <stylesheets>
+                                    <URL value="@styles/styles.css" />
+                                    <URL value="@styles/splitPane.css" />
+                                 </stylesheets>
+                                      </TableView>
+                           </children>
+                        </AnchorPane>
                             </children>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-border-color: black;" stylesheets="@styles/splitPane.css">
                             <children>
-                                <SplitPane dividerPositions="0.6242331288343558" layoutX="-4.0" layoutY="-8.0" prefHeight="325.0" prefWidth="980.0" style="-fx-border-color: black;" stylesheets="@styles/splitPane.css">
+                                <SplitPane dividerPositions="0.6337090163934426" layoutX="-4.0" layoutY="-8.0" prefHeight="325.0" prefWidth="980.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="353.0" prefWidth="606.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="321.0" prefWidth="586.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
                                             <children>
                                                 <Label layoutX="278.0" layoutY="10.0" text="PODS" textFill="WHITE">
                                                     <font>
                                                         <Font name="System Bold" size="27.0" />
                                                     </font>
                                                 </Label>
-                                                <TableView fx:id="podsTableView" layoutX="4.0" layoutY="43.0" prefHeight="274.0" prefWidth="603.0">
+                                                <TableView fx:id="podsTableView" layoutX="4.0" layoutY="43.0" prefHeight="260.0" prefWidth="605.0">
                                                     <columns>
                                                         <TableColumn fx:id="podNameColumn" prefWidth="232.4896469116211" text="Pod Name" />
                                                         <TableColumn fx:id="podNamespaceColumn" prefWidth="176.51034545898438" text="Namespace" />
@@ -206,12 +210,12 @@
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
                                             <children>
-                                                <Label layoutX="95.0" layoutY="14.0" text="STATEFUL SETS" textFill="WHITE">
+                                                <Label layoutX="86.0" layoutY="14.0" text="STATEFUL SETS" textFill="WHITE">
                                                     <font>
                                                         <Font name="System Bold" size="24.0" />
                                                     </font>
                                                 </Label>
-                                                <TableView fx:id="statefulSetsTableView" layoutX="-1.0" layoutY="43.0" prefHeight="275.0" prefWidth="365.0">
+                                                <TableView fx:id="statefulSetsTableView" layoutX="1.0" layoutY="43.0" prefHeight="260.0" prefWidth="323.0">
                                                     <columns>
                                                         <TableColumn fx:id="statefulSetNameColumn" prefWidth="175.4495849609375" text="StatefulSet Name" />
                                                         <TableColumn fx:id="statefulSetNamespaceColumn" prefWidth="172.0504150390625" text="Namespace" />
