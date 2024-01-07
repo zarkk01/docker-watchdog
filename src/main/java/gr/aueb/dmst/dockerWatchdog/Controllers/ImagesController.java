@@ -91,13 +91,26 @@ public class ImagesController implements Initializable {
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
                         private final Button btn = new Button();
+
+                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/create.png").toExternalForm()));
+                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/createHover.png").toExternalForm()));
+                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
                         {
+                            viewStart.setFitHeight(30);
+                            viewStart.setFitHeight(30);
+                            viewStart.setPreserveRatio(true);
+                            viewStartHover.setFitHeight(30);
+                            viewStartHover.setPreserveRatio(true);
+                            viewStartClick.setFitHeight(20);
+                            viewStartClick.setPreserveRatio(true);
+                            viewStart.setPreserveRatio(true);
+                            viewStart.setOpacity(0.8);
                             view.setFitHeight(20);
                             view.setPreserveRatio(true);
-                            btn.setGraphic(view);
+                            btn.setGraphic(viewStart);
                             btn.setOnAction((ActionEvent event) -> {
                                 // Handle button click to create a container
                                 ImageScene image = getTableView().getItems().get(getIndex());
@@ -107,6 +120,13 @@ public class ImagesController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+
+                            btn.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btn.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/create.png").toExternalForm())));
+                            btn.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
+                            btn.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
+
+
                         }
 
                         @Override
@@ -128,13 +148,26 @@ public class ImagesController implements Initializable {
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
                         private final Button btn = new Button();
+                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
+                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
+                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         ImageView view = new ImageView(img);
 
                         {
+
+                            viewStart.setFitHeight(30);
+                            viewStart.setFitHeight(30);
+                            viewStart.setPreserveRatio(true);
+                            viewStartHover.setFitHeight(30);
+                            viewStartHover.setPreserveRatio(true);
+                            viewStartClick.setFitHeight(20);
+                            viewStartClick.setPreserveRatio(true);
+                            viewStart.setPreserveRatio(true);
+                            viewStart.setOpacity(0.8);
                             view.setFitHeight(20);
                             view.setPreserveRatio(true);
-                            btn.setGraphic(view);
+                            btn.setGraphic(viewStart);
                             btn.setOnAction((ActionEvent event) -> {
                                 ImageScene image = getTableView().getItems().get(getIndex());
                                 try {
@@ -143,6 +176,11 @@ public class ImagesController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+                            btn.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
+                            btn.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
+                            btn.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
+                            btn.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
+
                         }
 
                         @Override
@@ -167,7 +205,6 @@ public class ImagesController implements Initializable {
                         private final Button btn = new Button();
                         Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
                         ImageView view = new ImageView(img);
-
                         {
                             view.setFitHeight(20);
                             view.setPreserveRatio(true);
@@ -181,6 +218,10 @@ public class ImagesController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+                            btn.setOnMouseEntered(e -> view.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                            btn.setOnMouseExited(e -> view.setImage(new Image(getClass().getResource("/images/stop.png").toExternalForm())));
+                            btn.setOnMousePressed(e -> view.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
+                            btn.setOnMouseReleased(e -> view.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
                         }
 
                         @Override
