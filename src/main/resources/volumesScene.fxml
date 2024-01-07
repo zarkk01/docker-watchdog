@@ -100,6 +100,29 @@
                   <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
                </children>
             </Pane>
+            <Pane prefHeight="306.0" prefWidth="155.0">
+               <children>
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #1573CB;">
+                     <children>
+                        <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/docker.png" />
+                           </image>
+                        </ImageView>
+                        <Text fill="WHITE" layoutX="33.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Watching">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="113.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/watchdog.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </Pane>
          </children>
       </VBox>
    </left>
@@ -133,7 +156,7 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Text>
-            <ImageView fx:id="watchdogImage" fitHeight="30.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/watchdog.png" />
                </image>
