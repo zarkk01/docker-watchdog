@@ -4,22 +4,22 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Line?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ComposeController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" onAction="#changeToContainersScene" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
+                <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
                     <font>
                         <Font name="Sama Devanagari Medium" size="13.0" />
                     </font>
@@ -121,34 +121,35 @@
         </HBox>
     </top>
    <center>
-       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
+       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
            <children>
                 <TextArea fx:id="yamlContentArea" layoutX="40.0" layoutY="100.0" prefHeight="445.0" prefWidth="414.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="492.0" AnchorPane.topAnchor="99.0">
                <stylesheets>
                   <URL value="@styles/styles.css" />
                   <URL value="@styles/textArea.css" />
                </stylesheets></TextArea>
-            <Button fx:id="startComposeButton" layoutX="512.0" layoutY="275.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" text="Start" textFill="WHITE">
+            <Pane layoutX="497.0" layoutY="100.0" prefHeight="443.0" prefWidth="430.0" style="-fx-background-color: #616161;" stylesheets="@styles/curvedPane.css">
+               <children>
+                     <Button fx:id="showConfigButton" layoutX="124.0" layoutY="302.0" mnemonicParsing="false" onAction="#showConfig" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Show Config" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+            <Button fx:id="startComposeButton" layoutX="512.0" layoutY="275.0" mnemonicParsing="false" onAction="#startDockerCompose" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Start" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
-            <Button fx:id="stopComposeButton" layoutX="734.0" layoutY="276.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: black;" text="Stop" textFill="WHITE">
+            <Button fx:id="stopComposeButton" layoutX="734.0" layoutY="276.0" mnemonicParsing="false" onAction="#stopDockerCompose" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Stop" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
-               <Button fx:id="validateButton" layoutX="734.0" layoutY="136.0" mnemonicParsing="false" onAction="#validateYaml" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-background-radius: 10; -fx-border-radius: 10;" text="Validate" textFill="WHITE">
+               <Button fx:id="validateButton" layoutX="734.0" layoutY="136.0" mnemonicParsing="false" onAction="#validateYaml" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Validate" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>
-               <Button fx:id="saveButton" layoutX="513.0" layoutY="136.0" mnemonicParsing="false" onAction="#saveYaml" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-color: black; -fx-border-radius: 10; -fx-background-radius: 10;" text="Save" textFill="WHITE">
-               <stylesheets>
-                  <URL value="@styles/buttons.css" />
-                  <URL value="@styles/styles.css" />
-               </stylesheets>
-               <font>
-                  <Font size="18.0" />
-               </font></Button>
-               <Button fx:id="showConfigButton" layoutX="513.0" layoutY="414.0" mnemonicParsing="false" onAction="#showConfig" prefHeight="90.0" prefWidth="180.0" style="-fx-background-color: #414141; -fx-cursor: hand; -fx-border-radius: 10; -fx-background-radius: 10; -fx-border-color: black;" text="Show Config" textFill="WHITE">
+               <Button fx:id="saveButton" layoutX="513.0" layoutY="136.0" mnemonicParsing="false" onAction="#saveYaml" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Save" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font></Button>

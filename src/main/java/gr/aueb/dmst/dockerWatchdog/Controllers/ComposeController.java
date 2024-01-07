@@ -130,11 +130,11 @@ public class ComposeController {
             Yaml yaml = new Yaml();
             yaml.load(new FileInputStream(yamlFilePath));
             validateButton.setText("Valid");
-            validateButton.setStyle("-fx-background-color: green;");
+            validateButton.setStyle("-fx-text-fill: white; -fx-background-color: #44F700;");
             validateButton.setDisable(true);
         } catch (Exception e) {
             validateButton.setText("Sorry not valid");
-            validateButton.setStyle("-fx-background-color: red;");
+            validateButton.setStyle("-fx-background-color: #EC5F47;");
             validateButton.setDisable(true);
         }
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
