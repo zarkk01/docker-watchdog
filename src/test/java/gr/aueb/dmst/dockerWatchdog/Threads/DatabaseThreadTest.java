@@ -1,8 +1,8 @@
-package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
+package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import org.junit.jupiter.api.Test;
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
-import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
+
 import java.sql.*;
 import static org.junit.jupiter.api.Assertions.*;
 

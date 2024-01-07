@@ -1,13 +1,9 @@
-package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
+package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
-import gr.aueb.dmst.dockerWatchdog.Tests.Threads.TestDataProvider;
-import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
-import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
-import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +13,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
 

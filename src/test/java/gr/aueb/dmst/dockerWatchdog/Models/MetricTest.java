@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
@@ -7,6 +8,14 @@ import java.sql.Timestamp;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MetricTest {
+    private Metric metric;
+
+    @BeforeEach
+    public void setUp() {
+        metric = new Metric();
+        metric.setId(1);
+        metric.setDatetime(new Timestamp(System.currentTimeMillis()));
+    }
 
     @Test
     public void testConstructorInitialization() {
@@ -15,12 +24,18 @@ public class MetricTest {
     }
 
     @Test
-    public void testGetterAndSetter() {
-        Metric metric = new Metric();
-        metric.setId(1);
-        metric.setDatetime(Timestamp.valueOf("2022-01-01 12:00:00"));
-
+    public void testGetters() {
         assertEquals(1, metric.getId());
-        assertEquals(Timestamp.valueOf("2022-01-01 12:00:00"), metric.getDatetime());
+        assertNotNull(metric.getDatetime());
+    }
+
+    @Test
+    public void testSetters() {
+        metric.setId(2);
+        Timestamp newTimestamp = new Timestamp(System.currentTimeMillis());
+        metric.setDatetime(newTimestamp);
+
+        assertEquals(2, metric.getId());
+        assertEquals(newTimestamp, metric.getDatetime());
     }
 }

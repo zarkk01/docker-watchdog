@@ -1,4 +1,4 @@
-package gr.aueb.dmst.dockerWatchdog.Tests.Threads;
+package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 

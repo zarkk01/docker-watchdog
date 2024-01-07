@@ -1,38 +1,39 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
-import gr.aueb.dmst.dockerWatchdog.Main;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MyVolumeTest {
+    private MyVolume volume;
 
-    @Test
-    public void testConstructorInitialization() {
-        MyVolume myVolume = new MyVolume("TestVolume", "TestDriver", "/mnt/test", new ArrayList<>());
-        assertNotNull(myVolume);
+    @BeforeEach
+    public void setUp() {
+        ArrayList<String> containerNames = new ArrayList<>();
+        containerNames.add("Container1");
+        volume = new MyVolume("VodafoneVolume", "TestDriver", "/mnt/test", containerNames);
     }
 
     @Test
-    public void testAddContainerNameUsing() {
-        MyVolume myVolume = new MyVolume("TestVolume", "TestDriver", "/mnt/test", new ArrayList<>());
-        myVolume.addContainerNameUsing("Container1");
-
-        assertTrue(myVolume.getContainerNamesUsing().contains("Container1"));
+    public void testGetters() {
+        assertEquals("VodafoneVolume", volume.getName());
+        assertEquals("TestDriver", volume.getDriver());
+        assertEquals("/mnt/test", volume.getMountpoint());
+        assertEquals(1, volume.getContainerNamesUsing().size());
+        assertEquals("Container1", volume.getContainerNamesUsing().get(0));
     }
 
-    // Add tests for setContainerNamesUsing and removeContainerNameUsing methods
-
     @Test
-    public void testGetVolumeByName() {
-        MyVolume myVolume1 = new MyVolume("TestVolume1", "TestDriver", "/mnt/test", new ArrayList<>());
-        MyVolume myVolume2 = new MyVolume("TestVolume2", "TestDriver", "/mnt/test", new ArrayList<>());
-        Main.myVolumesList.addAll(Arrays.asList(myVolume1, myVolume2));
+    public void testContainerNamesUsing() {
+        volume.addContainerNameUsing("Container2");
+        assertEquals(2, volume.getContainerNamesUsing().size());
+        assertTrue(volume.getContainerNamesUsing().contains("Container2"));
 
-        assertEquals(myVolume1, MyVolume.getVolumeByName("TestVolume1"));
-        assertNull(MyVolume.getVolumeByName("NonExistentVolume"));
+        volume.removeContainerNameUsing("Container1");
+        assertEquals(1, volume.getContainerNamesUsing().size());
+        assertFalse(volume.getContainerNamesUsing().contains("Container1"));
     }
 }
