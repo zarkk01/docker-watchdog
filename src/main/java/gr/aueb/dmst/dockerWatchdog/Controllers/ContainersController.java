@@ -4,8 +4,6 @@ import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,10 +30,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -48,9 +44,6 @@ import javafx.stage.Popup;
 import javafx.scene.control.Button;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-import okhttp3.*;
-import org.yaml.snakeyaml.Yaml;
-
 
 public class ContainersController implements Initializable {
     @FXML
@@ -179,7 +172,7 @@ public class ContainersController implements Initializable {
                             viewStartClick.setFitHeight(20);
                             viewStartClick.setPreserveRatio(true);
                             viewStart.setPreserveRatio(true);
-                            btnStart.setPrefSize(30, 30);
+                            btnStart.setPrefSize(30, 30);  // Adjust the size as needed
                             viewStart.setOpacity(0.8);
                             btnStart.setGraphic(viewStart);
                             btnStart.setOnAction((ActionEvent event) -> {
@@ -248,10 +241,17 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final CheckBox checkBox = new CheckBox();
+                        private final ImageView uncheckedImage = new ImageView(new Image(getClass().getResource("/images/Box.png").toExternalForm()));
+                        private final ImageView checkedImage = new ImageView(new Image(getClass().getResource("/images/checkbox.png").toExternalForm()));
+                        private final ImageView uncheckedHoverImage = new ImageView(new Image(getClass().getResource("/images/boxHover.png").toExternalForm()));
+                        private final ImageView checkedHoverImage = new ImageView(new Image(getClass().getResource("/images/checkboxHover.png").toExternalForm()));
+                        private final ImageView uncheckedClickImage = new ImageView(new Image(getClass().getResource("/images/boxClick.png").toExternalForm()));
+                        private final ImageView checkedClickImage = new ImageView(new Image(getClass().getResource("/images/checkboxClick.png").toExternalForm()));
                         {
                             checkBox.setOpacity(0.8);
                             checkBox.setMaxSize(20,20);
 
+                            // Handle checkbox action
                             checkBox.setOnAction(event -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 instance.setSelect(checkBox.isSelected());
@@ -263,6 +263,12 @@ public class ContainersController implements Initializable {
                                     removeButton.visibleProperty().setValue(false);
                                 }
                             });
+
+                        }
+                        private void setImageViewSize(ImageView imageView, double fitWidth, double fitHeight) {
+                            imageView.setFitWidth(fitWidth);
+                            imageView.setFitHeight(fitHeight);
+                            imageView.setPreserveRatio(true);
                         }
 
 
@@ -605,11 +611,11 @@ public class ContainersController implements Initializable {
 
             Double blockID = jsonObject.getDouble("blockI");
             double roundedI = Math.round(blockID * 10.0) / 10.0;
-            String blockI = roundedI + "B";
+            String blockI = roundedI + "MB";
 
             Double blockOD = jsonObject.getDouble("blockO");
             double rounded0 = Math.round(blockOD * 10.0) / 10.0;
-            String blockO = rounded0 + "B";
+            String blockO = rounded0 + "MB";
 
             String volumes = jsonObject.getString("volumes");
 
