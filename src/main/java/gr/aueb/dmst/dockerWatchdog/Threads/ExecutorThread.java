@@ -153,4 +153,20 @@ public class ExecutorThread implements Runnable {
             e.printStackTrace();
         }
     }
+
+    // Method to remove an image from Docker
+    public static void removeImage(String imageName) {
+        try {
+            // Remove the image with the provided name
+            System.out.println("Removing the image " + imageName + "...");
+            Main.dockerClient.removeImageCmd(imageName).exec();
+            System.out.println("Image removed successfully.");
+        } catch (NotFoundException e) {
+            // If the image is not found
+            System.out.println("\033[0;31m" + "Image " + imageName + " not found." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
+    }
 }

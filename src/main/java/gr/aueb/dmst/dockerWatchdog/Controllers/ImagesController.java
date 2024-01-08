@@ -64,6 +64,8 @@ public class ImagesController implements Initializable {
     private TableColumn<ImageScene,Void> startAllCollumn;
     @FXML
     private TableColumn<ImageScene,Void> stopAllCollumn;
+    @FXML
+    private TableColumn<ImageScene,Void> removeImageColumn;
 
     @FXML
     public Button containersButton;
@@ -251,6 +253,41 @@ public class ImagesController implements Initializable {
                 }
             };
             stopAllCollumn.setCellFactory(stopAllCellFactory);
+
+            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> removeImageFactory = new Callback<>() {
+                @Override
+                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
+                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
+                        private final Button btn = new Button();
+                        {
+                            btn.setOnAction((ActionEvent event) -> {
+                                ImageScene image = getTableView().getItems().get(getIndex());
+                                if(image.getStatus().equals("In use")) {
+                                    showNotification("Error", "Image is in use, delete all containers first");
+                                    return;
+                                }
+                                try {
+                                    removeImage(image.getName());
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    return cell;
+                }
+            };
+            removeImageColumn.setCellFactory(removeImageFactory);
 
             refreshImages();
 
@@ -500,6 +537,20 @@ public class ImagesController implements Initializable {
             showNotification("Success", "Image pulled successfully");
         } else {
             showNotification("Error", "Image pull failed");
+        }
+    }
+
+    public void removeImage(String imageName) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/images/remove/" + imageName))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        refreshImages();
+        if (response.statusCode() == 200) {
+            showNotification("Success", "Image removed successfully");
+        } else {
+            showNotification("Error", "Image removal failed");
         }
     }
 }

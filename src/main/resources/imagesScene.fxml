@@ -144,7 +144,8 @@
                   <TableColumn fx:id="sizeColumn" minWidth="0.0" prefWidth="123.0" text="Size" />
                   <TableColumn fx:id="createContainerCollumn" prefWidth="117.5" text="Create" />
                   <TableColumn fx:id="startAllCollumn" prefWidth="97.5" text="Start All" />
-                  <TableColumn fx:id="stopAllCollumn" prefWidth="103.0" text="Stop All" />
+                  <TableColumn fx:id="stopAllCollumn" prefWidth="67.0" text="Stop All" />
+                  <TableColumn fx:id="removeImageColumn" prefWidth="82.0" text="Remove" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

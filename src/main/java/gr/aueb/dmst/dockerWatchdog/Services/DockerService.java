@@ -125,4 +125,8 @@ public class DockerService {
     public void pullImage(String imageName) {
         ExecutorThread.pullImage(imageName);
     }
+
+    public void removeImage(String imageName) {
+        ExecutorThread.removeImage(imageName);
+    }
 }

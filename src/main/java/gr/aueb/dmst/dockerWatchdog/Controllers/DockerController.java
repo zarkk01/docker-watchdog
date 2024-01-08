@@ -131,4 +131,10 @@ public class DockerController {
         dockerService.pullImage(imageName);
         return ResponseEntity.ok("Image pulled " + imageName);
     }
+
+    @PostMapping("/images/remove/{imageName}")
+    public ResponseEntity<String> removeImage(@PathVariable("imageName") String imageName) {
+        dockerService.removeImage(imageName);
+        return ResponseEntity.ok("Image removed " + imageName);
+    }
 }
