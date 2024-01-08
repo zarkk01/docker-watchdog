@@ -122,6 +122,7 @@
     </top>
    <center>
        <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
+           <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" style="-fx-background-color: #525252; -fx-cursor: hand;" />
            <children>
                 <TextArea fx:id="yamlContentArea" layoutX="40.0" layoutY="100.0" prefHeight="445.0" prefWidth="414.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="492.0" AnchorPane.topAnchor="99.0">
                <stylesheets>

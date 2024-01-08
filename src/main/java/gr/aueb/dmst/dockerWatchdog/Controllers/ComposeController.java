@@ -2,6 +2,8 @@ package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import org.yaml.snakeyaml.Yaml;
 import javafx.event.ActionEvent;
@@ -32,6 +34,8 @@ public class ComposeController {
     boolean isShowingConfig = false;
 
     @FXML
+    Button backButton;
+    @FXML
     Button showConfigButton;
     @FXML
     Button validateButton;
@@ -43,6 +47,24 @@ public class ComposeController {
 
     public void initialize() {
         yamlContentArea.textProperty().addListener((observable, oldValue, newValue) -> savedLabel.setText("Unsaved"));
+        Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
+        ImageView view = new ImageView(img);
+        view.setFitHeight(20);
+        view.setPreserveRatio(true);
+        Image imgHover = new Image(getClass().getResource("/images/backHover.png").toExternalForm());
+        backButton.setGraphic(view);
+
+        backButton.setOnMouseEntered(event -> {
+            // Change image on hover
+            view.setImage(imgHover);
+            view.setOpacity(0.8);
+        });
+
+        backButton.setOnMouseExited(event -> {
+            // Change back to default image when not hovered
+            view.setImage(img);
+            view.setOpacity(1);
+        });
     }
 
     private void loadYamlFile() {
@@ -128,14 +150,14 @@ public class ComposeController {
             Yaml yaml = new Yaml();
             yaml.load(new FileInputStream(yamlFilePath));
             validateButton.setText("Valid");
-            validateButton.setStyle("-fx-text-fill: white; -fx-background-color: #44F700;");
+            validateButton.setStyle("-fx-text-fill: white; -fx-background-color: #93C572;");
             validateButton.setDisable(true);
         } catch (Exception e) {
             validateButton.setText("Sorry not valid");
-            validateButton.setStyle("-fx-background-color: #EC5F47;");
+            validateButton.setStyle("-fx-text-fill: white; -fx-background-color: #EC5F47;");
             validateButton.setDisable(true);
         }
-        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        PauseTransition pause = new PauseTransition(Duration.seconds(2));
         pause.setOnFinished(event -> {
             validateButton.setStyle(null);
             validateButton.setDisable(false);
