@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -135,7 +136,7 @@
                   <Font name="System Bold Italic" size="21.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="568.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="324.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -149,7 +150,12 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="13.0" layoutY="618.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="9.0" layoutY="378.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
+            <Pane layoutX="7.0" layoutY="405.0" prefHeight="256.0" prefWidth="926.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <TextField fx:id="pullImageTextField" layoutX="8.0" layoutY="12.0" promptText="Pull an image..." />
+                  <Button fx:id="pullButton" layoutX="177.0" layoutY="12.0" mnemonicParsing="false" onAction="#pullGivenImage" text="PULL" />
+               </children></Pane>
          </children>
       </AnchorPane>
    </center>

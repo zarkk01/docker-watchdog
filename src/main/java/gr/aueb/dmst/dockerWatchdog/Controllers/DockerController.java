@@ -103,11 +103,9 @@ public class DockerController {
     public ResponseEntity<?> getInstanceInfo(@PathVariable("containerId") String containerId) {
         try {
             Instance instance = dockerService.getInstanceInfo(containerId);
-
             if (instance == null) {
                 return ResponseEntity.notFound().build(); // 404 Not Found
             }
-
             return ResponseEntity.ok(instance);
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception
@@ -126,5 +124,11 @@ public class DockerController {
     public ResponseEntity<String> stopAllContainers(@PathVariable("imageName") String imageName) {
         dockerService.stopAllContainers(imageName);
         return ResponseEntity.ok("All containers stopped");
+    }
+
+    @PostMapping("/images/pull/{imageName}")
+    public ResponseEntity<String> pullImage(@PathVariable("imageName") String imageName) {
+        dockerService.pullImage(imageName);
+        return ResponseEntity.ok("Image pulled " + imageName);
     }
 }

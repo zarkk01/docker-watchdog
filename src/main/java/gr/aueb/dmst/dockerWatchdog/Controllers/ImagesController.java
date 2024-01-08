@@ -45,6 +45,9 @@ public class ImagesController implements Initializable {
     private CheckBox usedImagesCheckbox;
 
     @FXML
+    private TextField pullImageTextField;
+
+    @FXML
     private VBox notificationBox;
 
     @FXML
@@ -466,7 +469,6 @@ public class ImagesController implements Initializable {
         } else {
             showNotification("Error", "Container start failed");
         }
-
         refreshImages();
     }
 
@@ -483,7 +485,21 @@ public class ImagesController implements Initializable {
         } else {
             showNotification("Error", "Container stop failed");
         }
-
         refreshImages();
+    }
+
+    public void pullGivenImage() throws Exception {
+        String imageName = pullImageTextField.getText();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/images/pull/" + imageName))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        refreshImages();
+        if (response.statusCode() == 200) {
+            showNotification("Success", "Image pulled successfully");
+        } else {
+            showNotification("Error", "Image pull failed");
+        }
     }
 }

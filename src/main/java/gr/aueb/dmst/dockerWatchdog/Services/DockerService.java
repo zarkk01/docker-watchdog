@@ -121,4 +121,8 @@ public class DockerService {
             ExecutorThread.stopContainer(container.getId());
         }
     }
+
+    public void pullImage(String imageName) {
+        ExecutorThread.pullImage(imageName);
+    }
 }

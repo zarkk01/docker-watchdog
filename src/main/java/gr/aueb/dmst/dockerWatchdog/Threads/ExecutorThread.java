@@ -135,4 +135,22 @@ public class ExecutorThread implements Runnable {
         // Print the container ID
         System.out.println("Container started and running successfully. Container ID: " + container.getId());
     }
+
+    // Method to pull an image from Docker Hub
+    public static void pullImage(String imageName) {
+        try {
+            // Pull the image with the provided name
+            System.out.println("Pulling the image " + imageName + "...");
+            Main.dockerClient.pullImageCmd(imageName)
+                    .exec(new PullImageResultCallback())
+                    .awaitCompletion();
+            System.out.println("Image pulled successfully.");
+        } catch (NotFoundException e) {
+            // If the image is not found
+            System.out.println("\033[0;31m" + "Image " + imageName + " not found on Docker Hub." + "\033[0m");
+        } catch (Exception e) {
+            // Handle other exceptions
+            e.printStackTrace();
+        }
+    }
 }
