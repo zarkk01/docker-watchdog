@@ -169,7 +169,7 @@
          <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
          <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0">
             <children>
-               <Label fx:id="totalContainersText" layoutX="52.0" layoutY="26.0" text="4" textFill="WHITE">
+               <Label fx:id="totalContainersText" layoutX="50.0" layoutY="26.0" text="4" textFill="WHITE">
                   <font>
                      <Font size="90.0" />
                   </font>
@@ -182,7 +182,7 @@
          </Pane>
          <Pane layoutX="282.0" layoutY="392.0" prefHeight="160.0" prefWidth="169.0">
             <children>
-               <Label fx:id="runningContainersText" alignment="CENTER" layoutX="57.0" layoutY="26.0" text="3" textFill="WHITE">
+               <Label fx:id="runningContainersText" alignment="CENTER" layoutX="55.0" layoutY="26.0" text="3" textFill="WHITE">
                   <font>
                      <Font size="90.0" />
                   </font>
@@ -195,7 +195,7 @@
          </Pane>
          <Pane layoutX="518.0" layoutY="393.0" prefHeight="160.0" prefWidth="163.0">
             <children>
-               <Label fx:id="stoppedContainersText" layoutX="52.0" layoutY="26.0" prefHeight="110.0" prefWidth="75.0" text="4" textFill="WHITE">
+               <Label fx:id="stoppedContainersText" layoutX="50.0" layoutY="26.0" prefHeight="110.0" prefWidth="75.0" text="4" textFill="WHITE">
                   <font>
                      <Font size="90.0" />
                   </font>
@@ -224,7 +224,7 @@
          <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
          <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0">
             <children>
-               <Label fx:id="metricsLabel" layoutX="53.0" layoutY="26.0" text="20" textFill="WHITE">
+               <Label fx:id="metricsLabel" layoutX="51.0" layoutY="26.0" text="20" textFill="WHITE">
                   <font>
                      <Font size="90.0" />
                   </font>
@@ -240,7 +240,7 @@
                <Font name="System Bold" size="19.0" />
             </font>
          </Text>
-            <Pane layoutX="18.0" layoutY="18.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="619.0" AnchorPane.topAnchor="17.0">
+            <Pane layoutX="20.0" layoutY="24.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="614.0" AnchorPane.topAnchor="24.0">
                <children>
                <TextField fx:id="searchField" layoutX="29.0" layoutY="1.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                   <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="13.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
@@ -250,9 +250,9 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane layoutX="711.0" layoutY="18.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="711.0" layoutY="22.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
-               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7" />
+               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7" />
                </children>
             </Pane>
 
