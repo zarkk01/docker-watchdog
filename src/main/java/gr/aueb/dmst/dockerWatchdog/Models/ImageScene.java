@@ -14,7 +14,7 @@ public class ImageScene {
     }
 
     public String getId() {
-        return id;
+        return id.substring(7);
     }
 
     public void setId(String id) {
@@ -37,8 +37,9 @@ public class ImageScene {
         this.status = status;
     }
 
-    public Long getSize() {
-        return size;
+    public String getSize() {
+        double sizeInGb = size / (1024.0 * 1024.0 * 1024.0);
+        return String.format("%.2f", sizeInGb)+" GB";
     }
 
     public void setSize(Long size) {
