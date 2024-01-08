@@ -141,7 +141,7 @@
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
                   <TableColumn fx:id="statusColumn" prefWidth="164.5" text="Status" />
                   <TableColumn fx:id="sizeColumn" minWidth="0.0" prefWidth="123.0" text="Size" />
-                  <TableColumn fx:id="createContainerCollumn" prefWidth="117.5" text="Create a container" />
+                  <TableColumn fx:id="createContainerCollumn" prefWidth="117.5" text="Create" />
                   <TableColumn fx:id="startAllCollumn" prefWidth="97.5" text="Start All" />
                   <TableColumn fx:id="stopAllCollumn" prefWidth="103.0" text="Stop All" />
                </columns>

@@ -155,15 +155,20 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final Button btnStart = new Button();
+
+                        private final Tooltip startTooltip = new Tooltip("Start Container");
                         private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
                         private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
                         private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         private final Button btnStop = new Button();
+                        private final Tooltip stopTooltip = new Tooltip("Stop Container");
                         Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
                         ImageView viewStop = new ImageView(imgStop);
 
                         {
+                            startTooltip.setShowDelay(Duration.millis(50));
+                            Tooltip.install(btnStart, startTooltip);
                             viewStart.setFitHeight(30);
                             viewStart.setFitHeight(30);
                             viewStart.setPreserveRatio(true);
@@ -183,6 +188,9 @@ public class ContainersController implements Initializable {
                                     throw new RuntimeException(e);
                                 }
                             });
+
+                            stopTooltip.setShowDelay(Duration.millis(50));
+                            Tooltip.install(btnStop, stopTooltip);
 
                             viewStop.setFitHeight(30);
                             viewStop.setPreserveRatio(true);
