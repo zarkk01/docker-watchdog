@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class DockerControllerTest {
     @Test
     public void testGetAllImages() {
         DockerService dockerServiceMock = Mockito.mock(DockerService.class);
-        List<Image> mockImages = new ArrayList<>(); // Add mock data as needed
+        List<Image> mockImages = new ArrayList<>();
         Mockito.when(dockerServiceMock.getAllImages()).thenReturn(mockImages);
 
         DockerController dockerController = new DockerController(dockerServiceMock);
@@ -34,7 +33,7 @@ public class DockerControllerTest {
     @Test
     public void testGetAllVolumes() {
         DockerService dockerServiceMock = Mockito.mock(DockerService.class);
-        List<Volume> mockVolumes = new ArrayList<>(); // Add mock data as needed
+        List<Volume> mockVolumes = new ArrayList<>();
         Mockito.when(dockerServiceMock.getAllVolumes()).thenReturn(mockVolumes);
 
         DockerController dockerController = new DockerController(dockerServiceMock);
@@ -43,8 +42,6 @@ public class DockerControllerTest {
         assertNotNull(result);
         assertEquals(mockVolumes, result);
     }
-
-    // Similar tests for other methods can be added following a similar structure.
 
     @Test
     public void testStartContainer() {
@@ -72,8 +69,6 @@ public class DockerControllerTest {
         Mockito.verify(dockerServiceMock).stopContainer(containerId);
     }
 
-    // Similar tests for other methods can be added following a similar structure.
-
     @Test
     public void testGetInstanceInfo() {
         DockerService dockerServiceMock = Mockito.mock(DockerService.class);
@@ -88,8 +83,6 @@ public class DockerControllerTest {
         assertEquals(mockInstance, responseEntity.getBody());
         Mockito.verify(dockerServiceMock).getInstanceInfo(containerId);
     }
-
-    // Similar tests for other methods can be added following a similar structure.
 
     @Test
     public void testStartAllContainers() {
