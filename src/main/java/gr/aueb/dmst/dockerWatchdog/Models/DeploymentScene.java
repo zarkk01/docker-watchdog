@@ -11,4 +11,8 @@ public class DeploymentScene {
     public String getName() {
         return name;
     }
+
+    public String getNamespace() {
+        return namespace;
+    }
 }
