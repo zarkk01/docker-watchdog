@@ -15,7 +15,7 @@ public class ImageSceneTest {
 
     @Test
     public void testConstructor() {
-        ImageScene imageScene = new ImageScene("123", "TestImage", 1024L, "Active");
+        ImageScene imageScene = new ImageScene("123", "TestImage", 1024L, "In use");
         assertEquals("123", imageScene.getId());
         assertEquals("TestImage", imageScene.getName());
         assertEquals(1024L, imageScene.getSize());

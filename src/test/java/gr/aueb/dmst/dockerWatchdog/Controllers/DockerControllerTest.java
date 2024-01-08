@@ -73,7 +73,7 @@ public class DockerControllerTest {
     public void testGetInstanceInfo() {
         DockerService dockerServiceMock = Mockito.mock(DockerService.class);
         String containerId = "containerId";
-        Instance mockInstance = new Instance(); // Add mock data as needed
+        Instance mockInstance = new Instance();
         Mockito.when(dockerServiceMock.getInstanceInfo(containerId)).thenReturn(mockInstance);
 
         DockerController dockerController = new DockerController(dockerServiceMock);

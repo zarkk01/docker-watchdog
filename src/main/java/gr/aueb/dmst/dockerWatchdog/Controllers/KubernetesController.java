@@ -36,7 +36,7 @@ public class KubernetesController implements Initializable {
     private Stage stage;
     private Parent root;
     @FXML
-    private TableView<PodScene> podsTableView;
+    TableView<PodScene> podsTableView;
     @FXML
     private TableColumn<PodScene, String> podNameColumn;
     @FXML
@@ -44,7 +44,7 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableColumn<PodScene, String> podStatusColumn;
     @FXML
-    private TableView<DeploymentScene> deploymentsTableView;
+    TableView<DeploymentScene> deploymentsTableView;
     @FXML
     private TableColumn<DeploymentScene, String> deploymentNameColumn;
     @FXML

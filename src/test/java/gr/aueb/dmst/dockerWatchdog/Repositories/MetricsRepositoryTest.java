@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Repositories;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
+import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,10 @@ public class MetricsRepositoryTest {
         Integer lastMetricId = metricsRepository.findLastMetricId();
 
         assertEquals(2, lastMetricId);
+    }
+
+    @After
+    public void tearDown() {
+        metricsRepository.deleteAll();
     }
 }

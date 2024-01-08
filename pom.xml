@@ -144,9 +144,9 @@
 
     <!-- Test dependencies -->
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit</artifactId>
+      <version>4.0.1-alpha</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
