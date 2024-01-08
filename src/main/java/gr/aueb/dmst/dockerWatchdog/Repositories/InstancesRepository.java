@@ -8,8 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface InstancesRepository extends JpaRepository<Instance, Long> {
-
-    // Custom query to retrieve instances with the maximum metric ID
     @Query("SELECT i FROM Instance i WHERE i.metricid = (SELECT MAX(i2.metricid) FROM Instance i2)")
     List<Instance> findAllByMaxMetricId();
 
@@ -25,4 +23,3 @@ public interface InstancesRepository extends JpaRepository<Instance, Long> {
     @Query("SELECT i FROM Instance i WHERE i.image = :imageName")
     List<Instance> findAllByImageName(@Param("imageName") String imageName);
 }
-

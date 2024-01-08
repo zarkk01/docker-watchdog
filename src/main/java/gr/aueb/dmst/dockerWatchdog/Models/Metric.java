@@ -1,8 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
-
 import jakarta.persistence.*;
-
 import java.sql.Timestamp;
 
 @Entity
