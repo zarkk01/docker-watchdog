@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.Repositories;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class MetricsRepositoryTest {
     public void testCountByDatetimeBefore() {
         long count = metricsRepository.countByDatetimeBefore(new Timestamp(System.currentTimeMillis()));
 
-        assertEquals(1, count);
+        assertEquals(2, count);
     }
 
     @Test
@@ -55,7 +56,7 @@ public class MetricsRepositoryTest {
         Optional<Metric> metric = metricsRepository.findFirstByDatetimeBeforeOrderByDatetimeDesc(new Timestamp(System.currentTimeMillis()));
 
         assertTrue(metric.isPresent());
-        assertEquals(1, metric.get().getId());
+        assertEquals(2, metric.get().getId());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class MetricsRepositoryTest {
         assertEquals(2, lastMetricId);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         metricsRepository.deleteAll();
     }
