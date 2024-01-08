@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -66,6 +67,9 @@ public class ImagesController implements Initializable {
     private TableColumn<ImageScene,Void> stopAllCollumn;
     @FXML
     private TableColumn<ImageScene,Void> removeImageColumn;
+
+    @FXML
+    private TextField searchField;
 
     @FXML
     public Button containersButton;
@@ -292,9 +296,14 @@ public class ImagesController implements Initializable {
             refreshImages();
 
             imagesTableView.setPlaceholder(new Label("No images available."));
+
             usedImagesCheckbox.setOnAction(event -> {
                 refreshImages();
             });
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.play();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -419,12 +428,14 @@ public class ImagesController implements Initializable {
             List<ImageScene> images = getAllImages();
             imagesTableView.getItems().clear();
             for(ImageScene image : images) {
-                if (usedImagesCheckbox.isSelected()) {
-                    if (image.getStatus().equals("In use")) {
+                if (image.getName().contains(searchField.getText())) {
+                    if (usedImagesCheckbox.isSelected()) {
+                        if (image.getStatus().equals("In use")) {
+                            imagesTableView.getItems().add(image);
+                        }
+                    } else {
                         imagesTableView.getItems().add(image);
                     }
-                } else {
-                    imagesTableView.getItems().add(image);
                 }
             }
         } catch (Exception e) {

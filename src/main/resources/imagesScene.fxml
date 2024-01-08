@@ -131,12 +131,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="433.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
+            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="434.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
-                  <Font name="System Bold Italic" size="21.0" />
+                  <Font name="System Bold Italic" size="30.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="45.0" prefHeight="324.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="47.0" prefHeight="324.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -151,12 +151,22 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="9.0" layoutY="378.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
-            <Pane layoutX="7.0" layoutY="405.0" prefHeight="256.0" prefWidth="926.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
-               <children>
-                  <TextField fx:id="pullImageTextField" layoutX="8.0" layoutY="12.0" promptText="Pull an image..." />
-                  <Button fx:id="pullButton" layoutX="177.0" layoutY="12.0" mnemonicParsing="false" onAction="#pullGivenImage" text="PULL" />
-               </children></Pane>
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="9.0" layoutY="376.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
+            <Pane layoutX="7.0" layoutY="405.0" prefHeight="256.0" prefWidth="926.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+            <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+               <TextField fx:id="searchField" layoutX="26.0" layoutY="13.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
+               <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@images/search.png" />
+                  </image>
+               </ImageView>
+            <Pane layoutX="695.0" layoutY="8.0" prefHeight="37.0" prefWidth="231.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+            <TextField fx:id="pullImageTextField" layoutX="702.0" layoutY="11.0" prefHeight="32.0" prefWidth="166.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-background-radius: transparent; -fx-text-fill: white;">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Button fx:id="pullButton" layoutX="866.0" layoutY="13.0" mnemonicParsing="false" onAction="#pullGivenImage" prefWidth="53.0" text="PULL" />
          </children>
       </AnchorPane>
    </center>
