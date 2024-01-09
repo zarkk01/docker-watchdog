@@ -12,7 +12,7 @@ public class MyInstanceTest {
     public void setUp() {
         ArrayList<String> volumes = new ArrayList<>();
         volumes.add("Volume1");
-        instance = new MyInstance("12345678910", "/excellent_lockin", "vodafone", "Running", 0.8, 1024L, 5L, 10.5, 8.3, "8080:80", volumes, "192.168.0.1", "192.168.0.254", 24);
+        instance = new MyInstance("12345678910", "/excellent_lockin", "vodafone", "Running", 0.8, 1024L, 5L, 10.5, 8.3, volumes, "192.168.0.1", "192.168.0.254", 24);
     }
 
     @Test
@@ -26,7 +26,6 @@ public class MyInstanceTest {
         assertEquals(0.8, instance.getCpuUsage(), 0.001);
         assertEquals(10.5, instance.getBlockI(), 0.001);
         assertEquals(8.3, instance.getBlockO(), 0.001);
-        assertEquals("8080:80", instance.getPorts());
         assertEquals(1, instance.getVolumes().size());
         assertEquals("Volume1", instance.getVolumes().get(0));
         assertEquals("192.168.0.1", instance.getSubnet());
