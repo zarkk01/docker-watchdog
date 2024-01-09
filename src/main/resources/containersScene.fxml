@@ -105,7 +105,7 @@
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
                <children>
-                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #1573CB;">
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #2AA391;">
                      <children>
                         <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -132,14 +132,89 @@
 <center>
    <AnchorPane fx:id="anchorPane" prefHeight="615.0" prefWidth="975.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
       <children>
-         <Pane layoutX="5.0" layoutY="311.0" prefHeight="344.0" prefWidth="927.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+         <Pane layoutX="15.0" layoutY="345.0" prefHeight="315.0" prefWidth="910.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
-               <Button fx:id="removeButton" layoutX="864.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="39.0" prefWidth="44.0" style="-fx-background-color: transparent; -fx-cursor: hand;" textFill="#fff9f9" />
-               <Button fx:id="uploadButton" layoutX="413.0" layoutY="277.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="41.0" prefWidth="132.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
+               <Pane layoutX="496.0" layoutY="86.0" prefHeight="160.0" prefWidth="163.0">
+                  <children>
+                     <Label fx:id="stoppedContainersText" layoutX="52.0" layoutY="26.0" prefHeight="110.0" prefWidth="75.0" text="4" textFill="WHITE">
+                        <font>
+                           <Font size="90.0" />
+                        </font>
+                     </Label>
+                  </children>
+                     <stylesheets>
+                        <URL value="@styles/curvedPane.css" />
+                        <URL value="@styles/hoverPane.css" />
+                     </stylesheets>
+               </Pane>
+               <Pane layoutX="40.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
+                  <children>
+                     <Label fx:id="totalContainersText" layoutX="52.0" layoutY="26.0" text="4" textFill="WHITE">
+                        <font>
+                           <Font size="90.0" />
+                        </font>
+                     </Label>
+                  </children>
+                     <stylesheets>
+                        <URL value="@styles/curvedPane.css" />
+                        <URL value="@styles/hoverPane.css" />
+                     </stylesheets>
+               </Pane>
+               <Button fx:id="removeButton" layoutX="838.0" layoutY="1.0" mnemonicParsing="false" onMouseClicked="#removeSelectedContainers" prefHeight="39.0" prefWidth="44.0" style="-fx-background-color: transparent; -fx-cursor: hand;" textFill="#fff9f9" />
+               <Button fx:id="uploadButton" layoutX="400.0" layoutY="256.0" mnemonicParsing="false" onAction="#handleUploadFile" prefHeight="41.0" prefWidth="132.0" style="-fx-cursor: hand;" stylesheets="@styles/redButton.css" text="Inspect a .yaml file" textFill="WHITE">
                   <font>
                      <Font size="14.0" />
                   </font>
                   </Button>
+               <TextField fx:id="datetimeTextField" layoutX="10.0" layoutY="11.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
+               <Button fx:id="datetimeButton" layoutX="291.0" layoutY="11.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
+               <Text fill="#b8bec3" layoutX="62.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font>
+               </Text>
+               <Text fill="#b9c1c9" layoutX="273.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font>
+               </Text>
+               <Text fill="#b9c1c9" layoutX="498.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font>
+               </Text>
+               <Button fx:id="clearButton" layoutX="389.0" layoutY="11.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
+               <Pane layoutX="709.0" layoutY="86.0" prefHeight="157.0" prefWidth="163.0">
+                  <children>
+                     <Label fx:id="metricsLabel" layoutX="53.0" layoutY="26.0" text="2" textFill="WHITE">
+                        <font>
+                           <Font size="90.0" />
+                        </font>
+                     </Label>
+                  </children>
+                     <stylesheets>
+                        <URL value="@styles/curvedPane.css" />
+                        <URL value="@styles/hoverPane.css" />
+                     </stylesheets>
+               </Pane>
+               <Text fill="#b9c1c9" layoutX="753.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Changes" wrappingWidth="87.0894775390625">
+                  <font>
+                     <Font name="System Bold" size="19.0" />
+                  </font>
+               </Text>
+               <Pane layoutX="266.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
+                  <children>
+                     <Label fx:id="runningContainersText" alignment="CENTER" layoutX="57.0" layoutY="26.0" text="3" textFill="WHITE">
+                        <font>
+                           <Font size="90.0" />
+                        </font>
+                     </Label>
+                  </children>
+                     <stylesheets>
+                        <URL value="@styles/curvedPane.css" />
+                        <URL value="@styles/hoverPane.css" />
+                     </stylesheets>
+               </Pane>
                </children>
             </Pane>
          <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
@@ -147,7 +222,7 @@
                <Font name="System Bold Italic" size="36.0" />
             </font>
          </Text>
-         <TableView fx:id="instancesTableView" layoutX="12.0" layoutY="63.0" prefHeight="240.0" prefWidth="923.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="369.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="62.0">
+         <TableView fx:id="instancesTableView" layoutX="15.0" layoutY="66.0" prefHeight="261.0" prefWidth="917.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="345.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="64.0">
             <columns>
                <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                <TableColumn fx:id="nameColumn" editable="false" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -165,82 +240,7 @@
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
          </TableView>
-         <TextField fx:id="datetimeTextField" layoutX="13.0" layoutY="324.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #525252;" />
-         <Button fx:id="datetimeButton" layoutX="285.0" layoutY="323.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
-         <Pane layoutX="18.0" layoutY="388.0" prefHeight="160.0" prefWidth="169.0">
-            <children>
-               <Label fx:id="totalContainersText" layoutX="50.0" layoutY="26.0" text="4" textFill="WHITE">
-                  <font>
-                     <Font size="90.0" />
-                  </font>
-               </Label>
-            </children>
-               <stylesheets>
-                  <URL value="@styles/curvedPane.css" />
-                  <URL value="@styles/hoverPane.css" />
-               </stylesheets>
-         </Pane>
-         <Pane layoutX="282.0" layoutY="392.0" prefHeight="160.0" prefWidth="169.0">
-            <children>
-               <Label fx:id="runningContainersText" alignment="CENTER" layoutX="55.0" layoutY="26.0" text="3" textFill="WHITE">
-                  <font>
-                     <Font size="90.0" />
-                  </font>
-               </Label>
-            </children>
-               <stylesheets>
-                  <URL value="@styles/curvedPane.css" />
-                  <URL value="@styles/hoverPane.css" />
-               </stylesheets>
-         </Pane>
-         <Pane layoutX="518.0" layoutY="393.0" prefHeight="160.0" prefWidth="163.0">
-            <children>
-               <Label fx:id="stoppedContainersText" layoutX="50.0" layoutY="26.0" prefHeight="110.0" prefWidth="75.0" text="4" textFill="WHITE">
-                  <font>
-                     <Font size="90.0" />
-                  </font>
-               </Label>
-            </children>
-               <stylesheets>
-                  <URL value="@styles/curvedPane.css" />
-                  <URL value="@styles/hoverPane.css" />
-               </stylesheets>
-         </Pane>
-         <Text fill="#b8bec3" layoutX="34.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
-            <font>
-               <Font name="System Bold" size="19.0" />
-            </font>
-         </Text>
-         <Text fill="#b9c1c9" layoutX="286.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="159.166259765625">
-            <font>
-               <Font name="System Bold" size="19.0" />
-            </font>
-         </Text>
-         <Text fill="#b9c1c9" layoutX="519.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stopped Containers" wrappingWidth="174.16558837890625">
-            <font>
-               <Font name="System Bold" size="19.0" />
-            </font>
-         </Text>
-         <Button fx:id="clearButton" layoutX="378.0" layoutY="322.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="46.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE" />
-         <Pane layoutX="755.0" layoutY="390.0" prefHeight="157.0" prefWidth="163.0">
-            <children>
-               <Label fx:id="metricsLabel" layoutX="51.0" layoutY="26.0" text="20" textFill="WHITE">
-                  <font>
-                     <Font size="90.0" />
-                  </font>
-               </Label>
-            </children>
-               <stylesheets>
-                  <URL value="@styles/curvedPane.css" />
-                  <URL value="@styles/hoverPane.css" />
-               </stylesheets>
-         </Pane>
-         <Text fill="#b9c1c9" layoutX="799.0" layoutY="382.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Changes" wrappingWidth="87.0894775390625">
-            <font>
-               <Font name="System Bold" size="19.0" />
-            </font>
-         </Text>
-            <Pane layoutX="20.0" layoutY="24.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="614.0" AnchorPane.topAnchor="24.0">
+            <Pane layoutX="18.0" layoutY="18.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="619.0" AnchorPane.topAnchor="17.0">
                <children>
                <TextField fx:id="searchField" layoutX="29.0" layoutY="1.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                   <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="13.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
@@ -250,9 +250,9 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane layoutX="711.0" layoutY="22.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="711.0" layoutY="18.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
                <children>
-               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7" />
+               <CheckBox fx:id="runningInstancesCheckbox" layoutX="10.0" layoutY="1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7" />
                </children>
             </Pane>
 

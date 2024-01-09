@@ -104,7 +104,7 @@
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
                <children>
-                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #1573CB;">
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #2AA391;">
                      <children>
                         <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -166,7 +166,7 @@
                   <Font size="15.0" />
                </font>
             </TextField>
-            <Button fx:id="pullButton" layoutX="866.0" layoutY="13.0" mnemonicParsing="false" onAction="#pullGivenImage" prefWidth="53.0" text="PULL" />
+            <Button fx:id="pullButton" layoutX="866.0" layoutY="13.0" mnemonicParsing="false" onAction="#pullGivenImage" prefWidth="53.0" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>
