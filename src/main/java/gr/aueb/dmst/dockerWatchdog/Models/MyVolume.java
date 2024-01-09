@@ -53,7 +53,7 @@ public class MyVolume {
 
     public static MyVolume getVolumeByName(String name) {
         MyVolume volumeToReturn = null;
-        for (MyVolume volume: Main.myVolumesList) {
+        for (MyVolume volume: Main.myVolumes) {
             if (name.equals(volume.getName())) {
                 volumeToReturn = volume;
             }

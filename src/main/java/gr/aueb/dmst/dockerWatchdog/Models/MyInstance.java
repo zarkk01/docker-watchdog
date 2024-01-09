@@ -172,7 +172,7 @@ public class MyInstance {
     // Given an ID of an instance, return the instance
     public static MyInstance getInstanceByid(String id) {
         MyInstance instanceToReturn = null;
-        for (MyInstance instance: Main.myInstancesList) {
+        for (MyInstance instance: Main.myInstances) {
             if (id.equals(instance.getId())) {
                 instanceToReturn = instance;
             }

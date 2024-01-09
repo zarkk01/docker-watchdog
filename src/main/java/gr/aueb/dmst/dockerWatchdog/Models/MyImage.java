@@ -59,7 +59,7 @@ public class MyImage {
      * @return The MyImage instance with the specified name, or null if not found.
      */
     public static MyImage getImageByName(String name) {
-        return Main.myImagesList.stream()
+        return Main.myImages.stream()
                 .filter(image -> image.getName().equals(name))
                 .findFirst()
                 .orElse(null);
@@ -72,7 +72,7 @@ public class MyImage {
      * @return The MyImage instance with the specified ID, or null if not found.
      */
     public static MyImage getImageByID(String id) {
-        return Main.myImagesList.stream()
+        return Main.myImages.stream()
                 .filter(image -> image.getId().equals(id))
                 .findFirst()
                 .orElse(null);

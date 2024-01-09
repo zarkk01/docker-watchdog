@@ -89,7 +89,7 @@ public class DatabaseThread implements Runnable {
             createInstancesStmt.execute();
 
             // Iterate over the instances
-            for (MyInstance instance : Main.myInstancesList) {
+            for (MyInstance instance : Main.myInstances) {
                 String volumesUsing = "";
                 for (String volumeName : instance.getVolumes()) {
                     volumesUsing += volumeName + ",";
@@ -128,7 +128,7 @@ public class DatabaseThread implements Runnable {
             createImagesStmt.execute();
 
             // Iterate over the images
-            for (MyImage image : Main.myImagesList) {
+            for (MyImage image : Main.myImages) {
                 // Insert or update the images in the images table
                 String upsertImage = "INSERT INTO Images (id, name, size, status) " +
                         "VALUES (?, ?, ?,?) " +
@@ -178,7 +178,7 @@ public class DatabaseThread implements Runnable {
                         "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
                 PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
 
-                for (MyInstance instance : Main.myInstancesList) {
+                for (MyInstance instance : Main.myInstances) {
                     String volumesUsing = "";
                     for (String volumeName : instance.getVolumes()) {
                         volumesUsing += volumeName + ",";
@@ -214,7 +214,7 @@ public class DatabaseThread implements Runnable {
     public static void keepTrackOfImages() throws SQLException {
         Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
         try{
-            for (MyImage image : Main.myImagesList) {
+            for (MyImage image : Main.myImages) {
                 // Insert or update the images in the images table
                 String upsertImage = "INSERT INTO Images (id, name, size, status) " +
                         "VALUES (?, ?, ?,?) " +
@@ -299,7 +299,7 @@ public class DatabaseThread implements Runnable {
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
             // Iterate over the volumes
-            for (MyVolume volume : Main.myVolumesList) {
+            for (MyVolume volume : Main.myVolumes) {
 
                 String containerNamesUsing = "";
                 for (String containerName : volume.getContainerNamesUsing()) {

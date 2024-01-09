@@ -112,8 +112,8 @@ public class MonitorThread implements Runnable {
                 instance = MyInstance.getInstanceByid(containerId);
                 boolean isThere = false;
                 if (instance != null) {
-                    Main.myInstancesList.remove(instance);
-                    for(MyInstance inst : Main.myInstancesList){
+                    Main.myInstances.remove(instance);
+                    for(MyInstance inst : Main.myInstances){
                         if(inst.getImage().equals(instance.getImage())){
                             isThere = true;
                         }
@@ -157,12 +157,12 @@ public class MonitorThread implements Runnable {
                         DatabaseThread.keepTrackOfVolumes();
                     }
                 }
-                for(MyImage image : Main.myImagesList) {
+                for(MyImage image : Main.myImages) {
                     if(newInstance.getImage().equals(image.getName())){
                         image.setStatus("In use");
                     }
                 }
-                Main.myInstancesList.add(newInstance);
+                Main.myInstances.add(newInstance);
                 liveMeasureForNewContainer(newInstance.getId());
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
@@ -178,7 +178,7 @@ public class MonitorThread implements Runnable {
                 // Add the new image to the list
                 InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
                 boolean isThere = false;
-                for(MyImage ima : Main.myImagesList){
+                for(MyImage ima : Main.myImages){
                     if(ima.getId().equals(image.getId())){
                         isThere = true;
                     }
@@ -190,7 +190,7 @@ public class MonitorThread implements Runnable {
                             image.getSize(),
                             getImageUsageStatus(image.getRepoTags().get(0))
                     );
-                    Main.myImagesList.add(newImage);
+                    Main.myImages.add(newImage);
                     DatabaseThread.addImage(newImage);
                 }
                 if (!Main.dbThread.isAlive()) {
@@ -203,7 +203,7 @@ public class MonitorThread implements Runnable {
                 MyImage imageToRemove = MyImage.getImageByID(imageName);
                 if (imageToRemove != null) {
                     DatabaseThread.deleteImage(imageToRemove);
-                    Main.myImagesList.remove(imageToRemove);
+                    Main.myImages.remove(imageToRemove);
                 }
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
@@ -231,7 +231,7 @@ public class MonitorThread implements Runnable {
                         }
                     }
                 }
-                Main.myVolumesList.add(newVolume);
+                Main.myVolumes.add(newVolume);
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
                     Main.dbThread.start();
@@ -243,7 +243,7 @@ public class MonitorThread implements Runnable {
                 MyVolume volumeToRemove = MyVolume.getVolumeByName(name);
                 if (volumeToRemove != null) {
                     DatabaseThread.deleteVolume(volumeToRemove);
-                    Main.myVolumesList.remove(volumeToRemove);
+                    Main.myVolumes.remove(volumeToRemove);
                 }
                 if (!Main.dbThread.isAlive()) {
                     Main.dbThread = new Thread(new DatabaseThread());
@@ -275,7 +275,7 @@ public class MonitorThread implements Runnable {
             );
 
             // Add the new image to the imagesList
-            Main.myImagesList.add(newImage);
+            Main.myImages.add(newImage);
         }
 
         // Iterate over the containers
@@ -303,7 +303,7 @@ public class MonitorThread implements Runnable {
             }
 
             // Add the new instance to the instancesList
-            Main.myInstancesList.add(newInstance);
+            Main.myInstances.add(newInstance);
         }
         if (!Main.dbThread.isAlive()) {
             Main.dbThread = new Thread(new DatabaseThread());
@@ -328,7 +328,7 @@ public class MonitorThread implements Runnable {
                 }
             }
             // Add the new volume to the volumesList
-            Main.myVolumesList.add(newVolume);
+            Main.myVolumes.add(newVolume);
         }
     }
     private static String getContainerPorts(String containerId) {
