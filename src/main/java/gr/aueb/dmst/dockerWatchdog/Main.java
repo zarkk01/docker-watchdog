@@ -60,12 +60,6 @@ public class Main {
     public static ArrayList<MyVolume> myVolumes = new ArrayList<>();
 
     /**
-     * Thread for database operations in a static concept so to
-     * be able for usage by MonitorThread.
-     */
-    public static Thread dbThread = new Thread(new DatabaseThread());
-
-    /**
      * Main method of the application.
      * It starts the Spring Boot application, the JavaFX application,
      * and the threads for monitoring Docker events, executing actions on Docker Components,
@@ -87,9 +81,8 @@ public class Main {
             Thread executorThread = new Thread(new ExecutorThread());
             executorThread.start();
 
+            Thread dbThread = new Thread(new DatabaseThread());
             dbThread.start();
-
-            new Thread(DatabaseThread::updateLiveMetcrics).start();
 
             // Start JavaFX application and GUI displays
             Application.launch(DesktopApp.class, args);

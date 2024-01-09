@@ -14,14 +14,13 @@ public class MyInstance {
     private double cpuUsage; // CPU usage of instance in %
     private double blockI; // Block I of instance in MB
     private double blockO; // Block O of instance in MB
-    private String ports; // Ports of instance
     private ArrayList<String> volumes; // Volumes of instance
     private String subnet;
     private String gateway;
     private int prefixLen;
 
     // Constructor
-    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,String ports,ArrayList<String> volumes,String subnet,String gateway,int prefixLen) {
+    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,ArrayList<String> volumes,String subnet,String gateway,int prefixLen) {
 
         // Initialize instance variables with the values of the parameters
         this.id = id;
@@ -33,7 +32,6 @@ public class MyInstance {
         this.cpuUsage = cpuUsage;
         this.blockI = blockI;
         this.blockO = blockO;
-        this.ports = ports;
         this.volumes = volumes;
         this.subnet = subnet;
         this.gateway = gateway;
@@ -44,7 +42,7 @@ public class MyInstance {
     @Override
     public String toString() {
         return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
-                " , Status = " + status + " , Port(s) : " + ports + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
+                " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
                 " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" +
                 " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) +
                 "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes + " , Subnet : " + subnet + " , Gateway : " + gateway + " , PrefixLen : " + prefixLen;
@@ -99,9 +97,6 @@ public class MyInstance {
     public double getCpuUsage() {
         return cpuUsage;
     }
-
-    //Getter for ports
-    public String getPorts() {return ports;}
 
     // Setter for cpuUsage
     public void setCpuUsage(double cpuUsage) {
