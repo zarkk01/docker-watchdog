@@ -155,21 +155,6 @@ public class DatabaseThread implements Runnable {
         }
     }
 
-    public static void deleteInstance(MyInstance instance) {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            String deleteInstance = "DELETE FROM Instances WHERE name = ?";
-            PreparedStatement deleteInstanceStmt = conn.prepareStatement(deleteInstance);
-            deleteInstanceStmt.setString(1, instance.getName());
-            deleteInstanceStmt.executeUpdate();
-
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void keepTrackOfImages() throws SQLException {
         try{
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);

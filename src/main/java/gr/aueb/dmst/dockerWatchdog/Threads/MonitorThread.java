@@ -104,7 +104,7 @@ public class MonitorThread implements Runnable {
                         MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
                         imageToSetUnused.setStatus("Unused");
                     }
-                    DatabaseThread.deleteInstance(instance);
+                    DatabaseThread.keepTrackOfInstances();
 
                     for(String volumeName : instance.getVolumes()){
                         MyVolume vol = MyVolume.getVolumeByName(volumeName);
