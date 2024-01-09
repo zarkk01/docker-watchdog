@@ -262,20 +262,39 @@ public class ImagesController implements Initializable {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
+                        private final Button btnStop = new Button();
+                        private final Tooltip stopTooltip = new Tooltip("Stop Container");
+                        Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
+                        ImageView viewStop = new ImageView(imgStop);
                         {
-                            btn.setOnAction((ActionEvent event) -> {
+                            btnStop.setOnAction((ActionEvent event) -> {
                                 ImageScene image = getTableView().getItems().get(getIndex());
                                 if(image.getStatus().equals("In use")) {
                                     showNotification("Error", "Image is in use, delete all containers first");
                                     return;
                                 }
+                                stopTooltip.setShowDelay(Duration.millis(50));
+                                Tooltip.install(btnStop, stopTooltip);
+                                viewStop.setFitHeight(30);
+                                viewStop.setPreserveRatio(true);
+                                btnStop.setGraphic(viewStop);
+                                viewStop.setFitHeight(30);
+                                viewStop.setFitWidth(30);
+                                viewStop.setPreserveRatio(true);
+                                btnStop.setPrefSize(30, 30);
+                                viewStop.setOpacity(0.8);
+                                btnStop.setGraphic(viewStop);
                                 try {
                                     removeImage(image.getName());
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }
                             });
+                            btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
+                            btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
+                            btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+
                         }
 
                         @Override
@@ -284,7 +303,7 @@ public class ImagesController implements Initializable {
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                setGraphic(btn);
+                                setGraphic(btnStop);
                             }
                         }
                     };

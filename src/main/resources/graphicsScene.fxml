@@ -154,7 +154,7 @@
               </yAxis>
             </BarChart>
             <Pane layoutX="640.0" layoutY="376.0" prefHeight="100.0" prefWidth="184.0" style="-fx-background-color: #525252;" />
-            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="396.0" prefHeight="358.0" prefWidth="510.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
+            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="396.0" prefHeight="372.0" prefWidth="510.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
               </xAxis>
@@ -163,7 +163,7 @@
               </yAxis>
             </LineChart>
             <Pane layoutX="208.0" layoutY="381.0" prefHeight="80.0" prefWidth="81.0" style="-fx-background-color: #525252;" />
-            <PieChart fx:id="pieChartImages" labelLineLength="15.0" layoutX="9.0" layoutY="403.0" prefHeight="355.0" prefWidth="448.0" title="Containers Allocation">
+            <PieChart fx:id="pieChartImages" labelLineLength="15.0" layoutX="9.0" layoutY="403.0" prefHeight="386.0" prefWidth="448.0" title="Containers Allocation">
                <stylesheets>
                   <URL value="@styles/chartColor.css" />
                   <URL value="@styles/pieChart.css" />

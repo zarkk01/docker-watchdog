@@ -249,12 +249,6 @@ public class ContainersController implements Initializable {
                 public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
                     final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                         private final CheckBox checkBox = new CheckBox();
-                        private final ImageView uncheckedImage = new ImageView(new Image(getClass().getResource("/images/Box.png").toExternalForm()));
-                        private final ImageView checkedImage = new ImageView(new Image(getClass().getResource("/images/checkbox.png").toExternalForm()));
-                        private final ImageView uncheckedHoverImage = new ImageView(new Image(getClass().getResource("/images/boxHover.png").toExternalForm()));
-                        private final ImageView checkedHoverImage = new ImageView(new Image(getClass().getResource("/images/checkboxHover.png").toExternalForm()));
-                        private final ImageView uncheckedClickImage = new ImageView(new Image(getClass().getResource("/images/boxClick.png").toExternalForm()));
-                        private final ImageView checkedClickImage = new ImageView(new Image(getClass().getResource("/images/checkboxClick.png").toExternalForm()));
                         {
                             checkBox.setOpacity(0.8);
                             checkBox.setMaxSize(20,20);

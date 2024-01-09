@@ -153,19 +153,21 @@
             </TableView>
             <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="608.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
             <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
-               <TextField fx:id="searchField" layoutX="26.0" layoutY="13.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
-               <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+               <TextField fx:id="searchField" layoutX="28.0" layoutY="13.0" prefHeight="30.0" prefWidth="137.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
+               <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="16.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                   <image>
                      <Image url="@images/search.png" />
                   </image>
                </ImageView>
-            <Pane layoutX="695.0" layoutY="8.0" prefHeight="37.0" prefWidth="231.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
-            <TextField fx:id="pullImageTextField" layoutX="702.0" layoutY="11.0" prefHeight="32.0" prefWidth="166.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </TextField>
-            <Button fx:id="pullButton" layoutX="866.0" layoutY="13.0" mnemonicParsing="false" onAction="#pullGivenImage" prefWidth="53.0" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE" />
+            <Pane layoutX="699.0" layoutY="14.0" prefHeight="29.0" prefWidth="226.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Button fx:id="pullButton" layoutX="168.0" layoutY="1.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="0.0" prefWidth="51.0" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE" />
+                  <TextField fx:id="pullImageTextField" layoutY="-1.0" prefHeight="30.0" prefWidth="153.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextField>
+               </children></Pane>
          </children>
       </AnchorPane>
    </center>
