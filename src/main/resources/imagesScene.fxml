@@ -136,7 +136,7 @@
                   <Font name="System Bold Italic" size="30.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="47.0" prefHeight="324.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="47.0" prefHeight="556.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -151,8 +151,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="9.0" layoutY="376.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
-            <Pane layoutX="7.0" layoutY="405.0" prefHeight="256.0" prefWidth="926.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="608.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
             <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
                <TextField fx:id="searchField" layoutX="26.0" layoutY="13.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="14.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
@@ -161,7 +160,7 @@
                   </image>
                </ImageView>
             <Pane layoutX="695.0" layoutY="8.0" prefHeight="37.0" prefWidth="231.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
-            <TextField fx:id="pullImageTextField" layoutX="702.0" layoutY="11.0" prefHeight="32.0" prefWidth="166.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-background-radius: transparent; -fx-text-fill: white;">
+            <TextField fx:id="pullImageTextField" layoutX="702.0" layoutY="11.0" prefHeight="32.0" prefWidth="166.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
                <font>
                   <Font size="15.0" />
                </font>
