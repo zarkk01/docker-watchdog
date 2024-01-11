@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -262,38 +263,39 @@ public class ImagesController implements Initializable {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
                     final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btnStop = new Button();
-                        private final Tooltip stopTooltip = new Tooltip("Stop Container");
-                        Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
-                        ImageView viewStop = new ImageView(imgStop);
+                        private final Button btnRemove = new Button();
+                        private final Tooltip removeTool = new Tooltip("Delete An Image");
+                        Image imgRemove = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
+                        ImageView viewRemove = new ImageView(imgRemove);
                         {
-                            btnStop.setOnAction((ActionEvent event) -> {
+
+                            //btnRemove.setPadding(new Insets(10, 4, 10, 1));
+                            removeTool.setShowDelay(Duration.millis(50));
+
+                            Tooltip.install(btnRemove, removeTool);
+                            viewRemove.setFitHeight(30);
+                            viewRemove.setPreserveRatio(true);
+                            btnRemove.setGraphic(viewRemove);
+                            viewRemove.setFitWidth(30);
+                            btnRemove.setPrefSize(30, 30);
+                            viewRemove.setOpacity(0.8);
+                            btnRemove.setGraphic(viewRemove);
+                            btnRemove.setOnAction((ActionEvent event) -> {
                                 ImageScene image = getTableView().getItems().get(getIndex());
                                 if(image.getStatus().equals("In use")) {
                                     showNotification("Error", "Image is in use, delete all containers first");
                                     return;
                                 }
-                                stopTooltip.setShowDelay(Duration.millis(50));
-                                Tooltip.install(btnStop, stopTooltip);
-                                viewStop.setFitHeight(30);
-                                viewStop.setPreserveRatio(true);
-                                btnStop.setGraphic(viewStop);
-                                viewStop.setFitHeight(30);
-                                viewStop.setFitWidth(30);
-                                viewStop.setPreserveRatio(true);
-                                btnStop.setPrefSize(30, 30);
-                                viewStop.setOpacity(0.8);
-                                btnStop.setGraphic(viewStop);
                                 try {
                                     removeImage(image.getName());
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }
                             });
-                            btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
-                            btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
-                            btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                            btnRemove.setOnMouseEntered(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binHover.png").toExternalForm())));
+                            btnRemove.setOnMouseExited(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binRed.png").toExternalForm())));
+                            btnRemove.setOnMousePressed(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binClick.png").toExternalForm())));
+                            btnRemove.setOnMouseReleased(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binHover.png").toExternalForm())));
 
                         }
 
@@ -303,7 +305,7 @@ public class ImagesController implements Initializable {
                             if (empty) {
                                 setGraphic(null);
                             } else {
-                                setGraphic(btnStop);
+                                setGraphic(btnRemove);
                             }
                         }
                     };
