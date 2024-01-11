@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -201,6 +202,13 @@ public class ContainersController implements Initializable {
                             btnStop.setPrefSize(30, 30);
                             viewStop.setOpacity(0.8);
                             btnStop.setGraphic(viewStop);
+                            DropShadow dropShadow = new DropShadow();
+
+                            btnStart.setEffect(dropShadow);
+
+                            dropShadow.setRadius(5);  // Adjust the radius for the intensity
+
+                            btnStop.setEffect(dropShadow);
 
                             btnStop.setOnAction((ActionEvent event) -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());

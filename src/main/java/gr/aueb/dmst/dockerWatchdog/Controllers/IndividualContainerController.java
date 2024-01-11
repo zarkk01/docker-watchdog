@@ -1,8 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
@@ -12,20 +10,19 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -35,7 +32,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -45,10 +41,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-import static gr.aueb.dmst.dockerWatchdog.Main.dockerClient;
 
 public class IndividualContainerController {
     private static final String BASE_URL = "http://localhost:8080/api/";
@@ -74,6 +68,22 @@ public class IndividualContainerController {
     private Button backButton;
     @FXML
     private Button copyButton;
+
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private Button renameButton;
+    @FXML
+    private Button pauseContainerButton;
+    @FXML
+    private Button unpauseButton;
+    @FXML
+    private Button restartButton;
+
+
+
 
     @FXML
     private Button removeButton;
@@ -151,6 +161,16 @@ public class IndividualContainerController {
         containerGatewayLabel.setText("Gateway:" + instance.getGateway());
         containerLogInfoAppender(instance);
         infoCard.setVisible(true);
+
+        DropShadow dropShadow = new DropShadow();
+        backButton.setEffect(dropShadow);
+        removeButton.setEffect(dropShadow);
+        startButton.setEffect(dropShadow);
+        stopButton.setEffect(dropShadow);
+        restartButton.setEffect(dropShadow);
+        pauseContainerButton.setEffect(dropShadow);
+        unpauseButton.setEffect(dropShadow);
+        renameButton.setEffect(dropShadow);
 
         individualCpuSeries = new XYChart.Series<>();
         individualCpuChart.getData().add(individualCpuSeries);

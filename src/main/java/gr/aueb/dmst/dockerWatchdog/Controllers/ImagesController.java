@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -96,6 +97,7 @@ public class ImagesController implements Initializable {
             sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
             hoveredSideBarImages();
+
             Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startCellFactory = new Callback<>() {
                 @Override
                 public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
@@ -111,6 +113,8 @@ public class ImagesController implements Initializable {
                         ImageView view = new ImageView(img);
 
                         {
+                            DropShadow dropShadow = new DropShadow();
+                            btn.setEffect(dropShadow);
                             createTooltip.setShowDelay(Duration.millis(50));
                             Tooltip.install(btn, createTooltip);
                             viewStart.setFitHeight(30);
@@ -173,6 +177,9 @@ public class ImagesController implements Initializable {
                             startTooltip.setShowDelay(Duration.millis(50));
                             Tooltip.install(btn, startTooltip);
 
+                            DropShadow dropShadow = new DropShadow();
+                            btn.setEffect(dropShadow);
+
                             viewStart.setFitHeight(30);
                             viewStart.setFitHeight(30);
                             viewStart.setPreserveRatio(true);
@@ -224,6 +231,9 @@ public class ImagesController implements Initializable {
                         Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
                         ImageView view = new ImageView(img);
                         {
+                            DropShadow dropShadow = new DropShadow();
+                            btn.setEffect(dropShadow);
+
                             stopTooltip.setShowDelay(Duration.millis(50));
                             Tooltip.install(btn, stopTooltip);
                             view.setFitHeight(20);
@@ -268,6 +278,9 @@ public class ImagesController implements Initializable {
                         Image imgRemove = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
                         ImageView viewRemove = new ImageView(imgRemove);
                         {
+
+                            DropShadow dropShadow = new DropShadow();
+                            btnRemove.setEffect(dropShadow);
 
                             //btnRemove.setPadding(new Insets(10, 4, 10, 1));
                             removeTool.setShowDelay(Duration.millis(50));
