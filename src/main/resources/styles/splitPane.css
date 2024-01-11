@@ -1,7 +1,7 @@
 .custom-splitpane {
-    -fx-border-color: #525252; /* Set the border color to red */
+    -fx-border-color: #474745; /* Set the border color to red */
     -fx-border-width: 1; /* Set the border width */
 }
 .split-pane > .split-pane-divider {
-    -fx-background-color: #414141; /* Set the divider color to red */
+    -fx-background-color: #31312F; /* Set the divider color to red */
 }

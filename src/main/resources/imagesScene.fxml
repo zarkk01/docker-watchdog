@@ -19,7 +19,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController">
    <left>
-      <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                <font>
@@ -104,7 +104,7 @@
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
                <children>
-                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #2AA391;">
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
                      <children>
                         <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -129,7 +129,7 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252; -fx-border-color: #525252;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" fontSmoothingType="LCD" layoutX="434.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
@@ -152,14 +152,14 @@
                </columnResizePolicy>
             </TableView>
             <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="608.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
-            <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css" />
+            <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
                <TextField fx:id="searchField" layoutX="28.0" layoutY="13.0" prefHeight="30.0" prefWidth="137.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="16.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                   <image>
                      <Image url="@images/search.png" />
                   </image>
                </ImageView>
-            <Pane layoutX="699.0" layoutY="14.0" prefHeight="29.0" prefWidth="226.0" style="-fx-background-color: #414141;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="699.0" layoutY="14.0" prefHeight="29.0" prefWidth="226.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Button fx:id="pullButton" layoutX="168.0" layoutY="1.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="0.0" prefWidth="51.0" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE" />
                   <TextField fx:id="pullImageTextField" layoutY="-1.0" prefHeight="30.0" prefWidth="153.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
@@ -172,7 +172,7 @@
       </AnchorPane>
    </center>
    <top>
-      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
                <font>

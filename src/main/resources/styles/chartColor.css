@@ -1,14 +1,14 @@
 .chart-plot-background {
-    -fx-background-color: #414141;
+    -fx-background-color: #31312F;
 }
 .chart-legend-item-symbol {
 -fx-background-color: transparent, transparent;
 }
 .default-color0.chart-series-line {
-    -fx-stroke: #EC625F;
+    -fx-stroke: #F14246;
 }
 .default-color0.chart-line-symbol {
-    -fx-background-color: #EC625F, #525252 ;
+    -fx-background-color: #F14246, #474745 ;
 }
 
 .chart-line-symbol {
@@ -19,5 +19,5 @@
     -fx-text-fill: white;
 }
 .chart-bar {
-    -fx-bar-fill: #EC625F;
+    -fx-bar-fill: #F14246;
 }

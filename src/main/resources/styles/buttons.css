@@ -1,6 +1,6 @@
 /* Apply styles directly to the button without a custom class */
 Button {
-    -fx-background-color: #525252; /* Red color */
+    -fx-background-color: #474745; /* Red color */
 }
 
 Button:hover {

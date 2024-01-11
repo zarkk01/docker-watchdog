@@ -16,9 +16,9 @@ public class DatabaseThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
-    private static final String USER = "docker_db";
-    private static final String PASS = "dockerW4tchd0g$";
-    // Password : dockerW4tchd0g$
+    private static final String USER = "root";
+    private static final String PASS = "epoca2023";
+    //other password : dockerW4tchd0g$
 
     private static boolean firstTime = true;
 

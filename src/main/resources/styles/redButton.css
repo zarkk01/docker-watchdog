@@ -2,7 +2,7 @@
     -fx-cursor: hand;
 }
 Button {
-    -fx-background-color:  #EC625F;
+    -fx-background-color:  #F14246;
 }
 Button:hover {
     -fx-background-color:  #F6615E;

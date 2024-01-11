@@ -13,7 +13,7 @@
 }
 
 .table-view .column-header-background{
-    -fx-background-color: linear-gradient(to bottom, #313131, #313131);
+    -fx-background-color: linear-gradient(to bottom, #1D1D1B, #1D1D1B);
     -fx-background-radius: 7px 7px 0px 0px;
     -fx-background-insets: 0 11px 0 0;
     -fx-padding: 0 0 5px 0;
@@ -32,11 +32,11 @@
     -fx-text-background-color: red;
 }
 .table-row-cell {
-    -fx-background-color: #414141;
+    -fx-background-color: #31312F;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
     -fx-cell-size: 50px;
-    -fx-border-color: #525252;
+    -fx-border-color: #474745;
     -fx-border-width: 0 0 1 0;
 }
 
@@ -56,10 +56,10 @@
 }
 
 .table-view .virtual-flow .scroll-bar:vertical .thumb{
-    -fx-background-color:  linear-gradient(to bottom, #414141, #313131);
+    -fx-background-color:  linear-gradient(to bottom, #31312F, #1D1D1B);
 }
 .table-view .virtual-flow .scroll-bar:horizontal .thumb {
-    -fx-background-color:  linear-gradient(to right, #414141, #313131);
+    -fx-background-color:  linear-gradient(to right, #31312F, #1D1D1B);
 }
 
 .table-row-cell: highlighted {
@@ -87,7 +87,7 @@
     -fx-font-size: 15px
 }
 .table-row-cell:hover {
-    -fx-background-color: #525252; /* Dark grey background color when hovering */
+    -fx-background-color: #474745; /* Dark grey background color when hovering */
 }
 
 

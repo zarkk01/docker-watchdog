@@ -20,7 +20,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.GraphicsController">
    <left>
-      <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                <font>
@@ -105,7 +105,7 @@
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
                <children>
-                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #2AA391;">
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
                      <children>
                         <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -130,7 +130,7 @@
       </VBox>
    </left>
    <center>
-      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" layoutX="420.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graphics" wrappingWidth="100.3505859375">
                <font>
@@ -153,7 +153,7 @@
                 <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="50.0" />
               </yAxis>
             </BarChart>
-            <Pane layoutX="640.0" layoutY="376.0" prefHeight="100.0" prefWidth="184.0" style="-fx-background-color: #525252;" />
+            <Pane layoutX="640.0" layoutY="376.0" prefHeight="100.0" prefWidth="184.0" style="-fx-background-color: #474745;" />
             <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="396.0" prefHeight="372.0" prefWidth="510.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
@@ -162,7 +162,7 @@
                 <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="2000.0" />
               </yAxis>
             </LineChart>
-            <Pane layoutX="208.0" layoutY="381.0" prefHeight="80.0" prefWidth="81.0" style="-fx-background-color: #525252;" />
+            <Pane layoutX="208.0" layoutY="381.0" prefHeight="80.0" prefWidth="81.0" style="-fx-background-color: #474745;" />
             <PieChart fx:id="pieChartImages" labelLineLength="15.0" layoutX="9.0" layoutY="403.0" prefHeight="386.0" prefWidth="448.0" title="Containers Allocation">
                <stylesheets>
                   <URL value="@styles/chartColor.css" />
@@ -172,7 +172,7 @@
       </AnchorPane>
    </center>
    <top>
-      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
                <font>

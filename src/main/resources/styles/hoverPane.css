@@ -1,6 +1,6 @@
 Pane:hover {
-    -fx-background-color: #EC625F; /* Change the background color to red when hovered */
+    -fx-background-color: #F14246; /* Change the background color to red when hovered */
 }
 Pane {
-    -fx-background-color: #525252;
+    -fx-background-color: #474745;
 }

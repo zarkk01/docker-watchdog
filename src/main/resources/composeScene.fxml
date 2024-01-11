@@ -17,7 +17,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ComposeController">
     <left>
-        <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
                     <font>
@@ -100,11 +100,34 @@
                         <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
                     </children>
                 </Pane>
+                <Pane prefHeight="306.0" prefWidth="155.0">
+                    <children>
+                        <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
+                            <children>
+                                <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@images/docker.png" />
+                                    </image>
+                                </ImageView>
+                                <Text fill="WHITE" layoutX="33.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Watching">
+                                    <font>
+                                        <Font size="11.0" />
+                                    </font>
+                                </Text>
+                                <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="113.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@images/watchdog.png" />
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </Pane>
+                    </children>
+                </Pane>
             </children>
         </VBox>
     </left>
     <top>
-        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
+        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
                     <font>
@@ -121,8 +144,8 @@
         </HBox>
     </top>
    <center>
-       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
-           <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" style="-fx-background-color: #525252; -fx-cursor: hand;" />
+       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
+           <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" style="-fx-background-color: #474745; -fx-cursor: hand;" />
            <children>
                 <TextArea fx:id="yamlContentArea" layoutX="40.0" layoutY="100.0" prefHeight="445.0" prefWidth="414.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="492.0" AnchorPane.topAnchor="99.0">
                <stylesheets>

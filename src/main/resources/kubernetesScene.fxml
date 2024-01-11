@@ -19,7 +19,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.KubernetesController">
     <left>
-        <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #313131;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                     <font>
@@ -104,7 +104,8 @@
                 </Pane>
                 <Pane prefHeight="306.0" prefWidth="155.0">
                     <children>
-                        <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #2AA391;">
+                        <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93
+                        ;">
                             <children>
                                 <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -138,7 +139,7 @@
         </VBox>
     </left>
     <center>
-        <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #525252;" BorderPane.alignment="CENTER">
+        <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="WHITE" layoutX="325.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="260.3033752441406">
                     <font>
@@ -147,11 +148,11 @@
                 </Text>
                 <SplitPane dividerPositions="0.48036006546644844" layoutX="1.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="943.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                     <items>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="974.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="218.0" prefWidth="974.0" style="-fx-background-color: #474745;" stylesheets="@styles/splitPane.css">
                             <children>
                                 <SplitPane layoutX="392.0" layoutY="-7.0" prefHeight="305.0" prefWidth="586.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                                     <items>
-                                        <AnchorPane prefHeight="246.0" prefWidth="583.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
+                                        <AnchorPane prefHeight="246.0" prefWidth="583.0" style="-fx-background-color: #474745;" stylesheets="@styles/splitPane.css">
                                             <children>
                                                 <Label layoutX="197.0" layoutY="10.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS" textFill="WHITE">
                                                     <font>
@@ -197,7 +198,7 @@
                             <children>
                                 <SplitPane dividerPositions="0.6337090163934426" layoutX="-4.0" layoutY="-8.0" prefHeight="325.0" prefWidth="980.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="321.0" prefWidth="586.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="321.0" prefWidth="586.0" style="-fx-background-color: #474745;" stylesheets="@styles/splitPane.css">
                                             <children>
                                                 <Label layoutX="278.0" layoutY="10.0" text="PODS" textFill="WHITE">
                                                     <font>
@@ -217,7 +218,7 @@
                                                 </TableView>
                                             </children>
                                         </AnchorPane>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #525252;" stylesheets="@styles/splitPane.css">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #474745;" stylesheets="@styles/splitPane.css">
                                             <children>
                                                 <Label layoutX="86.0" layoutY="14.0" text="STATEFUL SETS" textFill="WHITE">
                                                     <font>
@@ -246,7 +247,7 @@
         </AnchorPane>
     </center>
     <top>
-        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #EC625F;" BorderPane.alignment="CENTER">
+        <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
                     <font>
