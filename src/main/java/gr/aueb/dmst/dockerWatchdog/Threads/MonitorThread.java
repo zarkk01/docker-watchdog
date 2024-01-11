@@ -4,104 +4,119 @@ import java.io.Closeable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
 import com.github.dockerjava.core.command.EventsResultCallback;
 
+import gr.aueb.dmst.dockerWatchdog.Exceptions.DatabaseOperationException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.EventHandlingException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ListFillingException;
 import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
 
 public class MonitorThread implements Runnable {
+    private static final Logger logger = LogManager.getLogger(MonitorThread.class);
 
     @Override
     public void run() {
-        fillLists();
-        liveMeasure();
+        try {
+            fillLists();
+            liveMeasure(null);
+        } catch (ListFillingException | LiveStatsException | DatabaseOperationException e) {
+            logger.error(e.getMessage());
+        }
         startListening();
     }
 
-    public void fillLists() {
-        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
-        List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
-        List<InspectVolumeResponse> volumes = Main.dockerClient.listVolumesCmd().exec().getVolumes();
-
-        for (Image image : images) {
-            InspectImageResponse imageInfo = Main.dockerClient.inspectImageCmd(image.getId()).exec();
-            MyImage newImage = new MyImage(
-                    imageInfo.getRepoTags().get(0),
-                    imageInfo.getId(),
-                    imageInfo.getSize(),
-                    getImageUsageStatus(imageInfo.getRepoTags().get(0))
-            );
-            Main.myImages.add(newImage);
-        }
-
-        for (Container container : containers) {
-            InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
-            MyInstance newInstance = new MyInstance(
-                    containerInfo.getId(),
-                    containerInfo.getName(),
-                    MyImage.getImageByID(containerInfo.getImageId()).getName(),
-                    containerInfo.getState().getStatus(),
-                    0, 0, 0, 0, 0,
-                    new ArrayList<String>()
-                    ,containerInfo.getNetworkSettings().getIpAddress(),
-                    containerInfo.getNetworkSettings().getGateway(),
-                    containerInfo.getNetworkSettings().getIpPrefixLen()
-            );
-
-            if(containerInfo.getMounts() != null){
-                for(InspectContainerResponse.Mount volumeName : containerInfo.getMounts()){
-                    newInstance.addVolume(volumeName.getName());
-                }
+    public void fillLists() throws ListFillingException, DatabaseOperationException {
+        try {
+            List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
+            for (Image image : images) {
+                InspectImageResponse imageInfo = Main.dockerClient.inspectImageCmd(image.getId()).exec();
+                MyImage newImage = new MyImage(
+                        imageInfo.getRepoTags().get(0),
+                        imageInfo.getId(),
+                        imageInfo.getSize(),
+                        getImageUsageStatus(imageInfo.getRepoTags().get(0))
+                );
+                Main.myImages.add(newImage);
             }
-            Main.myInstances.add(newInstance);
+        } catch (Exception e) {
+            throw new ListFillingException("Images");
         }
 
-        for (InspectVolumeResponse volume : volumes) {
-            MyVolume newVolume = new MyVolume(
-                    volume.getName(),
-                    volume.getDriver(),
-                    volume.getMountpoint(),
-                    new ArrayList<String>()
-            );
-            for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
-                for(ContainerMount volumeName : container.getMounts()){
-                    if(volumeName.getName() == null){continue;}
-                    if(volumeName.getName().equals(volume.getName())){
-                        newVolume.addContainerNameUsing(container.getNames()[0]);
+        try {
+            List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+            for (Container container : containers) {
+                InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
+                MyInstance newInstance = new MyInstance(
+                        containerInfo.getId(),
+                        containerInfo.getName(),
+                        MyImage.getImageByID(containerInfo.getImageId()).getName(),
+                        containerInfo.getState().getStatus(),
+                        0, 0, 0, 0, 0,
+                        new ArrayList<String>()
+                        ,containerInfo.getNetworkSettings().getIpAddress(),
+                        containerInfo.getNetworkSettings().getGateway(),
+                        containerInfo.getNetworkSettings().getIpPrefixLen()
+                );
+
+                if(containerInfo.getMounts() != null){
+                    for(InspectContainerResponse.Mount volumeName : containerInfo.getMounts()){
+                        newInstance.addVolume(volumeName.getName());
                     }
                 }
+                Main.myInstances.add(newInstance);
             }
-            Main.myVolumes.add(newVolume);
+        } catch (Exception e) {
+            throw new ListFillingException("Containers");
+        }
+
+        try {
+            List<InspectVolumeResponse> volumes = Main.dockerClient.listVolumesCmd().exec().getVolumes();
+            for (InspectVolumeResponse volume : volumes) {
+                MyVolume newVolume = new MyVolume(
+                        volume.getName(),
+                        volume.getDriver(),
+                        volume.getMountpoint(),
+                        new ArrayList<String>()
+                );
+                for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
+                    for(ContainerMount volumeName : container.getMounts()){
+                        if(volumeName.getName() == null){continue;}
+                        if(volumeName.getName().equals(volume.getName())){
+                            newVolume.addContainerNameUsing(container.getNames()[0]);
+                        }
+                    }
+                }
+                Main.myVolumes.add(newVolume);
+            }
+        } catch (Exception e) {
+            throw new ListFillingException("Volumes");
         }
         DatabaseThread.createAllTables();
     }
 
-    public static void liveMeasure() {
-        List < Container > containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+    public static void liveMeasure(String containerId) throws LiveStatsException {
+        List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
-        for (Container container: containers) {
-            String id = container.getId();
-            AsyncDockerCmd<StatsCmd, Statistics > asyncStatsCmd = Main.dockerClient.statsCmd(id);
-            try {
-                asyncStatsCmd.exec(new CustomResultCallback(id, asyncStatsCmd));
-            } catch (Exception e) {
-                e.printStackTrace();
+        for (Container container : containers) {
+            if (containerId == null || container.getId().equals(containerId)) {
+                AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = Main.dockerClient.statsCmd(container.getId());
+                try {
+                    asyncStatsCmd.exec(new CustomResultCallback(container.getId(), asyncStatsCmd));
+                } catch (Exception e) {
+                    throw new LiveStatsException();
+                }
             }
-        }
-    }
-
-    public static void liveMeasureForNewContainer(String id) {
-        AsyncDockerCmd < StatsCmd, Statistics > asyncStatsCmd = Main.dockerClient.statsCmd(id);
-        try {
-            asyncStatsCmd.exec(new CustomResultCallback(id, asyncStatsCmd));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -120,168 +135,210 @@ public class MonitorThread implements Runnable {
                             handleContainerEvent(eventAction, id,event);
                             DatabaseThread.keepTrackOfInstances();
                             DatabaseThread.keepTrackOfImages();
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                        } catch (LiveStatsException | EventHandlingException | DatabaseOperationException e) {
+                            logger.error(e.getMessage());
                         }
                         break;
                     case IMAGE:
                         try {
                             handleImageEvent(eventAction, id);
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
+                        } catch (EventHandlingException e) {
+                            logger.error(e.getMessage());
                         }
                         break;
                     case VOLUME:
-                        handleVolumeEvent(eventAction, id);
+                        try {
+                            handleVolumeEvent(eventAction, id);
+                        } catch (EventHandlingException e) {
+                            logger.error(e.getMessage());
+                        }
                         break;
                 }
             }
         });
     }
 
-    public void handleContainerEvent(String eventAction, String containerId, Event event) throws SQLException {
+    public void handleContainerEvent(String eventAction, String containerId, Event event) throws LiveStatsException, EventHandlingException {
         MyInstance instance = MyInstance.getInstanceByid(containerId);
-        switch (eventAction) {
-            case "start":
-            case "unpause":
-                if (instance != null) {
-                    instance.setStatus("running");
-                }
-                break;
-            case "stop":
-            case "die":
-                if (instance != null) {
-                    instance.setStatus("exited");
-                }
-                break;
-            case "pause":
-                if (instance != null) {
-                    instance.setStatus("paused");
-                }
-                break;
-            case "rename":
-                if (instance != null) {
+        if (instance == null) {
+            throw new EventHandlingException("null container");
+        }
+        try {
+            switch (eventAction) {
+                case "start":
+                case "unpause":
+                    updateContainerStatus(instance, "running");
+                    break;
+                case "stop":
+                case "die":
+                    updateContainerStatus(instance, "exited");
+                    break;
+                case "pause":
+                    updateContainerStatus(instance, "paused");
+                    break;
+                case "rename":
                     instance.setName(event.getActor().getAttributes().get("name"));
-                }
-                break;
-            case "destroy":
-                boolean isThere = false;
-                if (instance != null) {
-                    Main.myInstances.remove(instance);
-                    for(MyInstance inst : Main.myInstances){
-                        if(inst.getImage().equals(instance.getImage())){
-                            isThere = true;
-                        }
-                    }
-                    if(!isThere){
-                        MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
-                        imageToSetUnused.setStatus("Unused");
-                    }
-
-                    for(String volumeName : instance.getVolumes()){
-                        MyVolume vol = MyVolume.getVolumeByName(volumeName);
-                        if(vol != null){vol.removeContainerNameUsing(instance.getName());}
-                    }
-                    DatabaseThread.keepTrackOfVolumes();
-                }
-                break;
-            case "create":
-                InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
-
-                MyInstance newInstance = new MyInstance(
-                        container.getId(),
-                        container.getName(),
-                        MyImage.getImageByID(container.getImageId()).getName(),
-                        container.getState().getStatus(),
-                        0, 0, 0, 0, 0,
-                        new ArrayList<String>(),
-                        container.getNetworkSettings().getIpAddress(),container.getNetworkSettings().getGateway(),
-                        container.getNetworkSettings().getIpPrefixLen()
-                );
-
-                if(container.getMounts() != null){
-                    for(InspectContainerResponse.Mount volumeName : container.getMounts()){
-                        if(volumeName.getName() == null){continue;}
-                        newInstance.addVolume(volumeName.getName());
-                        MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
-                        assert vol != null;
-                        vol.addContainerNameUsing(newInstance.getName());
-                        DatabaseThread.keepTrackOfVolumes();
-                    }
-                }
-
-                for(MyImage image : Main.myImages) {
-                    if(newInstance.getImage().equals(image.getName())){
-                        image.setStatus("In use");
-                    }
-                }
-
-                Main.myInstances.add(newInstance);
-                liveMeasureForNewContainer(newInstance.getId());
-                break;
+                    break;
+                case "destroy":
+                    handleContainerDestroyEvent(instance);
+                    break;
+                case "create":
+                    handleContainerCreateEvent(containerId);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new EventHandlingException("container");
         }
     }
 
-    private void handleImageEvent(String eventAction, String imageName) throws SQLException {
-        switch (eventAction) {
-            case "pull":
-                InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
-                boolean isThere = false;
-                for(MyImage ima : Main.myImages){
-                    if(ima.getId().equals(image.getId())){
-                        isThere = true;
-                    }
-                }
-                if (!isThere) {
-                    MyImage newImage = new MyImage(
-                            image.getRepoTags().get(0),
-                            image.getId(),
-                            image.getSize(),
-                            getImageUsageStatus(image.getRepoTags().get(0))
-                    );
-                    Main.myImages.add(newImage);
-                    DatabaseThread.keepTrackOfImages();
-                }
-                break;
-            case "delete":
-            case "untag":
-                MyImage imageToRemove = MyImage.getImageByID(imageName);
-                if (imageToRemove != null) {
-                    DatabaseThread.deleteImage(imageToRemove);
-                    Main.myImages.remove(imageToRemove);
-                }
-                break;
-        }
+    private void updateContainerStatus(MyInstance instance, String status) {
+        instance.setStatus(status);
     }
 
-    public void handleVolumeEvent(String eventAction, String name){
-        switch (eventAction) {
-            case "create":
-                InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(name).exec();
-                MyVolume newVolume = new MyVolume(
-                        volume.getName(),
-                        volume.getDriver(),
-                        volume.getMountpoint(),
-                        new ArrayList<String>()
-                );
-                for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
-                    for(ContainerMount volumeName : container.getMounts()){
-                        if(volumeName.equals(volume.getName())){
-                            newVolume.addContainerNameUsing(container.getNames()[0]);
-                        }
-                    }
-                }
-                Main.myVolumes.add(newVolume);
+    private void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
+        Main.myInstances.remove(instance);
+        for(MyInstance checkingInstance : Main.myInstances){
+            if(checkingInstance.getImage().equals(instance.getImage())){
+                MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
+                imageToSetUnused.setStatus("Unused");
+            }
+        }
+
+        for(String volumeName : instance.getVolumes()){
+            MyVolume vol = MyVolume.getVolumeByName(volumeName);
+            if(vol != null){vol.removeContainerNameUsing(instance.getName());}
+        }
+        DatabaseThread.keepTrackOfVolumes();
+    }
+
+    private void handleContainerCreateEvent(String containerId) throws LiveStatsException, DatabaseOperationException {
+        InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
+
+        MyInstance newInstance = new MyInstance(
+                container.getId(),
+                container.getName(),
+                MyImage.getImageByID(container.getImageId()).getName(),
+                container.getState().getStatus(),
+                0, 0, 0, 0, 0,
+                new ArrayList<String>(),
+                container.getNetworkSettings().getIpAddress(),container.getNetworkSettings().getGateway(),
+                container.getNetworkSettings().getIpPrefixLen()
+        );
+
+        if(container.getMounts() != null){
+            for(InspectContainerResponse.Mount volumeName : container.getMounts()){
+                if(volumeName.getName() == null){continue;}
+                newInstance.addVolume(volumeName.getName());
+                MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
+                assert vol != null;
+                vol.addContainerNameUsing(newInstance.getName());
                 DatabaseThread.keepTrackOfVolumes();
-                break;
-            case "destroy":
-                MyVolume volumeToRemove = MyVolume.getVolumeByName(name);
-                if (volumeToRemove != null) {
-                    DatabaseThread.deleteVolume(volumeToRemove);
-                    Main.myVolumes.remove(volumeToRemove);
+            }
+        }
+
+        for(MyImage image : Main.myImages) {
+            if(newInstance.getImage().equals(image.getName())){
+                image.setStatus("In use");
+            }
+        }
+
+        Main.myInstances.add(newInstance);
+        liveMeasure(newInstance.getId());
+    }
+
+    private void handleImageEvent(String eventAction, String imageName) throws EventHandlingException {
+        try {
+            switch (eventAction) {
+                case "pull":
+                    handleImagePullEvent(imageName);
+                    break;
+                case "delete":
+                case "untag":
+                    handleImageDeleteEvent(imageName);
+                    break;
+            }
+        } catch (EventHandlingException e) {
+            throw new EventHandlingException("image");
+        }
+    }
+
+    private void handleImagePullEvent(String imageName) throws EventHandlingException {
+        try {
+            InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
+            MyImage newImage = new MyImage(
+                    image.getRepoTags().get(0),
+                    image.getId(),
+                    image.getSize(),
+                    getImageUsageStatus(image.getRepoTags().get(0))
+            );
+            Main.myImages.add(newImage);
+            DatabaseThread.keepTrackOfImages();
+        } catch (Exception e) {
+            throw new EventHandlingException("image");
+        }
+    }
+
+    private void handleImageDeleteEvent(String imageName) throws EventHandlingException {
+        try {
+            MyImage imageToRemove = MyImage.getImageByID(imageName);
+            if (imageToRemove != null) {
+                DatabaseThread.deleteImage(imageToRemove);
+                Main.myImages.remove(imageToRemove);
+            }
+        } catch (Exception e) {
+            throw new EventHandlingException("image");
+        }
+    }
+
+    public void handleVolumeEvent(String eventAction, String volumeName) throws EventHandlingException {
+        try {
+            switch (eventAction) {
+                case "create":
+                    handleVolumeCreateEvent(volumeName);
+                    break;
+                case "destroy":
+                    handleVolumeDestroyEvent(volumeName);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new EventHandlingException("volume");
+        }
+    }
+
+    private void handleVolumeCreateEvent(String volumeName) throws EventHandlingException {
+        try {
+            InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(volumeName).exec();
+            MyVolume newVolume = new MyVolume(
+                    volume.getName(),
+                    volume.getDriver(),
+                    volume.getMountpoint(),
+                    new ArrayList<String>()
+            );
+            for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
+                for(ContainerMount volumeMount : container.getMounts()){
+                    if(volumeMount.getName() != null && volumeMount.getName().equals(volume.getName())){
+                        newVolume.addContainerNameUsing(container.getNames()[0]);
+                    }
                 }
+            }
+            Main.myVolumes.add(newVolume);
+            DatabaseThread.keepTrackOfVolumes();
+        } catch (Exception e) {
+            throw new EventHandlingException("volume");
+        }
+    }
+
+    private void handleVolumeDestroyEvent(String volumeName) throws EventHandlingException {
+        try {
+            MyVolume volumeToRemove = MyVolume.getVolumeByName(volumeName);
+            if (volumeToRemove != null) {
                 DatabaseThread.deleteVolume(volumeToRemove);
-                break;
+                Main.myVolumes.remove(volumeToRemove);
+            } else {
+                throw new EventHandlingException("null volume");
+            }
+        } catch (Exception e) {
+            throw new EventHandlingException("volume");
         }
     }
 
@@ -307,8 +364,8 @@ public class MonitorThread implements Runnable {
 
         @Override
         public void onNext(Statistics stats) {
-            long cpuUsage = getCpuUsageInNanos(stats);
 
+            long cpuUsage = getCpuUsageInNanos(stats);
             if (MyInstance.getInstanceByid(id) != null) {
                 if (cpuUsage != 0) {
                     MyInstance.getInstanceByid(id).setCpuUsage((double) cpuUsage / 1_000_000_000);
