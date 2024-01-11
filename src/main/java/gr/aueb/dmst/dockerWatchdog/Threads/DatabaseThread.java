@@ -11,9 +11,9 @@ import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
-    private static final String USER = "root";
-    private static final String PASS = "2001997okd10";
-    //other password : dockerW4tchd0g$
+    private static final String USER = "docker_db";
+    private static final String PASS = "dockerW4tchd0g$";
+    // Password : dockerW4tchd0g$
 
     private static boolean firstTime = true;
 

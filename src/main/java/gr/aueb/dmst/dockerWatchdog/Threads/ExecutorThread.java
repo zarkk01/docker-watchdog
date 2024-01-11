@@ -2,171 +2,239 @@ package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
+import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.exception.NotFoundException;
-import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.core.command.PullImageResultCallback;
+
+import gr.aueb.dmst.dockerWatchdog.Exceptions.*;
 import gr.aueb.dmst.dockerWatchdog.Main;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * ExecutorThread is a class that provides methods for managing Docker containers and images.
+ * It is where the actual Docker actions are performed.
+ * It uses the Docker Java API to interact with the Docker daemon and perform operations
+ * such as starting, stopping, pausing, unpausing, renaming, running, pulling, and removing containers.
+ * Each method corresponds to a specific Docker operation and throws custom exceptions to handle errors.
+ */
 public class ExecutorThread implements Runnable {
+
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
+
+    // Run method is empty because it is used only for creating the thread.
     @Override
     public void run() {}
 
-    // Method to start a container
-    public static void startContainer(String containerId) {
+    /**
+     * Starts a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to start
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotModifiedException if the container with the given ID is already running, paused, or dead
+     */
+    public static void startContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            // Start the container with the provided ID
-            System.out.println("Starting the container with ID " + containerId + "...");
+            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                throw new ContainerNotModifiedException(containerId, "Container is already running.");
+            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                throw new ContainerNotModifiedException(containerId, "Container is paused.");
+            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+                throw new ContainerNotModifiedException(containerId, "Container is dead.");
+            }
+
+            // This is where the container is actually started.
             Main.dockerClient.startContainerCmd(containerId).exec();
-            System.out.println("Container started successfully.");
         } catch (NotFoundException e) {
-            // If the container is not found
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
-        } catch (NotModifiedException e) {
-            // If the container is already running
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already running." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ContainerNotFoundException(containerId);
+        } catch (Exception e){
+            logger.error("Error: " + e.getMessage());
         }
     }
 
-    // Method to stop a container
-    public static void stopContainer(String containerId) {
+    /**
+     * Stops a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to stop
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotModifiedException if the container with the given ID is already stopped, paused, or dead
+     */
+    public static void stopContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            // Stop the container with the provided ID
-            System.out.println("Stopping the container with ID " + containerId + "...");
+            if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                throw new ContainerNotModifiedException(containerId, "Container is already stopped.");
+            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                throw new ContainerNotModifiedException(containerId, "Container is paused.");
+            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+                throw new ContainerNotModifiedException(containerId, "Container is dead.");
+            }
+
+            // This is where the container is actually stopped.
             Main.dockerClient.stopContainerCmd(containerId).exec();
-            System.out.println("Container stopped successfully.");
         } catch (NotFoundException e) {
-            // If the container is not found
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
-        } catch (NotModifiedException e) {
-            // If the container is already stopped
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already stopped." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ContainerNotFoundException(containerId);
+        } catch (Exception e){
+            logger.error("Error: " + e.getMessage());
         }
     }
 
-    // Method to remove a container
-    public static void removeContainer(String containerId) {
+    /**
+     * Removes a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to remove
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerRunningException if the container with the given ID is currently running
+     */
+    public static void removeContainer(String containerId) throws ContainerNotFoundException, ContainerRunningException {
         try {
-            // Remove the container with the provided ID
-            System.out.println("Removing the container with ID " + containerId + "...");
+            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                throw new ContainerRunningException(containerId);
+            }
+
+            // This is where the container is actually removed.
             Main.dockerClient.removeContainerCmd(containerId).exec();
-            System.out.println("Container removed successfully.");
         } catch (NotFoundException e) {
-            // If the container is not found
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
-        } catch (ConflictException e) {
-            // If the container is already running
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is currently running. Try stopping it first." + "\033[0m");
+            throw new ContainerNotFoundException(containerId);
         } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            logger.error("Error: " + e.getMessage());
         }
     }
 
-    // Method to pause a container
-    public static void pauseContainer(String containerId) {
+    /**
+     * Pauses a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to pause
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotModifiedException if the container with the given ID is already paused
+     * or if it is not running
+     */
+    public static void pauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            // Pause the specified container
-            System.out.println("Pausing the container with ID " + containerId + "...");
+            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                throw new ContainerNotModifiedException(containerId, "Container is already paused.");
+            } else if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                throw new ContainerNotModifiedException(containerId, "Container is not running.");
+            }
+
+            // This is where the container is actually paused.
             Main.dockerClient.pauseContainerCmd(containerId).exec();
-            System.out.println("Container paused successfully.");
         } catch (NotFoundException e) {
-            // If the container is not found
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
-        } catch (ConflictException e) {
-            // If the container is already paused or exited
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is already paused or exited." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ContainerNotFoundException(containerId);
+        } catch (Exception e){
+            logger.error("Error: " + e.getMessage());
         }
     }
 
-    // Method to unpause a container
-    public static void unpauseContainer(String containerId) {
+    /**
+     * Unpauses a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to unpause
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotModifiedException if the container with the given ID is not paused
+     */
+    public static void unpauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            // Unpause the specified container
-            System.out.println("Unpausing the container with ID " + containerId + "...");
+            if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                throw new ContainerNotModifiedException(containerId, "Container is not paused.");
+            }
+
+            // This is where the container is actually unpaused.
             Main.dockerClient.unpauseContainerCmd(containerId).exec();
-            System.out.println("Container unpaused successfully.");
         } catch (NotFoundException e) {
-            // If the container is not found
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " not found." + "\033[0m");
-        } catch (ConflictException e) {
-            // If the container is not paused
-            System.out.println("\033[0;31m" + "Container with ID " + containerId + " is not paused." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ContainerNotFoundException(containerId);
+        } catch (Exception e){
+            logger.error("Error: " + e.getMessage());
         }
     }
 
-    // Method to rename a container
-    public static void renameContainer(String containerId, String newName) {
+    /**
+     * Renames a Docker container with the given ID.
+     *
+     * @param containerId the ID of the container to rename
+     * @param newName the new name for the container
+     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNameConflictException if the new name is already used by another container
+     */
+    public static void renameContainer(String containerId, String newName) throws ContainerNotFoundException, ContainerNameConflictException {
         try {
-            // Rename the specified container
+            // This is where the container is actually renamed.
             Main.dockerClient.renameContainerCmd(containerId)
                     .withName(newName)
                     .exec();
-            System.out.println("Container renamed successfully.");
+        } catch (NotFoundException e) {
+            throw new ContainerNotFoundException(containerId);
         } catch (ConflictException e) {
-            // If there is a container with the same name
-            System.out.println("\033[0;31m" + "You can't name this container this way because there is another container by this name" + "\033[0m");
+            throw new ContainerNameConflictException(containerId, newName);
+        } catch (Exception e){
+            logger.error("Error: ", e);
         }
     }
 
-    // Method to run a container
-    public static void runContainer(String imageName) throws InterruptedException {
+    /**
+     * Creates and starts a Docker container with the given image name.
+     *
+     * @param imageName the name of the Docker image to use for creating the container
+     * @throws ImageNotFoundException if the image with the given name is not found
+     * @throws ContainerCreationException if the container cannot be created
+     * @throws ContainerNotModifiedException if the container cannot be started
+     */
+    public static void runContainer(String imageName) throws ImageNotFoundException, ContainerCreationException, ContainerNotModifiedException {
+        CreateContainerResponse container;
+        try {
+            // This is where the container is actually being created.
+            container = Main.dockerClient.createContainerCmd(imageName)
+                    .withCmd("sleep", "infinity")
+                    .exec();
+        } catch (NotFoundException e) {
+            throw new ImageNotFoundException(imageName);
+        } catch (DockerException e) {
+            throw new ContainerCreationException("Failed to create container from image " + imageName);
+        }
 
-        Main.dockerClient.pullImageCmd(imageName).exec(new PullImageResultCallback()).awaitCompletion();
-
-        CreateContainerResponse container = Main.dockerClient.createContainerCmd(imageName)
-                .withCmd("sleep", "infinity")
-                .exec();
-
-        // Create and start a container based on the pulled image
-        Main.dockerClient.startContainerCmd(container.getId()).exec();
-
-        // Print the container ID
-        System.out.println("Container started and running successfully. Container ID: " + container.getId());
+        try {
+            // Here, the newborn container is doing its first steps.
+            Main.dockerClient.startContainerCmd(container.getId()).exec();
+        } catch (DockerException e) {
+            throw new ContainerNotModifiedException(container.getId(), " Failed to start container.");
+        }
     }
 
-    // Method to pull an image from Docker Hub
-    public static void pullImage(String imageName) {
+    /**
+     * Pulls a Docker image with the given name.
+     *
+     * @param imageName the name of the Docker image to pull
+     * @throws ImageNotFoundException if the image with the given name is not found
+     * @throws DockerException if there's a general Docker error
+     */
+    public static void pullImage(String imageName) throws ImageNotFoundException, DockerException, InterruptedException {
         try {
-            // Pull the image with the provided name
-            System.out.println("Pulling the image " + imageName + "...");
+            // This is where the image is actually pulled.
             Main.dockerClient.pullImageCmd(imageName)
                     .exec(new PullImageResultCallback())
                     .awaitCompletion();
-            System.out.println("Image pulled successfully.");
         } catch (NotFoundException e) {
-            // If the image is not found
-            System.out.println("\033[0;31m" + "Image " + imageName + " not found on Docker Hub." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ImageNotFoundException(imageName);
+        } catch (DockerException e) {
+            throw new DockerException("General Docker error.", e.getHttpStatus());
         }
     }
 
-    // Method to remove an image from Docker
-    public static void removeImage(String imageName) {
+    /**
+     * Removes a Docker image with the given name.
+     *
+     * @param imageName the name of the Docker image to remove
+     * @throws ImageNotFoundException if the image with the given name is not found
+     */
+    public static void removeImage(String imageName) throws ImageNotFoundException {
         try {
-            // Remove the image with the provided name
-            System.out.println("Removing the image " + imageName + "...");
+            // This is where the image is actually removed.
             Main.dockerClient.removeImageCmd(imageName).exec();
-            System.out.println("Image removed successfully.");
         } catch (NotFoundException e) {
-            // If the image is not found
-            System.out.println("\033[0;31m" + "Image " + imageName + " not found." + "\033[0m");
-        } catch (Exception e) {
-            // Handle other exceptions
-            e.printStackTrace();
+            throw new ImageNotFoundException(imageName);
+        } catch (Exception e){
+            logger.error("Error: ", e);
         }
     }
 }

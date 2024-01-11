@@ -61,7 +61,7 @@ public class DockerController {
 
     @PostMapping("/containers/{containerId}/delete")
     public ResponseEntity<String> deleteContainer(@PathVariable("containerId") String containerId){
-        dockerService.deleteContainer(containerId);
+        dockerService.removeContainer(containerId);
         return ResponseEntity.ok(("Container " + containerId + " deleted"));
     }
 

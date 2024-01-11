@@ -4,9 +4,14 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.github.dockerjava.api.exception.DockerException;
 
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotModifiedException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerRunningException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageNotFoundException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerCreationException;
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
 import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Repositories.ImagesRepository;
@@ -16,6 +21,11 @@ import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import gr.aueb.dmst.dockerWatchdog.Repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * SpringBoot's Service class for managing Docker instances, images, volumes
@@ -27,6 +37,9 @@ import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
 @Service
 @Transactional
 public class DockerService {
+
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
 
     private final InstancesRepository instancesRepository;
     private final MetricsRepository metricsRepository;
@@ -52,97 +65,136 @@ public class DockerService {
     }
 
     /**
-     * Starts a Docker container with the given ID.
+     * Starts a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to start
      */
     public void startContainer(String containerId) {
-        ExecutorThread.startContainer(containerId);
+        try {
+            ExecutorThread.startContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Stops a Docker container with the given ID.
+     * Stops a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to stop
      */
     public void stopContainer(String containerId) {
-        ExecutorThread.stopContainer(containerId);
+        try {
+            ExecutorThread.stopContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Deletes a Docker container with the given ID.
+     * Deletes a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to delete
      */
-    public void deleteContainer(String containerId) {
-        ExecutorThread.removeContainer(containerId);
+    public void removeContainer(String containerId) {
+        try {
+            ExecutorThread.removeContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerRunningException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Renames a Docker container with the given ID.
+     * Renames a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to rename
      * @param newName the new name for the Docker container
      */
     public void renameContainer(String containerId, String newName) {
-        ExecutorThread.renameContainer(containerId, newName);
+        try {
+            ExecutorThread.renameContainer(containerId, newName);
+        } catch (ContainerNotFoundException | ContainerNameConflictException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Pauses a Docker container with the given ID.
+     * Pauses a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to pause
      */
     public void pauseContainer(String containerId) {
-        ExecutorThread.pauseContainer(containerId);
+        try {
+            ExecutorThread.pauseContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Unpauses a Docker container with the given ID.
+     * Unpauses a Docker container with the given ID calling
+     * the right method of Executor Thread.
      *
      * @param containerId the ID of the Docker container to unpause
      */
     public void unpauseContainer(String containerId) {
-        ExecutorThread.unpauseContainer(containerId);
+        try {
+            ExecutorThread.unpauseContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
      * Restarts a Docker container with the given ID.
-     * Basically, it stops and then starts again the container.
+     * Basically, it stops and then starts again the container calling
+     * the right methods of Executor Thread.
      *
      * @param containerId the ID of the Docker container to restart
      */
     public void restartContainer(String containerId) {
-        ExecutorThread.stopContainer(containerId);
-        ExecutorThread.startContainer(containerId);
+        try {
+            ExecutorThread.stopContainer(containerId);
+            ExecutorThread.startContainer(containerId);
+        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
-     * Creates a Docker container with the given image name
-     * while if the image is not pulled, it pulls it first.
+     * Creates a Docker container with the given image name, calling
+     * the right method of Executor Thread.
      *
      * @param imageName the name of the Docker image to use for creating the container
      */
     public void createContainer(String imageName) {
         try {
             ExecutorThread.runContainer(imageName);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
+        } catch (ImageNotFoundException | ContainerCreationException | ContainerNotModifiedException e) {
+            logger.error(e.getMessage());
         }
     }
 
-    /**
-     * Starts all Docker containers with the given image name
-     * searching for them in the database.
-     *
-     * @param imageName the name of the Docker image whose containers to start
-     */
+        /**
+         * Starts all Docker containers with the given image name
+         * searching for them in the database.
+         *
+         * @param imageName the name of the Docker image whose containers to start
+         */
     public void startAllContainers(String imageName) {
+        // Get all containers and then iterate them to start them
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
-            ExecutorThread.startContainer(container.getId());
+            try {
+                ExecutorThread.startContainer(container.getId());
+            } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 
@@ -153,10 +205,15 @@ public class DockerService {
      * @param imageName the name of the Docker image whose containers to stop
      */
     public void stopAllContainers(String imageName) {
+        // Get all containers and then iterate them to stop them
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
-            ExecutorThread.stopContainer(container.getId());
+            try {
+                ExecutorThread.stopContainer(container.getId());
+            } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 
@@ -166,7 +223,11 @@ public class DockerService {
      * @param imageName the name of the Docker image to pull
      */
     public void pullImage(String imageName) {
-        ExecutorThread.pullImage(imageName);
+        try {
+            ExecutorThread.pullImage(imageName);
+        } catch (ImageNotFoundException | DockerException | InterruptedException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
@@ -175,7 +236,11 @@ public class DockerService {
      * @param imageName the name of the Docker image to remove
      */
     public void removeImage(String imageName) {
-        ExecutorThread.removeImage(imageName);
+        try {
+            ExecutorThread.removeImage(imageName);
+        } catch (ImageNotFoundException e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**
@@ -198,8 +263,8 @@ public class DockerService {
     }
 
     /**
-     * Retrieves the last metric ID so understand
-     * which is the present / latest state of the containers.
+     * Retrieves the last metric ID so to understand
+     * which is the present state of the containers.
      *
      * @return the last metric ID
      */
@@ -211,26 +276,31 @@ public class DockerService {
      * Retrieves metrics from database before the given timestamp.
      * Also retrieves the number of running, total and stopped containers.
      * This method is used for our 4 panes in the main window
-     * which display the number of changes, running containers, total containers
-     * and stopped containers.
+     * which display the number of total containers, running containers, stoped containers
+     * and changes.
      *
      * @param chosenDate the timestamp to retrieve metrics before
      * @return a list of metrics before the given timestamp
      */
     public List<Long> getMetrics(Timestamp chosenDate) {
+        // Get the number of metrics before the given timestamp
         long manyMetrics = metricsRepository.countByDatetimeBefore(chosenDate);
+        // Get the maximum metric ID before the given timestamp
         Optional<Metric> metricOptional =
                 metricsRepository.
                         findFirstByDatetimeBeforeOrderByDatetimeDesc(chosenDate);
         int wantedId = 0;
         if (metricOptional.isPresent()) {
+            // Assign the maximum metric ID to wantedId
             wantedId =  metricOptional.get().getId();
         }
+        // Given the metricId, get the number of running and total containers
         long runningContainers =
                 instancesRepository.countByMetricIdAndStatusRunning(wantedId);
         long totalContainers =
                 instancesRepository.findAllByMetricId(wantedId);
         long stoppedContainers = totalContainers - runningContainers;
+        // Return a list of the information we retrieved
         return List.of(
                 manyMetrics,
                 runningContainers,
@@ -240,6 +310,8 @@ public class DockerService {
 
     /**
      * Retrieves all pulled Docker images from the database
+     * so to display them and do actions on them
+     * on our Images panel.
      *
      * @return a list of all pulled Docker images
      */
@@ -248,7 +320,8 @@ public class DockerService {
     }
 
     /**
-     * Retrieves all Docker volumes.
+     * Retrieves all Docker volumes so to display them
+     * in our Volumes panel.
      *
      * @return a list of all Docker volumes
      */
