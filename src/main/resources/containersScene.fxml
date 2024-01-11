@@ -215,6 +215,7 @@
                         <URL value="@styles/hoverPane.css" />
                      </stylesheets>
                </Pane>
+               <VBox fx:id="notificationBox" alignment="TOP_RIGHT" layoutX="381.0" layoutY="192.0" prefHeight="54.0" prefWidth="235.0" />
                </children>
             </Pane>
          <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
@@ -272,7 +273,6 @@
                   <Image url="@images/watchdog.png" />
                </image>
             </ImageView>
-         <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
       </children>
    </HBox>
 </top>
