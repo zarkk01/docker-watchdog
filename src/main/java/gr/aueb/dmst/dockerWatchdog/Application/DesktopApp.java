@@ -1,13 +1,13 @@
 package gr.aueb.dmst.dockerWatchdog.Application;
 
+import java.io.IOException;
+import java.net.http.HttpClient;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.http.HttpClient;
 
 public class DesktopApp extends Application {
     public static HttpClient client;

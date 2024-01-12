@@ -179,12 +179,12 @@ public class DockerService {
         }
     }
 
-        /**
-         * Starts all Docker containers with the given image name
-         * searching for them in the database.
-         *
-         * @param imageName the name of the Docker image whose containers to start
-         */
+    /**
+     * Starts all Docker containers with the given image name
+     * searching for them in the database.
+     *
+     * @param imageName the name of the Docker image whose containers to start
+     * */
     public void startAllContainers(String imageName) {
         // Get all containers and then iterate them to start them
         List<Instance> containers =
