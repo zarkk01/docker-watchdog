@@ -2,6 +2,8 @@ package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import java.util.Date;
 import java.sql.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.DatabaseOperationException;
 import gr.aueb.dmst.dockerWatchdog.Main;
@@ -23,6 +25,9 @@ public class DatabaseThread implements Runnable {
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
+    // Timer instance used for scheduling tasks.
+    private static final Timer timer = new java.util.Timer();
+
     // Database connection details.
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "docker_db";
@@ -38,7 +43,6 @@ public class DatabaseThread implements Runnable {
     @Override
     public void run() {
         try {
-            createAllTables();
             updateLiveMetrics();
         } catch (DatabaseOperationException e) {
             logger.error(e.getMessage());
@@ -46,9 +50,10 @@ public class DatabaseThread implements Runnable {
     }
 
     /**
-     * This method, called only once, deletes any existing tables in
-     * our docker_database, so we start fresh clean our monitoring. It creates, then, Instances, Images and Volumes
-     * tables in the database. Also, create Metrics (Changes) table. After every creation, it calls
+     * This method, called from Monitor Thread's fillLists() method after the initialization
+     * of the lists, deletes any existing tables in our docker_database, so we start fresh clean our monitoring.
+     * It creates, then, Instances, Images and Volumes tables in the database.
+     * Also, create Metrics (Changes) table. After every creation, it calls
      * keepTrackOf...() method so the tables are filled with the appropriate data.
      *
      * @throws DatabaseOperationException if an error occurs while creating the tables.
@@ -358,68 +363,71 @@ public class DatabaseThread implements Runnable {
 
     /**
      * This method is responsible for updating live metrics of instances in the database.
-     * It is called in a loop every 2.5 seconds to keep the metrics up-to-date.
+     * It uses a Timer to schedule the update task to run every 2.5 seconds.
      * It updates the Instances table with the current metrics of instances.
      * @throws DatabaseOperationException if an error occurs while updating live metrics.
      */
-    public static synchronized void updateLiveMetrics() throws DatabaseOperationException {
-        try {
-            // Configure the connection to the database.
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+    public static void updateLiveMetrics() throws DatabaseOperationException {
+        Timer timer = new Timer();
+        TimerTask updateTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    // Configure the connection to the database.
+                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            // Continuously update live metrics every 2.5 seconds.
-            while (true) {
-                // Get the latest metric ID.
-                String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
-                Statement findLatestMetricIdStmt = conn.createStatement();
-                ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
+                    // Get the latest metric ID.
+                    String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
+                    Statement findLatestMetricIdStmt = conn.createStatement();
+                    ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
 
-                int latestMetricId = 0;
-                if (latestMetricIdResult.next()) {
-                    latestMetricId = latestMetricIdResult.getInt("latestMetricId");
-                }
-
-                // Prepare the SQL statement to update the instances.
-                String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
-                        "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
-                PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
-
-                // Iterate through all the instances and update the Instances table.
-                for (MyInstance instance : Main.myInstances) {
-                    // Volumes are in an ArrayList, we need to convert them to a String.
-                    String volumesUsing = "";
-                    for (String volumeName : instance.getVolumes()) {
-                        volumesUsing += volumeName + ",";
+                    int latestMetricId = 0;
+                    if (latestMetricIdResult.next()) {
+                        latestMetricId = latestMetricIdResult.getInt("latestMetricId");
                     }
 
-                    // Set the parameters in the SQL statement.
-                    updateInstancesStmt.setString(1, instance.getName());
-                    updateInstancesStmt.setString(2, instance.getImage());
-                    updateInstancesStmt.setString(3, instance.getStatus());
-                    updateInstancesStmt.setDouble(4, instance.getMemoryUsage());
-                    updateInstancesStmt.setLong(5, instance.getPids());
-                    updateInstancesStmt.setDouble(6, instance.getCpuUsage());
-                    updateInstancesStmt.setDouble(7, instance.getBlockI());
-                    updateInstancesStmt.setDouble(8, instance.getBlockO());
-                    updateInstancesStmt.setString(9, volumesUsing);
-                    updateInstancesStmt.setString(10, instance.getSubnet());
-                    updateInstancesStmt.setString(11, instance.getGateway());
-                    updateInstancesStmt.setInt(12, instance.getPrefixLen());
-                    updateInstancesStmt.setInt(13, latestMetricId);
-                    updateInstancesStmt.setString(14, instance.getId());
+                    // Prepare the SQL statement to update the instances.
+                    String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
+                            "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
+                    PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
 
-                    // Execute the SQL statement.
-                    updateInstancesStmt.executeUpdate();
+                    // Iterate through all the instances and update the Instances table.
+                    for (MyInstance instance : Main.myInstances) {
+                        // Volumes are in an ArrayList, we need to convert them to a String.
+                        String volumesUsing = "";
+                        for (String volumeName : instance.getVolumes()) {
+                            volumesUsing += volumeName + ",";
+                        }
+
+                        // Set the parameters in the SQL statement.
+                        updateInstancesStmt.setString(1, instance.getName());
+                        updateInstancesStmt.setString(2, instance.getImage());
+                        updateInstancesStmt.setString(3, instance.getStatus());
+                        updateInstancesStmt.setDouble(4, instance.getMemoryUsage());
+                        updateInstancesStmt.setLong(5, instance.getPids());
+                        updateInstancesStmt.setDouble(6, instance.getCpuUsage());
+                        updateInstancesStmt.setDouble(7, instance.getBlockI());
+                        updateInstancesStmt.setDouble(8, instance.getBlockO());
+                        updateInstancesStmt.setString(9, volumesUsing);
+                        updateInstancesStmt.setString(10, instance.getSubnet());
+                        updateInstancesStmt.setString(11, instance.getGateway());
+                        updateInstancesStmt.setInt(12, instance.getPrefixLen());
+                        updateInstancesStmt.setInt(13, latestMetricId);
+                        updateInstancesStmt.setString(14, instance.getId());
+
+                        // Execute the SQL statement.
+                        updateInstancesStmt.executeUpdate();
+                    }
+
+                    // Close the connection to the database.
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error while updating live metrics in database: " + e.getMessage());
                 }
-
-                // Wait for 2.5 seconds before the next update.
-                Thread.sleep(2500);
             }
-        } catch (SQLException e) {
-            throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        };
+
+        // Schedule the task to run every 2.5 seconds
+        timer.scheduleAtFixedRate(updateTask, 0, 2500);
     }
 }

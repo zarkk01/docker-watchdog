@@ -328,7 +328,7 @@ public class ContainersController implements Initializable {
 
             refreshInstances();
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), event -> refreshInstances()));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> refreshInstances()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
