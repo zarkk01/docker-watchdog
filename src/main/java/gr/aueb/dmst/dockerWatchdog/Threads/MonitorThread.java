@@ -160,9 +160,6 @@ public class MonitorThread implements Runnable {
 
     public void handleContainerEvent(String eventAction, String containerId, Event event) throws LiveStatsException, EventHandlingException {
         MyInstance instance = MyInstance.getInstanceByid(containerId);
-        if (instance == null) {
-            throw new EventHandlingException("null container");
-        }
         try {
             switch (eventAction) {
                 case "start":
