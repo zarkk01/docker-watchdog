@@ -166,7 +166,7 @@
                      <Font size="14.0" />
                   </font>
                   </Button>
-               <TextField fx:id="datetimeTextField" layoutX="10.0" layoutY="11.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #474745;" />
+               <TextField fx:id="datetimeTextField" layoutX="10.0" layoutY="11.0" prefHeight="26.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #474745; -fx-text-fill: white;" />
                <Button fx:id="datetimeButton" layoutX="291.0" layoutY="11.0" mnemonicParsing="false" onAction="#showDataThen" prefHeight="26.0" prefWidth="81.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Show data " textFill="WHITE" />
                <Text fill="#b8bec3" layoutX="62.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Containers" wrappingWidth="146.8941650390625">
                   <font>
