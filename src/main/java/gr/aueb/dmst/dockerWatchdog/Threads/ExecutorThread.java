@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
+import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.DockerException;
@@ -23,6 +24,7 @@ public class ExecutorThread implements Runnable {
 
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
+
 
     // Run method is empty because it is used only for creating the thread.
     @Override

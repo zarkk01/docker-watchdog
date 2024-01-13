@@ -17,7 +17,7 @@ public class DatabaseThread implements Runnable {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "root";
-    private static final String PASS = "epoca2023";
+    private static final String PASS = "2001997okd10";
     //other password : dockerW4tchd0g$
 
     private static boolean firstTime = true;
