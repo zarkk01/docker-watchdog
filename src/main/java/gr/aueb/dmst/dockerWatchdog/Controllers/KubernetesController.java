@@ -60,7 +60,7 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableColumn<PodScene, String> podStatusColumn;
     @FXML
-    TableView<PodScene> podsTableView;
+    private TableView<PodScene> podsTableView;
 
     // Table columns for the Deployments table.
     @FXML
@@ -88,15 +88,13 @@ public class KubernetesController implements Initializable {
 
     // Buttons for the sidebar so to change scenes.
     @FXML
-    public Button containersButton;
+    private Button containersButton;
     @FXML
-    public Button imagesButton;
+    private Button imagesButton;
     @FXML
-    public Button graphicsButton;
+    private Button graphicsButton;
     @FXML
-    public Button kubernetesButton;
-    @FXML
-    public Button volumesButton;
+    private Button volumesButton;
 
     /**
      * Initializes the KubernetesController.

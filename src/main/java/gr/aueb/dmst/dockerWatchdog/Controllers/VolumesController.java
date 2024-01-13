@@ -15,7 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.Label;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,26 +42,24 @@ public class VolumesController implements Initializable {
     private Parent root;
 
     @FXML
-    private TableColumn<VolumeScene,String> nameColumn;
+    private TableColumn<VolumeScene, String> nameColumn;
     @FXML
-    private TableColumn<VolumeScene,String> driverColumn;
+    private TableColumn<VolumeScene, String> driverColumn;
     @FXML
-    private TableColumn<VolumeScene,String> mountpointColumn;
+    private TableColumn<VolumeScene, String> mountpointColumn;
     @FXML
-    private TableColumn<VolumeScene,String> containerNamesUsingColumn;
+    private TableColumn<VolumeScene, String> containerNamesUsingColumn;
     @FXML
     private TableView<VolumeScene> volumesTableView;
 
     @FXML
-    public Button containersButton;
+    private Button containersButton;
     @FXML
-    public Button imagesButton;
+    private Button imagesButton;
     @FXML
-    public Button graphicsButton;
+    private Button graphicsButton;
     @FXML
-    public Button kubernetesButton;
-    @FXML
-    public Button volumesButton;
+    private Button kubernetesButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
