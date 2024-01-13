@@ -12,6 +12,7 @@ public class PodScene {
 
     /**
      * Constructor for the PodScene class.
+     *
      * @param name The name of the pod scene.
      * @param namespace The namespace of the pod scene.
      * @param status The status of the pod scene.
@@ -24,6 +25,7 @@ public class PodScene {
 
     /**
      * Returns the name of the pod scene.
+     *
      * @return The name of the pod scene.
      */
     public String getName() {
@@ -32,6 +34,7 @@ public class PodScene {
 
     /**
      * Returns the namespace of the pod scene.
+     *
      * @return The namespace of the pod scene.
      */
     public String getNamespace() {
@@ -40,6 +43,7 @@ public class PodScene {
 
     /**
      * Returns the status of the pod scene.
+     *
      * @return The status of the pod scene.
      */
     public String getStatus() {

@@ -23,6 +23,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Constructor for the InstanceId class.
+     *
      * @param id The id of the instance.
      * @param metricid The metric id of the instance.
      */
@@ -33,6 +34,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Returns the id of the instance.
+     *
      * @return The id of the instance.
      */
     public String getId() {
@@ -41,6 +43,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Sets the id of the instance.
+     *
      * @param id The id to set.
      */
     public void setId(String id) {
@@ -49,6 +52,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Returns the metric id of the instance.
+     *
      * @return The metric id of the instance.
      */
     public Integer getMetricid() {
@@ -57,6 +61,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Sets the metric id of the instance.
+     *
      * @param metricid The metric id to set.
      */
     public void setMetricId(Integer metricid) {
@@ -65,6 +70,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Compares this InstanceId to the specified object.
+     *
      * @param o The object to compare this InstanceId against.
      * @return true if the given object represents an InstanceId equivalent to this InstanceId, false otherwise.
      */
@@ -83,6 +89,7 @@ public class InstanceId implements Serializable {
 
     /**
      * Returns a hash code value for the object.
+     *
      * @return a hash code value for this object.
      */
     @Override

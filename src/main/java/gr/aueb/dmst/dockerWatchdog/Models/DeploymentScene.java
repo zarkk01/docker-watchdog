@@ -13,6 +13,7 @@ public class DeploymentScene {
 
     /**
      * Constructor for the DeploymentScene class.
+     *
      * @param name The name of the deployment.
      * @param namespace The namespace of the deployment.
      */
@@ -23,6 +24,7 @@ public class DeploymentScene {
 
     /**
      * This method returns the name of the deployment.
+     *
      * @return The name of the deployment.
      */
     public String getName() {
@@ -31,6 +33,7 @@ public class DeploymentScene {
 
     /**
      * This method returns the namespace of the deployment.
+     *
      * @return The namespace of the deployment.
      */
     public String getNamespace() {

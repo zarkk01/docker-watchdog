@@ -33,6 +33,7 @@ public class Metric {
 
     /**
      * Returns the id of the metric.
+     *
      * @return The id of the metric.
      */
     public Integer getId() {
@@ -41,6 +42,7 @@ public class Metric {
 
     /**
      * Sets the id of the metric.
+     *
      * @param id The id to set.
      */
     public void setId(Integer id) {
@@ -49,6 +51,7 @@ public class Metric {
 
     /**
      * Returns the datetime of the metric.
+     *
      * @return The datetime of the metric.
      */
     public Timestamp getDatetime() {
@@ -57,6 +60,7 @@ public class Metric {
 
     /**
      * Sets the datetime of the metric.
+     *
      * @param datetime The datetime to set.
      */
     public void setDatetime(Timestamp datetime) {

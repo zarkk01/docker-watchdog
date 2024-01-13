@@ -42,6 +42,7 @@ public class Image {
 
     /**
      * This method sets the id of the image.
+     *
      * @param id The id to set.
      */
     public void setId(String id) {
@@ -50,6 +51,7 @@ public class Image {
 
     /**
      * This method returns the name of the image.
+     *
      * @return The name of the image.
      */
     public String getName() {
@@ -58,6 +60,7 @@ public class Image {
 
     /**
      * This method sets the name of the image.
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -66,6 +69,7 @@ public class Image {
 
     /**
      * This method returns the status of the image.
+     *
      * @return The status of the image.
      */
     public String getStatus() {
@@ -74,6 +78,7 @@ public class Image {
 
     /**
      * This method sets the status of the image.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -82,6 +87,7 @@ public class Image {
 
     /**
      * This method returns the size of the image.
+     *
      * @return The size of the image.
      */
     public Long getSize() {
@@ -90,6 +96,7 @@ public class Image {
 
     /**
      * This method sets the size of the image.
+     *
      * @param size The size to set.
      */
     public void setSize(Long size) {

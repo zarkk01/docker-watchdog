@@ -1,6 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
@@ -11,15 +10,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * so user can use the application with one click.
  */
 @SpringBootApplication
-public class WebApp {
-
-    /**
-     * The main method which will be used to launch the Spring Boot application.
-     *
-     * @param args command line arguments
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(WebApp.class, args);
-    }
-}
+public class WebApp {}
 

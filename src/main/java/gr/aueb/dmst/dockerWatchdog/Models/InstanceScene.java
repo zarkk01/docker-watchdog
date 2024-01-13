@@ -27,6 +27,7 @@ public class InstanceScene {
 
     /**
      * Constructor for the InstanceScene class.
+     *
      * @param id The id of the instance.
      * @param name The name of the instance.
      * @param image The image of the instance.
@@ -74,6 +75,7 @@ public class InstanceScene {
 
     /**
      * Returns the id of the instance.
+     *
      * @return The id of the instance.
      */
     public String getId() {
@@ -82,6 +84,7 @@ public class InstanceScene {
 
     /**
      * Returns the name of the instance.
+     *
      * @return The name of the instance.
      */
     public String getName() {
@@ -90,6 +93,7 @@ public class InstanceScene {
 
     /**
      * Sets the name of the instance.
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -98,6 +102,7 @@ public class InstanceScene {
 
     /**
      * Returns the status of the instance.
+     *
      * @return The status of the instance.
      */
     public String getStatus() {
@@ -106,6 +111,7 @@ public class InstanceScene {
 
     /**
      * Sets the status of the instance.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -114,6 +120,7 @@ public class InstanceScene {
 
     /**
      * Returns the memory usage of the instance.
+     *
      * @return The memory usage of the instance.
      */
     public String getMemoryUsage() {
@@ -122,6 +129,7 @@ public class InstanceScene {
 
     /**
      * Returns the pids of the instance.
+     *
      * @return The pids of the instance.
      */
     public String getPids() {
@@ -130,6 +138,7 @@ public class InstanceScene {
 
     /**
      * Sets the pids of the instance.
+     *
      * @param pids The pids to set.
      */
     public void setPids(String pids) {
@@ -138,6 +147,7 @@ public class InstanceScene {
 
     /**
      * Returns the CPU usage of the instance.
+     *
      * @return The CPU usage of the instance.
      */
     public String getCpuUsage() {
@@ -146,6 +156,7 @@ public class InstanceScene {
 
     /**
      * Returns the block I of the instance.
+     *
      * @return The block I of the instance.
      */
     public String getBlockI() {
@@ -154,6 +165,7 @@ public class InstanceScene {
 
     /**
      * Returns the block O of the instance.
+     *
      * @return The block O of the instance.
      */
     public String getBlockO() {
@@ -162,6 +174,7 @@ public class InstanceScene {
 
     /**
      * Returns the image of the instance.
+     *
      * @return The image of the instance.
      */
     public String getImage() {
@@ -170,6 +183,7 @@ public class InstanceScene {
 
     /**
      * Returns the volumes of the instance.
+     *
      * @return The volumes of the instance.
      */
     public String getVolumes() {
@@ -178,6 +192,7 @@ public class InstanceScene {
 
     /**
      * Sets the volumes of the instance.
+     *
      * @param volumes The volumes to set.
      */
     public void setVolumes(String volumes) {
@@ -186,6 +201,7 @@ public class InstanceScene {
 
     /**
      * Returns the subnet of the instance.
+     *
      * @return The subnet of the instance.
      */
     public String getSubnet() {
@@ -194,6 +210,7 @@ public class InstanceScene {
 
     /**
      * Returns the gateway of the instance.
+     *
      * @return The gateway of the instance.
      */
     public String getGateway() {
@@ -202,6 +219,7 @@ public class InstanceScene {
 
     /**
      * Returns the prefix length of the instance.
+     *
      * @return The prefix length of the instance.
      */
     public Integer getPrefixLen() {
@@ -210,6 +228,7 @@ public class InstanceScene {
 
     /**
      * Returns the select property of the instance.
+     *
      * @return The select property of the instance.
      */
     public boolean isSelect() {
@@ -218,6 +237,7 @@ public class InstanceScene {
 
     /**
      * Sets the select property of the instance.
+     *
      * @param select The select property to set.
      */
     public void setSelect(boolean select) {

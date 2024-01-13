@@ -30,6 +30,7 @@ public class Volume {
 
     /**
      * Returns the name of the volume.
+     *
      * @return The name of the volume.
      */
     public String getName() {
@@ -38,6 +39,7 @@ public class Volume {
 
     /**
      * Sets the name of the volume.
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -46,6 +48,7 @@ public class Volume {
 
     /**
      * Returns the driver of the volume.
+     *
      * @return The driver of the volume.
      */
     public String getDriver() {
@@ -54,6 +57,7 @@ public class Volume {
 
     /**
      * Sets the driver of the volume.
+     *
      * @param driver The driver to set.
      */
     public void setDriver(String driver) {
@@ -62,6 +66,7 @@ public class Volume {
 
     /**
      * Returns the mountpoint of the volume.
+     *
      * @return The mountpoint of the volume.
      */
     public String getMountpoint() {
@@ -70,6 +75,7 @@ public class Volume {
 
     /**
      * Sets the mountpoint of the volume.
+     *
      * @param mountpoint The mountpoint to set.
      */
     public void setMountpoint(String mountpoint) {
@@ -78,6 +84,7 @@ public class Volume {
 
     /**
      * Returns the list of container names using the volume.
+     *
      * @return The list of container names using the volume.
      */
     public String getContainerNamesUsing() {
@@ -86,6 +93,7 @@ public class Volume {
 
     /**
      * Sets the list of container names using the volume.
+     *
      * @param containernamesusing The list of container names to set.
      */
     public void setContainerNamesUsing(String containernamesusing) {

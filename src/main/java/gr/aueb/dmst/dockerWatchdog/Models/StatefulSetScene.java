@@ -11,6 +11,7 @@ public class StatefulSetScene {
 
     /**
      * Constructor for the StatefulSetScene class.
+     *
      * @param name The name of the stateful set.
      * @param namespace The namespace of the stateful set.
      */
@@ -21,6 +22,7 @@ public class StatefulSetScene {
 
     /**
      * Returns the name of the stateful set.
+     *
      * @return The name of the stateful set.
      */
     public String getName() {
@@ -29,6 +31,7 @@ public class StatefulSetScene {
 
     /**
      * Returns the namespace of the stateful set.
+     *
      * @return The namespace of the stateful set.
      */
     public String getNamespace() {

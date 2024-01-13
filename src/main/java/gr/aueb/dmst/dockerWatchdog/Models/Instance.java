@@ -78,6 +78,7 @@ public class Instance {
 
     /**
      * Returns the id of the instance.
+     *
      * @return The id of the instance.
      */
     public String getId() {
@@ -86,6 +87,7 @@ public class Instance {
 
     /**
      * Sets the id of the instance.
+     *
      * @param id The id to set.
      */
     public void setId(String id) {
@@ -94,6 +96,7 @@ public class Instance {
 
     /**
      * Returns the metric id of the instance.
+     *
      * @return The metric id of the instance.
      */
     public Integer getMetricid() {
@@ -102,6 +105,7 @@ public class Instance {
 
     /**
      * Sets the metric id of the instance.
+     *
      * @param metricid The metric id to set.
      */
     public void setMetricId(Integer metricid) {
@@ -110,6 +114,7 @@ public class Instance {
 
     /**
      * Returns the name of the instance.
+     *
      * @return The name of the instance.
      */
     public String getName() {
@@ -126,6 +131,7 @@ public class Instance {
 
     /**
      * Returns the image of the instance.
+     *
      * @return The image of the instance.
      */
     public String getImage() {
@@ -134,6 +140,7 @@ public class Instance {
 
     /**
      * Sets the image of the instance.
+     *
      * @param image The image to set.
      */
     public void setImage(String image) {
@@ -142,6 +149,7 @@ public class Instance {
 
     /**
      * Returns the status of the instance.
+     *
      * @return The status of the instance.
      */
     public String getStatus() {
@@ -150,6 +158,7 @@ public class Instance {
 
     /**
      * Sets the status of the instance.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -158,6 +167,7 @@ public class Instance {
 
     /**
      * Returns the memory usage of the instance.
+     *
      * @return The memory usage of the instance.
      */
     public Long getMemoryUsage() {
@@ -166,6 +176,7 @@ public class Instance {
 
     /**
      * Sets the memory usage of the instance.
+     *
      * @param memoryUsage The memory usage to set.
      */
     public void setMemoryUsage(Long memoryUsage) {
@@ -174,6 +185,7 @@ public class Instance {
 
     /**
      * Returns the pids of the instance.
+     *
      * @return The pids of the instance.
      */
     public Long getPids() {
@@ -182,6 +194,7 @@ public class Instance {
 
     /**
      * Sets the pids of the instance.
+     *
      * @param pids The pids to set.
      */
     public void setPids(Long pids) {
@@ -190,6 +203,7 @@ public class Instance {
 
     /**
      * Returns the CPU usage of the instance.
+     *
      * @return The CPU usage of the instance.
      */
     public Double getCpuUsage() {
@@ -198,6 +212,7 @@ public class Instance {
 
     /**
      * Sets the CPU usage of the instance.
+     *
      * @param cpuUsage The CPU usage to set.
      */
     public void setCpuUsage(Double cpuUsage) {
@@ -206,6 +221,7 @@ public class Instance {
 
     /**
      * Returns the block I of the instance.
+     *
      * @return The block I of the instance.
      */
     public Double getBlockI() {
@@ -214,6 +230,7 @@ public class Instance {
 
     /**
      * Sets the block I of the instance.
+     *
      * @param blockI The block I to set.
      */
     public void setBlockI(Double blockI) {
@@ -222,6 +239,7 @@ public class Instance {
 
     /**
      * Returns the block O of the instance.
+     *
      * @return The block O of the instance.
      */
     public Double getBlockO() {
@@ -230,6 +248,7 @@ public class Instance {
 
     /**
      * Sets the block O of the instance.
+     *
      * @param blockO The block O to set.
      */
     public void setBlockO(Double blockO) {
@@ -238,6 +257,7 @@ public class Instance {
 
     /**
      * Returns the volumes of the instance.
+     *
      * @return The volumes of the instance.
      */
     public String getVolumes() {
@@ -246,6 +266,7 @@ public class Instance {
 
     /**
      * Sets the volumes of the instance.
+     *
      * @param volumes The volumes to set.
      */
     public void setVolumes(String volumes) {
@@ -254,6 +275,7 @@ public class Instance {
 
     /**
      * Returns the subnet of the instance.
+     *
      * @return The subnet of the instance.
      */
     public String getSubnet() {
@@ -262,6 +284,7 @@ public class Instance {
 
     /**
      * Sets the subnet of the instance.
+     *
      * @param subnet The subnet to set.
      */
     public void setSubnet(String subnet) {
@@ -270,6 +293,7 @@ public class Instance {
 
     /**
      * Returns the gateway of the instance.
+     *
      * @return The gateway of the instance.
      */
     public String getGateway() {
@@ -278,6 +302,7 @@ public class Instance {
 
     /**
      * Sets the gateway of the instance.
+     *
      * @param gateway The gateway to set.
      */
     public void setGateway(String gateway) {
@@ -286,6 +311,7 @@ public class Instance {
 
     /**
      * Returns the prefix length of the instance.
+     *
      * @return The prefix length of the instance.
      */
     public Integer getPrefixLen() {
@@ -294,6 +320,7 @@ public class Instance {
 
     /**
      * Sets the prefix length of the instance.
+     *
      * @param prefixLen The prefix length to set.
      */
     public void setPrefixLen(Integer prefixLen) {

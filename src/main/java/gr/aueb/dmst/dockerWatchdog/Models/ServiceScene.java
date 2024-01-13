@@ -11,6 +11,7 @@ public class ServiceScene {
 
     /**
      * Constructor for the ServiceScene class.
+     *
      * @param name The name of the service scene.
      * @param namespace The namespace of the service scene.
      */
@@ -21,6 +22,7 @@ public class ServiceScene {
 
     /**
      * Returns the name of the service scene.
+     *
      * @return The name of the service scene.
      */
     public String getName() {
@@ -29,6 +31,7 @@ public class ServiceScene {
 
     /**
      * Returns the namespace of the service scene.
+     *
      * @return The namespace of the service scene.
      */
     public String getNamespace() {

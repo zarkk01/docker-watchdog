@@ -17,6 +17,7 @@ public class ImageScene {
 
     /**
      * Constructor for the ImageScene class.
+     *
      * @param id The id of the image.
      * @param name The name of the image.
      * @param size The size of the image.
@@ -33,6 +34,7 @@ public class ImageScene {
      * This method returns the id of the image
      * but as substring starting from index 7 so to not include
      * sha256 hashing function in the start.
+     *
      * @return The id of the image scene.
      */
     public String getId() {
@@ -41,6 +43,7 @@ public class ImageScene {
 
     /**
      * This method sets the id of the image scene.
+     *
      * @param id The id to set.
      */
     public void setId(String id) {
@@ -49,6 +52,7 @@ public class ImageScene {
 
     /**
      * This method returns the name of the image with the tag of it.
+     *
      * @return The name of the image scene.
      */
     public String getName() {
@@ -57,6 +61,7 @@ public class ImageScene {
 
     /**
      * This method sets the name of the image scene.
+     *
      * @param name The name to set.
      */
     public void setName(String name) {
@@ -66,6 +71,7 @@ public class ImageScene {
     /**
      * This method returns the status of the image scene
      * whether it is "In use" or "Unused".
+     *
      * @return The status of the image scene.
      */
     public String getStatus() {
@@ -74,6 +80,7 @@ public class ImageScene {
 
     /**
      * This method sets the status of the image scene.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -83,6 +90,7 @@ public class ImageScene {
     /**
      * This method returns the size of the image scene in GB.
      * It converts our size from bytes to GB so be more readable.
+     *
      * @return The size of the image scene in GB.
      */
     public String getSize() {
@@ -92,6 +100,7 @@ public class ImageScene {
 
     /**
      * This method sets the size of the image scene.
+     *
      * @param size The size to set.
      */
     public void setSize(Long size) {

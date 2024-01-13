@@ -18,6 +18,7 @@ public class MyImage {
 
     /**
      * Constructor for the MyImage class.
+     *
      * @param name The name of the image.
      * @param id The id of the image.
      * @param size The size of the image.
@@ -32,6 +33,7 @@ public class MyImage {
 
     /**
      * Returns a string representation of the MyImage object.
+     *
      * @return A string representation of the MyImage object.
      */
     @Override
@@ -42,6 +44,7 @@ public class MyImage {
 
     /**
      * Returns the id of the image.
+     *
      * @return The id of the image.
      */
     public String getId() {
@@ -50,6 +53,7 @@ public class MyImage {
 
     /**
      * Returns the size of the image.
+     *
      * @return The size of the image.
      */
     public Long getSize() {
@@ -58,6 +62,7 @@ public class MyImage {
 
     /**
      * Returns the name of the image.
+     *
      * @return The name of the image.
      */
     public String getName() {
@@ -66,6 +71,7 @@ public class MyImage {
 
     /**
      * Returns the status of the image.
+     *
      * @return The status of the image.
      */
     public String getStatus() {
@@ -74,6 +80,7 @@ public class MyImage {
 
     /**
      * Sets the status of the image.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -83,6 +90,7 @@ public class MyImage {
     /**
      * Helper method that retrieves a MyImage instance from the
      * myImagesList based on its name.
+     *
      * @param name The name of the image to search for.
      * @return The MyImage instance with the specified name, null if not found.
      */
@@ -96,6 +104,7 @@ public class MyImage {
     /**
      * Helper method that retrieves a MyImage instance
      * from the myImagesList based on its ID.
+     *
      * @param id The ID of the image to search for.
      * @return The MyImage instance with the specified ID, or null if not found.
      */

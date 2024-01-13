@@ -27,6 +27,7 @@ public class MyInstance {
 
     /**
      * Constructor for the MyInstance class.
+     *
      * @param id The id of the instance.
      * @param name The name of the instance.
      * @param image The image of the instance.
@@ -71,6 +72,7 @@ public class MyInstance {
 
     /**
      * Returns a string representation of the MyInstance object.
+     *
      * @return A string representation of the MyInstance object.
      */
     @Override
@@ -85,6 +87,7 @@ public class MyInstance {
 
     /**
      * Returns the id of the instance.
+     *
      * @return The id of the instance.
      */
     public String getId() {
@@ -93,6 +96,7 @@ public class MyInstance {
 
     /**
      * Returns the image of the instance.
+     *
      * @return The image of the instance.
      */
     public String getImage() {
@@ -101,6 +105,7 @@ public class MyInstance {
 
     /**
      * Returns the status of the instance.
+     *
      * @return The status of the instance.
      */
     public String getStatus() {
@@ -109,6 +114,7 @@ public class MyInstance {
 
     /**
      * Returns the name of the instance.
+     *
      * @return The name of the instance.
      */
     public String getName() {
@@ -117,6 +123,7 @@ public class MyInstance {
 
     /**
      * Returns the memory usage of the instance.
+     *
      * @return The memory usage of the instance.
      */
     public long getMemoryUsage() {
@@ -125,6 +132,7 @@ public class MyInstance {
 
     /**
      * Returns the CPU usage of the instance.
+     *
      * @return The CPU usage of the instance.
      */
     public double getCpuUsage() {
@@ -133,6 +141,7 @@ public class MyInstance {
 
     /**
      * Returns the pids of the instance.
+     *
      * @return The pids of the instance.
      */
     public long getPids() {
@@ -141,6 +150,7 @@ public class MyInstance {
 
     /**
      * Returns the block I of the instance.
+     *
      * @return The block I of the instance.
      */
     public double getBlockI() {
@@ -149,6 +159,7 @@ public class MyInstance {
 
     /**
      * Returns the block O of the instance.
+     *
      * @return The block O of the instance.
      */
     public double getBlockO() {
@@ -157,6 +168,7 @@ public class MyInstance {
 
     /**
      * Returns the volumes of the instance.
+     *
      * @return The volumes of the instance.
      */
     public ArrayList<String> getVolumes() {
@@ -165,6 +177,7 @@ public class MyInstance {
 
     /**
      * Returns the subnet of the instance.
+     *
      * @return The subnet of the instance.
      */
     public String getSubnet() {
@@ -173,6 +186,7 @@ public class MyInstance {
 
     /**
      * Returns the gateway of the instance.
+     *
      * @return The gateway of the instance.
      */
     public String getGateway() {
@@ -181,6 +195,7 @@ public class MyInstance {
 
     /**
      * Returns the prefix length of the instance.
+     *
      * @return The prefix length of the instance.
      */
     public int getPrefixLen() {
@@ -189,6 +204,7 @@ public class MyInstance {
 
     /**
      * Sets the status of the instance.
+     *
      * @param status The status to set.
      */
     public void setStatus(String status) {
@@ -197,6 +213,7 @@ public class MyInstance {
 
     /**
      * Sets the name of the instance.
+     *
      * @param newName The name to set.
      */
     public void setName(String newName) {
@@ -205,6 +222,7 @@ public class MyInstance {
 
     /**
      * Sets the memory usage of the instance.
+     *
      * @param memoryUsage The memory usage to set.
      */
     public void setMemoryUsage(long memoryUsage) {
@@ -213,6 +231,7 @@ public class MyInstance {
 
     /**
      * Sets the CPU usage of the instance.
+     *
      * @param cpuUsage The CPU usage to set.
      */
     public void setCpuUsage(double cpuUsage) {
@@ -221,6 +240,7 @@ public class MyInstance {
 
     /**
      * Sets the pids of the instance.
+     *
      * @param pids The pids to set.
      */
     public void setPids(long pids) {
@@ -229,6 +249,7 @@ public class MyInstance {
 
     /**
      * Sets the block I of the instance.
+     *
      * @param blockI The block I to set.
      */
     public void setBlockI(double blockI) {
@@ -237,6 +258,7 @@ public class MyInstance {
 
     /**
      * Sets the block O of the instance.
+     *
      * @param blockO The block O to set.
      */
     public void setBlockO(double blockO) {
@@ -245,6 +267,7 @@ public class MyInstance {
 
     /**
      * Sets the volumes of the instance.
+     *
      * @param volumes The volumes to set.
      */
     public void setVolume(ArrayList<String> volumes) {
@@ -253,6 +276,7 @@ public class MyInstance {
 
     /**
      * Adds a volume to the instance.
+     *
      * @param volumeName The name of the volume to add.
      */
     public void addVolume(String volumeName) {
@@ -261,6 +285,7 @@ public class MyInstance {
 
     /**
      * Sets the subnet of the instance.
+     *
      * @param subnet The subnet to set.
      */
     public void setSubnet(String subnet) {
@@ -269,6 +294,7 @@ public class MyInstance {
 
     /**
      * Sets the gateway of the instance.
+     *
      * @param gateway The gateway to set.
      */
     public void setGateway(String gateway) {
@@ -277,6 +303,7 @@ public class MyInstance {
 
     /**
      * Sets the prefix length of the instance.
+     *
      * @param prefixLen The prefix length to set.
      */
     public void setPrefixLen(int prefixLen) {
@@ -285,6 +312,7 @@ public class MyInstance {
 
     /**
      * Retrieves a MyInstance instance from the myInstancesList based on its ID.
+     *
      * @param id The ID of the instance to search for.
      * @return The MyInstance instance with the specified ID, or null if not found.
      */
