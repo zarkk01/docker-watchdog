@@ -81,15 +81,16 @@ public class DatabaseThread implements Runnable {
                 PreparedStatement dropVolumesStmt = conn.prepareStatement(dropVolumesTable);
                 dropVolumesStmt.execute();
             } catch (Exception e) {
-                throw new DatabaseOperationException("dropping tables in database", "containers, images, volumes");
+                throw new DatabaseOperationException("dropping tables in database",
+                        "containers, images, volumes");
             }
 
             // Create Metrics (Changes) and Instances tables.
             try {
-                String createMetricsTable = "CREATE TABLE IF NOT EXISTS Metrics (" +
-                        "id INT AUTO_INCREMENT, " +
-                        "datetime TIMESTAMP, " +
-                        "PRIMARY KEY(id))";
+                String createMetricsTable = "CREATE TABLE IF NOT EXISTS Metrics ("
+                        + "id INT AUTO_INCREMENT, "
+                        + "datetime TIMESTAMP, "
+                        + "PRIMARY KEY(id))";
                 PreparedStatement createMetricsStmt = conn.prepareStatement(createMetricsTable);
                 createMetricsStmt.execute();
 
@@ -170,7 +171,7 @@ public class DatabaseThread implements Runnable {
      * @throws DatabaseOperationException if an error occurs while keeping track of instances.
      */
     public static void keepTrackOfInstances() throws DatabaseOperationException {
-        try{
+        try {
             // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
@@ -273,7 +274,7 @@ public class DatabaseThread implements Runnable {
      * @param image the MyImage object representing the image to be deleted
      * @throws DatabaseOperationException if an error occurs while deleting the image from the database
      */
-    public static void deleteImage(MyImage image) throws DatabaseOperationException{
+    public static void deleteImage(MyImage image) throws DatabaseOperationException {
         try {
             // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);

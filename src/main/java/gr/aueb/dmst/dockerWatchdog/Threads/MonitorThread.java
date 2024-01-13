@@ -93,8 +93,8 @@ public class MonitorThread implements Runnable {
                 );
 
                 // Checking for volumes and adding them to the list.
-                if(containerInfo.getMounts() != null){
-                    for(InspectContainerResponse.Mount volumeName : containerInfo.getMounts()){
+                if (containerInfo.getMounts() != null) {
+                    for (InspectContainerResponse.Mount volumeName : containerInfo.getMounts()) {
                         newInstance.addVolume(volumeName.getName());
                     }
                 }
@@ -115,10 +115,10 @@ public class MonitorThread implements Runnable {
                         volume.getMountpoint(),
                         new ArrayList<String>()
                 );
-                for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
-                    for(ContainerMount volumeName : container.getMounts()){
-                        if(volumeName.getName() == null){continue;}
-                        if(volumeName.getName().equals(volume.getName())){
+                for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+                    for (ContainerMount volumeName : container.getMounts()) {
+                        if (volumeName.getName() == null) {continue; }
+                        if (volumeName.getName().equals(volume.getName())) {
                             newVolume.addContainerNameUsing(container.getNames()[0]);
                         }
                     }
@@ -180,7 +180,7 @@ public class MonitorThread implements Runnable {
                     case CONTAINER:
                         try {
                             // If it is a container event, call the method to handle it.
-                            handleContainerEvent(eventAction, id,event);
+                            handleContainerEvent(eventAction, id, event);
 
                             // Update the lists in the database.
                             DatabaseThread.keepTrackOfInstances();
@@ -262,8 +262,8 @@ public class MonitorThread implements Runnable {
     // Helper method to handle the destroy event of a container.
     private void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
         Main.myInstances.remove(instance);
-        for(MyInstance checkingInstance : Main.myInstances){
-            if(checkingInstance.getImage().equals(instance.getImage())){
+        for (MyInstance checkingInstance : Main.myInstances) {
+            if (checkingInstance.getImage().equals(instance.getImage())) {
                 MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
                 imageToSetUnused.setStatus("Unused");
             }
@@ -272,7 +272,7 @@ public class MonitorThread implements Runnable {
         // Checking if any volume are effected by this destroy event.
         for(String volumeName : instance.getVolumes()){
             MyVolume vol = MyVolume.getVolumeByName(volumeName);
-            if(vol != null){vol.removeContainerNameUsing(instance.getName());}
+            if (vol != null) {vol.removeContainerNameUsing(instance.getName()); }
         }
         DatabaseThread.keepTrackOfVolumes();
     }
@@ -289,14 +289,14 @@ public class MonitorThread implements Runnable {
                 container.getState().getStatus(),
                 0, 0, 0, 0, 0,
                 new ArrayList<String>(),
-                container.getNetworkSettings().getIpAddress(),container.getNetworkSettings().getGateway(),
+                container.getNetworkSettings().getIpAddress(), container.getNetworkSettings().getGateway(),
                 container.getNetworkSettings().getIpPrefixLen()
         );
 
         // Adding to it the volumes that are used, if any.
-        if(container.getMounts() != null){
-            for(InspectContainerResponse.Mount volumeName : container.getMounts()){
-                if(volumeName.getName() == null){continue;}
+        if (container.getMounts() != null) {
+            for (InspectContainerResponse.Mount volumeName : container.getMounts()) {
+                if (volumeName.getName() == null) {continue;}
                 newInstance.addVolume(volumeName.getName());
                 MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
                 assert vol != null;
@@ -306,8 +306,8 @@ public class MonitorThread implements Runnable {
         }
 
         // Checking if this creating, converted an image from unused to in use.
-        for(MyImage image : Main.myImages) {
-            if(newInstance.getImage().equals(image.getName())){
+        for (MyImage image : Main.myImages) {
+            if (newInstance.getImage().equals(image.getName())) {
                 image.setStatus("In use");
             }
         }
@@ -416,9 +416,9 @@ public class MonitorThread implements Runnable {
             );
 
             // Checking if any container is using this volume, so to add it in containerNamesUsing.
-            for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
-                for(ContainerMount volumeMount : container.getMounts()){
-                    if(volumeMount.getName() != null && volumeMount.getName().equals(volume.getName())){
+            for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+                for (ContainerMount volumeMount : container.getMounts()) {
+                    if (volumeMount.getName() != null && volumeMount.getName().equals(volume.getName())) {
                         newVolume.addContainerNameUsing(container.getNames()[0]);
                     }
                 }
@@ -451,8 +451,8 @@ public class MonitorThread implements Runnable {
     // Helper method to get the status of an image.
     public String getImageUsageStatus(String name){
         // Iterate through the containers and check if the image is used by at least one.
-        for(Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()){
-            if(container.getImage().equals(name)){
+        for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+            if (container.getImage().equals(name)) {
                 return "In use";
             }
         }

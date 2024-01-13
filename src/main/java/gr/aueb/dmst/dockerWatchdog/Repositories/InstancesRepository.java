@@ -9,14 +9,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 /**
- * InstancesRepository is an interface that help us with executing MYSQL queries on the Instance entity.
- * InstancesRepository declares custom methods for specific database access needs.
+ * InstancesRepository is an interface that help us
+ * with executing MYSQL queries on the Instance entity.
+ * InstancesRepository declares custom methods
+ * for specific database access needs.
  */
 public interface InstancesRepository extends JpaRepository<Instance, Long> {
 
     /**
-     * This method returns a list of all instances associated with the maximum metric ID.
-     * We use it so to get the instances of the latest metric, that means the current state
+     * This method returns a list of all instances
+     * associated with the maximum metric ID.
+     * We use it so to get the instances of the latest metric,
+     * that means the current state
      * of the Docker Cluster.
      *
      * @return a list of instances.
@@ -25,7 +29,8 @@ public interface InstancesRepository extends JpaRepository<Instance, Long> {
     List<Instance> findAllByMaxMetricId();
 
     /**
-     * This method returns the count of instances with a specific metric ID and a status of 'running'.
+     * This method returns the count of instances with a specific metric ID
+     * and a status of 'running'.
      * We use it so to get the number of running instances in the past or in the present.
      *
      * @param metricid the metric ID to filter by.

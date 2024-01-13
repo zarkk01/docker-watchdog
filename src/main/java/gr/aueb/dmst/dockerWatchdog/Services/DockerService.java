@@ -174,7 +174,9 @@ public class DockerService {
     public void createContainer(String imageName) {
         try {
             ExecutorThread.runContainer(imageName);
-        } catch (ImageNotFoundException | ContainerCreationException | ContainerNotModifiedException e) {
+        } catch (ImageNotFoundException
+                 | ContainerCreationException
+                 | ContainerNotModifiedException e) {
             logger.error(e.getMessage());
         }
     }

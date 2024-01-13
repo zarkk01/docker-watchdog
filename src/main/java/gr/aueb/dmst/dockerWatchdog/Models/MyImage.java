@@ -2,61 +2,89 @@ package gr.aueb.dmst.dockerWatchdog.Models;
 
 import gr.aueb.dmst.dockerWatchdog.Main;
 
+/**
+ * This class represents an image object.
+ * MyImage is a custom class we created to represent
+ * Docker's Java API original images. In this way, we have better control
+ * over them, and we assign them specific properties and values we need.
+ * A MyImage has a name, id, size, and status.
+ */
 public class MyImage {
 
-    private final String name; // Name of image final cause will not change
-    private final String id; // ID of image final cause will not change
-    private final Long size; // Size of image final cause will not change
-    private String status; // Status of image
+    private final String name;
+    private final String id;
+    private final Long size;
+    private String status;
 
-    // Constructor
+    /**
+     * Constructor for the MyImage class.
+     * @param name The name of the image.
+     * @param id The id of the image.
+     * @param size The size of the image.
+     * @param status The status of the image.
+     */
     public MyImage(String name, String id, Long size, String status) {
-
-        // Initialize images variables with the values of the parameters
         this.name = name;
         this.id = id;
         this.size = size;
         this.status = status;
     }
 
-    // Method toString that returns a string with the values of the instance variables
+    /**
+     * Returns a string representation of the MyImage object.
+     * @return A string representation of the MyImage object.
+     */
     @Override
     public String toString() {
-        return String.format("Name = %s, ID = %s, Size = %.2f MB, Status = %s", name, id.substring(7), (double) size / (1024 * 1024), status);
+        return String.format("Name = %s, ID = %s, Size = %.2f MB, Status = %s",
+                name, id.substring(7), (double) size / (1024 * 1024), status);
     }
 
-
-    // Getter for id
+    /**
+     * Returns the id of the image.
+     * @return The id of the image.
+     */
     public String getId() {
         return id;
     }
 
-    // Getter for size
+    /**
+     * Returns the size of the image.
+     * @return The size of the image.
+     */
     public Long getSize() {
         return size;
     }
 
-    // Getter for name
+    /**
+     * Returns the name of the image.
+     * @return The name of the image.
+     */
     public String getName() {
         return name;
     }
 
-    // Getter for status
+    /**
+     * Returns the status of the image.
+     * @return The status of the image.
+     */
     public String getStatus() {
         return status;
     }
 
-    // Setter for status, only setter cause status can change
+    /**
+     * Sets the status of the image.
+     * @param status The status to set.
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
-
     /**
-     * Retrieves a MyImage instance from the myImagesList based on its name.
-     *
+     * Helper method that retrieves a MyImage instance from the
+     * myImagesList based on its name.
      * @param name The name of the image to search for.
-     * @return The MyImage instance with the specified name, or null if not found.
+     * @return The MyImage instance with the specified name, null if not found.
      */
     public static MyImage getImageByName(String name) {
         return Main.myImages.stream()
@@ -66,8 +94,8 @@ public class MyImage {
     }
 
     /**
-     * Retrieves a MyImage instance from the myImagesList based on its ID.
-     *
+     * Helper method that retrieves a MyImage instance
+     * from the myImagesList based on its ID.
      * @param id The ID of the image to search for.
      * @return The MyImage instance with the specified ID, or null if not found.
      */
@@ -77,5 +105,4 @@ public class MyImage {
                 .findFirst()
                 .orElse(null);
     }
-
 }
