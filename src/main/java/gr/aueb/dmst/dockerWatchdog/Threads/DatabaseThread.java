@@ -25,9 +25,6 @@ public class DatabaseThread implements Runnable {
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
-    // Timer instance used for scheduling tasks.
-    private static final Timer timer = new java.util.Timer();
-
     // Database connection details.
     private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = "docker_db";
