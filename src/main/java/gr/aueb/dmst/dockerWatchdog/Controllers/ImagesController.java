@@ -1,7 +1,19 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.net.URI;
+import java.net.URL;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.io.IOException;
+
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageActionException;
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -9,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -24,54 +35,51 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
+/**
+ * The ImagesController class is an FX Controller responsible for managing the Images Panel in the application.
+ * It provides methods for handling user interactions with images, such as creating a container from an image,
+ * starting all containers from an image, stopping all containers from an image, pulling a given image, and removing an image.
+ * It also provides methods for changing panels, showing notifications, and updating the images displayed in the TableView.
+ * The class uses the WATCHDOG REST API to communicate with the backend and our database and send requests for information and actions.
+ */
 public class ImagesController implements Initializable {
+    // Base URL for Watchdog API regarding images
+    private static final String BASE_URL = "http://localhost:8080/api/images/";
 
+    private Stage stage;
+    private Parent root;
+
+    @FXML
+    private TableColumn<ImageScene, String> idColumn;
+    @FXML
+    private TableColumn<ImageScene, String> nameColumn;
+    @FXML
+    private TableColumn<ImageScene, String> statusColumn;
+    @FXML
+    private TableColumn<ImageScene, Long> sizeColumn;
+    @FXML
+    private TableColumn<ImageScene, Void> createContainerCollumn;
+    @FXML
+    private TableColumn<ImageScene, Void> startAllCollumn;
+    @FXML
+    private TableColumn<ImageScene, Void> stopAllCollumn;
+    @FXML
+    private TableColumn<ImageScene, Void> removeImageColumn;
     @FXML
     private TableView<ImageScene> imagesTableView;
 
     @FXML
     private CheckBox usedImagesCheckbox;
-
     @FXML
     private TextField pullImageTextField;
-
-    @FXML
-    private VBox notificationBox;
-
-    @FXML
-    private TableColumn<ImageScene,String> idColumn;
-    @FXML
-    private TableColumn<ImageScene,String> nameColumn;
-    @FXML
-    private TableColumn<ImageScene,String> statusColumn;
-    @FXML
-    private TableColumn<ImageScene,Long> sizeColumn;
-    @FXML
-    private TableColumn<ImageScene,Void> createContainerCollumn;
-    @FXML
-    private TableColumn<ImageScene,Void> startAllCollumn;
-    @FXML
-    private TableColumn<ImageScene,Void> stopAllCollumn;
-    @FXML
-    private TableColumn<ImageScene,Void> removeImageColumn;
-
     @FXML
     private TextField searchField;
+    @FXML
+    private VBox notificationBox;
 
     @FXML
     public Button containersButton;
@@ -83,265 +91,96 @@ public class ImagesController implements Initializable {
     public Button kubernetesButton;
     @FXML
     public Button volumesButton;
+
     @FXML
     public ImageView watchdogImage;
 
-    private Stage stage;
-    private Parent root;
-
-    //Initialize the controller
+    /**
+     * This method is automatically called when user navigates to Images Panel.
+     * It sets up the TableView columns, hover effects for the sidebar images, and starts a timeline to refresh images.
+     * It also sets up the cell factories for the TableView columns that contain buttons.
+     *
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            //Set up table columns
+            // Set up the TableView columns.
             idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+            // Set up the hover effects for the sidebar images.
             hoveredSideBarImages();
 
-            // Install funny tooltip on watchdog imageView
+            // Set up a tooltip for the watchdog logo saying Woof!.
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
-            Tooltip.install(watchdogImage,woof);
+            Tooltip.install(watchdogImage, woof);
 
-            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startCellFactory = new Callback<>() {
-                @Override
-                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
-                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-
-                        private final Tooltip createTooltip = new Tooltip("Create a Container");
-
-                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/create.png").toExternalForm()));
-                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/createHover.png").toExternalForm()));
-                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
-                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
-                        ImageView view = new ImageView(img);
-
-                        {
-                            DropShadow dropShadow = new DropShadow();
-                            btn.setEffect(dropShadow);
-                            createTooltip.setShowDelay(Duration.millis(50));
-                            Tooltip.install(btn, createTooltip);
-                            viewStart.setFitHeight(30);
-                            viewStart.setFitHeight(30);
-                            viewStart.setPreserveRatio(true);
-                            viewStartHover.setFitHeight(30);
-                            viewStartHover.setPreserveRatio(true);
-                            viewStartClick.setFitHeight(20);
-                            viewStartClick.setPreserveRatio(true);
-                            viewStart.setPreserveRatio(true);
-                            viewStart.setOpacity(0.8);
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(viewStart);
-                            btn.setOnAction((ActionEvent event) -> {
-                                // Handle button click to create a container
-                                ImageScene image = getTableView().getItems().get(getIndex());
-                                try {
-                                    createContainer(image);
-                                } catch (IOException | InterruptedException | URISyntaxException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-
-                            btn.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
-                            btn.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/create.png").toExternalForm())));
-                            btn.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
-                            btn.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
-
-
+            // Set up the cell factories for the TableView columns that contain buttons.
+            createContainerCollumn.setCellFactory(createButtonCellFactory(
+                    "Create a Container",
+                    "/images/create.png",
+                    "/images/createHover.png",
+                    "/images/playClick.png", image -> {
+                        try {
+                            this.createContainer(image);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }));
 
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(btn);
-                            }
+            startAllCollumn.setCellFactory(createButtonCellFactory(
+                    "Start All Containers",
+                    "/images/play.png",
+                    "/images/playHover.png",
+                    "/images/playClick.png", image -> {
+                        try {
+                            this.startAllContainers(image.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    };
-                    return cell;
-                }
-            };
-            createContainerCollumn.setCellFactory(startCellFactory);
-            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startAllCellFactory = new Callback<>() {
-                @Override
-                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
-                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-                        private final Tooltip startTooltip = new Tooltip("Start All Containers");
-                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
-                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
-                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
-                        Image img = new Image(getClass().getResource("/images/play.png").toExternalForm());
-                        ImageView view = new ImageView(img);
+                    }));
 
-                        {
-                            startTooltip.setShowDelay(Duration.millis(50));
-                            Tooltip.install(btn, startTooltip);
-
-                            DropShadow dropShadow = new DropShadow();
-                            btn.setEffect(dropShadow);
-
-                            viewStart.setFitHeight(30);
-                            viewStart.setFitHeight(30);
-                            viewStart.setPreserveRatio(true);
-                            viewStartHover.setFitHeight(30);
-                            viewStartHover.setPreserveRatio(true);
-                            viewStartClick.setFitHeight(20);
-                            viewStartClick.setPreserveRatio(true);
-                            viewStart.setPreserveRatio(true);
-                            viewStart.setOpacity(0.8);
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(viewStart);
-                            btn.setOnAction((ActionEvent event) -> {
-                                ImageScene image = getTableView().getItems().get(getIndex());
-                                try {
-                                    startAllContainers(image.getName());
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            btn.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
-                            btn.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
-                            btn.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
-                            btn.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
-
+            stopAllCollumn.setCellFactory(createButtonCellFactory(
+                    "Stop All Containers",
+                    "/images/stop.png",
+                    "/images/stopHover.png",
+                    "/images/stopClick.png", image -> {
+                        try {
+                            this.stopAllContainers(image.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                    }));
 
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(btn);
-                            }
+            removeImageColumn.setCellFactory(createButtonCellFactory(
+                    "Delete An Image",
+                    "/images/binRed.png",
+                    "/images/binHover.png",
+                    "/images/binClick.png", image -> {
+                        try {
+                            this.removeImage(image.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    };
-                    return cell;
-                }
-            };
-            startAllCollumn.setCellFactory(startAllCellFactory);
+                    }));
 
-            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> stopAllCellFactory = new Callback<>() {
-                @Override
-                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
-                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btn = new Button();
-                        private final Tooltip stopTooltip = new Tooltip("Stop All Containers");
-                        Image img = new Image(getClass().getResource("/images/stop.png").toExternalForm());
-                        ImageView view = new ImageView(img);
-                        {
-                            DropShadow dropShadow = new DropShadow();
-                            btn.setEffect(dropShadow);
-
-                            stopTooltip.setShowDelay(Duration.millis(50));
-                            Tooltip.install(btn, stopTooltip);
-                            view.setFitHeight(20);
-                            view.setPreserveRatio(true);
-                            btn.setGraphic(view);
-
-                            btn.setOnAction((ActionEvent event) -> {
-                                ImageScene image = getTableView().getItems().get(getIndex());
-                                try {
-                                    stopAllContainers(image.getName());
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            btn.setOnMouseEntered(e -> view.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-                            btn.setOnMouseExited(e -> view.setImage(new Image(getClass().getResource("/images/stop.png").toExternalForm())));
-                            btn.setOnMousePressed(e -> view.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
-                            btn.setOnMouseReleased(e -> view.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-                        }
-
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(btn);
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
-            stopAllCollumn.setCellFactory(stopAllCellFactory);
-
-            Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> removeImageFactory = new Callback<>() {
-                @Override
-                public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
-                    final TableCell<ImageScene, Void> cell = new TableCell<>() {
-                        private final Button btnRemove = new Button();
-                        private final Tooltip removeTool = new Tooltip("Delete An Image");
-                        Image imgRemove = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
-                        ImageView viewRemove = new ImageView(imgRemove);
-                        {
-
-                            DropShadow dropShadow = new DropShadow();
-                            btnRemove.setEffect(dropShadow);
-
-                            //btnRemove.setPadding(new Insets(10, 4, 10, 1));
-                            removeTool.setShowDelay(Duration.millis(50));
-
-                            Tooltip.install(btnRemove, removeTool);
-                            viewRemove.setFitHeight(30);
-                            viewRemove.setPreserveRatio(true);
-                            btnRemove.setGraphic(viewRemove);
-                            viewRemove.setFitWidth(30);
-                            btnRemove.setPrefSize(30, 30);
-                            viewRemove.setOpacity(0.8);
-                            btnRemove.setGraphic(viewRemove);
-                            btnRemove.setOnAction((ActionEvent event) -> {
-                                ImageScene image = getTableView().getItems().get(getIndex());
-                                if(image.getStatus().equals("In use")) {
-                                    showNotification("Error", "Image is in use, delete all containers first");
-                                    return;
-                                }
-                                try {
-                                    removeImage(image.getName());
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            btnRemove.setOnMouseEntered(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binHover.png").toExternalForm())));
-                            btnRemove.setOnMouseExited(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binRed.png").toExternalForm())));
-                            btnRemove.setOnMousePressed(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binClick.png").toExternalForm())));
-                            btnRemove.setOnMouseReleased(e -> viewRemove.setImage(new Image(getClass().getResource("/images/binHover.png").toExternalForm())));
-
-                        }
-
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                setGraphic(btnRemove);
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
-            removeImageColumn.setCellFactory(removeImageFactory);
-
-            refreshImages();
-
+            // Set the placeholder for the TableView.
             imagesTableView.setPlaceholder(new Label("No images available."));
 
+            // Set up the action for the usedImagesCheckbox.
             usedImagesCheckbox.setOnAction(event -> {
                 refreshImages();
             });
 
+            // Refresh the images.
+            refreshImages();
+
+            // Start a timeline to refresh images every 1.5 seconds.
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
@@ -349,105 +188,466 @@ public class ImagesController implements Initializable {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Creates a cell factory for our each of the 4 lasts TableColumns of the Images TableView.
+     * This method creates a cell factory for Create A Container, Stop All Containers,
+     * Start All Containers, and Delete An Image buttons.
+     * Each cell contains a button with an image(emoji), a tooltip(for indexing what it does),
+     * and an action that is performed when the button is clicked.
+     * The button's image changes when the button is hovered over or clicked.
+     * The tooltip text, the image paths, and the action are specified by the parameters.
+     *
+     * @param tooltipText The text of the tooltip that is displayed when the button is hovered over.
+     * @param imagePath The path to the image that is displayed on the button.
+     * @param hoverImagePath The path to the image that is displayed on the button when it is hovered over.
+     * @param clickImagePath The path to the image that is displayed on the button when it is clicked.
+     * @param action The action that is performed when the button is clicked. It is a Consumer that takes an ImageScene object as input.
+     * @return A Callback that can be used as a cell factory for a TableColumn.
+     */
+    private Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> createButtonCellFactory(String tooltipText, String imagePath, String hoverImagePath, String clickImagePath, Consumer<ImageScene> action) {
+        return new Callback<>() {
+            @Override
+            public TableCell<ImageScene, Void> call(final TableColumn<ImageScene, Void> param) {
+                final TableCell<ImageScene, Void> cell = new TableCell<>() {
+                    private final Button btn = new Button();
+                    private final Tooltip tooltip = new Tooltip(tooltipText);
+                    private final ImageView view = new ImageView(new Image(getClass().getResource(imagePath).toExternalForm()));
+                    private final ImageView viewHover = new ImageView(new Image(getClass().getResource(hoverImagePath).toExternalForm()));
+                    private final ImageView viewClick = new ImageView(new Image(getClass().getResource(clickImagePath).toExternalForm()));
+
+                    {
+                        // Set up the button and its effects.
+                        DropShadow dropShadow = new DropShadow();
+                        btn.setEffect(dropShadow);
+                        tooltip.setShowDelay(Duration.millis(50));
+                        Tooltip.install(btn, tooltip);
+                        view.setFitHeight(30);
+                        view.setPreserveRatio(true);
+                        viewHover.setFitHeight(30);
+                        viewHover.setPreserveRatio(true);
+                        viewClick.setFitHeight(20);
+                        viewClick.setPreserveRatio(true);
+                        view.setOpacity(0.8);
+                        btn.setGraphic(view);
+
+                        // Set up the action for the button.
+                        btn.setOnAction((ActionEvent event) -> {
+                            ImageScene image = getTableView().getItems().get(getIndex());
+                            action.accept(image);
+                        });
+
+                        // Set up the hover and click effects for the button.
+                        btn.setOnMouseEntered(e -> view.setImage(viewHover.getImage()));
+                        btn.setOnMouseExited(e -> view.setImage(new Image(getClass().getResource(imagePath).toExternalForm())));
+                        btn.setOnMousePressed(e -> view.setImage(viewClick.getImage()));
+                        btn.setOnMouseReleased(e -> view.setImage(viewHover.getImage()));
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+    }
+
+    /**
+     * Sets the hover effect for the sidebar images.
+     * This method applies a hover effect to the sidebar buttons.
+     * The `setHoverEffect` method takes a button and two image paths as parameters:
+     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     */
     private void hoveredSideBarImages() {
-        Image originalContainers = new Image(getClass().getResourceAsStream("/images/containerGrey.png"));
+        setHoverEffect(containersButton, "/images/containerGrey.png", "/images/container.png");
+        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
+        setHoverEffect(kubernetesButton, "/images/kubernetesGrey.png", "/images/kubernetes.png");
+        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
+    }
 
-        // Load your hovered image
-        Image hoveredContainers = new Image(getClass().getResourceAsStream("/images/container.png"));
+    /**
+     * Sets the hover effect for a button.
+     * This method applies a hover effect to our 4 buttons in the sidebar.
+     * When the mouse pointer hovers over the button,
+     * the image of the button changes to a different image to indicate that the button is being hovered over.
+     * When the mouse pointer moves away from the button,
+     * the image of the button changes back to the original image.
+     *
+     * @param button The button to which the hover effect is to be applied.
+     * @param originalImagePath The path to the original image of the button.
+     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
+     */
+    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
+        // Load the original image and the hovered image.
+        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
+        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
 
-        // Set the original image to the ImageView
-        ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
+        // Set the original image as the button's graphic.
+        ((ImageView) button.getGraphic()).setImage(originalImage);
 
-        // Attach event handlers
-        containersButton.setOnMouseEntered(event -> {
-            containersButton.getStyleClass().add("button-hovered");
-            ((ImageView) containersButton.getGraphic()).setImage(hoveredContainers);
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        button.setOnMouseEntered(event -> {
+            button.getStyleClass().add("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(hoveredImage);
         });
 
-        containersButton.setOnMouseExited(event -> {
-            containersButton.getStyleClass().remove("button-hovered");
-            ((ImageView) containersButton.getGraphic()).setImage(originalContainers);
-        });
-
-        Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
-
-        // Load your hovered image
-        Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
-
-        // Set the original image to the ImageView
-        ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
-
-        // Attach event handlers
-        volumesButton.setOnMouseEntered(event -> {
-            volumesButton.getStyleClass().add("button-hovered");
-            ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
-        });
-
-        volumesButton.setOnMouseExited(event -> {
-            volumesButton.getStyleClass().remove("button-hovered");
-            ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
-        });
-
-
-        Image originalGraphics = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
-
-        // Load your hovered image
-        Image hoveredGraphics = new Image(getClass().getResourceAsStream("/images/graphics.png"));
-
-        // Set the original image to the ImageView
-        ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
-
-        // Attach event handlers
-        graphicsButton.setOnMouseEntered(event -> {
-            graphicsButton.getStyleClass().add("button-hovered");
-            ((ImageView) graphicsButton.getGraphic()).setImage(hoveredGraphics);
-        });
-
-        graphicsButton.setOnMouseExited(event -> {
-            graphicsButton.getStyleClass().remove("button-hovered");
-            ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
-        });
-
-        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetesGrey.png"));
-
-        // Load your hovered image
-        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetes.png"));
-
-        // Set the original image to the ImageView
-        ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
-
-        // Attach event handlers
-        kubernetesButton.setOnMouseEntered(event -> {
-            kubernetesButton.getStyleClass().add("button-hovered");
-            ((ImageView) kubernetesButton.getGraphic()).setImage(hoveredKubernetes);
-        });
-
-        kubernetesButton.setOnMouseExited(event -> {
-            kubernetesButton.getStyleClass().remove("button-hovered");
-            ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        button.setOnMouseExited(event -> {
+            button.getStyleClass().remove("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(originalImage);
         });
     }
 
-    // Change the scene to the specified FXML file
+    /**
+     * Refreshes the images displayed in the TableView.
+     * This method retrieves all images from the WATCHDOG REST API,
+     * clears the current items in the TableView,
+     * and adds the retrieved images to the TableView.
+     * If the 'usedImagesCheckbox' is selected, only images that are in use are added to the TableView.
+     * If the 'usedImagesCheckbox' is not selected, all images are added to the TableView.
+     * The images are filtered by the text in the 'searchField' TextField.
+     * Only images whose name contains the text in the 'searchField' are added to the TableView.
+     */
+    public void refreshImages() {
+        try {
+            // Retrieve all images from the WATCHDOG REST API.
+            List<ImageScene> images = getAllImages();
+
+            // Clear the current items in the TableView.
+            imagesTableView.getItems().clear();
+
+            // Iterate over the retrieved images.
+            for (ImageScene image : images) {
+                // If the image's name contains the text in the 'searchField' TextField...
+                if (image.getName().contains(searchField.getText())) {
+                    // If the 'usedImagesCheckbox' is selected...
+                    if (usedImagesCheckbox.isSelected()) {
+                        // If the image is in use, add it to the TableView.
+                        if (image.getStatus().equals("In use")) {
+                            imagesTableView.getItems().add(image);
+                        }
+                    } else {
+                        // If the 'usedImagesCheckbox' is not selected, add the image to the TableView.
+                        imagesTableView.getItems().add(image);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error occurred while refreshing images: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieves all images from the WATCHDOG REST API.
+     * This method sends a GET request to the WATCHDOG REST API and receives a response.
+     * The response body is a JSON array where each element is a JSON object that represents an image.
+     * Each JSON object is parsed into an ImageScene object and added to a list.
+     * The list of all ImageScene objects is returned.
+     *
+     * @return A list of all images, where each image is represented by an ImageScene object.
+     * @throws Exception If an error occurs while sending the request or receiving the response.
+     */
+    public List<ImageScene> getAllImages() throws Exception {
+        // Create a new HttpRequest that sends a GET request to the WATCHDOG REST API.
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/images"))
+                .GET()
+                .build();
+
+        // Send the HttpRequest and receive the HttpResponse.
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Parse the body of the HttpResponse into a JSONArray.
+        JSONArray jsonArray = new JSONArray(response.body());
+
+        // Create a new list to hold the ImageScene objects.
+        List<ImageScene> images = new ArrayList<>();
+
+        // Iterate over each element in the JSONArray.
+        for (int i = 0; i < jsonArray.length(); i++) {
+            // Get the current element as a JSONObject.
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+            // Extract the image's information from the JSONObject.
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("name");
+            String status = jsonObject.getString("status");
+            Long size = jsonObject.getLong("size");
+
+            // Create a new ImageScene object with the extracted information and add it to the list.
+            images.add(new ImageScene(id, name, size, status));
+        }
+
+        // Return the list of ImageScene objects.
+        return images;
+    }
+
+    /**
+     * Creates a container from the given image.
+     * This method sends a POST request to the WATCHDOG REST API to create a container from the image.
+     * If the response status code is not 200 meaning we are in big trouble, an ImageActionException is thrown.
+     * If the container is created successfully, the status of the image is set to "In use" and the images are refreshed.
+     * Also, a noti is displayed.
+     *
+     * @param image The image from which the container is to be created.
+     * @throws ImageActionException If an error occurs while creating the container.
+     */
+    public void createContainer(ImageScene image) throws ImageActionException {
+        try {
+            // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL + "create/" + image.getName()))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // If the response status code is not 200, throw an ImageActionException.
+            if (response.statusCode() != 200) {
+                throw new ImageActionException("Container creation failed", image.getName());
+            }
+
+            // If the container is created successfully, set the status of the image to "In use" and refresh the images.
+            // Also, show a notification.
+            showNotification("Success", "Container created successfully");
+            image.setStatus("In use");
+            refreshImages();
+        } catch (Exception e) {
+            throw new ImageActionException("Error occurred while creating container: " + e.getMessage(), image.getName());
+        }
+    }
+
+    /**
+     * Starts all containers created from the given image.
+     * This method sends a POST request to the WATCHDOG REST API to start all containers created from the image we want.
+     * If the response status code is not 200 we are in big trouble and, an ImageActionException is thrown.
+     * If all containers are started successfully, the images are refreshed and a noti is displayed.
+     *
+     * @param imageName The name of the image from which the containers were created.
+     * @throws ImageActionException If an error occurs while starting the containers.
+     */
+    public void startAllContainers(String imageName) throws ImageActionException {
+        try {
+            // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/containers/startAll/" + imageName))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // If the response status code is not 200, throw an ImageActionException.
+            if (response.statusCode() != 200) {
+                throw new ImageActionException("Starting all containers failed", imageName);
+            }
+
+            // If all containers are started successfully, refresh the images and show a notification.
+            showNotification("Success", "All containers started successfully");
+            refreshImages();
+        } catch (Exception e) {
+            throw new ImageActionException("Error occurred while starting all containers: " + e.getMessage(), imageName);
+        }
+    }
+
+    /**
+     * Stops all containers created from the given image.
+     * This method sends a POST request to the WATCHDOG REST API to stop all containers created from the image.
+     * If the response status code is not 200, an ImageActionException is thrown.
+     * If all containers are stopped successfully, the images are refreshed and a noti is displayed.
+     *
+     * @param imageName The name of the image from which the containers were created.
+     * @throws ImageActionException If an error occurs while stopping the containers.
+     */
+    public void stopAllContainers(String imageName) throws ImageActionException {
+        try {
+            // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API to stop all containers created from the image.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/containers/stopAll/" + imageName))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // If the response status code is not 200, throw an ImageActionException.
+            if (response.statusCode() != 200) {
+                throw new ImageActionException("Stopping all containers failed", imageName);
+            }
+
+            // If all containers are stopped successfully, refresh the images and show a notification.
+            showNotification("Success", "All containers stopped successfully");
+            refreshImages();
+        } catch (Exception e) {
+            throw new ImageActionException("Error occurred while stopping all containers: " + e.getMessage(), imageName);
+        }
+    }
+
+    /**
+     * Pulls the given image from the Docker registry.
+     * This method sends a POST request to the WATCHDOG REST API to pull the image.
+     * If the response status code is not 200, an ImageActionException is thrown.
+     * If the image is pulled successfully, the images are refreshed and a notification is displayed.
+     *
+     * @throws ImageActionException If an error occurs while pulling the image.
+     */
+    public void pullGivenImage() throws ImageActionException {
+        try {
+            // Take the name of the image user wants to pull from DockerHub.
+            String imageName = pullImageTextField.getText();
+
+            // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API to pull the image.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL + "pull/" + imageName))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                showNotification("Success", "Image pulled successfully");
+                refreshImages();
+            } else {
+                // If the response status code is not 200, throw an ImageActionException.
+                throw new ImageActionException("Image pull failed", imageName);
+            }
+        } catch (Exception e) {
+            throw new ImageActionException("Error occurred while pulling image: " + e.getMessage(), pullImageTextField.getText());
+        }
+    }
+
+    /**
+     * Removes the given image.
+     * This method sends a POST request to the WATCHDOG REST API to remove the image.
+     * If the response status code is not 200, an ImageActionException is thrown.
+     * If the image is removed successfully, the images are refreshed and a notification is displayed.
+     *
+     * @param imageName The name of the image to be removed.
+     * @throws ImageActionException If an error occurs while removing the image.
+     */
+    public void removeImage(String imageName) throws ImageActionException {
+        try {
+            // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(BASE_URL + "remove/" + imageName))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // If the response status code is not 200, throw an ImageActionException.
+            if (response.statusCode() != 200) {
+                throw new ImageActionException("Image removal failed", imageName);
+            }
+
+            // If the image is removed successfully, refresh the images and show a notification.
+            showNotification("Success", "Image removed successfully");
+            refreshImages();
+        } catch (Exception e) {
+            throw new ImageActionException("Error occurred while removing image: " + e.getMessage(), imageName);
+        }
+    }
+
+    /**
+     * Displays a notification with the given title and content.
+     * It helps us keep user informed about events that occur in images.
+     * After 3 seconds, the Popup is automatically hidden.
+     *
+     * @param title The title of the notification.
+     * @param content The content of the notification.
+     */
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a new Popup for the notification.
+            Popup notification = new Popup();
+
+            // Create a Label for the title of the notification and style it.
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+
+            // Create a Label for the content of the notification and style it.
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Create a VBox to hold the title and content Labels and style it.
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup.
+            notification.getContent().add(box);
+
+            // Calculate the position of the Popup on the screen.
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup on the screen at the calculated position.
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Create a Timeline that will hide the Popup after 3 seconds.
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Load the FXML file for the new scene.
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
         stage.getScene().setRoot(root);
         stage.show();
     }
 
-    // Navigate to the Containers scene
+    /**
+     * Changes the current scene to the Containers scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Containers scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
     public void changeToContainersScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "containersScene.fxml");
     }
 
-    // Navigate to the Graphics scene
-    public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "graphicsScene.fxml");
+    /**
+     * Changes the current scene to the Kubernetes scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Images scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
-    // Navigate to the Volumes scene
+    /**
+     * Changes the current scene to the Volumes scene.
+     * This method first loads the Volumes scene and refreshes the volumes.
+     * Then, it calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Volumes scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        // Load the Volumes scene and refresh the volumes.
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
         try {
             root = loader.load();
@@ -456,153 +656,21 @@ public class ImagesController implements Initializable {
         }
         VolumesController volumesController = loader.getController();
         volumesController.refreshVolumes();
+
+        // Change the scene to the Volumes scene.
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
-    // Navigate to the Kubernetes scene
-    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "kubernetesScene.fxml");
-    }
-
-    public void refreshImages() {
-        try {
-            List<ImageScene> images = getAllImages();
-            imagesTableView.getItems().clear();
-            for(ImageScene image : images) {
-                if (image.getName().contains(searchField.getText())) {
-                    if (usedImagesCheckbox.isSelected()) {
-                        if (image.getStatus().equals("In use")) {
-                            imagesTableView.getItems().add(image);
-                        }
-                    } else {
-                        imagesTableView.getItems().add(image);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<ImageScene> getAllImages() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/images"))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        JSONArray jsonArray = new JSONArray(response.body());
-        List<ImageScene> images = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String id = jsonObject.getString("id");
-            String name = jsonObject.getString("name");
-            String status = jsonObject.getString("status");
-            Long size = jsonObject.getLong("size");
-            images.add(new ImageScene(id, name ,size, status));
-        }
-        return images;
-    }
-
-    public void createContainer(ImageScene image) throws IOException, InterruptedException, URISyntaxException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/images/create/" + image.getName()))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            showNotification("Success", "Container created successfully");
-        } else {
-            showNotification("Error", "Container creation failed");
-        }
-
-        image.setStatus("In use");
-        refreshImages();
-    }
-
-    // Display a notification to the user
-    public void showNotification(String title, String content) {
-        Platform.runLater(() -> {
-            Popup notification = new Popup();
-
-            Label titleLabel = new Label(title);
-            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
-            Label contentLabel = new Label(content);
-            contentLabel.setTextFill(Color.WHITE);
-
-            VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
-
-            notification.getContent().add(box);
-
-            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
-
-            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
-            timeline.play();
-        });
-    }
-
-    public void startAllContainers(String imageName) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/startAll/" + imageName))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            showNotification("Success", "All containers started successfully");
-        } else {
-            showNotification("Error", "Container start failed");
-        }
-        refreshImages();
-    }
-
-    public void stopAllContainers(String imageName) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/stopAll/" + imageName))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            showNotification("Success", "All containers stopped successfully");
-        } else {
-            showNotification("Error", "Container stop failed");
-        }
-        refreshImages();
-    }
-
-    public void pullGivenImage() throws Exception {
-        String imageName = pullImageTextField.getText();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/images/pull/" + imageName))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        refreshImages();
-        if (response.statusCode() == 200) {
-            showNotification("Success", "Image pulled successfully");
-        } else {
-            showNotification("Error", "Image pull failed");
-        }
-    }
-
-    public void removeImage(String imageName) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/images/remove/" + imageName))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        refreshImages();
-        if (response.statusCode() == 200) {
-            showNotification("Success", "Image removed successfully");
-        } else {
-            showNotification("Error", "Image removal failed");
-        }
+    /**
+     * Changes the current scene to the Graphics scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Graphics scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "graphicsScene.fxml");
     }
 }
