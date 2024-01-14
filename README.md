@@ -13,6 +13,16 @@ Contributors:
 
 Watchdog is a desktop Spring Boot application designed to monitor your docker cluster and let you interact with your containers and images in an intuitive way. In this version the extracted data is stored in a local mySQL database. It uses callbacks to Asynchronously get data from your docker deamon and it dynamically creates data-tranfer-objects that are pushed to the database. After, a springboot application uses the REST protocol to extract the data-tranfer-objects back into the desktop application and display them in a user-frienly way while also giving the user the ability to interact with his containers and images using designated endpoints.
 
+## Getting Started
+
+To run the application:
+
+1. Ensure Java and Maven are installed.
+2. Ensure a MySQL server is running with the username "docker_db" and password "dockerW4tchd0g$"
+3. Ensure docker desktop is running and kubernetes is enabled in settings
+4. Clone the repository.
+5. Navigate to the root directory and run `mvn spring-boot:run`.
+
 ## Project Structure
 
 ```
@@ -234,16 +244,6 @@ Watchdog is structured into several packages, each with a specific role in the a
 | org.springframework.boot:spring-boot-test-autoconfigure | 3.2.0       | test    |
 | org.springframework:spring-test                         | 6.1.1       | test    |
 | org.testfx:testfx-junit                                 | 4.0.1-alpha | test    |
-
-## Getting Started
-
-To run the application:
-
-1. Ensure Java and Maven are installed.
-2. Ensure a MySQL server is running with the username "docker_db" and password "dockerW4tchd0g$"
-3. Ensure docker desktop is running and kubernetes is enabled in settings
-4. Clone the repository.
-5. Navigate to the root directory and run `mvn spring-boot:run`.
 
 ## Contributing
 
