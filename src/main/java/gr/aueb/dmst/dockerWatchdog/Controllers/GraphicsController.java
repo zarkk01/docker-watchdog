@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -58,6 +59,8 @@ public class GraphicsController implements Initializable {
     public Button kubernetesButton;
     @FXML
     public Button volumesButton;
+    @FXML
+    public ImageView watchdogImage;
 
     private XYChart.Series<String, Number> cpuSeries;
     private XYChart.Series<String, Number> pidsSeries;
@@ -99,6 +102,11 @@ public class GraphicsController implements Initializable {
         }));
         timeline2.setCycleCount(Timeline.INDEFINITE);
         timeline2.play();
+
+        // install funny tooltip on watchdog imageView
+        Tooltip woof = new Tooltip("woof");
+        woof.setShowDelay(Duration.millis(20));
+        Tooltip.install(watchdogImage,woof);
     }
 
     public void startCharts() throws Exception {

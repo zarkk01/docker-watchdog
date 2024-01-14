@@ -108,6 +108,8 @@ public class ContainersController implements Initializable {
     public Button kubernetesButton;
     @FXML
     public Button volumesButton;
+    @FXML
+    public ImageView watchdogImage;
 
     private Stage stage;
     private Parent root;
@@ -130,6 +132,11 @@ public class ContainersController implements Initializable {
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
             removeButton.visibleProperty().setValue(false);
             hoveredSideBarImages();
+
+            // install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("woof");
+            woof.setShowDelay(Duration.millis(20));
+            Tooltip.install(watchdogImage,woof);
 
             Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
             ImageView binView = new ImageView(binImg);

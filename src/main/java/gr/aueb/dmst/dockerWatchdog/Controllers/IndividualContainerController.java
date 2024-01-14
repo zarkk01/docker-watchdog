@@ -81,6 +81,8 @@ public class IndividualContainerController {
     private Button unpauseButton;
     @FXML
     private Button restartButton;
+    @FXML
+    public ImageView watchdogImage;
 
 
 
@@ -251,6 +253,11 @@ public class IndividualContainerController {
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        // install funny tooltip on watchdog imageView
+        Tooltip woof = new Tooltip("woof");
+        woof.setShowDelay(Duration.millis(20));
+        Tooltip.install(watchdogImage,woof);
     }
 
     /**

@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,6 +37,7 @@ import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Config;
+import javafx.util.Duration;
 
 /**
  * FX Controller for the Kubernetes scene.
@@ -95,6 +93,8 @@ public class KubernetesController implements Initializable {
     private Button graphicsButton;
     @FXML
     private Button volumesButton;
+    @FXML
+    public ImageView watchdogImage;
 
     /**
      * Initializes the KubernetesController.
@@ -117,6 +117,12 @@ public class KubernetesController implements Initializable {
             populateStatefulSetsTable();
             populateServicesTable();
             hoveredSideBarImages();
+
+            // install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("woof");
+            woof.setShowDelay(Duration.millis(20));
+            Tooltip.install(watchdogImage,woof);
+
         } catch (ApiException | IOException e) {
             e.printStackTrace();
         }

@@ -15,10 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,6 +25,7 @@ import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
 import gr.aueb.dmst.dockerWatchdog.Models.VolumeScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
+import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -60,6 +58,8 @@ public class VolumesController implements Initializable {
     private Button graphicsButton;
     @FXML
     private Button kubernetesButton;
+    @FXML
+    public ImageView watchdogImage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -68,6 +68,12 @@ public class VolumesController implements Initializable {
             hoveredSideBarImages();
             volumesTableView.setPlaceholder(new Label("No volumes available."));
             refreshVolumes();
+
+            // install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("woof");
+            woof.setShowDelay(Duration.millis(20));
+            Tooltip.install(watchdogImage,woof);
+
         } catch (Exception e) {
             System.err.println("An error occurred while initializing the VolumesController: " + e.getMessage());
             volumesTableView.setPlaceholder(new Label("An error occurred while loading the volumes."));

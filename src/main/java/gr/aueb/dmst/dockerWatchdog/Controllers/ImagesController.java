@@ -83,6 +83,8 @@ public class ImagesController implements Initializable {
     public Button kubernetesButton;
     @FXML
     public Button volumesButton;
+    @FXML
+    public ImageView watchdogImage;
 
     private Stage stage;
     private Parent root;
@@ -97,6 +99,11 @@ public class ImagesController implements Initializable {
             sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
             hoveredSideBarImages();
+
+            // install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("woof");
+            woof.setShowDelay(Duration.millis(20));
+            Tooltip.install(watchdogImage,woof);
 
             Callback<TableColumn<ImageScene, Void>, TableCell<ImageScene, Void>> startCellFactory = new Callback<>() {
                 @Override
