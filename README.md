@@ -245,6 +245,21 @@ Watchdog is structured into several packages, each with a specific role in the a
 | org.springframework:spring-test                         | 6.1.1       | test    |
 | org.testfx:testfx-junit                                 | 4.0.1-alpha | test    |
 
+## Code UML
+![](src/main/resources/images/UML.jpg)
+
+## Visuals
+![](src/main/resources/images/containersPanel.png)
+![](src/main/resources/images/individualPanel.png)
+![](src/main/resources/images/imagesPanel.png)
+![](src/main/resources/images/volumesPanel.png)
+![](src/main/resources/images/graphicsPanel.png)
+![](src/main/resources/images/exraPanel.png)
+
+
 ## Contributing
 
-Contributions to Watchdog are welcome! Please read our contributing guidelines for details on submitting pull requests.
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
