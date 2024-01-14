@@ -239,9 +239,11 @@ Watchdog is structured into several packages, each with a specific role in the a
 
 To run the application:
 
-1. Ensure Java and Maven are installed. Also ensure you have a MySQL server running with the username "docker_db" and password "dockerW4tchd0g$"
-2. Clone the repository.
-3. Navigate to the root directory and run `mvn spring-boot:run`.
+1. Ensure Java and Maven are installed.
+2. Ensure a MySQL server is running with the username "docker_db" and password "dockerW4tchd0g$"
+3. Ensure docker desktop is running and kubernetes is enabled in settings
+4. Clone the repository.
+5. Navigate to the root directory and run `mvn spring-boot:run`.
 
 ## Contributing
 
