@@ -594,7 +594,13 @@ public class ContainersController implements Initializable {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return Integer.parseInt(response.body());
+        String responseBody = response.body();
+        if (responseBody.isEmpty()) {
+            // Return a default value or throw an exception
+            return 1;
+        } else {
+            return Integer.parseInt(responseBody);
+        }
     }
 
     public List<InstanceScene> getAllInstances() throws Exception {

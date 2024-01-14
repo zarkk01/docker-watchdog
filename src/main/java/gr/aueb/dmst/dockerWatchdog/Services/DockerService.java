@@ -255,7 +255,7 @@ public class DockerService {
     }
 
     /**
-     * Retrieves information about a Docker instance with the given ID.
+     * Retrieves most recent information about a Docker instance with the given ID.
      *
      * @param id the ID of the Docker instance to retrieve information about
      * @return the Docker instance with the given ID
