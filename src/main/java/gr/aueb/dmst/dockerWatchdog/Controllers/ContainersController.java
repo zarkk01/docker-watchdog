@@ -133,8 +133,7 @@ public class ContainersController implements Initializable {
             removeButton.visibleProperty().setValue(false);
             hoveredSideBarImages();
 
-            // install funny tooltip on watchdog imageView
-            Tooltip woof = new Tooltip("woof");
+            Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
 
@@ -152,7 +151,6 @@ public class ContainersController implements Initializable {
             });
 
             removeButton.setOnMouseExited(event -> {
-                // Change back to default image when not hovered
                 binView.setImage(binImg);
                 binView.setOpacity(1);
             });
@@ -185,7 +183,7 @@ public class ContainersController implements Initializable {
                             viewStartClick.setFitHeight(20);
                             viewStartClick.setPreserveRatio(true);
                             viewStart.setPreserveRatio(true);
-                            btnStart.setPrefSize(30, 30);  // Adjust the size as needed
+                            btnStart.setPrefSize(30, 30);
                             viewStart.setOpacity(0.8);
                             btnStart.setGraphic(viewStart);
                             btnStart.setOnAction((ActionEvent event) -> {
@@ -213,7 +211,7 @@ public class ContainersController implements Initializable {
 
                             btnStart.setEffect(dropShadow);
 
-                            dropShadow.setRadius(5);  // Adjust the radius for the intensity
+                            dropShadow.setRadius(5);
 
                             btnStop.setEffect(dropShadow);
 
@@ -244,10 +242,8 @@ public class ContainersController implements Initializable {
                             } else {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 if ("running".equals(instance.getStatus())) {
-                                    // If the container is running, show only the stop button
                                     setGraphic(btnStop);
                                 } else {
-                                    // If the container is not running, show only the start button
                                     setGraphic(btnStart);
                                 }
                             }
@@ -268,7 +264,6 @@ public class ContainersController implements Initializable {
                             checkBox.setOpacity(0.8);
                             checkBox.setMaxSize(20,20);
 
-                            // Handle checkbox action
                             checkBox.setOnAction(event -> {
                                 InstanceScene instance = getTableView().getItems().get(getIndex());
                                 instance.setSelect(checkBox.isSelected());
@@ -304,7 +299,7 @@ public class ContainersController implements Initializable {
                     return cell;
                 }
             };
-// Assuming your "select" column is named selectColumn
+
             selectColumn.setCellFactory(selectCellFactory);
 
             instancesTableView.setOnMouseClicked(event -> {
@@ -351,13 +346,10 @@ public class ContainersController implements Initializable {
     private void hoveredSideBarImages() {
         Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
 
-        // Load your hovered image
         Image hoveredImage = new Image(getClass().getResourceAsStream("/images/image.png"));
 
-        // Set the original image to the ImageView
         ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
 
-        // Attach event handlers
         imagesButton.setOnMouseEntered(event -> {
             imagesButton.getStyleClass().add("button-hovered");
             ((ImageView) imagesButton.getGraphic()).setImage(hoveredImage);
@@ -370,13 +362,10 @@ public class ContainersController implements Initializable {
 
         Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
 
-        // Load your hovered image
         Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
 
-        // Set the original image to the ImageView
         ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
 
-        // Attach event handlers
         volumesButton.setOnMouseEntered(event -> {
             volumesButton.getStyleClass().add("button-hovered");
             ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
@@ -408,13 +397,10 @@ public class ContainersController implements Initializable {
 
         Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetesGrey.png"));
 
-        // Load your hovered image
         Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetes.png"));
 
-        // Set the original image to the ImageView
         ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
 
-        // Attach event handlers
         kubernetesButton.setOnMouseEntered(event -> {
             kubernetesButton.getStyleClass().add("button-hovered");
             ((ImageView) kubernetesButton.getGraphic()).setImage(hoveredKubernetes);
@@ -449,11 +435,9 @@ public class ContainersController implements Initializable {
 
                     client.send(request2, HttpResponse.BodyHandlers.ofString());
 
-                    checkboxStates.put(id, false);  // Reset the checkbox state after deletion
+                    checkboxStates.put(id, false);
                 }
             }
-
-            // Update the HashMap with the new states (in case some containers were deleted)
             updateCheckboxStates(checkboxStates);
 
             if (checkboxStates.containsValue(true)) {
@@ -594,7 +578,12 @@ public class ContainersController implements Initializable {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return Integer.parseInt(response.body());
+        String responseBody = response.body();
+        if (responseBody.isEmpty()) {
+            return 1;
+        } else {
+            return Integer.parseInt(responseBody);
+        }
     }
 
     public List<InstanceScene> getAllInstances() throws Exception {

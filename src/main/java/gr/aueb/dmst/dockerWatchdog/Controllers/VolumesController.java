@@ -20,17 +20,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
 import gr.aueb.dmst.dockerWatchdog.Models.VolumeScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
-import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * FX Controller class for the Volumes panel.
+ * This class handles user interactions with the Volumes scene, such as navigating to other scenes and refreshing the volumes table.
+ * It also retrieves all volumes from the REST API and parses the response into a list of VolumeScene objects.
+ * The class uses the ExecutorThread class to send HTTP requests to the REST API.
+ * It also uses the LogManager class to log error messages.
+ */
 public class VolumesController implements Initializable {
 
     // Logger instance used mainly for errors.
@@ -61,16 +68,30 @@ public class VolumesController implements Initializable {
     @FXML
     public ImageView watchdogImage;
 
+    /**
+     * This method is automatically called after the fxml file has been loaded.
+     * It sets up the table columns, applies the hover effect to the sidebar buttons, sets the placeholder for the volumes table,
+     * and refreshes the volumes table.
+     * It also installs a tooltip on the watchdog image.
+     *
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     * @throws IOException If an error occurs while initializing the VolumesController.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            // Set up the table columns.
             setupTableColumns();
+            // Apply the hover effect to the sidebar buttons.
             hoveredSideBarImages();
+            // Set the placeholder for the volumes table.
             volumesTableView.setPlaceholder(new Label("No volumes available."));
+            // Refresh the volumes table.
             refreshVolumes();
 
-            // install funny tooltip on watchdog imageView
-            Tooltip woof = new Tooltip("woof");
+            // Install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
 
@@ -80,6 +101,11 @@ public class VolumesController implements Initializable {
         }
     }
 
+    /**
+     * This method sets the cell value factories for the table columns.
+     * The cell value factory determines the data with name, driver, mountpoint, containerNamesUsing
+     * that should be displayed in each cell of the table column.
+     */
     private void setupTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         driverColumn.setCellValueFactory(new PropertyValueFactory<>("driver"));

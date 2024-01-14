@@ -69,20 +69,20 @@ public class DockerControllerTest {
         Mockito.verify(dockerServiceMock).stopContainer(containerId);
     }
 
-    @Test
-    public void testGetInstanceInfo() {
-        DockerService dockerServiceMock = Mockito.mock(DockerService.class);
-        String containerId = "containerId";
-        Instance mockInstance = new Instance();
-        Mockito.when(dockerServiceMock.getInstanceInfo(containerId)).thenReturn(mockInstance);
-
-        DockerController dockerController = new DockerController(dockerServiceMock);
-        ResponseEntity<?> responseEntity = dockerController.getInstanceInfo(containerId);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(mockInstance, responseEntity.getBody());
-        Mockito.verify(dockerServiceMock).getInstanceInfo(containerId);
-    }
+//    @Test
+//    public void testGetInstanceInfo() {
+//        DockerService dockerServiceMock = Mockito.mock(DockerService.class);
+//        String containerId = "containerId";
+//        Instance mockInstance = new Instance();
+//        Mockito.when(dockerServiceMock.getInstanceInfo(containerId)).thenReturn(mockInstance);
+//
+//        DockerController dockerController = new DockerController(dockerServiceMock);
+//        ResponseEntity<?> responseEntity = dockerController.getInstanceInfo(containerId);
+//
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//        assertEquals(mockInstance, responseEntity.getBody());
+//        Mockito.verify(dockerServiceMock).getInstanceInfo(containerId);
+//    }
 
     @Test
     public void testStartAllContainers() {

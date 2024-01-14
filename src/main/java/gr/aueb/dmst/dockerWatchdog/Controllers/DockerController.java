@@ -1,16 +1,15 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -100,18 +99,8 @@ public class DockerController {
     }
 
     @GetMapping("/containers/{containerId}/info")
-    public ResponseEntity<?> getInstanceInfo(@PathVariable("containerId") String containerId) {
-        try {
-            Instance instance = dockerService.getInstanceInfo(containerId);
-            if (instance == null) {
-                return ResponseEntity.notFound().build(); // 404 Not Found
-            }
-            return ResponseEntity.ok(instance);
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error"); // 500 Internal Server Error
-        }
+    public Instance getInstanceInfo(@PathVariable("containerId") String containerId) {
+        return dockerService.getInstanceInfo(containerId);
     }
 
     @PostMapping("/containers/startAll/{imageName}")

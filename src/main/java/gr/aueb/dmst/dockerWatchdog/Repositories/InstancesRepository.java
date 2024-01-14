@@ -40,12 +40,12 @@ public interface InstancesRepository extends JpaRepository<Instance, Long> {
     long countByMetricIdAndStatusRunning(@Param("metricid") Integer metricid);
 
     /**
-     * This method returns an instance with a specific container ID.
+     * This method returns an instance with a specific container ID in its most recent form.
      *
      * @param containerid the container ID to filter by.
      * @return the instance.
      */
-    @Query("SELECT i FROM Instance i WHERE i.id = :containerid")
+    @Query("SELECT i FROM Instance i WHERE i.id = :containerid AND i.metricid = (SELECT MAX(i2.metricid) FROM Instance i2)")
     Instance findByContainerId(@Param("containerid") String containerid);
 
     /**

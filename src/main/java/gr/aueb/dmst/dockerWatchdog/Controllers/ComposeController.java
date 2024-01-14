@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.Controllers;
 
 import javafx.animation.PauseTransition;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
@@ -28,6 +29,8 @@ public class ComposeController {
     @FXML
     TextArea yamlContentArea;
 
+    @FXML
+    public ImageView watchdogImage;
     private Parent root;
 
     private String yamlFilePath;
@@ -65,6 +68,11 @@ public class ComposeController {
             view.setImage(img);
             view.setOpacity(1);
         });
+
+        // Install funny tooltip on watchdog imageView
+        Tooltip woof = new Tooltip("Woof!");
+        woof.setShowDelay(Duration.millis(20));
+        Tooltip.install(watchdogImage,woof);
     }
 
     private void loadYamlFile() {
