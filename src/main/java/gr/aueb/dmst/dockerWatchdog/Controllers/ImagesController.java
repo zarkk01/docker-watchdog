@@ -100,8 +100,8 @@ public class ImagesController implements Initializable {
             statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
             hoveredSideBarImages();
 
-            // install funny tooltip on watchdog imageView
-            Tooltip woof = new Tooltip("woof");
+            // Install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
 

@@ -30,11 +30,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -49,7 +45,7 @@ import javafx.util.Duration;
 import org.json.JSONObject;
 
 /**
- * This class is a controller for the IndividualContainer panel.
+ * FX Controller for the IndividualContainer panel.
  * It provides methods for handling user interactions with a specific instance like starting, stopping,
  * pausing, unpausing, renaming, and removing it.
  * It also provides methods for changing scenes, showing notifications,
@@ -186,8 +182,8 @@ public class IndividualContainerController {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        // install funny tooltip on watchdog imageView
-        Tooltip woof = new Tooltip("woof");
+        // Install funny tooltip on watchdog imageView
+        Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
     }

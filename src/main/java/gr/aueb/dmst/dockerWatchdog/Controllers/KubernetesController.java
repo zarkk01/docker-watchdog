@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import gr.aueb.dmst.dockerWatchdog.Models.DeploymentScene;
 import gr.aueb.dmst.dockerWatchdog.Models.PodScene;
@@ -37,7 +38,6 @@ import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Config;
-import javafx.util.Duration;
 
 /**
  * FX Controller for the Kubernetes scene.
@@ -118,11 +118,10 @@ public class KubernetesController implements Initializable {
             populateServicesTable();
             hoveredSideBarImages();
 
-            // install funny tooltip on watchdog imageView
-            Tooltip woof = new Tooltip("woof");
+            // Install funny tooltip on watchdog imageView
+            Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
-
         } catch (ApiException | IOException e) {
             e.printStackTrace();
         }
