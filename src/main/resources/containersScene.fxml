@@ -220,7 +220,7 @@
             </Pane>
          <Text fill="WHITE" layoutX="363.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
             <font>
-               <Font name="Damascus Bold" size="36.0" />
+               <Font name="SansSerif Bold" size="36.0" />
             </font>
          </Text>
          <TableView fx:id="instancesTableView" layoutX="15.0" layoutY="66.0" prefHeight="261.0" prefWidth="917.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="345.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="64.0">
