@@ -263,9 +263,9 @@
 <top>
    <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
       <children>
-         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
+         <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="201.21630859375">
             <font>
-               <Font name="System Bold" size="22.0" />
+               <Font name="SansSerif Bold" size="22.0" />
             </font>
          </Text>
             <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
