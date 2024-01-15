@@ -45,9 +45,21 @@ import javafx.util.Duration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Controller for the Containers scene.
+ * It provides methods for handling user interactions with the Docker containers,
+ * such as starting, stopping, and removing containers. User can additionally search for
+ * a specific container by name and select multiple containers to remove.
+ * It also provides methods for changing scenes, showing notifications,
+ * and updating the instances table view. It also navigates user to the
+ * individual container scene when a row is clicked.
+ * The class uses the WATCHDOG REST API to communicate with
+ * the backend and send requests for information and actions.
+ */
 public class ContainersController implements Initializable {
     private Stage stage;
     private Parent root;
+
     @FXML
     private TableView instancesTableView;
     @FXML
@@ -114,106 +126,196 @@ public class ContainersController implements Initializable {
 
     private Timeline timeline;
 
+    /**
+     * Initializes the ContainersController.
+     * This method is called after the ContainersController is constructed.
+     * It sets up the sidebar images, table columns, remove button, instances table view, and refreshes the instances.
+     * It also creates a Timeline that refreshes the instances every 2 seconds and starts it.
+     * If the runningInstancesCheckbox is selected, it refreshes the instances.
+     * If an error occurs during the initialization, it throws a RuntimeException.
+     *
+     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
+     * @throws RuntimeException If an error occurs during the initialization.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            
+            // Set up the sidebar images.
             hoveredSideBarImages();
 
+            // Set up a tooltip for the watchdogImage.
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
-            
-            idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
-            statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-            cpuUsageColumn.setCellValueFactory(new PropertyValueFactory<>("cpuUsage"));
-            pidsColumn.setCellValueFactory(new PropertyValueFactory<>("pids"));
-            memoryUsageColumn.setCellValueFactory(new PropertyValueFactory<>("memoryUsage"));
-            blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
-            blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
-            removeButton.visibleProperty().setValue(false);
 
-            Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
-            ImageView binView = new ImageView(binImg);
-            binView.setFitHeight(40);
-            binView.setPreserveRatio(true);
-            Image binHover = new Image(getClass().getResource("/images/binHover.png").toExternalForm());
-            removeButton.setGraphic(binView);
+            // Set up the table columns.
+            setupTableColumns();
 
-            removeButton.setOnMouseEntered(event -> {
-                binView.setImage(binHover);
-                binView.setOpacity(0.8);
-            });
+            // Set up the remove button.
+            setupRemoveButton();
 
-            removeButton.setOnMouseExited(event -> {
-                binView.setImage(binImg);
-                binView.setOpacity(1);
-            });
+            // Set up the instances table view.
+            setupInstancesTableView();
 
-            actionButtonColumn.setCellFactory(actionCellFactory);
-
-            selectColumn.setCellFactory(selectCellFactory);
-
-            instancesTableView.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
-                    InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/individualContainerScene.fxml"));
-                    try {
-                        root = loader.load();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    IndividualContainerController individualContainerController = loader.getController();
-                    individualContainerController.onInstanceDoubleClick(selectedInstance);
-                    stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-                    stage.getScene().setRoot(root);
-                    stage.show();
-                }
-            });
-
-            instancesTableView.setPlaceholder(new Label("No containers available."));
-
-            instancesTableView.setRowFactory(tv -> {
-                TableRow<InstanceScene> row = new TableRow<>();
-                row.setOnMouseEntered(event -> row.setCursor(Cursor.HAND));
-                row.setOnMouseExited(event -> row.setCursor(Cursor.DEFAULT));
-                return row;
-            });
-
+            // Refresh the instances.
             refreshInstances();
 
+            // Create a Timeline that refreshes the instances every 2 seconds and start it.
             timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> refreshInstances()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
+            // If the runningInstancesCheckbox is selected, refresh the instances.
             runningInstancesCheckbox.setOnAction(event -> {
                 refreshInstances();
             });
 
         } catch (Exception e) {
+            // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);
         }
     }
 
-    // Create a cell factory for the action column.
+    /**
+     * Sets up the instances table view.
+     * This method configures the behavior of the instances table view.
+     * It sets the mouse click event for the table view, which loads the IndividualContainer scene when a row is double-clicked.
+     * It also sets the placeholder for the table view, which is displayed when the table view is empty.
+     * Finally, it sets the row factory for the table view, which changes the cursor to a hand when it hovers over a row.
+     */
+    private void setupInstancesTableView() {
+        // Set the mouse click event for the table view.
+        // When a row is double-clicked, load the IndividualContainer scene for the selected instance.
+        instancesTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
+                InstanceScene selectedInstance = (InstanceScene) instancesTableView.getSelectionModel().getSelectedItem();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/individualContainerScene.fxml"));
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                IndividualContainerController individualContainerController = loader.getController();
+                individualContainerController.onInstanceDoubleClick(selectedInstance);
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                stage.getScene().setRoot(root);
+                stage.show();
+            }
+        });
+
+        // Set the placeholder for the table view.
+        // This placeholder is displayed when the table view is empty.
+        instancesTableView.setPlaceholder(new Label("No containers available."));
+
+        // Set the row factory for the table view.
+        // This changes the cursor to a hand when it hovers over a row.
+        instancesTableView.setRowFactory(tv -> {
+            TableRow<InstanceScene> row = new TableRow<>();
+            row.setOnMouseEntered(event -> row.setCursor(Cursor.HAND));
+            row.setOnMouseExited(event -> row.setCursor(Cursor.DEFAULT));
+            return row;
+        });
+    }
+
+    /**
+     * Sets up the remove button.
+     * This method configures the behavior of the remove button.
+     * It sets the image for the button and configures the hover effect.
+     * When the mouse pointer hovers over the button, the image of the button changes to a different image.
+     * When the mouse pointer moves away from the button, the image of the button changes back to the original image.
+     */
+    private void setupRemoveButton() {
+        // Load the image for the remove button.
+        Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
+        ImageView binView = new ImageView(binImg);
+        binView.setFitHeight(40);
+        binView.setPreserveRatio(true);
+
+        // Load the image to be displayed when the button is hovered over.
+        Image binHover = new Image(getClass().getResource("/images/binHover.png").toExternalForm());
+
+        // Set the image for the remove button.
+        removeButton.setGraphic(binView);
+
+        // Set the hover effect for the remove button.
+        removeButton.setOnMouseEntered(event -> {
+            binView.setImage(binHover);
+            binView.setOpacity(0.8);
+        });
+
+        // Remove the hover effect when the mouse pointer moves away from the button.
+        removeButton.setOnMouseExited(event -> {
+            binView.setImage(binImg);
+            binView.setOpacity(1);
+        });
+    }
+
+    /**
+     * Sets up the table columns.
+     * This method configures the behavior of the table columns.
+     * It sets the cell value factory for each column, which determines what value is displayed in the cells of the column.
+     * The cell value factory is a Callback that extracts a property value from the InstanceScene object and displays it in the cell.
+     * It also sets the cell factory for the actionButtonColumn and selectColumn, which determines how the cells of the column are created.
+     * The cell factory is a Callback that creates a TableCell for each row in the column.
+     * The actionButtonColumn's cells contain a Button that allows the user to start or stop the Docker container represented by the row.
+     * The selectColumn's cells contain a CheckBox that allows the user to select the Docker container represented by the row.
+     * Finally, it hides the remove button.
+     */
+    private void setupTableColumns() {
+        // Set the cell value factory for each column.
+        // The cell value factory is a Callback that extracts a property value from the InstanceScene object and displays it in the cell.
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        cpuUsageColumn.setCellValueFactory(new PropertyValueFactory<>("cpuUsage"));
+        pidsColumn.setCellValueFactory(new PropertyValueFactory<>("pids"));
+        memoryUsageColumn.setCellValueFactory(new PropertyValueFactory<>("memoryUsage"));
+        blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
+        blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
+
+        // Set the cell factory for the actionButtonColumn and selectColumn.
+        // The cell factory is a Callback that creates a TableCell for each row in the column.
+        actionButtonColumn.setCellFactory(actionCellFactory);
+        selectColumn.setCellFactory(selectCellFactory);
+
+        // Hide the remove button.
+        removeButton.visibleProperty().setValue(false);
+    }
+
+    /**
+     * Creates a cell factory for the action column.
+     * The cell factory is a Callback that creates a TableCell for each row in the column.
+     * Each TableCell contains a Button that allows the user to start or stop the Docker container represented by the row.
+     * The Button's action depends on the status of the Docker container:
+     * - If the container is running, the Button stops the container.
+     * - If the container is not running, the Button starts the container.
+     * The Button's graphic changes when the mouse enters or exits the Button, providing a hover effect.
+     *
+     * @return A Callback that creates a TableCell for each row in the action column.
+     */
     Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
         @Override
         public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
             final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                // Create start and stop buttons
                 private final Button btnStart = new Button();
+                private final Button btnStop = new Button();
 
+                // Tooltip and images for the start button
                 private final Tooltip startTooltip = new Tooltip("Start Container");
                 private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
                 private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
                 private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
-                private final Button btnStop = new Button();
+
+                // Tooltip and images for the stop button
                 private final Tooltip stopTooltip = new Tooltip("Stop Container");
                 Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
                 ImageView viewStop = new ImageView(imgStop);
 
                 {
+                    // Setup for the start button
                     startTooltip.setShowDelay(Duration.millis(50));
                     Tooltip.install(btnStart, startTooltip);
                     viewStart.setFitHeight(30);
@@ -227,6 +329,7 @@ public class ContainersController implements Initializable {
                     btnStart.setPrefSize(30, 30);
                     viewStart.setOpacity(0.8);
                     btnStart.setGraphic(viewStart);
+                    // Set the action for the start button
                     btnStart.setOnAction((ActionEvent event) -> {
                         InstanceScene instance = getTableView().getItems().get(getIndex());
                         try {
@@ -236,9 +339,9 @@ public class ContainersController implements Initializable {
                         }
                     });
 
+                    // Setup for the stop button
                     stopTooltip.setShowDelay(Duration.millis(50));
                     Tooltip.install(btnStop, stopTooltip);
-
                     viewStop.setFitHeight(30);
                     viewStop.setPreserveRatio(true);
                     btnStop.setGraphic(viewStop);
@@ -249,13 +352,10 @@ public class ContainersController implements Initializable {
                     viewStop.setOpacity(0.8);
                     btnStop.setGraphic(viewStop);
                     DropShadow dropShadow = new DropShadow();
-
                     btnStart.setEffect(dropShadow);
-
                     dropShadow.setRadius(5);
-
                     btnStop.setEffect(dropShadow);
-
+                    // Set the action for the stop button
                     btnStop.setOnAction((ActionEvent event) -> {
                         InstanceScene instance = getTableView().getItems().get(getIndex());
                         try {
@@ -264,6 +364,8 @@ public class ContainersController implements Initializable {
                             throw new RuntimeException(e);
                         }
                     });
+
+                    // Hover effects for the start and stop buttons
                     btnStart.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
                     btnStart.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
                     btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
@@ -272,7 +374,6 @@ public class ContainersController implements Initializable {
                     btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
                     btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
                     btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-
                 }
 
                 @Override
@@ -282,6 +383,7 @@ public class ContainersController implements Initializable {
                         setGraphic(null);
                     } else {
                         InstanceScene instance = getTableView().getItems().get(getIndex());
+                        // Check the status of the instance and set the appropriate button (start or stop)
                         if ("running".equals(instance.getStatus())) {
                             setGraphic(btnStop);
                         } else {
@@ -295,21 +397,34 @@ public class ContainersController implements Initializable {
     };
 
 
-    // Create a cell factory for the select column.
+    /**
+     * Creates a cell factory for the select column.
+     * The cell factory is a Callback that creates a TableCell for each row in the column.
+     * Each TableCell contains a CheckBox that allows the user to select the Docker container represented by the row.
+     * The CheckBox's state changes when the user clicks on it, and the state is stored in the checkboxStates map.
+     * If the CheckBox is selected, the remove button becomes visible.
+     * If the CheckBox is not selected and no other CheckBox is selected, the remove button becomes invisible.
+     *
+     * @return A Callback that creates a TableCell for each row in the select column.
+     */
     Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> selectCellFactory = new Callback<>() {
         @Override
         public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
             final TableCell<InstanceScene, Void> cell = new TableCell<>() {
                 private final CheckBox checkBox = new CheckBox();
+
                 {
                     checkBox.setOpacity(0.8);
                     checkBox.setMaxSize(20,20);
 
+                    // Set the action for the CheckBox.
                     checkBox.setOnAction(event -> {
                         InstanceScene instance = getTableView().getItems().get(getIndex());
                         instance.setSelect(checkBox.isSelected());
                         checkboxStates.put(instance.getId(), checkBox.isSelected());
 
+                        // If any CheckBox is selected, make the remove button visible.
+                        // If no CheckBox is selected, make the remove button invisible.
                         if (checkboxStates.containsValue(true)) {
                             removeButton.visibleProperty().setValue(true);
                         } else {
@@ -317,7 +432,6 @@ public class ContainersController implements Initializable {
                         }
                     });
                 }
-
 
                 @Override
                 public void updateItem(Void item, boolean empty) {
@@ -579,6 +693,7 @@ public class ContainersController implements Initializable {
         // Parse the response body to extract the details of each instance.
         JSONArray jsonArray = new JSONArray(response.body());
         List<InstanceScene> instances = new ArrayList<>();
+        // Iterate over the instances.
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String id = jsonObject.getString("id");
@@ -606,11 +721,25 @@ public class ContainersController implements Initializable {
             // Create a new InstanceScene object for each instance and add it to the list.
             if (status.equals("running")) {
                 instances.add(new InstanceScene(id, name, image
-                        ,status, memoryUsage, pids, cpuUsage , blockI
+                        , status, memoryUsage, pids, cpuUsage, blockI
                         , blockO, volumes, subnet, gateway, prefixLen,
-                        getCheckboxStateById(id) ));
+                        getCheckboxStateById(id)));
             } else {
-                instances.add(new InstanceScene(id, name, image ,status, "N/A", "N/A", "N/A" , "N/A", "N/A", volumes, subnet, gateway, prefixLen, getCheckboxStateById(id) ));
+                // If the status of the instance is not "running", set the CPU usage, memory usage, and block I/O to "N/A".
+                instances.add(new InstanceScene(id,
+                        name,
+                        image,
+                        status,
+                        "N/A",
+                        "N/A",
+                        "N/A",
+                        "N/A",
+                        "N/A",
+                        volumes,
+                        subnet,
+                        gateway,
+                        prefixLen,
+                        getCheckboxStateById(id)));
             }
         }
 
@@ -947,4 +1076,3 @@ public class ContainersController implements Initializable {
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 }
-

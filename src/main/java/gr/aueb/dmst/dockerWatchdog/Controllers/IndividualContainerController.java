@@ -512,7 +512,6 @@ public class IndividualContainerController {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println(response.body());
         // Parse the response into a JSONObject.
         JSONObject jsonObject = new JSONObject(response.body());
 
