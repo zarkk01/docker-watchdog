@@ -1,6 +1,25 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
+import javafx.scene.control.Button;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -22,51 +41,31 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Popup;
-
-import javafx.scene.control.Button;
-
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
 public class ContainersController implements Initializable {
     @FXML
-    public TableView instancesTableView;
+    private TableView instancesTableView;
     @FXML
-    public TableColumn<InstanceScene, String> idColumn;
+    private TableColumn<InstanceScene, String> idColumn;
     @FXML
-    public TableColumn<InstanceScene, String> nameColumn;
+    private TableColumn<InstanceScene, String> nameColumn;
     @FXML
-    public TableColumn<InstanceScene, String> imageColumn;
+    private TableColumn<InstanceScene, String> imageColumn;
     @FXML
-    public TableColumn<InstanceScene, String> statusColumn;
+    private TableColumn<InstanceScene, String> statusColumn;
     @FXML
-    public TableColumn<InstanceScene, String> cpuUsageColumn;
+    private TableColumn<InstanceScene, String> cpuUsageColumn;
     @FXML
-    public TableColumn<InstanceScene, String> pidsColumn;
+    private TableColumn<InstanceScene, String> pidsColumn;
     @FXML
-    public TableColumn<InstanceScene, String> memoryUsageColumn;
+    private TableColumn<InstanceScene, String> memoryUsageColumn;
     @FXML
-    public TableColumn<InstanceScene, String> blockOColumn;
+    private TableColumn<InstanceScene, String> blockOColumn;
     @FXML
-    public TableColumn<InstanceScene, String> blockIColumn;
+    private TableColumn<InstanceScene, String> blockIColumn;
     @FXML
     private TableColumn<InstanceScene, Void> actionButtonColumn;
     @FXML
@@ -79,37 +78,33 @@ public class ContainersController implements Initializable {
     private TextField searchField;
 
     @FXML
-    public TextField datetimeTextField;
+    private TextField datetimeTextField;
     @FXML
-    public Button datetimeButton;
+    private Label metricsLabel;
     @FXML
-    public Label metricsLabel;
+    private Button removeButton;
     @FXML
-    public Button removeButton;
-    @FXML
-    public CheckBox runningInstancesCheckbox;
+    private CheckBox runningInstancesCheckbox;
 
     @FXML
-    public Label totalContainersText;
+    private Label totalContainersText;
     @FXML
-    public Label runningContainersText;
+    private Label runningContainersText;
     @FXML
-    public Label stoppedContainersText;
+    private Label stoppedContainersText;
 
     @FXML
-    public Button uploadButton;
+    private Button uploadButton;
     @FXML
-    public Button containersButton;
+    private Button imagesButton;
     @FXML
-    public Button imagesButton;
+    private Button graphicsButton;
     @FXML
-    public Button graphicsButton;
+    private Button kubernetesButton;
     @FXML
-    public Button kubernetesButton;
+    private Button volumesButton;
     @FXML
-    public Button volumesButton;
-    @FXML
-    public ImageView watchdogImage;
+    private ImageView watchdogImage;
 
     private Stage stage;
     private Parent root;
@@ -121,6 +116,13 @@ public class ContainersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            
+            hoveredSideBarImages();
+
+            Tooltip woof = new Tooltip("Woof!");
+            woof.setShowDelay(Duration.millis(20));
+            Tooltip.install(watchdogImage,woof);
+            
             idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
@@ -131,11 +133,6 @@ public class ContainersController implements Initializable {
             blockOColumn.setCellValueFactory(new PropertyValueFactory<>("blockO"));
             blockIColumn.setCellValueFactory(new PropertyValueFactory<>("blockI"));
             removeButton.visibleProperty().setValue(false);
-            hoveredSideBarImages();
-
-            Tooltip woof = new Tooltip("Woof!");
-            woof.setShowDelay(Duration.millis(20));
-            Tooltip.install(watchdogImage,woof);
 
             Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
             ImageView binView = new ImageView(binImg);
@@ -145,7 +142,6 @@ public class ContainersController implements Initializable {
             removeButton.setGraphic(binView);
 
             removeButton.setOnMouseEntered(event -> {
-                // Change image on hover
                 binView.setImage(binHover);
                 binView.setOpacity(0.8);
             });
@@ -168,7 +164,6 @@ public class ContainersController implements Initializable {
                         private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
                         private final Button btnStop = new Button();
                         private final Tooltip stopTooltip = new Tooltip("Stop Container");
-                        Image imgStart = new Image(getClass().getResource("/images/play.png").toExternalForm());
                         Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
                         ImageView viewStop = new ImageView(imgStop);
 
@@ -275,12 +270,6 @@ public class ContainersController implements Initializable {
                                     removeButton.visibleProperty().setValue(false);
                                 }
                             });
-
-                        }
-                        private void setImageViewSize(ImageView imageView, double fitWidth, double fitHeight) {
-                            imageView.setFitWidth(fitWidth);
-                            imageView.setFitHeight(fitHeight);
-                            imageView.setPreserveRatio(true);
                         }
 
 
@@ -343,75 +332,6 @@ public class ContainersController implements Initializable {
         }
     }
 
-    private void hoveredSideBarImages() {
-        Image originalImage = new Image(getClass().getResourceAsStream("/images/imageGrey.png"));
-
-        Image hoveredImage = new Image(getClass().getResourceAsStream("/images/image.png"));
-
-        ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
-
-        imagesButton.setOnMouseEntered(event -> {
-            imagesButton.getStyleClass().add("button-hovered");
-            ((ImageView) imagesButton.getGraphic()).setImage(hoveredImage);
-        });
-
-        imagesButton.setOnMouseExited(event -> {
-            imagesButton.getStyleClass().remove("button-hovered");
-            ((ImageView) imagesButton.getGraphic()).setImage(originalImage);
-        });
-
-        Image originalVolume = new Image(getClass().getResourceAsStream("/images/volumesGrey.png"));
-
-        Image hoveredVolume = new Image(getClass().getResourceAsStream("/images/volumes.png"));
-
-        ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
-
-        volumesButton.setOnMouseEntered(event -> {
-            volumesButton.getStyleClass().add("button-hovered");
-            ((ImageView) volumesButton.getGraphic()).setImage(hoveredVolume);
-        });
-
-        volumesButton.setOnMouseExited(event -> {
-            volumesButton.getStyleClass().remove("button-hovered");
-            ((ImageView) volumesButton.getGraphic()).setImage(originalVolume);
-        });
-
-        Image originalGraphics = new Image(getClass().getResourceAsStream("/images/graphicsGrey.png"));
-
-        // Load your hovered image
-        Image hoveredGraphics = new Image(getClass().getResourceAsStream("/images/graphics.png"));
-
-        // Set the original image to the ImageView
-        ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
-
-        // Attach event handlers
-        graphicsButton.setOnMouseEntered(event -> {
-            graphicsButton.getStyleClass().add("button-hovered");
-            ((ImageView) graphicsButton.getGraphic()).setImage(hoveredGraphics);
-        });
-
-        graphicsButton.setOnMouseExited(event -> {
-            graphicsButton.getStyleClass().remove("button-hovered");
-            ((ImageView) graphicsButton.getGraphic()).setImage(originalGraphics);
-        });
-
-        Image originalKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetesGrey.png"));
-
-        Image hoveredKubernetes = new Image(getClass().getResourceAsStream("/images/kubernetes.png"));
-
-        ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
-
-        kubernetesButton.setOnMouseEntered(event -> {
-            kubernetesButton.getStyleClass().add("button-hovered");
-            ((ImageView) kubernetesButton.getGraphic()).setImage(hoveredKubernetes);
-        });
-
-        kubernetesButton.setOnMouseExited(event -> {
-            kubernetesButton.getStyleClass().remove("button-hovered");
-            ((ImageView) kubernetesButton.getGraphic()).setImage(originalKubernetes);
-        });
-    }
-
     public void removeSelectedContainers() {
         try {
             Map<String, Boolean> checkboxStates = getCheckboxStates();
@@ -426,7 +346,7 @@ public class ContainersController implements Initializable {
                             .POST(HttpRequest.BodyPublishers.noBody())
                             .build();
 
-                    HttpResponse<String> response = client.send(request1, HttpResponse.BodyHandlers.ofString());
+                    client.send(request1, HttpResponse.BodyHandlers.ofString());
 
                     HttpRequest request2 = HttpRequest.newBuilder()
                             .uri(new URI("http://localhost:8080/api/containers/" + id + "/delete"))
@@ -446,8 +366,6 @@ public class ContainersController implements Initializable {
                 removeButton.visibleProperty().setValue(false);
             }
 
-
-            // Refresh the instances table
             refreshInstances();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -461,36 +379,6 @@ public class ContainersController implements Initializable {
 
     private Map<String, Boolean> getCheckboxStates() {
         return checkboxStates;
-    }
-
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "imagesScene.fxml");
-    }
-
-    public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "graphicsScene.fxml");
-    }
-
-    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        VolumesController volumesController = loader.getController();
-        volumesController.refreshVolumes();
-        changeScene(actionEvent, "volumesScene.fxml");
-    }
-    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
     void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
@@ -539,8 +427,9 @@ public class ContainersController implements Initializable {
         try {
             List<InstanceScene> instances = getAllInstances();
             Integer maxMetricId = getMaxMetricId();
-
+            
             instancesTableView.getItems().clear();
+            
             int totalContainers = instances.size();
             int runningContainers = 0;
             int stoppedContainers = 0;
@@ -596,41 +485,27 @@ public class ContainersController implements Initializable {
         List<InstanceScene> instances = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-
             String id = jsonObject.getString("id");
-
             String name = jsonObject.getString("name");
-
             String image = jsonObject.getString("image");
-
             String status = jsonObject.getString("status");
-
             Long memoryUsageL = jsonObject.getLong("memoryUsage");
             String memoryUsage = memoryUsageL +"MB";
-
             Long pidsL = jsonObject.getLong("pids");
             String pids = String.valueOf(pidsL);
-
             Double cpuUsageD = jsonObject.getDouble("cpuUsage") * 100;
             double roundedCpu = Math.round(cpuUsageD * 100.0) / 100.0;
             String cpuUsage = roundedCpu + "%";
-
             Double blockID = jsonObject.getDouble("blockI");
             double roundedI = Math.round(blockID * 10.0) / 10.0;
             String blockI = roundedI + "MB";
-
             Double blockOD = jsonObject.getDouble("blockO");
             double rounded0 = Math.round(blockOD * 10.0) / 10.0;
             String blockO = rounded0 + "MB";
-
             String volumes = jsonObject.getString("volumes");
-
             String subnet = jsonObject.getString("subnet");
-
             String gateway = jsonObject.getString("gateway");
-
             Integer prefixLen = jsonObject.getInt("prefixLen");
-
             if (status.equals("running")) {
                 instances.add(new InstanceScene(id, name, image
                         ,status, memoryUsage, pids, cpuUsage , blockI
@@ -680,30 +555,6 @@ public class ContainersController implements Initializable {
         refreshInstances();
     }
 
-    public void showNotification(String title, String content) {
-        Platform.runLater(() -> {
-            Popup notification = new Popup();
-
-            Label titleLabel = new Label(title);
-            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
-            Label contentLabel = new Label(content);
-            contentLabel.setTextFill(Color.WHITE);
-
-            VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
-
-            notification.getContent().add(box);
-
-            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
-
-            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
-
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), evt -> notification.hide()));
-            timeline.play();
-        });
-    }
-
-
     public void handleUploadFile(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
@@ -729,4 +580,178 @@ public class ContainersController implements Initializable {
             }
         }
     }
+
+    /**
+     * Sets the hover effect for the sidebar images.
+     * This method applies a hover effect to the sidebar buttons.
+     * The `setHoverEffect` method takes a button and two image paths as parameters:
+     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     */
+    private void hoveredSideBarImages() {
+        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
+        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
+        setHoverEffect(kubernetesButton, "/images/kubernetesGrey.png", "/images/kubernetes.png");
+        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
+    }
+
+    /**
+     * Sets the hover effect for a button.
+     * This method applies a hover effect to our 4 buttons in the sidebar.
+     * When the mouse pointer hovers over the button,
+     * the image of the button changes to a different image to indicate that the button is being hovered over.
+     * When the mouse pointer moves away from the button,
+     * the image of the button changes back to the original image.
+     *
+     * @param button The button to which the hover effect is to be applied.
+     * @param originalImagePath The path to the original image of the button.
+     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
+     */
+    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
+        // Load the original image and the hovered image.
+        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
+        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
+
+        // Set the original image as the button's graphic.
+        ((ImageView) button.getGraphic()).setImage(originalImage);
+
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        button.setOnMouseEntered(event -> {
+            button.getStyleClass().add("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(hoveredImage);
+        });
+
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        button.setOnMouseExited(event -> {
+            button.getStyleClass().remove("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(originalImage);
+        });
+    }
+
+    /**
+     * Displays a notification with the given title and content.
+     * It helps us keep user informed about events that occur in containers.
+     * After 3 seconds, the Popup is automatically hidden.
+     *
+     * @param title The title of the notification.
+     * @param content The content of the notification.
+     */
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a new Popup for the notification.
+            Popup notification = new Popup();
+
+            // Create a Label for the title of the notification and style it.
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+
+            // Create a Label for the content of the notification and style it.
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Create a VBox to hold the title and content Labels and style it.
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup.
+            notification.getContent().add(box);
+
+            // Calculate the position of the Popup on the screen.
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup on the screen at the calculated position.
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Create a Timeline that will hide the Popup after 3 seconds.
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    /**
+     * Changes the current scene to the Images scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Images scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "imagesScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to the Volumes scene.
+     * This method first loads the Volumes scene and refreshes the volumes.
+     * Then, it calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Volumes scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
+        // Load the Volumes scene and refresh the volumes.
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        VolumesController volumesController = loader.getController();
+        volumesController.refreshVolumes();
+
+        // Change the scene to the Volumes scene.
+        changeScene(actionEvent, "volumesScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to the Graphics scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Graphics scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
+        changeScene(actionEvent, "graphicsScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to the Kubernetes scene.
+     * This method calls the `changeScene` method with
+     * the action event that triggered the scene change
+     * and the name of the FXML file for the Kubernetes scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
+    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
+        // Change the scene to the Volumes scene.
+        changeScene(actionEvent, "kubernetesScene.fxml");
+    }
 }
+
