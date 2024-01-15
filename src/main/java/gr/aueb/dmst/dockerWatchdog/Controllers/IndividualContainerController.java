@@ -114,6 +114,8 @@ public class IndividualContainerController {
     private LineChart<String,Number> individualCpuChart;
     private XYChart.Series<String, Number> individualCpuSeries;
 
+    private Timeline timeline;
+
     /**
      * This method is called when a user clicks on a container from the containers list in the Containers Panel.
      * It sets up the IndividualContainer panel with the selected container's details and starts the log fetcher for the container.
@@ -172,7 +174,7 @@ public class IndividualContainerController {
         }
 
         // Set up the chart updater to run every 4 seconds.
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
             try {
                 updateIndividualCpuChart();
             } catch (Exception e) {
@@ -186,6 +188,19 @@ public class IndividualContainerController {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
+        }
     }
 
     /**
@@ -497,6 +512,7 @@ public class IndividualContainerController {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        System.out.println(response.body());
         // Parse the response into a JSONObject.
         JSONObject jsonObject = new JSONObject(response.body());
 
@@ -589,8 +605,8 @@ public class IndividualContainerController {
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
             // Create a Timeline that will hide the Popup after 3 seconds.
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
-            timeline.play();
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timelineNotification.play();
         });
     }
 
@@ -599,12 +615,16 @@ public class IndividualContainerController {
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
      * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the Timeline which keeps updating the CPU usage chart and prevents
+     * the Timeline from running in the background when the user is not on the IndividualContainer scene.
      *
      * @param actionEvent The event that triggered the scene change.
      * @param fxmlFile The name of the FXML file for the new scene.
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the Timeline which keeps updating the CPU usage chart.
+        stopTimeline();
         // Load the FXML file for the new scene.
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 
@@ -690,7 +710,6 @@ public class IndividualContainerController {
      * @throws IOException If an error occurs while changing the scene.
      */
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
-        // Change the scene to the Volumes scene.
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 }

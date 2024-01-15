@@ -95,6 +95,8 @@ public class ImagesController implements Initializable {
     @FXML
     public ImageView watchdogImage;
 
+    private Timeline timeline;
+
     /**
      * This method is automatically called when user navigates to Images Panel.
      * It sets up the TableView columns, hover effects for the sidebar images, and starts a timeline to refresh images.
@@ -181,11 +183,24 @@ public class ImagesController implements Initializable {
             refreshImages();
 
             // Start a timeline to refresh images every 1.5 seconds.
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
+            timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
         }
     }
 
@@ -583,8 +598,8 @@ public class ImagesController implements Initializable {
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
             // Create a Timeline that will hide the Popup after 3 seconds.
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
-            timeline.play();
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timelineNotification.play();
         });
     }
 
@@ -593,12 +608,15 @@ public class ImagesController implements Initializable {
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
      * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the timeline to prevent our program from lagging and keep it clean.
      *
      * @param actionEvent The event that triggered the scene change.
      * @param fxmlFile The name of the FXML file for the new scene.
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the timeline to prevent our program from lagging.
+        stopTimeline();
         // Load the FXML file for the new scene.
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 

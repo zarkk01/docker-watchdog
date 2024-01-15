@@ -83,6 +83,9 @@ public class GraphicsController implements Initializable {
     @FXML
     private PieChart pieChartImages;
 
+    private Timeline timelineForCpuMemory;
+    private Timeline timelineForPidsPie;
+
     /**
      * This method is called after all @FXML annotated members have been injected and
      * set up the environment for charts. After starting them,
@@ -106,7 +109,7 @@ public class GraphicsController implements Initializable {
         }
 
         // Set a timeline to update the CPU and Memory charts every 4 seconds.
-        Timeline timelineForCpuMemory = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
+        timelineForCpuMemory = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
             try {
                 updateCpuMemoryCharts();
             } catch (Exception e) {
@@ -117,7 +120,7 @@ public class GraphicsController implements Initializable {
         timelineForCpuMemory.play();
 
         // Set a timeline to update the PIDs chart and our Allocation Pie every 30 seconds.
-        Timeline timelineForPidsPie = new Timeline(new KeyFrame(Duration.seconds(30), event -> {
+        timelineForPidsPie = new Timeline(new KeyFrame(Duration.seconds(30), event -> {
             try {
                 updatePidsChart();
                 updatePieChart();
@@ -135,6 +138,19 @@ public class GraphicsController implements Initializable {
 
         // Set a hover effect for the sidebar images.
         hoveredSideBarImages();
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline(Timeline timeline) {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
+        }
     }
 
     /**
@@ -470,12 +486,16 @@ public class GraphicsController implements Initializable {
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
      * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the timelines to keep Watchdog clean and reduce lag.
      *
      * @param actionEvent The event that triggered the scene change.
      * @param fxmlFile The name of the FXML file for the new scene.
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the timelines to reduce lag.
+        stopTimeline(timelineForPidsPie);
+        stopTimeline(timelineForCpuMemory);
         // Load the FXML file for the new scene.
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 

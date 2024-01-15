@@ -112,6 +112,8 @@ public class ContainersController implements Initializable {
 
     private Map<String, Boolean> checkboxStates = new HashMap<>();
 
+    private Timeline timeline;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -150,143 +152,7 @@ public class ContainersController implements Initializable {
                 binView.setOpacity(1);
             });
 
-
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
-                @Override
-                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
-                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final Button btnStart = new Button();
-
-                        private final Tooltip startTooltip = new Tooltip("Start Container");
-                        private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
-                        private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
-                        private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
-                        private final Button btnStop = new Button();
-                        private final Tooltip stopTooltip = new Tooltip("Stop Container");
-                        Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
-                        ImageView viewStop = new ImageView(imgStop);
-
-                        {
-                            startTooltip.setShowDelay(Duration.millis(50));
-                            Tooltip.install(btnStart, startTooltip);
-                            viewStart.setFitHeight(30);
-                            viewStart.setFitHeight(30);
-                            viewStart.setPreserveRatio(true);
-                            viewStartHover.setFitHeight(30);
-                            viewStartHover.setPreserveRatio(true);
-                            viewStartClick.setFitHeight(20);
-                            viewStartClick.setPreserveRatio(true);
-                            viewStart.setPreserveRatio(true);
-                            btnStart.setPrefSize(30, 30);
-                            viewStart.setOpacity(0.8);
-                            btnStart.setGraphic(viewStart);
-                            btnStart.setOnAction((ActionEvent event) -> {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                try {
-                                    startContainer(instance);
-                                } catch (IOException | InterruptedException | URISyntaxException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-
-                            stopTooltip.setShowDelay(Duration.millis(50));
-                            Tooltip.install(btnStop, stopTooltip);
-
-                            viewStop.setFitHeight(30);
-                            viewStop.setPreserveRatio(true);
-                            btnStop.setGraphic(viewStop);
-                            viewStop.setFitHeight(30);
-                            viewStop.setFitWidth(30);
-                            viewStop.setPreserveRatio(true);
-                            btnStop.setPrefSize(30, 30);
-                            viewStop.setOpacity(0.8);
-                            btnStop.setGraphic(viewStop);
-                            DropShadow dropShadow = new DropShadow();
-
-                            btnStart.setEffect(dropShadow);
-
-                            dropShadow.setRadius(5);
-
-                            btnStop.setEffect(dropShadow);
-
-                            btnStop.setOnAction((ActionEvent event) -> {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                try {
-                                    stopContainer(instance);
-                                } catch (IOException | InterruptedException | URISyntaxException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            btnStart.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
-                            btnStart.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
-                            btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
-                            btnStart.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
-                            btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-                            btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
-                            btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
-                            btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
-
-                        }
-
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                if ("running".equals(instance.getStatus())) {
-                                    setGraphic(btnStop);
-                                } else {
-                                    setGraphic(btnStart);
-                                }
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
-
             actionButtonColumn.setCellFactory(actionCellFactory);
-
-            Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> selectCellFactory = new Callback<>() {
-                @Override
-                public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
-                    final TableCell<InstanceScene, Void> cell = new TableCell<>() {
-                        private final CheckBox checkBox = new CheckBox();
-                        {
-                            checkBox.setOpacity(0.8);
-                            checkBox.setMaxSize(20,20);
-
-                            checkBox.setOnAction(event -> {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                instance.setSelect(checkBox.isSelected());
-                                checkboxStates.put(instance.getId(), checkBox.isSelected());
-
-                                if (checkboxStates.containsValue(true)) {
-                                    removeButton.visibleProperty().setValue(true);
-                                } else {
-                                    removeButton.visibleProperty().setValue(false);
-                                }
-                            });
-                        }
-
-
-                        @Override
-                        public void updateItem(Void item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (empty) {
-                                setGraphic(null);
-                            } else {
-                                InstanceScene instance = getTableView().getItems().get(getIndex());
-                                checkBox.setSelected(instance.isSelect());
-                                setGraphic(checkBox);
-                            }
-                        }
-                    };
-                    return cell;
-                }
-            };
 
             selectColumn.setCellFactory(selectCellFactory);
 
@@ -318,7 +184,7 @@ public class ContainersController implements Initializable {
 
             refreshInstances();
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> refreshInstances()));
+            timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> refreshInstances()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
@@ -328,6 +194,157 @@ public class ContainersController implements Initializable {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    // Create a cell factory for the action column.
+    Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
+        @Override
+        public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
+            final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                private final Button btnStart = new Button();
+
+                private final Tooltip startTooltip = new Tooltip("Start Container");
+                private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
+                private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
+                private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
+                private final Button btnStop = new Button();
+                private final Tooltip stopTooltip = new Tooltip("Stop Container");
+                Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
+                ImageView viewStop = new ImageView(imgStop);
+
+                {
+                    startTooltip.setShowDelay(Duration.millis(50));
+                    Tooltip.install(btnStart, startTooltip);
+                    viewStart.setFitHeight(30);
+                    viewStart.setFitHeight(30);
+                    viewStart.setPreserveRatio(true);
+                    viewStartHover.setFitHeight(30);
+                    viewStartHover.setPreserveRatio(true);
+                    viewStartClick.setFitHeight(20);
+                    viewStartClick.setPreserveRatio(true);
+                    viewStart.setPreserveRatio(true);
+                    btnStart.setPrefSize(30, 30);
+                    viewStart.setOpacity(0.8);
+                    btnStart.setGraphic(viewStart);
+                    btnStart.setOnAction((ActionEvent event) -> {
+                        InstanceScene instance = getTableView().getItems().get(getIndex());
+                        try {
+                            startContainer(instance);
+                        } catch (IOException | InterruptedException | URISyntaxException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+
+                    stopTooltip.setShowDelay(Duration.millis(50));
+                    Tooltip.install(btnStop, stopTooltip);
+
+                    viewStop.setFitHeight(30);
+                    viewStop.setPreserveRatio(true);
+                    btnStop.setGraphic(viewStop);
+                    viewStop.setFitHeight(30);
+                    viewStop.setFitWidth(30);
+                    viewStop.setPreserveRatio(true);
+                    btnStop.setPrefSize(30, 30);
+                    viewStop.setOpacity(0.8);
+                    btnStop.setGraphic(viewStop);
+                    DropShadow dropShadow = new DropShadow();
+
+                    btnStart.setEffect(dropShadow);
+
+                    dropShadow.setRadius(5);
+
+                    btnStop.setEffect(dropShadow);
+
+                    btnStop.setOnAction((ActionEvent event) -> {
+                        InstanceScene instance = getTableView().getItems().get(getIndex());
+                        try {
+                            stopContainer(instance);
+                        } catch (IOException | InterruptedException | URISyntaxException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    btnStart.setOnMouseEntered(e -> viewStart.setImage(viewStartHover.getImage()));
+                    btnStart.setOnMouseExited(e -> viewStart.setImage(new Image(getClass().getResource("/images/play.png").toExternalForm())));
+                    btnStart.setOnMousePressed(e -> viewStart.setImage(viewStartClick.getImage()));
+                    btnStart.setOnMouseReleased(e -> viewStart.setImage(viewStartHover.getImage()));
+                    btnStop.setOnMouseEntered(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+                    btnStop.setOnMouseExited(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopRed.png").toExternalForm())));
+                    btnStop.setOnMousePressed(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopClick.png").toExternalForm())));
+                    btnStop.setOnMouseReleased(e -> viewStop.setImage(new Image(getClass().getResource("/images/stopHover.png").toExternalForm())));
+
+                }
+
+                @Override
+                public void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        InstanceScene instance = getTableView().getItems().get(getIndex());
+                        if ("running".equals(instance.getStatus())) {
+                            setGraphic(btnStop);
+                        } else {
+                            setGraphic(btnStart);
+                        }
+                    }
+                }
+            };
+            return cell;
+        }
+    };
+
+
+    // Create a cell factory for the select column.
+    Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> selectCellFactory = new Callback<>() {
+        @Override
+        public TableCell<InstanceScene, Void> call(final TableColumn<InstanceScene, Void> param) {
+            final TableCell<InstanceScene, Void> cell = new TableCell<>() {
+                private final CheckBox checkBox = new CheckBox();
+                {
+                    checkBox.setOpacity(0.8);
+                    checkBox.setMaxSize(20,20);
+
+                    checkBox.setOnAction(event -> {
+                        InstanceScene instance = getTableView().getItems().get(getIndex());
+                        instance.setSelect(checkBox.isSelected());
+                        checkboxStates.put(instance.getId(), checkBox.isSelected());
+
+                        if (checkboxStates.containsValue(true)) {
+                            removeButton.visibleProperty().setValue(true);
+                        } else {
+                            removeButton.visibleProperty().setValue(false);
+                        }
+                    });
+                }
+
+
+                @Override
+                public void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        InstanceScene instance = getTableView().getItems().get(getIndex());
+                        checkBox.setSelected(instance.isSelect());
+                        setGraphic(checkBox);
+                    }
+                }
+            };
+            return cell;
+        }
+    };
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
         }
     }
 
@@ -845,12 +862,15 @@ public class ContainersController implements Initializable {
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
      * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the Timeline to prevent Watchdog from lagging and keep it clean.
      *
      * @param actionEvent The event that triggered the scene change.
      * @param fxmlFile The name of the FXML file for the new scene.
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the Timeline to prevent Watchdog from lagging.
+        stopTimeline();
         // Load the FXML file for the new scene.
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 
