@@ -19,7 +19,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.chart.*;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -39,8 +42,10 @@ import org.json.JSONObject;
 /**
  * The GraphicsController class is an FX Controller responsible for managing the Graphics Panel in the application.
  * It is used to display the information of the Docker Cluster in a playful form of charts.
- * It also provides methods for retrieving all instances of the application and setting hover effects for the sidebar images.
- * The class uses the WATCHDOG REST API to communicate with the backend and send requests for information so to update the charts.
+ * It also provides methods for retrieving all instances of the application
+ * and setting hover effects for the sidebar images.
+ * The class uses the WATCHDOG REST API to communicate with the backend
+ * and send requests for information so to update the charts.
  */
 public class GraphicsController implements Initializable {
 
@@ -53,15 +58,15 @@ public class GraphicsController implements Initializable {
     private LocalDateTime currentTime;
 
     @FXML
-    private LineChart<String,Number> cpuChart;
+    private LineChart<String, Number> cpuChart;
     private XYChart.Series<String, Number> cpuSeries;
 
     @FXML
-    private BarChart<String,Number> pidsChart;
+    private BarChart<String, Number> pidsChart;
     private XYChart.Series<String, Number> pidsSeries;
 
     @FXML
-    private LineChart<String,Number> memoryChart;
+    private LineChart<String, Number> memoryChart;
     private XYChart.Series<String, Number> memorySeries;
 
     @FXML
@@ -80,7 +85,9 @@ public class GraphicsController implements Initializable {
 
     /**
      * This method is called after all @FXML annotated members have been injected and
-     * set up the environment for charts. After starting them it sets a timeline to update the CPU and Memory charts every 4 seconds and the PIDs chart every 30 seconds.
+     * set up the environment for charts. After starting them,
+     * it sets a timeline to update the CPU and Memory charts every 4 seconds
+     * and the PIDs chart every 30 seconds.
      * Finally, it sets a hover effect for the sidebar images.
      *
      * @param arg0 The location used to resolve relative paths for the root object, or null if the location is not known.
@@ -124,7 +131,7 @@ public class GraphicsController implements Initializable {
         // Install funny tooltip on watchdog logo.
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
-        Tooltip.install(watchdogImage,woof);
+        Tooltip.install(watchdogImage, woof);
 
         // Set a hover effect for the sidebar images.
         hoveredSideBarImages();
@@ -246,11 +253,11 @@ public class GraphicsController implements Initializable {
             }
             // If the total CPU usage is more than 40%, update the CPU and Memory charts again
             // because something might have gone wrong with the previous measurement.
-            if(totalCpuUsage*100>40){
+            if (totalCpuUsage * 100 > 40) {
                 updateCpuMemoryCharts();
             } else {
                 // Add the total CPU usage to the CPU chart.
-                cpuSeries.getData().add(new XYChart.Data<>(formattedTime, totalCpuUsage*100));
+                cpuSeries.getData().add(new XYChart.Data<>(formattedTime, totalCpuUsage * 100));
             }
         } catch (Exception e) {
             // If an error occurs, throw a ChartException.
@@ -405,7 +412,7 @@ public class GraphicsController implements Initializable {
             String blockO = rounded0 + "B";
 
             // Create a new InstanceScene object with the extracted data and add it to the list.
-            instances.add(new InstanceScene(id, name, image ,status, memoryUsage, pids, cpuUsage, blockI, blockO, null, null, null, null,false));
+            instances.add(new InstanceScene(id, name, image , status, memoryUsage, pids, cpuUsage, blockI, blockO, null, null, null, null, false));
         }
 
         // Return the list of instances.
