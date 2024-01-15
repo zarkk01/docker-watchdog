@@ -7,11 +7,18 @@ import java.nio.file.StandardOpenOption;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javafx.util.Duration;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -58,6 +65,9 @@ public class ComposeController {
     private Label fileNameLabel;
     @FXML
     private Label savedLabel;
+
+    @FXML
+    private VBox notificationBox;
 
     @FXML
     private ImageView watchdogImage;
@@ -155,8 +165,7 @@ public class ComposeController {
     /**
      * This method creates a new ProcessBuilder with the command to start the Docker Compose file.
      * It then starts the process and waits for it to finish.
-     * If the process finishes with an exit code of 0, it prints a success message.
-     * If the process finishes with a non-zero exit code, it prints an error message.
+     * If the process finishes with an exit code of 0, it shows user a notification.
      *
      * @throws IOException If an error occurs while starting the process.
      * @throws InterruptedException If the current thread is interrupted while waiting for the process to finish.
@@ -171,20 +180,18 @@ public class ComposeController {
         // Wait for the process to finish.
         int exitCode = process.waitFor();
 
-        // If the process finishes with an exit code of 0, print a success message.
+        // If the process finishes with an exit code of 0, show a notification.
         if (exitCode == 0) {
-            System.out.println("Docker Compose file ran successfully");
-        } else {
-            // If the process finishes with a non-zero exit code, print an error message.
-            System.out.println("Error running Docker Compose file");
+            // Extract the file name from the YAML file path
+            String fileName = Paths.get(yamlFilePath).getFileName().toString();
+            showNotification(fileName + " started", "The Docker Compose file " + fileName + " has been started");
         }
     }
 
     /**
      * This method creates a new ProcessBuilder with the command to stop the Docker Compose file.
      * It then starts the process and waits for it to finish.
-     * If the process finishes with an exit code of 0, it prints a success message.
-     * If the process finishes with a non-zero exit code, it prints an error message.
+     * If the process finishes with an exit code of 0, it shows user a notification.
      *
      * @throws IOException If an error occurs while starting the process.
      * @throws InterruptedException If the current thread is interrupted while waiting for the process to finish.
@@ -199,12 +206,11 @@ public class ComposeController {
         // Wait for the process to finish.
         int exitCode = process.waitFor();
 
-        // If the process finishes with an exit code of 0, print a success message.
+        // If the process finishes with an exit code of 0, show a notification.
         if (exitCode == 0) {
-            System.out.println("Docker Compose file stopped successfully");
-        } else {
-            // If the process finishes with a non-zero exit code, print an error message.
-            System.out.println("Error stopping Docker Compose file");
+            // Extract the file name from the YAML file path
+            String fileName = Paths.get(yamlFilePath).getFileName().toString();
+            showNotification(fileName + " stopped", "The Docker Compose file " + fileName + " has been stopped");
         }
     }
 
@@ -301,6 +307,46 @@ public class ComposeController {
             isShowingConfig = false;
             showConfigButton.setText("Show Config");
         }
+    }
+
+    /**
+     * Displays a notification with the given title and content.
+     * It helps us keep user informed about events that occur in .yaml file.
+     * After 3 seconds, the Popup is automatically hidden.
+     *
+     * @param title The title of the notification.
+     * @param content The content of the notification.
+     */
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a new Popup for the notification.
+            Popup notification = new Popup();
+
+            // Create a Label for the title of the notification and style it.
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+
+            // Create a Label for the content of the notification and style it.
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Create a VBox to hold the title and content Labels and style it.
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup.
+            notification.getContent().add(box);
+
+            // Calculate the position of the Popup on the screen.
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup on the screen at the calculated position.
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Create a Timeline that will hide the Popup after 3 seconds.
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timeline.play();
+        });
     }
 
     /**

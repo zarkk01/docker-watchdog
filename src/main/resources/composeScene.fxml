@@ -2,8 +2,6 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,6 +13,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.Label?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ComposeController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
@@ -139,7 +139,8 @@
                         <Image url="@images/watchdog.png" />
                     </image>
                 </ImageView>
-                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
+                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0">
+               </VBox>
             </children>
         </HBox>
     </top>
@@ -151,7 +152,8 @@
                <stylesheets>
                   <URL value="@styles/styles.css" />
                   <URL value="@styles/textArea.css" />
-               </stylesheets></TextArea>
+               </stylesheets>
+                </TextArea>
             <Pane layoutX="497.0" layoutY="100.0" prefHeight="443.0" prefWidth="430.0" style="-fx-background-color: #616161;" stylesheets="@styles/curvedPane.css">
                <children>
                      <Button fx:id="showConfigButton" layoutX="124.0" layoutY="302.0" mnemonicParsing="false" onAction="#showConfig" prefHeight="90.0" prefWidth="180.0" stylesheets="@styles/darkButtons.css" text="Show Config" textFill="WHITE">
