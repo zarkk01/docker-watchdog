@@ -46,6 +46,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class ContainersController implements Initializable {
+    private Stage stage;
+    private Parent root;
     @FXML
     private TableView instancesTableView;
     @FXML
@@ -105,9 +107,6 @@ public class ContainersController implements Initializable {
     private Button volumesButton;
     @FXML
     private ImageView watchdogImage;
-
-    private Stage stage;
-    private Parent root;
 
     private Boolean selectedDateTime = false;
 
@@ -332,57 +331,21 @@ public class ContainersController implements Initializable {
         }
     }
 
-    public void removeSelectedContainers() {
-        try {
-            Map<String, Boolean> checkboxStates = getCheckboxStates();
-
-            for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
-                String id = entry.getKey();
-                boolean isSelected = entry.getValue();
-
-                if (isSelected) {
-                    HttpRequest request1 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/stop"))
-                            .POST(HttpRequest.BodyPublishers.noBody())
-                            .build();
-
-                    client.send(request1, HttpResponse.BodyHandlers.ofString());
-
-                    HttpRequest request2 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/delete"))
-                            .POST(HttpRequest.BodyPublishers.noBody())
-                            .build();
-
-                    client.send(request2, HttpResponse.BodyHandlers.ofString());
-
-                    checkboxStates.put(id, false);
-                }
-            }
-            updateCheckboxStates(checkboxStates);
-
-            if (checkboxStates.containsValue(true)) {
-                removeButton.visibleProperty().setValue(true);
-            } else {
-                removeButton.visibleProperty().setValue(false);
-            }
-
-            refreshInstances();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void updateCheckboxStates(Map<String, Boolean> newStates) {
-        checkboxStates.clear();
-        checkboxStates.putAll(newStates);
-    }
-
-    private Map<String, Boolean> getCheckboxStates() {
-        return checkboxStates;
-    }
-
-    void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
-        if(instance.getStatus().equals("paused")){
+    /**
+     * Starts a Docker container.
+     * This method sends a POST request to the WATCHDOG REST API to start a Docker container with a given ID.
+     * If the container is currently paused, it sends a POST request to unpause the container instead.
+     * After the container is started or unpaused, it shows a notification and refreshes the instances table view.
+     *
+     * @param instance The InstanceScene object representing the Docker container to be started.
+     * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
+     * @throws InterruptedException If the operation is interrupted.
+     * @throws URISyntaxException If the URI of the HTTP request is not formatted correctly.
+     */
+    private void startContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        // Check if the container is currently paused.
+        if (instance.getStatus().equals("paused")) {
+            // If the container is paused, send a POST request to the WATCHDOG REST API to unpause the container.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/unpause"))
                     .POST(HttpRequest.BodyPublishers.noBody())
@@ -390,11 +353,13 @@ public class ContainersController implements Initializable {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
             if (response.statusCode() == 200) {
                 showNotification("Container Event", "Container " + instance.getName() + " has unpaused.");
             }
             refreshInstances();
         } else {
+            // If the container is not paused, send a POST request to the WATCHDOG REST API to start the container.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
                     .POST(HttpRequest.BodyPublishers.noBody())
@@ -402,6 +367,7 @@ public class ContainersController implements Initializable {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
             if (response.statusCode() == 200) {
                 showNotification("Container Event", "Container " + instance.getName() + " has started.");
             }
@@ -409,33 +375,144 @@ public class ContainersController implements Initializable {
         }
     }
 
+    /**
+     * Stops a Docker container.
+     * This method sends a POST request to the WATCHDOG REST API to stop a Docker container with a given ID.
+     * After the container is stopped, it shows a notification and refreshes the instances table view.
+     *
+     * @param instance The InstanceScene object representing the Docker container to be stopped.
+     * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
+     * @throws InterruptedException If the operation is interrupted.
+     * @throws URISyntaxException If the URI of the HTTP request is not formatted correctly.
+     */
     private void stopContainer(InstanceScene instance) throws IOException, InterruptedException, URISyntaxException {
+        // Create a POST request to the WATCHDOG REST API to stop the Docker container with the given ID.
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/stop"))
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
+        // Send the request and get the response.
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
         if (response.statusCode() == 200) {
             showNotification("Container Event", "Container " + instance.getName() + " has stopped.");
         }
         refreshInstances();
     }
 
+    /**
+     * Retrieves the maximum metric ID.
+     * This method sends a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
+     * The maximum metric ID represents the highest number of changes (metrics) that have been recorded for the Docker containers.
+     * If the response body is empty, it returns 1. Otherwise, it parses the response body to an integer and returns it.
+     *
+     * @return The maximum metric ID.
+     * @throws Exception If an error occurs when sending or receiving the HTTP request.
+     */
+    public Integer getMaxMetricId() throws Exception {
+        // Send a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/lastMetricId"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Parse the response body to extract the maximum metric ID.
+        String responseBody = response.body();
+        if (responseBody.isEmpty()) {
+            return 1;
+        } else {
+            return Integer.parseInt(responseBody);
+        }
+    }
+
+    /**
+     * Handles the upload of a Docker Compose file.
+     * This method opens a FileChooser dialog that allows the user to select a Docker Compose file (.yaml) from their file system.
+     * If a file is selected, it gets the absolute path of the file and loads the Compose scene.
+     * The path of the selected file is then passed to the ComposeController.
+     * If no file is selected, the method does nothing.
+     *
+     * @param actionEvent The event that triggered the file upload.
+     */
+    public void handleUploadFile(ActionEvent actionEvent) {
+        // Create a FileChooser.
+        FileChooser fileChooser = new FileChooser();
+
+        // Set the extension filter to .yaml files.
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Open the FileChooser dialog.
+        Stage stage = (Stage) uploadButton.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+
+        // If a file is selected, load the Compose scene and pass the file path to the ComposeController.
+        if (file != null) {
+            try {
+                // Get the absolute path of the selected Docker Compose file.
+                String dockerComposeFilePath = file.getAbsolutePath();
+
+                // Create a new FXMLLoader and load the Compose scene from the FXML file.
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/composeScene.fxml"));
+                Parent root = loader.load();
+
+                // Get the controller for the Compose scene.
+                ComposeController controller = loader.getController();
+
+                // Pass the path of the Docker Compose file to the ComposeController.
+                controller.setYamlFilePath(dockerComposeFilePath);
+
+                // Get the current stage from the action event source.
+                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+                // Set the Compose scene as the root of the stage and display it.
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Refreshes the instances table view.
+     * This method retrieves all instances of the Docker containers by calling the getAllInstances method.
+     * It then clears the instances table view and adds the retrieved instances to it.
+     * It also updates the total, running, and stopped containers labels.
+     * If the selectedDateTime is false (meaning no datetime is currently selected by the user),
+     * it also updates the metrics label with the maximum metric ID.
+     * If the runningInstancesCheckbox is selected, it only adds the running instances to the table view.
+     * If the runningInstancesCheckbox is not selected, it adds all instances to the table view.
+     * If an error occurs while refreshing the instances, it throws a RuntimeException.
+     */
     public void refreshInstances(){
         try {
+            // Retrieve all instances of the Docker containers.
             List<InstanceScene> instances = getAllInstances();
+
+            // Get the maximum metric ID.
             Integer maxMetricId = getMaxMetricId();
-            
+
+            // Clear the instances table view.
             instancesTableView.getItems().clear();
-            
+
+            // Initialize the counters for the total, running, and stopped containers.
             int totalContainers = instances.size();
             int runningContainers = 0;
             int stoppedContainers = 0;
 
+            // Iterate over the instances.
             for(InstanceScene instance : instances) {
+                // If the instance is running, increment the running containers counter.
+                // If the instance is not running, increment the stopped containers counter.
                 int running = instance.getStatus().equals("running") ? runningContainers++ : stoppedContainers++;
+
+                // If the instance's name contains the text in the search field, add the instance to the table view.
+                // If the runningInstancesCheckbox is selected, only add the instance if it is running.
+                // If the runningInstancesCheckbox is not selected, add the instance regardless of its status.
                 if (instance.getName().contains(searchField.getText())) {
                     if (runningInstancesCheckbox.isSelected()) {
                         if (instance.getStatus().equals("running")) {
@@ -446,6 +523,8 @@ public class ContainersController implements Initializable {
                     }
                 }
             }
+
+            // If no datetime is currently selected by the user, update the total, running, and stopped containers labels and the metrics label.
             if(!selectedDateTime){
                 totalContainersText.setText(String.valueOf(totalContainers));
                 runningContainersText.setText(String.valueOf(runningContainers));
@@ -461,26 +540,26 @@ public class ContainersController implements Initializable {
         }
     }
 
-    public Integer getMaxMetricId() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/lastMetricId"))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        String responseBody = response.body();
-        if (responseBody.isEmpty()) {
-            return 1;
-        } else {
-            return Integer.parseInt(responseBody);
-        }
-    }
-
+    /**
+     * Retrieves all instances of the Docker containers.
+     * This method sends a GET request to the WATCHDOG REST API to retrieve all instances of the Docker containers.
+     * It then parses the response body to extract the details of each instance, such as the ID, name, image, status, CPU usage, memory usage, block I/O, volumes, subnet, gateway, and prefix length.
+     * These details are used to create a new InstanceScene object for each instance, which are then added to a list.
+     * If the status of an instance is not "running", the CPU usage, memory usage, and block I/O are set to "N/A".
+     * The method returns the list of InstanceScene objects.
+     *
+     * @return A list of InstanceScene objects representing all instances of the Docker containers.
+     * @throws Exception If an error occurs when sending or receiving the HTTP request.
+     */
     public List<InstanceScene> getAllInstances() throws Exception {
+        // Send a GET request to the WATCHDOG REST API to retrieve all instances of the Docker containers.
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/instances"))
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Parse the response body to extract the details of each instance.
         JSONArray jsonArray = new JSONArray(response.body());
         List<InstanceScene> instances = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -506,6 +585,8 @@ public class ContainersController implements Initializable {
             String subnet = jsonObject.getString("subnet");
             String gateway = jsonObject.getString("gateway");
             Integer prefixLen = jsonObject.getInt("prefixLen");
+
+            // Create a new InstanceScene object for each instance and add it to the list.
             if (status.equals("running")) {
                 instances.add(new InstanceScene(id, name, image
                         ,status, memoryUsage, pids, cpuUsage , blockI
@@ -515,30 +596,55 @@ public class ContainersController implements Initializable {
                 instances.add(new InstanceScene(id, name, image ,status, "N/A", "N/A", "N/A" , "N/A", "N/A", volumes, subnet, gateway, prefixLen, getCheckboxStateById(id) ));
             }
         }
+
+        // Return the list of InstanceScene objects.
         return instances;
     }
 
-    private boolean getCheckboxStateById(String id) {
-        return checkboxStates.getOrDefault(id, false);
-    }
-
-    public void showDataThen(ActionEvent e) {
+    /**
+     * Displays the state of the Docker cluster at a given datetime.
+     * This method is called when the user inputs a datetime
+     * and wants to see the state of the Docker cluster at that time.
+     * It sends a GET request to the WATCHDOG REST API to retrieve
+     * the metrics of the Docker cluster at the given datetime.
+     * The metrics include the number of metrics done (meaning changes),
+     * running instances, total instances, and stopped instances.
+     * These metrics are then displayed in the corresponding labels in the user interface.
+     * If the datetime is not in the correct format, an error message is printed.
+     *
+     * @throws ParseException If the datetime given by the user is not in the correct format.
+     * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
+     * @throws InterruptedException If the operation is interrupted.
+     */
+    public void showDataFromGivenDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
+            // Set selectedDateTime to true to indicate that a datetime is currently selected.
             selectedDateTime = true;
+
+            // Parse the datetime given by the user.
             Date chosenDate = dateFormat.parse(datetimeTextField.getText());
+
+            // Encode the datetime to be used in the URL of the HTTP request.
             String chosenDateString = URLEncoder.encode(dateFormat.format(chosenDate), "UTF-8");
+
+            // Send a GET request to the WATCHDOG REST API to retrieve the metrics at the given datetime.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/containers/metrics?chosenDate=" + chosenDateString))
                     .GET()
                     .build();
-
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Parse the response body to extract the metrics.
             String responseBody = response.body();
+
+            // The response body is in the format "metricsDone,runningInstances,totalInstances,stoppedInstances".
             String metricsDone = responseBody.split(",")[0].replaceAll("[^0-9]", "");
             String runningInstances = responseBody.split(",")[1].replaceAll("[^0-9]", "");
             String totalInstances = responseBody.split(",")[2].replaceAll("[^0-9]", "");
             String stoppedInstances = responseBody.split(",")[3].replaceAll("[^0-9]", "");
+
+            // Display the metrics in the corresponding labels in the user interface.
             metricsLabel.setText(metricsDone);
             runningContainersText.setText(runningInstances);
             totalContainersText.setText(totalInstances);
@@ -550,35 +656,102 @@ public class ContainersController implements Initializable {
         }
     }
 
+    /**
+     * Clears the datetime input and refreshes the instances.
+     * This method is used when the user wants to reset the cluster state to the current state and clear the datetime given by the user.
+     * It sets the selectedDateTime to false and calls the refreshInstances method to update the instances table view.
+     */
     public void clearInfo(){
+        // Set selectedDateTime to false so to indicate that no datetime is currently selected.
         selectedDateTime = false;
+
+        // Refresh the instances table view to reflect the current state of the instances.
         refreshInstances();
     }
 
-    public void handleUploadFile(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
-        fileChooser.getExtensionFilters().add(extFilter);
+    /**
+     * Removes the selected containers.
+     * This method iterates over the checkboxStates map, which holds the container ID and its selection state.
+     * If a container is selected (checkbox state is true), it sends a POST request to the WATCHDOG REST API to stop and delete the container.
+     * After all selected containers are removed, it refreshes the instances table view.
+     * If any container is still selected after the removal, it makes the remove button visible.
+     * If no container is selected, it hides the remove button.
+     */
+    public void removeSelectedContainers() {
+        try {
+            Map<String, Boolean> checkboxStates = getCheckboxStates();
 
-        Stage stage = (Stage) uploadButton.getScene().getWindow();
-        File file = fileChooser.showOpenDialog(stage);
+            // Iterate over the checkbox states map.
+            for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
+                String id = entry.getKey();
+                boolean isSelected = entry.getValue();
 
-        if (file != null) {
-            try {
-                String dockerComposeFilePath = file.getAbsolutePath();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/composeScene.fxml"));
-                Parent root = loader.load();
+                if (isSelected) {
+                    // Send a POST request to stop the container
+                    HttpRequest request1 = HttpRequest.newBuilder()
+                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/stop"))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build();
 
-                ComposeController controller = loader.getController();
-                controller.setYamlFilePath(dockerComposeFilePath);
+                    client.send(request1, HttpResponse.BodyHandlers.ofString());
 
-                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (Exception e) {
-                e.printStackTrace();
+                    // Send a POST request to delete the container
+                    HttpRequest request2 = HttpRequest.newBuilder()
+                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/delete"))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build();
+
+                    client.send(request2, HttpResponse.BodyHandlers.ofString());
+
+                    checkboxStates.put(id, false);
+                }
             }
+            // Update the checkbox states map.
+            updateCheckboxStates(checkboxStates);
+
+            if (checkboxStates.containsValue(true)) {
+                removeButton.visibleProperty().setValue(true);
+            } else {
+                removeButton.visibleProperty().setValue(false);
+            }
+
+            // Refresh the instances table view.
+            refreshInstances();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Updates the checkbox states map with new states.
+     * This method clears the existing checkboxStates map and puts all entries from the newStates map into it.
+     *
+     * @param newStates The map containing the new checkbox states.
+     */
+    private void updateCheckboxStates(Map<String, Boolean> newStates) {
+        checkboxStates.clear();
+        checkboxStates.putAll(newStates);
+    }
+
+    /**
+     * Returns the checkbox states map.
+     * This map holds the container ID and its selection state.
+     *
+     * @return The checkbox states map.
+     */
+    private Map<String, Boolean> getCheckboxStates() {
+        return checkboxStates;
+    }
+
+    /**
+     * Returns the checkbox state of a container by its ID.
+     * If the container ID does not exist in the checkboxStates map, it returns false.
+     *
+     * @param id The ID of the container.
+     * @return The checkbox state of the container.
+     */
+    private boolean getCheckboxStateById(String id) {
+        return checkboxStates.getOrDefault(id, false);
     }
 
     /**
