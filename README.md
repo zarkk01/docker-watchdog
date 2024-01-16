@@ -1,14 +1,5 @@
 # Watchdog - Docker Monitoring Application v0.1
 
-Authors:
-
-[Ioannis Tampakis](mailto:giannistampakis04@gmail.com),
-[Thodoris Zarkalis](mailto:zarkalhs@gmail.com),
-[Iasonas Passam](mailto:),
-[Dionysis Glytsos](mailto:)
-
-Contributors:
-
 ## Description
 
 Watchdog is a desktop Spring Boot application designed to monitor your docker cluster and let you interact with your containers and images in an intuitive way. In this version the extracted data is stored in a local mySQL database. It uses callbacks to Asynchronously get data from your docker deamon and it dynamically creates data-tranfer-objects that are pushed to the database. After, a springboot application uses the REST protocol to extract the data-tranfer-objects back into the desktop application and display them in a user-frienly way while also giving the user the ability to interact with his containers and images using designated endpoints.
@@ -18,9 +9,74 @@ Watchdog is a desktop Spring Boot application designed to monitor your docker cl
 To run the application:
 
 1. Ensure Java and Maven are installed.
-2. Ensure a MySQL server is running with the username "docker_db" and password "dockerW4tchd0g$"
+2. Depending on your platform:
+
+       For MacOS
+   
+       i) Have MYSQL server downloaded on your computer
+
+       ii) Setup a new connection for your database
+
+       iii) Export connection NAME, USERNAME, PASSWORD as enviroment variables following the next steps:
+
+       Open the terminal and type the following commands to open the shell profile file: 
+
+       For bash shell:  
+
+       nano ~/.bashrc
+
+       For zsh shell:  
+
+       nano ~/.zshrc
+
+       Add these lines at the end of the file:  
+
+       export DOCKER_DB_NAME="your_database_name"
+
+       export DOCKER_DB_USERNAME="your_username"
+
+       export DOCKER_DB_PASSWORD="your_password"
+
+       Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name.  To make these changes take effect, close and reopen your terminal or source the profile file using one of the following commands: 
+
+       For bash shell:  
+
+       source ~/.bashrc
+
+       For zsh shell:
+
+       source ~/.zshrc
+   
+
+       For Windows:
+   
+       i) Have MYSQL server downloaded on your computer
+   
+       ii) Setup a new connection for your database
+   
+       iii) Export connection NAME, USERNAME, PASSWORD as
+   
+       enviroment variables following the next steps:
+   
+       Open Command Prompt as an administrator.  
+   
+       To set the environment variables, use the setx command followed by the variable name and its value. For example:
+   
+       setx DOCKER_DB_NAME "your_database_name"
+   
+       setx DOCKER_DB_USERNAME "your_username"
+   
+       setx DOCKER_DB_PASSWORD "your_password"
+   
+       Please replace "your_database_name", "your_username", and "your_password" with your actual database name, username, and password.
+   
+       Close and reopen Command Prompt to make sure the changes take effect.
+   
 3. Ensure docker desktop is running and kubernetes is enabled in settings
 4. Clone the repository.
+```bash
+git clone https://github.com/zarkk01/docker-watchdog.git
+```
 5. Navigate to the root directory and run `mvn spring-boot:run`.
 
 ## Project Structure
@@ -256,6 +312,14 @@ Watchdog is structured into several packages, each with a specific role in the a
 ![](src/main/resources/images/graphicsPanel.png)
 ![](src/main/resources/images/exraPanel.png)
 
+Authors:
+
+[Ioannis Tampakis](mailto:giannistampakis04@gmail.com),
+[Thodoris Zarkalis](mailto:zarkalhs@gmail.com),
+[Iasonas Passam](mailto:),
+[Dionysis Glytsos](mailto:)
+
+Contributors:
 
 ## Contributing
 
