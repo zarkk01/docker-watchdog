@@ -127,7 +127,7 @@
                   <Font name="System Bold" size="25.0" />
                </font>
             </Text>
-            <LineChart fx:id="cpuChart" layoutX="-1.0" layoutY="85.0" prefHeight="330.0" prefWidth="462.0" stylesheets="@styles/chartColor.css" title="Total CPU Usage in %">
+            <LineChart fx:id="cpuChart" layoutX="-1.0" layoutY="85.0" prefHeight="316.0" prefWidth="462.0" stylesheets="@styles/chartColor.css" title="Total CPU Usage in %">
                <xAxis>
                   <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
                </xAxis>
@@ -135,7 +135,7 @@
                   <NumberAxis minorTickCount="10" side="LEFT" tickLabelFill="WHITE" tickLabelGap="5.0" upperBound="3.0" />
                </yAxis>
             </LineChart>
-            <BarChart fx:id="pidsChart" layoutX="456.0" layoutY="84.0" prefHeight="331.0" prefWidth="501.0" stylesheets="@styles/chartColor.css" title="PIDs ">
+            <BarChart fx:id="pidsChart" layoutX="456.0" layoutY="84.0" prefHeight="317.0" prefWidth="502.0" stylesheets="@styles/chartColor.css" title="PIDs ">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
               </xAxis>
@@ -143,8 +143,8 @@
                 <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="50.0" />
               </yAxis>
             </BarChart>
-            <Pane layoutX="640.0" layoutY="376.0" prefHeight="100.0" prefWidth="184.0" style="-fx-background-color: #474745;" />
-            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="396.0" prefHeight="372.0" prefWidth="510.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
+            <Pane layoutX="640.0" layoutY="401.0" prefHeight="75.0" prefWidth="184.0" style="-fx-background-color: #474745;" />
+            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="402.0" prefHeight="366.0" prefWidth="510.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
               </xAxis>
