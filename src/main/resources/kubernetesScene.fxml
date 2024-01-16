@@ -132,7 +132,7 @@
             <children>
                 <Text fill="WHITE" layoutX="325.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="260.3033752441406">
                     <font>
-                        <Font name="System Bold" size="36.0" />
+                        <Font name="SansSerif Bold" size="36.0" />
                     </font>
                 </Text>
                 <SplitPane dividerPositions="0.48036006546644844" layoutX="1.0" layoutY="61.0" orientation="VERTICAL" prefHeight="613.0" prefWidth="943.0" style="-fx-background-color: transparent;" stylesheets="@styles/splitPane.css">
@@ -145,7 +145,7 @@
                                             <children>
                                                 <Label layoutX="197.0" layoutY="10.0" prefHeight="29.0" prefWidth="173.0" text="DEPLOYMENTS" textFill="WHITE">
                                                     <font>
-                                                        <Font name="System Bold" size="24.0" />
+                                                        <Font name="SansSerif Bold" size="24.0" />
                                                     </font>
                                                 </Label>
                                                 <TableView fx:id="deploymentsTableView" layoutX="31.0" layoutY="39.0" prefHeight="248.0" prefWidth="519.0">
@@ -166,7 +166,7 @@
                            <children>
                                       <Label layoutX="139.0" layoutY="7.0" text="SERVICES" textFill="WHITE">
                                           <font>
-                                              <Font name="System Bold" size="24.0" />
+                                              <Font name="SansSerif Bold" size="24.0" />
                                           </font>
                                       </Label>
                                       <TableView fx:id="servicesTableView" layoutY="35.0" prefHeight="248.0" prefWidth="390.0">
@@ -191,7 +191,7 @@
                                             <children>
                                                 <Label layoutX="278.0" layoutY="10.0" text="PODS" textFill="WHITE">
                                                     <font>
-                                                        <Font name="System Bold" size="27.0" />
+                                                        <Font name="SansSerif Bold" size="26.0" />
                                                     </font>
                                                 </Label>
                                                 <TableView fx:id="podsTableView" layoutX="4.0" layoutY="43.0" prefHeight="260.0" prefWidth="605.0">
@@ -211,7 +211,7 @@
                                             <children>
                                                 <Label layoutX="86.0" layoutY="14.0" text="STATEFUL SETS" textFill="WHITE">
                                                     <font>
-                                                        <Font name="System Bold" size="24.0" />
+                                                        <Font name="SansSerif Bold" size="24.0" />
                                                     </font>
                                                 </Label>
                                                 <TableView fx:id="statefulSetsTableView" layoutX="1.0" layoutY="43.0" prefHeight="260.0" prefWidth="323.0">
