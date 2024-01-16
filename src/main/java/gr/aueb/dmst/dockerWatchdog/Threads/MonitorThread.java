@@ -16,9 +16,10 @@ import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
 
 /**
  * This Thread is communicating with the Docker API and provide the state of the Docker Cluster to the app.

@@ -48,3 +48,6 @@ build/
 /dataSources.local.xml
 
 .idea/
+
+~/.bash_profile
+~/.zshrc

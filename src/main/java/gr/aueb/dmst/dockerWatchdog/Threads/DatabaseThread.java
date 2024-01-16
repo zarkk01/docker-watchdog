@@ -25,15 +25,14 @@ public class DatabaseThread implements Runnable {
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
-    // Database connection details.
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
-    private static final String USER = "docker_db";
-    private static final String PASS = "dockerW4tchd0g$";
-    //other password : dockerW4tchd0g$
+    // Database connection details as environment variables from user.
+    private static final String DOCKER_DB_NAME = System.getenv("DOCKER_DB_NAME");
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/" + DOCKER_DB_NAME;
+    private static final String USER = System.getenv("DOCKER_DB_USERNAME");
+    private static final String PASS = System.getenv("DOCKER_DB_PASSWORD");
 
     /**
-     * This method is responsible for creating Instances, Images and Volumes
-     * tables in the database. Also, create Metrics (Changes) table and starts the updateLiveMetrics
+     * This method is responsible for starting the updateLiveMetrics
      * method which is responsible for updating every 2.5 seconds the live data
      * of the containers.
      */
@@ -48,7 +47,7 @@ public class DatabaseThread implements Runnable {
 
     /**
      * This method, called from Monitor Thread's fillLists() method after the initialization
-     * of the lists, deletes any existing tables in our docker_database, so we start fresh clean our monitoring.
+     * of the lists, deletes any existing tables in our database, so we start fresh clean our monitoring.
      * It creates, then, Instances, Images and Volumes tables in the database.
      * Also, create Metrics (Changes) table. After every creation, it calls
      * keepTrackOf...() method so the tables are filled with the appropriate data.
@@ -155,7 +154,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username as you exported and the right password as you exported");
         }
     }
 
@@ -225,7 +224,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username as you exported and the right password as you exported");
         }
     }
 
@@ -260,7 +259,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username as you exported and the right password as you exported");
         }
     }
 
@@ -288,7 +287,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username as you exported and the right password as you exported");
         }
     }
 
@@ -328,7 +327,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username as you exported and the right password as you exported");
         }
     }
 
