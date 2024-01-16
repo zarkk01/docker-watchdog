@@ -103,7 +103,7 @@
                                 </ImageView>
                                 <Text fill="WHITE" layoutX="33.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Watching">
                                     <font>
-                                        <Font size="11.0" />
+                                        <Font name="SansSerif Regular" size="11.0" />
                                     </font>
                                 </Text>
                                 <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="113.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
