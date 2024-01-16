@@ -32,7 +32,8 @@ public class DatabaseThread implements Runnable {
     private static final String PASS = System.getenv("DOCKER_DB_PASSWORD");
 
     /**
-     * This method is responsible for starting the updateLiveMetrics
+     * This method is responsible for creating Instances, Images and Volumes
+     * tables in the database. Also, create Metrics (Changes) table and starts the updateLiveMetrics
      * method which is responsible for updating every 2.5 seconds the live data
      * of the containers.
      */
@@ -47,7 +48,7 @@ public class DatabaseThread implements Runnable {
 
     /**
      * This method, called from Monitor Thread's fillLists() method after the initialization
-     * of the lists, deletes any existing tables in our database, so we start fresh clean our monitoring.
+     * of the lists, deletes any existing tables in our docker_database, so we start fresh clean our monitoring.
      * It creates, then, Instances, Images and Volumes tables in the database.
      * Also, create Metrics (Changes) table. After every creation, it calls
      * keepTrackOf...() method so the tables are filled with the appropriate data.
@@ -154,7 +155,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " username as you exported and the right password as you exported");
+                    " user : docker_db and the right password : dockerW4tchd0g$");
         }
     }
 
@@ -224,7 +225,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " username as you exported and the right password as you exported");
+                    " user : docker_db and the right password : dockerW4tchd0g$");
         }
     }
 
@@ -259,7 +260,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " username as you exported and the right password as you exported");
+                    " user : docker_db and the right password : dockerW4tchd0g$");
         }
     }
 
@@ -287,7 +288,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " username as you exported and the right password as you exported");
+                    " user : docker_db and the right password : dockerW4tchd0g$");
         }
     }
 
@@ -327,7 +328,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " username as you exported and the right password as you exported");
+                    " user : docker_db and the right password : dockerW4tchd0g$");
         }
     }
 
