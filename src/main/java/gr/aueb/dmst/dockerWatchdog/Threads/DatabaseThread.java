@@ -1,43 +1,70 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
-import java.sql.*;
 import java.util.Date;
+import java.sql.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.DatabaseOperationException;
 import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This thread is responsible for handling database operations.
+ * It implements Runnable to allow database operations to be performed in a separate thread.
+ * It includes methods for creating tables, keeping track of instances, images, and volumes,
+ * deleting images and volumes, and updating live metrics.
+ */
 public class DatabaseThread implements Runnable {
 
+    // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
-
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
-    private static final String USER = "root";
-    private static final String PASS = "2001997okd10";
-    //other password : dockerW4tchd0g$
 
     private static boolean firstTime = true;
 
+    // Database connection details as environment variables from user.
+    private static final String DOCKER_DB_NAME = System.getenv("DOCKER_DB_NAME");
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/" + DOCKER_DB_NAME;
+    private static final String USER = System.getenv("DOCKER_DB_USERNAME");
+    private static final String PASS = System.getenv("DOCKER_DB_PASSWORD");
+
+
+    /**
+     * This method is responsible for creating Instances, Images and Volumes
+     * tables in the database. Also, create Metrics (Changes) table and starts the updateLiveMetrics
+     * method which is responsible for updating every 2.5 seconds the live data
+     * of the containers.
+     */
     @Override
     public void run() {
         try {
-            createAllTables();
             updateLiveMetrics();
         } catch (DatabaseOperationException e) {
             logger.error(e.getMessage());
         }
     }
 
+    /**
+     * This method, called from Monitor Thread's fillLists() method after the initialization
+     * of the lists, deletes any existing tables in our docker_database, so we start fresh clean our monitoring.
+     * It creates, then, Instances, Images and Volumes tables in the database.
+     * Also, create Metrics (Changes) table. After every creation, it calls
+     * keepTrackOf...() method so the tables are filled with the appropriate data.
+     *
+     * @throws DatabaseOperationException if an error occurs while creating the tables.
+     */
     public static void createAllTables() throws DatabaseOperationException {
         try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            if (firstTime) {
-
+            // Clear existing data.
+            try {
                 String dropInstancesTable = "DROP TABLE IF EXISTS Instances";
                 PreparedStatement dropInstancesStmt = conn.prepareStatement(dropInstancesTable);
                 dropInstancesStmt.execute();
@@ -53,15 +80,17 @@ public class DatabaseThread implements Runnable {
                 String dropVolumesTable = "DROP TABLE IF EXISTS Volumes";
                 PreparedStatement dropVolumesStmt = conn.prepareStatement(dropVolumesTable);
                 dropVolumesStmt.execute();
-
-                firstTime = false;
+            } catch (Exception e) {
+                throw new DatabaseOperationException("dropping tables in database",
+                        "containers, images, volumes");
             }
 
+            // Create Metrics (Changes) and Instances tables.
             try {
-                String createMetricsTable = "CREATE TABLE IF NOT EXISTS Metrics (" +
-                        "id INT AUTO_INCREMENT, " +
-                        "datetime TIMESTAMP, " +
-                        "PRIMARY KEY(id))";
+                String createMetricsTable = "CREATE TABLE IF NOT EXISTS Metrics ("
+                        + "id INT AUTO_INCREMENT, "
+                        + "datetime TIMESTAMP, "
+                        + "PRIMARY KEY(id))";
                 PreparedStatement createMetricsStmt = conn.prepareStatement(createMetricsTable);
                 createMetricsStmt.execute();
 
@@ -85,11 +114,13 @@ public class DatabaseThread implements Runnable {
                 PreparedStatement createInstancesStmt = conn.prepareStatement(createInstancesTable);
                 createInstancesStmt.execute();
 
+                // Fill with instances data.
                 keepTrackOfInstances();
             } catch (Exception e) {
                 throw new DatabaseOperationException("creating instances table in database", "containers");
             }
 
+            // Create Images table.
             try {
                 String createImagesTable = "CREATE TABLE IF NOT EXISTS Images (" +
                         "id VARCHAR(255), " +
@@ -100,11 +131,13 @@ public class DatabaseThread implements Runnable {
                 PreparedStatement createImagesStmt = conn.prepareStatement(createImagesTable);
                 createImagesStmt.execute();
 
+                // Fill with images data.
                 keepTrackOfImages();
             } catch (Exception e) {
                 throw new DatabaseOperationException("creating images table in database", "images");
             }
 
+            // Create Volumes table.
             try {
                 String createVolumesTable = "CREATE TABLE IF NOT EXISTS Volumes (" +
                         "name VARCHAR(255), " +
@@ -115,11 +148,13 @@ public class DatabaseThread implements Runnable {
                 PreparedStatement createVolumesStmt = conn.prepareStatement(createVolumesTable);
                 createVolumesStmt.execute();
 
+                // Fill with volumes data.
                 keepTrackOfVolumes();
             } catch (Exception e) {
                 throw new DatabaseOperationException("creating volumes table in database", "volumes");
             }
 
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
@@ -127,23 +162,37 @@ public class DatabaseThread implements Runnable {
         }
     }
 
+    /**
+     * This method is the backbone of our monitoring regarding instances.
+     * It inserts a new row in the Metrics (Changes) table and then inserts or updates
+     * the Instances table with the appropriate data. It is called whenever a container event
+     * occurs (e.g. a container is created, started, stopped, etc) and also in the start of our program.
+     *
+     * @throws DatabaseOperationException if an error occurs while keeping track of instances.
+     */
     public static void keepTrackOfInstances() throws DatabaseOperationException {
-        try{
+        try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            // Insert a new row in the Metrics (Changes) table since a container event occurred.
             try {
                 String insertMetric = "INSERT INTO Metrics (datetime) VALUES (?)";
                 PreparedStatement insertMetricStmt = conn.prepareStatement(insertMetric, PreparedStatement.RETURN_GENERATED_KEYS);
                 insertMetricStmt.setTimestamp(1, new Timestamp(new Date().getTime()));
                 insertMetricStmt.executeUpdate();
 
+
+                // Get the metricId so to assign it in the last instances column.
                 ResultSet rs = insertMetricStmt.getGeneratedKeys();
                 int metricId = 0;
                 if (rs.next()) {
                     metricId = rs.getInt(1);
                 }
 
+                // Iterate through all the instances and insert or update the Instances table.
                 for (MyInstance instance : Main.myInstances) {
+                    // Volumes are in an ArrayList so we need to convert them to a String.
                     String volumesUsing = "";
                     for (String volumeName : instance.getVolumes()) {
                         volumesUsing += volumeName + ",";
@@ -175,6 +224,7 @@ public class DatabaseThread implements Runnable {
                 throw new DatabaseOperationException("updating instances table in database", "containers");
             }
 
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
@@ -182,10 +232,20 @@ public class DatabaseThread implements Runnable {
         }
     }
 
+    /**
+     * This method is responsible about monitoring images.
+     * It inserts or updates the Images table with the appropriate data.
+     * It is called whenever an image is pulled or a container is deleted because it ,probably,
+     * should update the status of an image to "unused".
+     *
+     * @throws DatabaseOperationException if an error occurs while keeping track of images.
+     */
     public static void keepTrackOfImages() throws DatabaseOperationException {
-        try{
+        try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            // Iterate through all the images and insert or update the Images table.
             for (MyImage image : Main.myImages) {
                 String upsertImage = "INSERT INTO Images (id, name, size, status) " +
                         "VALUES (?, ?, ?,?) " +
@@ -199,6 +259,7 @@ public class DatabaseThread implements Runnable {
                 upsertImageStmt.executeUpdate();
             }
 
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
@@ -206,18 +267,27 @@ public class DatabaseThread implements Runnable {
         }
     }
 
-    public static void deleteImage(MyImage image) throws DatabaseOperationException{
+    /**
+     * This method is responsible for deleting an image from the database.
+     * It is called when an image is deleted from Docker, and it removes the corresponding entry from the Images table in the database.
+     *
+     * @param image the MyImage object representing the image to be deleted
+     * @throws DatabaseOperationException if an error occurs while deleting the image from the database
+     */
+    public static void deleteImage(MyImage image) throws DatabaseOperationException {
         try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            try {
-                String deleteImage = "DELETE FROM Images WHERE name = ?";
-                PreparedStatement deleteImageStmt = conn.prepareStatement(deleteImage);
-                deleteImageStmt.setString(1, image.getName());
-                deleteImageStmt.executeUpdate();
-            } catch (Exception e) {
-                throw new DatabaseOperationException("deleting an image in database", "images");
-            }
 
+            // Prepare the SQL statement to delete the image.
+            String deleteImage = "DELETE FROM Images WHERE name = ?";
+            PreparedStatement deleteImageStmt = conn.prepareStatement(deleteImage);
+            deleteImageStmt.setString(1, image.getName());
+
+            // Say goodbye to the image.
+            deleteImageStmt.executeUpdate();
+
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
@@ -225,31 +295,39 @@ public class DatabaseThread implements Runnable {
         }
     }
 
+    /**
+     * This method is responsible for monitoring volumes.
+     * It is called whenever a volume is created or a container is deleted because it ,probably,
+     * should update the containerNamesUsing column of a volume.
+     *
+     * @throws DatabaseOperationException if an error occurs while keeping track of volumes.
+     */
     public static void keepTrackOfVolumes() throws DatabaseOperationException {
         try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-            try {
-                for (MyVolume volume : Main.myVolumes) {
-                    String containerNamesUsing = "";
-                    for (String containerName : volume.getContainerNamesUsing()) {
-                        containerNamesUsing += containerName + ",";
-                    }
-                    String upsertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) " +
-                            "VALUES (?, ?, ?,?) " +
-                            "ON DUPLICATE KEY UPDATE name = VALUES(name),driver = VALUES(driver), mountpoint = VALUES(mountpoint), " +
-                            "containerNamesUsing = VALUES(containerNamesUsing)";
-                    PreparedStatement upsertVolumeStmt = conn.prepareStatement(upsertVolume);
-                    upsertVolumeStmt.setString(1, volume.getName());
-                    upsertVolumeStmt.setString(2, volume.getDriver());
-                    upsertVolumeStmt.setString(3, volume.getMountpoint());
-                    upsertVolumeStmt.setString(4, containerNamesUsing);
-                    upsertVolumeStmt.executeUpdate();
+            // Iterate through all the volumes and insert or update the Volumes table.
+            for (MyVolume volume : Main.myVolumes) {
+                // Container names are in an ArrayList, we need to convert them to a String.
+                String containerNamesUsing = "";
+                for (String containerName : volume.getContainerNamesUsing()) {
+                    containerNamesUsing += containerName + ",";
                 }
-            } catch (Exception e) {
-                throw new DatabaseOperationException("updating volumes table in database", "volumes");
+
+                String upsertVolume = "INSERT INTO Volumes (name, driver, mountpoint, containerNamesUsing) " +
+                        "VALUES (?, ?, ?,?) " +
+                        "ON DUPLICATE KEY UPDATE name = VALUES(name),driver = VALUES(driver), mountpoint = VALUES(mountpoint), " +
+                        "containerNamesUsing = VALUES(containerNamesUsing)";
+                PreparedStatement upsertVolumeStmt = conn.prepareStatement(upsertVolume);
+                upsertVolumeStmt.setString(1, volume.getName());
+                upsertVolumeStmt.setString(2, volume.getDriver());
+                upsertVolumeStmt.setString(3, volume.getMountpoint());
+                upsertVolumeStmt.setString(4, containerNamesUsing);
+                upsertVolumeStmt.executeUpdate();
             }
 
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
@@ -257,45 +335,72 @@ public class DatabaseThread implements Runnable {
         }
     }
 
+    /**
+     * This method deletes a volume from the database.
+     * It is called when a volume is deleted from Docker, and it removes the corresponding entry from the Volumes table in the database.
+     *
+     * @param volume the MyVolume object representing the volume to be deleted
+     * @throws DatabaseOperationException if an error occurs while deleting the volume from the database
+     */
     public static void deleteVolume(MyVolume volume) throws DatabaseOperationException {
         try {
+            // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            try {
-                String deleteVolume = "DELETE FROM Volumes WHERE name = ?";
-                PreparedStatement deleteVolumeStmt = conn.prepareStatement(deleteVolume);
-                deleteVolumeStmt.setString(1, volume.getName());
-                deleteVolumeStmt.executeUpdate();
-            } catch (Exception e) {
-                throw new DatabaseOperationException("deleting volume in database", "volumes");
-            }
+
+            // Prepare the SQL statement to delete the volume.
+            String deleteVolume = "DELETE FROM Volumes WHERE name = ?";
+            PreparedStatement deleteVolumeStmt = conn.prepareStatement(deleteVolume);
+            deleteVolumeStmt.setString(1, volume.getName());
+
+            // RIP volume.
+            deleteVolumeStmt.executeUpdate();
+
+            // Close the connection to the database.
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection");
         }
     }
 
-    public static synchronized void updateLiveMetrics() throws DatabaseOperationException {
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            while (true) {
-                String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
-                Statement findLatestMetricIdStmt = conn.createStatement();
-                ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
-
-                int latestMetricId = 0;
-                if (latestMetricIdResult.next()) {
-                    latestMetricId = latestMetricIdResult.getInt("latestMetricId");
-                }
+    /**
+     * This method is responsible for updating live metrics of instances in the database.
+     * It uses a Timer to schedule the update task to run every 2.5 seconds.
+     * It updates the Instances table with the current metrics of instances.
+     * @throws DatabaseOperationException if an error occurs while updating live metrics.
+     */
+    public static void updateLiveMetrics() throws DatabaseOperationException {
+        Timer timer = new Timer();
+        TimerTask updateTask = new TimerTask() {
+            @Override
+            public void run() {
                 try {
+                    // Configure the connection to the database.
+                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                    // Get the latest metric ID.
+                    String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
+                    Statement findLatestMetricIdStmt = conn.createStatement();
+                    ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
+
+                    int latestMetricId = 0;
+                    if (latestMetricIdResult.next()) {
+                        latestMetricId = latestMetricIdResult.getInt("latestMetricId");
+                    }
+
+                    // Prepare the SQL statement to update the instances.
                     String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
                             "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
                     PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
 
+                    // Iterate through all the instances and update the Instances table.
                     for (MyInstance instance : Main.myInstances) {
+                        // Volumes are in an ArrayList, we need to convert them to a String.
                         String volumesUsing = "";
                         for (String volumeName : instance.getVolumes()) {
                             volumesUsing += volumeName + ",";
                         }
+
+                        // Set the parameters in the SQL statement.
                         updateInstancesStmt.setString(1, instance.getName());
                         updateInstancesStmt.setString(2, instance.getImage());
                         updateInstancesStmt.setString(3, instance.getStatus());
@@ -311,18 +416,19 @@ public class DatabaseThread implements Runnable {
                         updateInstancesStmt.setInt(13, latestMetricId);
                         updateInstancesStmt.setString(14, instance.getId());
 
+                        // Execute the SQL statement.
                         updateInstancesStmt.executeUpdate();
                     }
-                } catch (Exception e) {
-                    throw new DatabaseOperationException("updating live metrics of containers (like CPU, Memory, PIDs etc) " +
-                            "in database", "containers");
+
+                    // Close the connection to the database.
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error while updating live metrics in database: " + e.getMessage());
                 }
-                Thread.sleep(2500);
             }
-        } catch (SQLException e) {
-            throw new DatabaseOperationException("connecting in database", "mySQL connection");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        };
+
+        // Schedule the task to run every 2.5 seconds
+        timer.scheduleAtFixedRate(updateTask, 0, 2500);
     }
 }

@@ -1,28 +1,60 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
-import gr.aueb.dmst.dockerWatchdog.Main;
-
 import java.util.ArrayList;
 
+import gr.aueb.dmst.dockerWatchdog.Main;
+
+/**
+ * This class represents a container object.
+ * ΜyInstance is a custom class we created to represent
+ * Docker's Java API original containers. In this way, we have better control
+ * over them, and we assign them specific properties and values we need.
+ */
 public class MyInstance {
-    private final String id; // ID of instance is final
-    private String name; // Instance name
-    private final String image; // Image of instance
-    private String status; // Status of instance
-    private long pids; // PIDs of instance
-    private long memoryUsage; // Memory usage of instance in MB
-    private double cpuUsage; // CPU usage of instance in %
-    private double blockI; // Block I of instance in MB
-    private double blockO; // Block O of instance in MB
-    private ArrayList<String> volumes; // Volumes of instance
+    private final String id;
+    private String name;
+    private final String image;
+    private String status;
+    private long pids;
+    private long memoryUsage;
+    private double cpuUsage;
+    private double blockI;
+    private double blockO;
+    private ArrayList<String> volumes;
     private String subnet;
     private String gateway;
     private int prefixLen;
 
-    // Constructor
-    public MyInstance(String id, String name, String image, String status, double cpuUsage, long memoryUsage, long pids, double blockI, double blockO,ArrayList<String> volumes,String subnet,String gateway,int prefixLen) {
-
-        // Initialize instance variables with the values of the parameters
+    /**
+     * Constructor for the MyInstance class.
+     *
+     * @param id The id of the instance.
+     * @param name The name of the instance.
+     * @param image The image of the instance.
+     * @param status The status of the instance.
+     * @param cpuUsage The CPU usage of the instance.
+     * @param memoryUsage The memory usage of the instance.
+     * @param pids The pids of the instance.
+     * @param blockI The block I of the instance.
+     * @param blockO The block O of the instance.
+     * @param volumes The volumes of the instance.
+     * @param subnet The subnet of the instance.
+     * @param gateway The gateway of the instance.
+     * @param prefixLen The prefix length of the instance.
+     */
+    public MyInstance(String id,
+                      String name,
+                      String image,
+                      String status,
+                      double cpuUsage,
+                      long memoryUsage,
+                      long pids,
+                      double blockI,
+                      double blockO,
+                      ArrayList<String> volumes,
+                      String subnet,
+                      String gateway,
+                      int prefixLen) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -38,133 +70,252 @@ public class MyInstance {
         this.prefixLen = prefixLen;
     }
 
-    // Method toString that returns a string with the values of the instance variables
+    /**
+     * Returns a string representation of the MyInstance object.
+     *
+     * @return A string representation of the MyInstance object.
+     */
     @Override
     public String toString() {
-        return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image +
-                " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100) +
-                " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB" +
-                " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI) +
-                "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes + " , Subnet : " + subnet + " , Gateway : " + gateway + " , PrefixLen : " + prefixLen;
+        return "Name = " + name.substring(1) + " , ID = " + id + ", " + " , Image = " + image
+                + " , Status = " + status + " , CPU Usage: " + String.format("%.2f", cpuUsage * 100)
+                + " %" + " , Memory usage : " + String.format("%.2f", (double) memoryUsage) + " MB"
+                + " , PIDs : " + pids + " , Block I/0 : " + String.format("%.2f", blockI)
+                + "MB/" + String.format("%.2f", blockO) + "MB" + " , Volumes : " + volumes
+                + " , Subnet : " + subnet + " , Gateway : " + gateway + " , PrefixLen : " + prefixLen;
     }
 
-    // Getter for id
+    /**
+     * Returns the id of the instance.
+     *
+     * @return The id of the instance.
+     */
     public String getId() {
         return id;
     }
 
-    // Getter for image
+    /**
+     * Returns the image of the instance.
+     *
+     * @return The image of the instance.
+     */
     public String getImage() {
         return image;
     }
 
-    // Getter for status
+    /**
+     * Returns the status of the instance.
+     *
+     * @return The status of the instance.
+     */
     public String getStatus() {
         return status;
     }
 
-    // Getter for name
+    /**
+     * Returns the name of the instance.
+     *
+     * @return The name of the instance.
+     */
     public String getName() {
         return name;
     }
 
-    // Getter for memoryUsage
+    /**
+     * Returns the memory usage of the instance.
+     *
+     * @return The memory usage of the instance.
+     */
     public long getMemoryUsage() {
         return memoryUsage;
     }
 
-    // Getter for cpuUsage
-    public void setMemoryUsage(long memoryUsage) {
-        this.memoryUsage = memoryUsage;
-    }
-
-    // Getter for PIDs
-    public long getPids() {
-        return pids;
-    }
-
-    // Getter for blockI
-    public double getBlockI() {
-        return blockI;
-    }
-
-    // Getter for blockO
-    public double getBlockO() {
-        return blockO;
-    }
-
-    //Getter for cpuUsage
+    /**
+     * Returns the CPU usage of the instance.
+     *
+     * @return The CPU usage of the instance.
+     */
     public double getCpuUsage() {
         return cpuUsage;
     }
 
-    // Setter for cpuUsage
-    public void setCpuUsage(double cpuUsage) {
-        this.cpuUsage = cpuUsage;
+    /**
+     * Returns the pids of the instance.
+     *
+     * @return The pids of the instance.
+     */
+    public long getPids() {
+        return pids;
     }
 
-    // Setter for name
-    public void setName(String newName) {
-        this.name = newName;
+    /**
+     * Returns the block I of the instance.
+     *
+     * @return The block I of the instance.
+     */
+    public double getBlockI() {
+        return blockI;
     }
 
-    // Setter for image
-    public void setStatus(String status) {
-        this.status = status;
+    /**
+     * Returns the block O of the instance.
+     *
+     * @return The block O of the instance.
+     */
+    public double getBlockO() {
+        return blockO;
     }
 
-    // Setter for PIDs
-    public void setPids(long pids) {
-        this.pids = pids;
-    }
-
-    // Setter for blockI
-    public void setBlockI(double blockI) {
-        this.blockI = blockI;
-    }
-
-    // Setter for blockO
-    public void setBlockO(double blockO) {
-        this.blockO = blockO;
-    }
-
+    /**
+     * Returns the volumes of the instance.
+     *
+     * @return The volumes of the instance.
+     */
     public ArrayList<String> getVolumes() {
         return volumes;
     }
 
-    public void setVolume(ArrayList<String> volumes) {
-        this.volumes = volumes;
-    }
-
-    public void addVolume(String volumeName) {
-        this.volumes.add(volumeName);
-    }
-
+    /**
+     * Returns the subnet of the instance.
+     *
+     * @return The subnet of the instance.
+     */
     public String getSubnet() {
         return subnet;
     }
 
-    public void setSubnet(String subnet) {
-        this.subnet = subnet;
-    }
-
+    /**
+     * Returns the gateway of the instance.
+     *
+     * @return The gateway of the instance.
+     */
     public String getGateway() {
         return gateway;
     }
 
-    public void setGateway(String gateway) {
-        this.gateway = gateway;
-    }
-
+    /**
+     * Returns the prefix length of the instance.
+     *
+     * @return The prefix length of the instance.
+     */
     public int getPrefixLen() {
         return prefixLen;
     }
 
+    /**
+     * Sets the status of the instance.
+     *
+     * @param status The status to set.
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Sets the name of the instance.
+     *
+     * @param newName The name to set.
+     */
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    /**
+     * Sets the memory usage of the instance.
+     *
+     * @param memoryUsage The memory usage to set.
+     */
+    public void setMemoryUsage(long memoryUsage) {
+        this.memoryUsage = memoryUsage;
+    }
+
+    /**
+     * Sets the CPU usage of the instance.
+     *
+     * @param cpuUsage The CPU usage to set.
+     */
+    public void setCpuUsage(double cpuUsage) {
+        this.cpuUsage = cpuUsage;
+    }
+
+    /**
+     * Sets the pids of the instance.
+     *
+     * @param pids The pids to set.
+     */
+    public void setPids(long pids) {
+        this.pids = pids;
+    }
+
+    /**
+     * Sets the block I of the instance.
+     *
+     * @param blockI The block I to set.
+     */
+    public void setBlockI(double blockI) {
+        this.blockI = blockI;
+    }
+
+    /**
+     * Sets the block O of the instance.
+     *
+     * @param blockO The block O to set.
+     */
+    public void setBlockO(double blockO) {
+        this.blockO = blockO;
+    }
+
+    /**
+     * Sets the volumes of the instance.
+     *
+     * @param volumes The volumes to set.
+     */
+    public void setVolume(ArrayList<String> volumes) {
+        this.volumes = volumes;
+    }
+
+    /**
+     * Adds a volume to the instance.
+     *
+     * @param volumeName The name of the volume to add.
+     */
+    public void addVolume(String volumeName) {
+        this.volumes.add(volumeName);
+    }
+
+    /**
+     * Sets the subnet of the instance.
+     *
+     * @param subnet The subnet to set.
+     */
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    /**
+     * Sets the gateway of the instance.
+     *
+     * @param gateway The gateway to set.
+     */
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    /**
+     * Sets the prefix length of the instance.
+     *
+     * @param prefixLen The prefix length to set.
+     */
     public void setPrefixLen(int prefixLen) {
         this.prefixLen = prefixLen;
     }
 
-    // Given an ID of an instance, return the instance
+    /**
+     * Retrieves a MyInstance instance from the myInstancesList based on its ID.
+     *
+     * @param id The ID of the instance to search for.
+     * @return The MyInstance instance with the specified ID, or null if not found.
+     */
     public static MyInstance getInstanceByid(String id) {
         MyInstance instanceToReturn = null;
         for (MyInstance instance: Main.myInstances) {
@@ -172,10 +323,6 @@ public class MyInstance {
                 instanceToReturn = instance;
             }
         }
-        if (instanceToReturn != null) {
-            return instanceToReturn;
-        } else {
-            return null;
-        }
+        return instanceToReturn;
     }
 }

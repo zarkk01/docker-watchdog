@@ -65,6 +65,7 @@ public class Main {
      * and the threads for monitoring Docker events, executing actions on Docker Components,
      * and database operations. It first starts the Spring Boot application so that
      * the REST API is available before the JavaFX application starts.
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {

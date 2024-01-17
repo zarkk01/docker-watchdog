@@ -174,17 +174,19 @@ public class DockerService {
     public void createContainer(String imageName) {
         try {
             ExecutorThread.runContainer(imageName);
-        } catch (ImageNotFoundException | ContainerCreationException | ContainerNotModifiedException e) {
+        } catch (ImageNotFoundException
+                 | ContainerCreationException
+                 | ContainerNotModifiedException e) {
             logger.error(e.getMessage());
         }
     }
 
-        /**
-         * Starts all Docker containers with the given image name
-         * searching for them in the database.
-         *
-         * @param imageName the name of the Docker image whose containers to start
-         */
+    /**
+     * Starts all Docker containers with the given image name
+     * searching for them in the database.
+     *
+     * @param imageName the name of the Docker image whose containers to start
+     * */
     public void startAllContainers(String imageName) {
         // Get all containers and then iterate them to start them
         List<Instance> containers =
@@ -253,7 +255,7 @@ public class DockerService {
     }
 
     /**
-     * Retrieves information about a Docker instance with the given ID.
+     * Retrieves most recent information about a Docker instance with the given ID.
      *
      * @param id the ID of the Docker instance to retrieve information about
      * @return the Docker instance with the given ID

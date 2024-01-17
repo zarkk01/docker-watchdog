@@ -28,7 +28,7 @@ public class ExecutorThread implements Runnable {
 
     // Run method is empty because it is used only for creating the thread.
     @Override
-    public void run() {}
+    public void run() { }
 
     /**
      * Starts a Docker container with the given ID.
@@ -39,11 +39,11 @@ public class ExecutorThread implements Runnable {
      */
     public static void startContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+            if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
                 throw new ContainerNotModifiedException(containerId, "Container is already running.");
-            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+            } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
                 throw new ContainerNotModifiedException(containerId, "Container is paused.");
-            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+            } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
                 throw new ContainerNotModifiedException(containerId, "Container is dead.");
             }
 
@@ -51,7 +51,7 @@ public class ExecutorThread implements Runnable {
             Main.dockerClient.startContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
         }
     }
@@ -65,11 +65,11 @@ public class ExecutorThread implements Runnable {
      */
     public static void stopContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+            if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
                 throw new ContainerNotModifiedException(containerId, "Container is already stopped.");
-            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+            } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
                 throw new ContainerNotModifiedException(containerId, "Container is paused.");
-            } else if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+            } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
                 throw new ContainerNotModifiedException(containerId, "Container is dead.");
             }
 
@@ -77,7 +77,7 @@ public class ExecutorThread implements Runnable {
             Main.dockerClient.stopContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
         }
     }
@@ -91,7 +91,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void removeContainer(String containerId) throws ContainerNotFoundException, ContainerRunningException {
         try {
-            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+            if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
                 throw new ContainerRunningException(containerId);
             }
 
@@ -114,9 +114,9 @@ public class ExecutorThread implements Runnable {
      */
     public static void pauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            if(Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+            if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
                 throw new ContainerNotModifiedException(containerId, "Container is already paused.");
-            } else if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+            } else if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
                 throw new ContainerNotModifiedException(containerId, "Container is not running.");
             }
 
@@ -124,7 +124,7 @@ public class ExecutorThread implements Runnable {
             Main.dockerClient.pauseContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
         }
     }
@@ -138,7 +138,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void unpauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
-            if(!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+            if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
                 throw new ContainerNotModifiedException(containerId, "Container is not paused.");
             }
 
@@ -146,7 +146,7 @@ public class ExecutorThread implements Runnable {
             Main.dockerClient.unpauseContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: " + e.getMessage());
         }
     }
@@ -169,7 +169,7 @@ public class ExecutorThread implements Runnable {
             throw new ContainerNotFoundException(containerId);
         } catch (ConflictException e) {
             throw new ContainerNameConflictException(containerId, newName);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: ", e);
         }
     }
@@ -235,7 +235,7 @@ public class ExecutorThread implements Runnable {
             Main.dockerClient.removeImageCmd(imageName).exec();
         } catch (NotFoundException e) {
             throw new ImageNotFoundException(imageName);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Error: ", e);
         }
     }

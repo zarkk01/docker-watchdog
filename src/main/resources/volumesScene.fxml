@@ -21,7 +21,7 @@
          <children>
             <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                <font>
-                  <Font name="Sama Devanagari Medium" size="13.0" />
+                  <Font name="SansSerif Bold" size="13.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="23.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
@@ -37,7 +37,7 @@
             </Button>
             <Button fx:id="imagesButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="36.0" prefWidth="153.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="#909090">
                <font>
-                  <Font name="Sama Devanagari Medium" size="13.0" />
+                  <Font name="SansSerif Bold" size="13.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="27.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
@@ -53,7 +53,7 @@
             </Button>
             <Button fx:id="volumesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="260.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Volumes" textFill="WHITE">
                <font>
-                  <Font name="Sama Devanagari Medium" size="13.0" />
+                  <Font name="SansSerif Bold" size="13.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -65,7 +65,7 @@
             </Button>
             <Button fx:id="graphicsButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="310.0" mnemonicParsing="false" onAction="#changeToGraphicsScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Graphics" textFill="#909090">
                <font>
-                  <Font name="Sama Devanagari Medium" size="13.0" />
+                  <Font name="SansSerif Bold" size="13.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -81,7 +81,7 @@
             </Button>
             <Button fx:id="kubernetesButton" alignment="BASELINE_LEFT" layoutX="10.0" layoutY="360.0" mnemonicParsing="false" onAction="#changeToKubernetesScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Kubernetes" textFill="#909090">
                <font>
-                  <Font name="Sama Devanagari Medium" size="13.0" />
+                  <Font name="SansSerif Bold" size="13.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
@@ -102,7 +102,7 @@
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
                <children>
-                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="289.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
+                  <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="296.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
                      <children>
                         <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -111,10 +111,10 @@
                         </ImageView>
                         <Text fill="WHITE" layoutX="33.0" layoutY="13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Docker Watching">
                            <font>
-                              <Font size="11.0" />
+                              <Font name="SansSerif Regular" size="11.0" />
                            </font>
                         </Text>
-                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="113.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="115.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/watchdog.png" />
                            </image>
@@ -131,7 +131,7 @@
          <children>
             <Text fill="WHITE" fontSmoothingType="LCD" layoutX="380.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volumes" wrappingWidth="107.35052490234375">
                <font>
-                  <Font name="System Bold Italic" size="24.0" />
+                  <Font name="SansSerif Bold" size="24.0" />
                </font>
             </Text>
             <TableView fx:id="volumesTableView" layoutX="6.0" layoutY="45.0" prefHeight="593.0" prefWidth="933.0" stylesheets="@styles/styles.css">
@@ -149,11 +149,11 @@
       </AnchorPane>
    </center>
    <top>
-      <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+      <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
                <font>
-                  <Font name="System Bold" size="22.0" />
+                  <Font name="SansSerif Bold" size="22.0" />
                </font>
             </Text>
             <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
