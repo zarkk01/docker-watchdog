@@ -139,7 +139,8 @@
                   <TableColumn fx:id="nameColumn" prefWidth="110.0" text="Name" />
                   <TableColumn fx:id="driverColumn" minWidth="0.0" prefWidth="170.882080078125" text="Driver" />
                   <TableColumn fx:id="mountpointColumn" prefWidth="200.910400390625" text="Mountpoint" />
-                  <TableColumn fx:id="containerNamesUsingColumn" minWidth="0.0" prefWidth="425.089599609375" text="Containers Using" />
+                  <TableColumn fx:id="containerNamesUsingColumn" minWidth="0.0" prefWidth="378.2337646484375" text="Containers Using" />
+                  <TableColumn fx:id="removeVolumeColumn" prefWidth="85.84033203125" text="Remove" />
                </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

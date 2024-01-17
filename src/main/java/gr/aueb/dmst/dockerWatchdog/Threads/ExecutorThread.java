@@ -26,13 +26,14 @@ public class ExecutorThread implements Runnable {
 
     // Run method is empty because it is used only for creating the thread.
     @Override
-    public void run() { }
+    public void run() {
+    }
 
     /**
      * Starts a Docker container with the given ID.
      *
      * @param containerId the ID of the container to start
-     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotFoundException    if the container with the given ID is not found
      * @throws ContainerNotModifiedException if the container with the given ID is already running, paused, or dead
      */
     public static void startContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
@@ -58,7 +59,7 @@ public class ExecutorThread implements Runnable {
      * Stops a Docker container with the given ID.
      *
      * @param containerId the ID of the container to stop
-     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotFoundException    if the container with the given ID is not found
      * @throws ContainerNotModifiedException if the container with the given ID is already stopped, paused, or dead
      */
     public static void stopContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
@@ -85,7 +86,7 @@ public class ExecutorThread implements Runnable {
      *
      * @param containerId the ID of the container to remove
      * @throws ContainerNotFoundException if the container with the given ID is not found
-     * @throws ContainerRunningException if the container with the given ID is currently running
+     * @throws ContainerRunningException  if the container with the given ID is currently running
      */
     public static void removeContainer(String containerId) throws ContainerNotFoundException, ContainerRunningException {
         try {
@@ -106,9 +107,9 @@ public class ExecutorThread implements Runnable {
      * Pauses a Docker container with the given ID.
      *
      * @param containerId the ID of the container to pause
-     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotFoundException    if the container with the given ID is not found
      * @throws ContainerNotModifiedException if the container with the given ID is already paused
-     * or if it is not running
+     *                                       or if it is not running
      */
     public static void pauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
@@ -131,7 +132,7 @@ public class ExecutorThread implements Runnable {
      * Unpauses a Docker container with the given ID.
      *
      * @param containerId the ID of the container to unpause
-     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @throws ContainerNotFoundException    if the container with the given ID is not found
      * @throws ContainerNotModifiedException if the container with the given ID is not paused
      */
     public static void unpauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
@@ -153,8 +154,8 @@ public class ExecutorThread implements Runnable {
      * Renames a Docker container with the given ID.
      *
      * @param containerId the ID of the container to rename
-     * @param newName the new name for the container
-     * @throws ContainerNotFoundException if the container with the given ID is not found
+     * @param newName     the new name for the container
+     * @throws ContainerNotFoundException     if the container with the given ID is not found
      * @throws ContainerNameConflictException if the new name is already used by another container
      */
     public static void renameContainer(String containerId, String newName) throws ContainerNotFoundException, ContainerNameConflictException {
@@ -176,8 +177,8 @@ public class ExecutorThread implements Runnable {
      * Creates and starts a Docker container with the given image name.
      *
      * @param imageName the name of the Docker image to use for creating the container
-     * @throws ImageNotFoundException if the image with the given name is not found
-     * @throws ContainerCreationException if the container cannot be created
+     * @throws ImageNotFoundException        if the image with the given name is not found
+     * @throws ContainerCreationException    if the container cannot be created
      * @throws ContainerNotModifiedException if the container cannot be started
      */
     public static void runContainer(String imageName) throws ImageNotFoundException, ContainerCreationException, ContainerNotModifiedException {
@@ -206,7 +207,7 @@ public class ExecutorThread implements Runnable {
      *
      * @param imageName the name of the Docker image to pull
      * @throws ImageNotFoundException if the image with the given name is not found
-     * @throws DockerException if there's a general Docker error
+     * @throws DockerException        if there's a general Docker error
      */
     public static void pullImage(String imageName) throws ImageNotFoundException, DockerException, InterruptedException {
         try {
@@ -235,6 +236,36 @@ public class ExecutorThread implements Runnable {
             throw new ImageNotFoundException(imageName);
         } catch (Exception e) {
             logger.error("Error: ", e);
+        }
+    }
+
+    /**
+     * Removes a Docker volume with the given name.
+     *
+     * @param volumeName the name of the Docker volume to remove
+     * @throws VolumeNotModifiedException if the volume with the given name is not found
+     */
+    public static void removeVolume(String volumeName) throws VolumeNotModifiedException {
+        try {
+            // This is where the volume is actually removed.
+            Main.dockerClient.removeVolumeCmd(volumeName).exec();
+        } catch (Exception e) {
+            throw new VolumeNotModifiedException(volumeName);
+        }
+    }
+
+    /**
+     * Creates a Docker volume with the given name.
+     *
+     * @param volumeName the name of the Docker volume to create
+     * @throws VolumeNotModifiedException if the volume cannot be created
+     */
+    public static void createVolume(String volumeName) throws VolumeNotModifiedException {
+        try {
+            // This is where the volume is actually created.
+            Main.dockerClient.createVolumeCmd().withName(volumeName).exec();
+        } catch (Exception e) {
+            throw new VolumeNotModifiedException(volumeName);
         }
     }
 }

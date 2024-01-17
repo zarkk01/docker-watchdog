@@ -342,4 +342,30 @@ public class DockerService {
     public List<Volume> getAllVolumes() {
         return volumesRepository.findAll();
     }
+
+    /**
+     * Removes a Docker volume with the given name.
+     *
+     * @param volumeName the name of the Docker volume to remove
+     */
+    public void removeVolume(String volumeName) {
+        try {
+            ExecutorThread.removeVolume(volumeName);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * Creates a Docker volume with the given name.
+     *
+     * @param volumeName the name of the Docker volume to create
+     */
+    public void createVolume(String volumeName) {
+        try {
+            ExecutorThread.createVolume(volumeName);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
 }

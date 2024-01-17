@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -17,9 +18,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
@@ -33,9 +36,9 @@ import org.json.JSONObject;
 
 /**
  * FX Controller class for the Volumes panel.
- * This class handles user interactions with the Volumes scene, such as navigating to other scenes and refreshing the volumes table.
- * It also retrieves all volumes from the REST API and parses the response into a list of VolumeScene objects.
- * The class uses the ExecutorThread class to send HTTP requests to the REST API.
+ * This class handles user interactions with the Volumes scene, such as navigating to other scenes and refreshing the volumes table. Also,
+ * it handles the removal of volumes from the database.
+ * It additionally retrieves all volumes using WATCHDOG REST API and parses the response into a list of VolumeScene objects.
  * It also uses the LogManager class to log error messages.
  */
 public class VolumesController implements Initializable {
@@ -54,6 +57,8 @@ public class VolumesController implements Initializable {
     private TableColumn<VolumeScene, String> mountpointColumn;
     @FXML
     private TableColumn<VolumeScene, String> containerNamesUsingColumn;
+    @FXML
+    private TableColumn<VolumeScene, Void> removeVolumeColumn;
     @FXML
     private TableView<VolumeScene> volumesTableView;
 
@@ -89,12 +94,10 @@ public class VolumesController implements Initializable {
             volumesTableView.setPlaceholder(new Label("No volumes available."));
             // Refresh the volumes table.
             refreshVolumes();
-
             // Install funny tooltip on watchdog imageView
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
-
         } catch (Exception e) {
             System.err.println("An error occurred while initializing the VolumesController: " + e.getMessage());
             volumesTableView.setPlaceholder(new Label("An error occurred while loading the volumes."));
@@ -104,13 +107,120 @@ public class VolumesController implements Initializable {
     /**
      * This method sets the cell value factories for the table columns.
      * The cell value factory determines the data with name, driver, mountpoint, containerNamesUsing
-     * that should be displayed in each cell of the table column.
+     * that should be displayed in each cell of the table column. Also, it creates an additional column
+     * with a button for each volume, which allows the user to remove the volume.
      */
     private void setupTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         driverColumn.setCellValueFactory(new PropertyValueFactory<>("driver"));
         mountpointColumn.setCellValueFactory(new PropertyValueFactory<>("mountpoint"));
         containerNamesUsingColumn.setCellValueFactory(new PropertyValueFactory<>("containerNamesUsing"));
+        // Using a custom cell factory to create a button for each volume.
+        removeVolumeColumn.setCellFactory(createButtonCellFactory(
+                "Delete Volume",
+                "/images/binRed.png",
+                "/images/binHover.png",
+                "/images/binClick.png", volume -> {
+                    try {
+                        removeVolume(volume.getName());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }));
+    }
+
+    /**
+     * Creates a cell factory for the Remove column. This factory produces cells that contain a button with various properties.
+     * In our case, we use it to create a button for a volume's removal.
+     *
+     * @param tooltipText The text to be displayed when the mouse hovers over the button.
+     * @param imagePath The path to the image to be displayed on the button.
+     * @param hoverImagePath The path to the image to be displayed on the button when the mouse hovers over it.
+     * @param clickImagePath The path to the image to be displayed on the button when it is clicked.
+     * @param action The action to be performed when the button is clicked.
+     * @return A Callback that produces TableCell objects containing the button.
+     */
+    private Callback<TableColumn<VolumeScene, Void>, TableCell<VolumeScene, Void>> createButtonCellFactory(String tooltipText, String imagePath, String hoverImagePath, String clickImagePath, Consumer<VolumeScene> action) {
+        return new Callback<>() {
+            @Override
+            public TableCell<VolumeScene, Void> call(final TableColumn<VolumeScene, Void> param) {
+                final TableCell<VolumeScene, Void> cell = new TableCell<>() {
+                    private final Button btn = new Button();
+                    private final Tooltip tooltip = new Tooltip(tooltipText);
+
+                    // Create the images for the button.
+                    private final ImageView view = new ImageView(new Image(getClass().getResource(imagePath).toExternalForm()));
+                    private final ImageView viewHover = new ImageView(new Image(getClass().getResource(hoverImagePath).toExternalForm()));
+                    private final ImageView viewClick = new ImageView(new Image(getClass().getResource(clickImagePath).toExternalForm()));
+
+                    {
+                        // Set up the button and its effects.
+                        DropShadow dropShadow = new DropShadow();
+                        btn.setEffect(dropShadow);
+                        tooltip.setShowDelay(Duration.millis(50));
+                        Tooltip.install(btn, tooltip);
+                        view.setFitHeight(30);
+                        view.setPreserveRatio(true);
+                        viewHover.setFitHeight(30);
+                        viewHover.setPreserveRatio(true);
+                        viewClick.setFitHeight(20);
+                        viewClick.setPreserveRatio(true);
+                        view.setOpacity(0.8);
+                        btn.setGraphic(view);
+
+                        // Set up the removal action for the button.
+                        btn.setOnAction((ActionEvent event) -> {
+                            VolumeScene volume = getTableView().getItems().get(getIndex());
+                            action.accept(volume);
+                            // Then refresh the volumes table to be without the old volume.
+                            refreshVolumes();
+                        });
+
+                        // Set up the hover and click effects for the button.
+                        btn.setOnMouseEntered(e -> view.setImage(viewHover.getImage()));
+                        btn.setOnMouseExited(e -> view.setImage(new Image(getClass().getResource(imagePath).toExternalForm())));
+                        btn.setOnMousePressed(e -> view.setImage(viewClick.getImage()));
+                        btn.setOnMouseReleased(e -> view.setImage(viewHover.getImage()));
+                    }
+
+                    // This method updates the item whenever the cell is updated.
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+    }
+
+    /**
+     * Removes a volume from our database using our WATCHDOG REST API.
+     * This method sends a POST request to the REST API to remove a volume
+     * with the given name. If an error occurs while sending the request,
+     * it logs the error message.
+     */
+    public void removeVolume(String volumeName) {
+        try {
+            // Create a new HTTP request to the Docker API.
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("http://localhost:8080/api/volumes/" + volumeName + "/remove"))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            // Send the request and parse the response into a JSONGArray.
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // Refresh the volumes table to be always up to date.
+            refreshVolumes();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     /**

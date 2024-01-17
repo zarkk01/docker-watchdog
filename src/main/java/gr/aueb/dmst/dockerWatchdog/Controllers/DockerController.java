@@ -9,12 +9,7 @@ import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
 import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * DockerController is a RESTful web service controller that manages Docker operations,
@@ -278,6 +273,30 @@ public class DockerController {
     @GetMapping("/volumes")
     public List<Volume> getAllVolumes() {
         return dockerService.getAllVolumes();
+    }
+
+    /**
+     * Endpoint for HTTP POST request to remove a Docker volume with the specified name.
+     *
+     * @param volumeName the name of the Docker volume to be deleted
+     * @return a ResponseEntity with a message indicating the volume has been deleted
+     */
+    @PostMapping("/volumes/{volumeName}/remove")
+    public ResponseEntity<String> deleteVolume(@PathVariable("volumeName") String volumeName) {
+        dockerService.removeVolume(volumeName);
+        return ResponseEntity.ok(("Volume " + volumeName + " deleted"));
+    }
+
+    /**
+     * Endpoint for HTTP POST request to create a Docker volume with the specified name.
+     *
+     * @param volumeName the name of the Docker volume to be created
+     * @return a ResponseEntity with a message indicating the volume has been created
+     */
+    @PostMapping("/volumes/{volumeName}/create")
+    public ResponseEntity<String> createVolume(@PathVariable("volumeName") String volumeName){
+        dockerService.createVolume(volumeName);
+        return ResponseEntity.ok(("Volume " + volumeName + " created"));
     }
 }
 

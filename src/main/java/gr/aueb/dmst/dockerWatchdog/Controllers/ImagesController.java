@@ -196,7 +196,7 @@ public class ImagesController implements Initializable {
                     }));
 
             removeImageColumn.setCellFactory(createButtonCellFactory(
-                    "Delete An Image",
+                    "Delete Image",
                     "/images/binRed.png",
                     "/images/binHover.png",
                     "/images/binClick.png", image -> {
