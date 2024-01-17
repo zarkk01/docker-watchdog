@@ -206,7 +206,7 @@
                   </children>
                      <stylesheets>
                         <URL value="@styles/curvedPane.css" />
-                        <URL value="@styles/hoverPane.css" />
+                        <URL value="@styles/hoverRunningPane.css" />
                      </stylesheets>
                </Pane>
                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" layoutX="381.0" layoutY="192.0" prefHeight="54.0" prefWidth="235.0" />

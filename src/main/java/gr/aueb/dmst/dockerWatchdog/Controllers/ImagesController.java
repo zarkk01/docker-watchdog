@@ -30,9 +30,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -97,11 +98,11 @@ public class ImagesController implements Initializable {
     @FXML
     private Label imageNameLabel;
     @FXML
-    private Circle totalContainersCircle;
+    private Pane totalContainersCircle;
     @FXML
-    private Circle runningContainersCircle;
+    private Pane runningContainersCircle;
     @FXML
-    private Circle stoppedContainersCircle;
+    private Pane stoppedContainersCircle;
     @FXML
     private Label totalContainersTextLabel;
     @FXML
@@ -117,11 +118,11 @@ public class ImagesController implements Initializable {
     private TableColumn<InstanceScene, String> instancesStatusColumn;
 
     @FXML
-    private Label totalContainersLabel;
+    private Text totalContainersText;
     @FXML
-    private Label runningContainersLabel;
+    private Text runningContainersText;
     @FXML
-    private Label stoppedContainersLabel;
+    private Text stoppedContainersText;
 
     @FXML
     private ImageView watchdogImage;
@@ -268,7 +269,7 @@ public class ImagesController implements Initializable {
         imageNameLabel.setText(image.getName());
 
         // Set the text of the labels with the number of total, running, and stopped containers.
-        totalContainersLabel.setText(String.valueOf(instances.size()));
+        totalContainersText.setText(String.valueOf(instances.size()));
         long runningContainers = 0;
         long stoppedContainers = 0;
         for (InstanceScene instance : instances) {
@@ -278,8 +279,8 @@ public class ImagesController implements Initializable {
                 stoppedContainers++;
             }
         }
-        runningContainersLabel.setText(String.valueOf(runningContainers));
-        stoppedContainersLabel.setText(String.valueOf(stoppedContainers));
+        runningContainersText.setText(String.valueOf(runningContainers));
+        stoppedContainersText.setText(String.valueOf(stoppedContainers));
 
         // Clear the current items in the instancesTableView and add the instances.
         instancesTableView.getItems().clear();
@@ -315,9 +316,9 @@ public class ImagesController implements Initializable {
         totalContainersTextLabel.setVisible(true);
         runningContainersTextLabel.setVisible(true);
         stoppedContainersTextLabel.setVisible(true);
-        totalContainersLabel.setVisible(true);
-        runningContainersLabel.setVisible(true);
-        stoppedContainersLabel.setVisible(true);
+        totalContainersText.setVisible(true);
+        runningContainersText.setVisible(true);
+        stoppedContainersText.setVisible(true);
         imageNameLabel.setVisible(true);
     }
 
@@ -389,9 +390,9 @@ public class ImagesController implements Initializable {
         imageNameLabel.setText(image.getName());
 
         // Set the text of the labels with the number of total, running, and stopped containers.
-        totalContainersLabel.setText("0");
-        runningContainersLabel.setText("0");
-        stoppedContainersLabel.setText("0");
+        totalContainersText.setText("0");
+        runningContainersText.setText("0");
+        stoppedContainersText.setText("0");
 
         // Clear the current items in the instancesTableView and add the instances.
         instancesTableView.getItems().clear();
@@ -406,9 +407,9 @@ public class ImagesController implements Initializable {
         totalContainersTextLabel.setVisible(true);
         runningContainersTextLabel.setVisible(true);
         stoppedContainersTextLabel.setVisible(true);
-        totalContainersLabel.setVisible(true);
-        runningContainersLabel.setVisible(true);
-        stoppedContainersLabel.setVisible(true);
+        totalContainersText.setVisible(true);
+        runningContainersText.setVisible(true);
+        stoppedContainersText.setVisible(true);
         imageNameLabel.setVisible(true);
     }
 

@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -177,9 +176,16 @@
                </children></Pane>
             <Pane layoutX="6.0" layoutY="405.0" prefHeight="262.0" prefWidth="931.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Circle fx:id="totalContainersCircle" fill="#474745" layoutX="113.0" layoutY="147.0" radius="75.0" stroke="#474745" strokeType="INSIDE" visible="false" />
-                  <Circle fx:id="runningContainersCircle" fill="#474745" layoutX="294.0" layoutY="147.0" radius="76.0" stroke="#474745" strokeType="INSIDE" visible="false" />
-                  <Circle fx:id="stoppedContainersCircle" fill="#474745" layoutX="473.0" layoutY="144.0" radius="76.0" stroke="#474745" strokeType="INSIDE" visible="false" />
+                  <Pane fx:id="totalContainersCircle" layoutX="38.0" layoutY="71.0" prefHeight="152.0" prefWidth="151.0" style="-fx-border-radius: 100; -fx-background-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false">
+                     <children>
+                        <Text fx:id="totalContainersText" fill="WHITE" layoutX="62.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                           <font>
+                              <Font name="SansSerif Regular" size="55.0" />
+                           </font>
+                        </Text>
+                     </children></Pane>
+                  <Pane fx:id="runningContainersCircle" layoutX="219.0" layoutY="71.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverRunningPane.css" visible="false" />
+                  <Pane fx:id="stoppedContainersCircle" layoutX="398.0" layoutY="68.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false" />
                   <TableView fx:id="instancesTableView" layoutX="597.0" layoutY="4.0" prefHeight="253.0" prefWidth="327.0" stylesheets="@styles/styles.css" visible="false">
                     <columns>
                       <TableColumn fx:id="instancesNameColumn" prefWidth="170.97015380859375" text="Name" />
@@ -189,21 +195,6 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </TableView>
-                  <Label fx:id="totalContainersLabel" layoutX="90.0" layoutY="103.0" prefHeight="89.0" prefWidth="72.0" text="4" textFill="WHITE" visible="false">
-                     <font>
-                        <Font size="72.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="runningContainersLabel" layoutX="271.0" layoutY="102.0" prefHeight="89.0" prefWidth="79.0" text="4" textFill="WHITE" visible="false">
-                     <font>
-                        <Font size="72.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="stoppedContainersLabel" layoutX="449.0" layoutY="103.0" prefHeight="89.0" prefWidth="85.0" text="4" textFill="WHITE" visible="false">
-                     <font>
-                        <Font size="72.0" />
-                     </font>
-                  </Label>
                   <Label fx:id="totalContainersTextLabel" layoutX="64.0" layoutY="25.0" prefHeight="59.0" prefWidth="108.0" text="Total Containers" textFill="WHITE" visible="false">
                      <font>
                         <Font name="SansSerif Regular" size="14.0" />
@@ -232,6 +223,16 @@
                         <Font name="SansSerif Bold Italic" size="29.0" />
                      </font>
                   </Label>
+                  <Text fx:id="runningContainersText" fill="WHITE" layoutX="280.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                     <font>
+                        <Font name="SansSerif Regular" size="55.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="stoppedContainersText" fill="WHITE" layoutX="459.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                     <font>
+                        <Font name="SansSerif Regular" size="55.0" />
+                     </font>
+                  </Text>
                </children></Pane>
          </children>
       </AnchorPane>
