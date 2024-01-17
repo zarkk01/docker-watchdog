@@ -184,8 +184,22 @@
                            </font>
                         </Text>
                      </children></Pane>
-                  <Pane fx:id="runningContainersCircle" layoutX="219.0" layoutY="71.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverRunningPane.css" visible="false" />
-                  <Pane fx:id="stoppedContainersCircle" layoutX="398.0" layoutY="68.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false" />
+                  <Pane fx:id="runningContainersCircle" layoutX="219.0" layoutY="71.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverRunningPane.css" visible="false">
+                     <children>
+                        <Text fx:id="runningContainersText" fill="WHITE" layoutX="60.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                           <font>
+                              <Font name="SansSerif Regular" size="55.0" />
+                           </font>
+                        </Text>
+                     </children></Pane>
+                  <Pane fx:id="stoppedContainersCircle" layoutX="398.0" layoutY="68.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false">
+                     <children>
+                        <Text fx:id="stoppedContainersText" fill="WHITE" layoutX="60.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                           <font>
+                              <Font name="SansSerif Regular" size="55.0" />
+                           </font>
+                        </Text>
+                     </children></Pane>
                   <TableView fx:id="instancesTableView" layoutX="597.0" layoutY="4.0" prefHeight="253.0" prefWidth="327.0" stylesheets="@styles/styles.css" visible="false">
                     <columns>
                       <TableColumn fx:id="instancesNameColumn" prefWidth="170.97015380859375" text="Name" />
@@ -223,16 +237,6 @@
                         <Font name="SansSerif Bold Italic" size="29.0" />
                      </font>
                   </Label>
-                  <Text fx:id="runningContainersText" fill="WHITE" layoutX="280.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
-                     <font>
-                        <Font name="SansSerif Regular" size="55.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="stoppedContainersText" fill="WHITE" layoutX="459.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
-                     <font>
-                        <Font name="SansSerif Regular" size="55.0" />
-                     </font>
-                  </Text>
                </children></Pane>
          </children>
       </AnchorPane>
