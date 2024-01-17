@@ -197,7 +197,8 @@ public class ContainersController implements Initializable {
                     throw new RuntimeException(e);
                 }
                 IndividualContainerController individualContainerController = loader.getController();
-                individualContainerController.onInstanceDoubleClick(selectedInstance);
+                // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+                individualContainerController.onInstanceDoubleClick(selectedInstance,"containersScene.fxml");
                 stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 stage.show();

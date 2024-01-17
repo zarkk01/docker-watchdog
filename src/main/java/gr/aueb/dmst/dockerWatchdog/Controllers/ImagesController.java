@@ -126,7 +126,8 @@ public class ImagesController implements Initializable {
     @FXML
     private ImageView watchdogImage;
     private Timeline timeline;
-    private static ImageScene imageScene;
+    // This variable is used to know which image is selected and displayed in the down info panel.
+    private ImageScene imageScene;
 
 
     /**
@@ -297,8 +298,8 @@ public class ImagesController implements Initializable {
                 }
                 // Load the controller of the individualContainerScene.
                 IndividualContainerController individualContainerController = loader.getController();
-                // Pass the selected instance to the controller.
-                individualContainerController.onInstanceDoubleClick(selectedInstance);
+                // Pass the selected instance to the controller and the scene we're coming from.
+                individualContainerController.onInstanceDoubleClick(selectedInstance, "imagesScene.fxml");
                 stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 stage.getScene().setRoot(root);
                 stage.show();

@@ -115,6 +115,7 @@ public class IndividualContainerController {
     private XYChart.Series<String, Number> individualCpuSeries;
 
     private Timeline timeline;
+    private String fromWhere;
 
     /**
      * This method is called when a user clicks on a container from the containers list in the Containers Panel.
@@ -123,7 +124,8 @@ public class IndividualContainerController {
      *
      * @param instance The InstanceScene object representing the selected container.
      */
-    public void onInstanceDoubleClick(InstanceScene instance) {
+    public void onInstanceDoubleClick(InstanceScene instance, String fromWhere) {
+        this.fromWhere = fromWhere;
         // Set the selected instance.
         this.instanceScene = instance;
 
@@ -710,5 +712,13 @@ public class IndividualContainerController {
      */
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "kubernetesScene.fxml");
+    }
+
+    public void changeToBackScene(ActionEvent actionEvent) throws IOException {
+        if(fromWhere == "containersScene.fxml") {
+            changeScene(actionEvent, "containersScene.fxml");
+        } else {
+            changeScene(actionEvent, "imagesScene.fxml");
+        }
     }
 }
