@@ -10,10 +10,14 @@ import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -21,6 +25,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -71,7 +78,10 @@ public class VolumesController implements Initializable {
     @FXML
     private Button kubernetesButton;
     @FXML
-    public ImageView watchdogImage;
+    private ImageView watchdogImage;
+
+    @FXML
+    private VBox notificationBox;
 
     /**
      * This method is automatically called after the fxml file has been loaded.
@@ -122,7 +132,15 @@ public class VolumesController implements Initializable {
                 "/images/binHover.png",
                 "/images/binClick.png", volume -> {
                     try {
-                        removeVolume(volume.getName());
+                        // Check if the volume is currently in use by a container.
+                        if (volume.getContainerNamesUsing().isEmpty()) {
+                            removeVolume(volume.getName());
+                            // Show a notification to the user that the volume was successfully removed.
+                            showNotification("Success", "Volume " + volume.getName() + " was successfully removed.");
+                        } else {
+                            // Show a notification to the user that the volume is currently in use by a container.
+                            showNotification("Error", "Volume " + volume.getName().substring(0,6) + "... is currently in use by a container.");
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -216,7 +234,7 @@ public class VolumesController implements Initializable {
             // Send the request and parse the response into a JSONGArray.
             client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Refresh the volumes table to be always up to date.
+            // Refresh the volumes table to be always up-to-date.
             refreshVolumes();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -324,6 +342,46 @@ public class VolumesController implements Initializable {
         button.setOnMouseExited(event -> {
             button.getStyleClass().remove("button-hovered");
             ((ImageView) button.getGraphic()).setImage(originalImage);
+        });
+    }
+
+    /**
+     * Displays a notification with the given title and content.
+     * It helps us keep user informed about events that occur in the volume.
+     * After 3 seconds, the Popup is automatically hidden.
+     *
+     * @param title The title of the notification.
+     * @param content The content of the notification.
+     */
+    public void showNotification(String title, String content) {
+        Platform.runLater(() -> {
+            // Create a new Popup for the notification.
+            Popup notification = new Popup();
+
+            // Create a Label for the title of the notification and style it.
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+
+            // Create a Label for the content of the notification and style it.
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Create a VBox to hold the title and content Labels and style it.
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup.
+            notification.getContent().add(box);
+
+            // Calculate the position of the Popup on the screen.
+            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+
+            // Show the Popup on the screen at the calculated position.
+            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+
+            // Create a Timeline that will hide the Popup after 3 seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            timelineNotification.play();
         });
     }
 
