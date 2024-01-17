@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -13,6 +14,8 @@ import java.util.function.Consumer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,6 +41,7 @@ import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.glassfish.jersey.internal.util.SaxHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -224,36 +228,104 @@ public class VolumesController implements Initializable {
      * it logs the error message.
      */
     public void removeVolume(String volumeName) {
+        // Send a POST request to the WATCHDOG REST API to remove the volume.
         try {
-            // Create a new HTTP request to the Docker API.
+            // Create a new HTTP request to the WATCHDOG REST API.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/volumes/" + volumeName + "/remove"))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
 
-            // Send the request and parse the response into a JSONGArray.
+            // Send the request.
             client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Refresh the volumes table to be always up-to-date.
+            // Refresh the volumes table to be always up-to-date with this
+            // way of Thread.sleep to break this asynchronous nature of the program.
+            Thread.sleep(50);
             refreshVolumes();
         } catch (Exception e) {
+            showNotification("Error", "Volume " + volumeName + " was not removed.");
             logger.error(e.getMessage());
         }
     }
 
     /**
+     * Creates a new volume with a specified name.
+     * This method prompts the user to enter a name for the new volume using a TextInputDialog.
+     * If a volume with the entered name already exists, a notification is shown to the user and the method returns.
+     * Otherwise, a POST request is sent to the WATCHDOG REST API to create a new volume with the entered name.
+     * After the volume is created, the volumes table is refreshed and a notification is shown to the user.
+     */
+    public void createVolume(){
+        try {
+            // Create a TextInputDialog so to get the name of the volume to be created.
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Create Volume");
+            dialog.setHeaderText("Enter Volume Name");
+            dialog.setContentText("Name:");
+            String volumeName = dialog.showAndWait().get();
+
+            // Check if the volume with this name already exists.
+            List<VolumeScene> volumes = getAllVolumes();
+            for (VolumeScene volume : volumes) {
+                if (volume.getName().equals(volumeName)) {
+                    // If yes, show a notification to the user that he cannot create and return.
+                    showNotification("Error", "Volume " + volumeName + " already exists.");
+                    return;
+                }
+            }
+
+            // If not, create a new volume with the given name.
+            try {
+                // Create a new HTTP request to the WATCHDOG REST API.
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(new URI("http://localhost:8080/api/volumes/" + volumeName + "/create"))
+                        .POST(HttpRequest.BodyPublishers.noBody())
+                        .build();
+
+                // Send the request.
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() ==  200){
+                    // Show a notification to the user that the volume was successfully created.
+                    showNotification("Success", "Volume " + volumeName + " was successfully created.");
+                }
+            } catch (Exception e) {
+                showNotification("Error", "Volume " + volumeName + " was not created.");
+                logger.error(e.getMessage());
+            }
+
+            // Refresh the volumes table to be always up-to-date with this
+            // way of Thread.sleep to break this asynchronous nature of the program.
+            Thread.sleep(50);
+            refreshVolumes();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
+    }
+
+    /**
      * Refreshes the volumes table.
-     * This method retrieves all volumes by calling the `getAllVolumes` method and updates the volumes table with the new data.
+     * This method retrieves all volumes by calling the {@link #getAllVolumes()} method and updates the volumes table with the new data.
      * If an error occurs while retrieving the volumes, it logs the error message.
      */
     public void refreshVolumes() {
         try {
+            // Clear the volumes table.
+            volumesTableView.getItems().clear();
+
             // Retrieve all volumes.
             List<VolumeScene> volumes = getAllVolumes();
 
-            // Clear the volumes table and add the new data.
-            volumesTableView.getItems().clear();
-            volumesTableView.getItems().addAll(volumes);
+            // Create an ObservableList to hold the VolumeScene objects.
+            ObservableList<VolumeScene> observableVolumes = FXCollections.observableArrayList();
+
+            // Add all volumes to the ObservableList.
+            observableVolumes.addAll(volumes);
+
+            // Add the ObservableList to the volumes table.
+            volumesTableView.setItems(observableVolumes);
         } catch (VolumeFetchException e) {
             logger.error(e.getMessage());
         }

@@ -146,7 +146,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button fx:id="createVolumeButton" layoutX="805.0" layoutY="18.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="89.0" stylesheets="@styles/darkButtons.css" text="CREATE +" textFill="WHITE" />
+            <Button fx:id="createVolumeButton" layoutX="805.0" layoutY="18.0" mnemonicParsing="false" onAction="#createVolume" prefHeight="35.0" prefWidth="89.0" stylesheets="@styles/darkButtons.css" text="CREATE +" textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>
