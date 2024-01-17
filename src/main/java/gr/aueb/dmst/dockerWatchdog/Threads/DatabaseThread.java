@@ -21,6 +21,11 @@ import org.apache.logging.log4j.Logger;
  * deleting images and volumes, and updating live metrics.
  */
 public class DatabaseThread implements Runnable {
+    private Connection connection;
+
+    public DatabaseThread(Connection connection) {
+        this.connection = connection;
+    }
 
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
@@ -32,6 +37,9 @@ public class DatabaseThread implements Runnable {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/" + DOCKER_DB_NAME;
     private static final String USER = System.getenv("DOCKER_DB_USERNAME");
     private static final String PASS = System.getenv("DOCKER_DB_PASSWORD");
+
+    public DatabaseThread() {
+    }
 
 
     /**
@@ -174,7 +182,7 @@ public class DatabaseThread implements Runnable {
         try {
             // Configure the connection to the database.
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
+            
             // Insert a new row in the Metrics (Changes) table since a container event occurred.
             try {
                 String insertMetric = "INSERT INTO Metrics (datetime) VALUES (?)";
@@ -430,5 +438,9 @@ public class DatabaseThread implements Runnable {
 
         // Schedule the task to run every 2.5 seconds
         timer.scheduleAtFixedRate(updateTask, 0, 2500);
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }
