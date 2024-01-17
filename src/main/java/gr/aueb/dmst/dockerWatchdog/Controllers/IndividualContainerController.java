@@ -146,7 +146,6 @@ public class IndividualContainerController {
 
         // Set up the hover effects for all buttons.
         DropShadow dropShadow = new DropShadow();
-        backButton.setEffect(dropShadow);
         removeButton.setEffect(dropShadow);
         startButton.setEffect(dropShadow);
         stopButton.setEffect(dropShadow);
