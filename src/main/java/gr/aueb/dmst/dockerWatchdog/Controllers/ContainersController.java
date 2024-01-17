@@ -672,9 +672,10 @@ public class ContainersController implements Initializable {
     }
 
     /**
-     * Retrieves all instances of the Docker containers.
-     * This method sends a GET request to the WATCHDOG REST API to retrieve all instances of the Docker containers.
-     * It then parses the response body to extract the details of each instance, such as the ID, name, image, status, CPU usage, memory usage, block I/O, volumes, subnet, gateway, and prefix length.
+     * Retrieves all instances of the Docker cluster.
+     * This method sends a GET request to the WATCHDOG REST API to retrieve all instances, and then
+     * it then parses the response body to extract the details of each instance,
+     * such as the ID, name, image, status, CPU usage, memory usage, block I/O, volumes, subnet, gateway, and prefix length.
      * These details are used to create a new InstanceScene object for each instance, which are then added to a list.
      * If the status of an instance is not "running", the CPU usage, memory usage, and block I/O are set to "N/A".
      * The method returns the list of InstanceScene objects.
@@ -683,7 +684,7 @@ public class ContainersController implements Initializable {
      * @throws Exception If an error occurs when sending or receiving the HTTP request.
      */
     public List<InstanceScene> getAllInstances() throws Exception {
-        // Send a GET request to the WATCHDOG REST API to retrieve all instances of the Docker containers.
+        // Send a GET request to the WATCHDOG REST API to retrieve all instances of the Docker cluster.
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI("http://localhost:8080/api/containers/instances"))
                 .GET()

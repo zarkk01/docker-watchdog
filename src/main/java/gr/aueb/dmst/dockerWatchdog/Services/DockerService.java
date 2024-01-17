@@ -193,6 +193,7 @@ public class DockerService {
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
             try {
+                System.out.println(container.getId());
                 ExecutorThread.startContainer(container.getId());
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
@@ -252,6 +253,17 @@ public class DockerService {
      */
     public List<Instance> getAllInstancesMaxId() {
         return instancesRepository.findAllByMaxMetricId();
+    }
+
+    /**
+     * Retrieves all Docker instances with the given image name
+     * so to display them in the dashboard in Images Panel.
+     *
+     * @param imageName the name of the image whose instances to retrieve
+     * @return a list of Docker instances with the given image name
+     */
+    public List<Instance> getInstancesByImage(String imageName) {
+        return instancesRepository.findAllByImageName(imageName);
     }
 
     /**

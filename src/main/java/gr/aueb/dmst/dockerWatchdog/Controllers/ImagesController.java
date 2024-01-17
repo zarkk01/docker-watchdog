@@ -14,6 +14,7 @@ import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageActionException;
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -31,6 +32,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -82,25 +84,57 @@ public class ImagesController implements Initializable {
     private VBox notificationBox;
 
     @FXML
-    public Button containersButton;
+    private Button containersButton;
     @FXML
-    public Button imagesButton;
+    private Button graphicsButton;
     @FXML
-    public Button graphicsButton;
+    private Button kubernetesButton;
     @FXML
-    public Button kubernetesButton;
-    @FXML
-    public Button volumesButton;
+    private Button volumesButton;
 
     @FXML
-    public ImageView watchdogImage;
+    private Label startingLabel;
+    @FXML
+    private Label imageNameLabel;
+    @FXML
+    private Circle totalContainersCircle;
+    @FXML
+    private Circle runningContainersCircle;
+    @FXML
+    private Circle stoppedContainersCircle;
+    @FXML
+    private Label totalContainersTextLabel;
+    @FXML
+    private Label runningContainersTextLabel;
+    @FXML
+    private Label stoppedContainersTextLabel;
 
+    @FXML
+    private TableView<InstanceScene> instancesTableView;
+    @FXML
+    private TableColumn<InstanceScene, String> instancesNameColumn;
+    @FXML
+    private TableColumn<InstanceScene, String> instancesStatusColumn;
+
+    @FXML
+    private Label totalContainersLabel;
+    @FXML
+    private Label runningContainersLabel;
+    @FXML
+    private Label stoppedContainersLabel;
+
+    @FXML
+    private ImageView watchdogImage;
     private Timeline timeline;
+    private static ImageScene imageScene;
+
 
     /**
      * This method is automatically called when user navigates to Images Panel.
      * It sets up the TableView columns, hover effects for the sidebar images, and starts a timeline to refresh images.
-     * It also sets up the cell factories for the TableView columns that contain buttons.
+     * It also sets up the cell factories for the TableView columns that contain buttons. Also, it sets up a tooltip for the watchdog logo saying Woof!.
+     * Finally, it adds an action listener to the TableView that fill down info panel with the selected image's info when
+     * the user clicks on an image.
      *
      * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
      * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
@@ -182,6 +216,31 @@ public class ImagesController implements Initializable {
             // Refresh the images.
             refreshImages();
 
+            // Set up the TableView columns for the instancesTableView in the down info panel.
+            instancesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            instancesStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+            // Add an action listener to the TableView that fill down info panel with the selected image's info.
+            imagesTableView.getSelectionModel().selectedItemProperty().addListener(
+                    (obs, oldSelection, newSelection) -> {
+                        if (newSelection != null) {
+                            startingLabel.setVisible(false);
+                            // Get the selected image and set it to the imageScene variable.
+                            ImageScene selectedImage = newSelection;
+                            imageScene = selectedImage;
+                            try {
+                                // Depending on the usage of the image, fill down info panel with the selected image's info.
+                                if(selectedImage.getStatus().equals("In use")) {
+                                    adjustInfoPanel(selectedImage);
+                                } else {
+                                    adjustZeroInfoPanel(selectedImage);
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+
             // Start a timeline to refresh images every 1.5 seconds.
             timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
             timeline.setCycleCount(Timeline.INDEFINITE);
@@ -189,6 +248,167 @@ public class ImagesController implements Initializable {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     * This method is called when the user clicks on an image in the TableView.
+     * It fills down info panel with the selected image's info and sets up the instancesTableView
+     * so to be ready when clicked to move in individualContainersPanel.
+     *
+     * @param image
+     * @throws Exception
+     */
+    public void adjustInfoPanel(ImageScene image) throws Exception {
+        // Get all instances of the selected image.
+        List<InstanceScene> instances = getAllInstancesByImage(image.getName());
+
+        // Set the text of the label with the name of the image.
+        imageNameLabel.setText(image.getName());
+
+        // Set the text of the labels with the number of total, running, and stopped containers.
+        totalContainersLabel.setText(String.valueOf(instances.size()));
+        long runningContainers = 0;
+        long stoppedContainers = 0;
+        for (InstanceScene instance : instances) {
+            if (instance.getStatus().equals("running")) {
+                runningContainers++;
+            } else {
+                stoppedContainers++;
+            }
+        }
+        runningContainersLabel.setText(String.valueOf(runningContainers));
+        stoppedContainersLabel.setText(String.valueOf(stoppedContainers));
+
+        // Clear the current items in the instancesTableView and add the instances.
+        instancesTableView.getItems().clear();
+        instancesTableView.getItems().addAll(instances);
+
+        // Move user to individualContainersPanel when he clicks on an instance so to see more info about instance.
+        instancesTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1 && (!instancesTableView.getSelectionModel().isEmpty())) {
+                // Get the selected instance.
+                InstanceScene selectedInstance = instancesTableView.getSelectionModel().getSelectedItem();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/individualContainerScene.fxml"));
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // Load the controller of the individualContainerScene.
+                IndividualContainerController individualContainerController = loader.getController();
+                // Pass the selected instance to the controller.
+                individualContainerController.onInstanceDoubleClick(selectedInstance);
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                stage.getScene().setRoot(root);
+                stage.show();
+            }
+        });
+
+        // Make all these visible because firstly only the startingLabel which says
+        // "Click...for more information" is visible.
+        instancesTableView.setVisible(true);
+        totalContainersCircle.setVisible(true);
+        runningContainersCircle.setVisible(true);
+        stoppedContainersCircle.setVisible(true);
+        totalContainersTextLabel.setVisible(true);
+        runningContainersTextLabel.setVisible(true);
+        stoppedContainersTextLabel.setVisible(true);
+        totalContainersLabel.setVisible(true);
+        runningContainersLabel.setVisible(true);
+        stoppedContainersLabel.setVisible(true);
+        imageNameLabel.setVisible(true);
+    }
+
+    /**
+     * This method is sending a GET request to the WATCHDOG REST API to retrieve all instances of the specific image user clicked.
+     * It parses the response body to extract the details of each instance, and
+     * it creates a new InstanceScene object for each instance and adds it to the list.
+     * It returns a list of all instances of the specific image user clicked as InstanceScene objects
+     * so to be ready to be displayed and handled.
+     *
+     * @param imageName
+     * @return A list of all instances of the specific image user clicked.
+     * @throws Exception
+     */
+    public List<InstanceScene> getAllInstancesByImage(String imageName) throws Exception {
+        // Send a GET request to the WATCHDOG REST API to retrieve all instances of the specific image user clicked.
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/images/getContainers/" + imageName))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Parse the response body to extract the details of each instance.
+        JSONArray jsonArray = new JSONArray(response.body());
+        List<InstanceScene> instances = new ArrayList<>();
+        // Iterate over the instances.
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String id = jsonObject.getString("id");
+            String name = jsonObject.getString("name");
+            String image = jsonObject.getString("image");
+            String status = jsonObject.getString("status");
+            Long memoryUsageL = jsonObject.getLong("memoryUsage");
+            String memoryUsage = memoryUsageL +"MB";
+            Long pidsL = jsonObject.getLong("pids");
+            String pids = String.valueOf(pidsL);
+            Double cpuUsageD = jsonObject.getDouble("cpuUsage") * 100;
+            double roundedCpu = Math.round(cpuUsageD * 100.0) / 100.0;
+            String cpuUsage = roundedCpu + "%";
+            Double blockID = jsonObject.getDouble("blockI");
+            double roundedI = Math.round(blockID * 10.0) / 10.0;
+            String blockI = roundedI + "MB";
+            Double blockOD = jsonObject.getDouble("blockO");
+            double rounded0 = Math.round(blockOD * 10.0) / 10.0;
+            String blockO = rounded0 + "MB";
+            String volumes = jsonObject.getString("volumes");
+            String subnet = jsonObject.getString("subnet");
+            String gateway = jsonObject.getString("gateway");
+            Integer prefixLen = jsonObject.getInt("prefixLen");
+
+            // Create a new InstanceScene object for each instance and add it to the list.
+            instances.add(new InstanceScene(id, name, image
+                    , status, memoryUsage, pids, cpuUsage, blockI
+                    , blockO, volumes, subnet, gateway, prefixLen,
+                    false));
+        }
+        return instances;
+    }
+
+    /**
+     * This method is called when the user clicks on an image in the TableView which is not in use from
+     * any instance. In this case, we don't need to send a GET request to the WATCHDOG REST API, and we just set 0 all
+     * the labels and circles of the down info panel.
+     *
+     * @param image
+     */
+    public void adjustZeroInfoPanel(ImageScene image) {
+        // Set the text of the label with the name of the image.
+        imageNameLabel.setText(image.getName());
+
+        // Set the text of the labels with the number of total, running, and stopped containers.
+        totalContainersLabel.setText("0");
+        runningContainersLabel.setText("0");
+        stoppedContainersLabel.setText("0");
+
+        // Clear the current items in the instancesTableView and add the instances.
+        instancesTableView.getItems().clear();
+        instancesTableView.setPlaceholder(new Label("No instances available for " + image.getName() + "."));
+
+        // Make all these visible because firstly only the startingLabel which says
+        // "Click...for more information" is visible.
+        instancesTableView.setVisible(true);
+        totalContainersCircle.setVisible(true);
+        runningContainersCircle.setVisible(true);
+        stoppedContainersCircle.setVisible(true);
+        totalContainersTextLabel.setVisible(true);
+        runningContainersTextLabel.setVisible(true);
+        stoppedContainersTextLabel.setVisible(true);
+        totalContainersLabel.setVisible(true);
+        runningContainersLabel.setVisible(true);
+        stoppedContainersLabel.setVisible(true);
+        imageNameLabel.setVisible(true);
     }
 
     /**
@@ -432,7 +652,13 @@ public class ImagesController implements Initializable {
             // Also, show a notification.
             showNotification("Success", "Container created successfully");
             image.setStatus("In use");
+
             refreshImages();
+
+            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
+            if(imageScene != null && imageScene.getName().equals(image.getName())) {
+                adjustInfoPanel(imageScene);
+            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while creating container: " + e.getMessage(), image.getName());
         }
@@ -464,6 +690,11 @@ public class ImagesController implements Initializable {
             // If all containers are started successfully, refresh the images and show a notification.
             showNotification("Success", "All containers started successfully");
             refreshImages();
+
+            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
+            if(imageScene != null && imageScene.getName().equals(imageName)) {
+                adjustInfoPanel(imageScene);
+            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while starting all containers: " + e.getMessage(), imageName);
         }
@@ -495,6 +726,11 @@ public class ImagesController implements Initializable {
             // If all containers are stopped successfully, refresh the images and show a notification.
             showNotification("Success", "All containers stopped successfully");
             refreshImages();
+
+            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
+            if(imageScene != null && imageScene.getName().equals(imageName)) {
+                adjustInfoPanel(imageScene);
+            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while stopping all containers: " + e.getMessage(), imageName);
         }
@@ -558,6 +794,11 @@ public class ImagesController implements Initializable {
             // If the image is removed successfully, refresh the images and show a notification.
             showNotification("Success", "Image removed successfully");
             refreshImages();
+
+            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
+            if(imageScene != null && imageScene.getName().equals(imageName)) {
+                adjustZeroInfoPanel(imageScene);
+            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while removing image: " + e.getMessage(), imageName);
         }

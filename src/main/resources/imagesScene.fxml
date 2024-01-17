@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -13,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -131,12 +135,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="434.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
+            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="427.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="107.3505859375">
                <font>
                   <Font name="SansSerif Bold" size="30.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="47.0" prefHeight="556.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="47.0" prefHeight="321.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -150,8 +154,11 @@
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </TableView>
-            <CheckBox fx:id="usedImagesCheckbox" layoutX="14.0" layoutY="608.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
+            <CheckBox fx:id="usedImagesCheckbox" layoutX="13.0" layoutY="379.0" mnemonicParsing="false" prefHeight="1.0" prefWidth="188.0" text="Show only used images" textFill="WHITE" />
             <Pane layoutX="10.0" layoutY="13.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
                <TextField fx:id="searchField" layoutX="28.0" layoutY="13.0" prefHeight="30.0" prefWidth="137.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;" />
                <ImageView fitHeight="19.0" fitWidth="17.0" layoutX="16.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
@@ -167,6 +174,64 @@
                         <Font size="15.0" />
                      </font>
                   </TextField>
+               </children></Pane>
+            <Pane layoutX="6.0" layoutY="405.0" prefHeight="262.0" prefWidth="931.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+               <children>
+                  <Circle fx:id="totalContainersCircle" fill="#474745" layoutX="113.0" layoutY="147.0" radius="75.0" stroke="#474745" strokeType="INSIDE" visible="false" />
+                  <Circle fx:id="runningContainersCircle" fill="#474745" layoutX="294.0" layoutY="147.0" radius="76.0" stroke="#474745" strokeType="INSIDE" visible="false" />
+                  <Circle fx:id="stoppedContainersCircle" fill="#474745" layoutX="473.0" layoutY="144.0" radius="76.0" stroke="#474745" strokeType="INSIDE" visible="false" />
+                  <TableView fx:id="instancesTableView" layoutX="597.0" layoutY="4.0" prefHeight="253.0" prefWidth="327.0" stylesheets="@styles/styles.css" visible="false">
+                    <columns>
+                      <TableColumn fx:id="instancesNameColumn" prefWidth="170.97015380859375" text="Name" />
+                      <TableColumn fx:id="instancesStatusColumn" prefWidth="155.52984619140625" text="Status" />
+                    </columns>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </TableView>
+                  <Label fx:id="totalContainersLabel" layoutX="90.0" layoutY="103.0" prefHeight="89.0" prefWidth="72.0" text="4" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="runningContainersLabel" layoutX="271.0" layoutY="102.0" prefHeight="89.0" prefWidth="79.0" text="4" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="stoppedContainersLabel" layoutX="449.0" layoutY="103.0" prefHeight="89.0" prefWidth="85.0" text="4" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="totalContainersTextLabel" layoutX="64.0" layoutY="25.0" prefHeight="59.0" prefWidth="108.0" text="Total Containers" textFill="WHITE" visible="false">
+                     <font>
+                        <Font name="SansSerif Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="imageNameLabel" layoutX="255.0" layoutY="9.0" style="-fx-background-color: #1D1D1B; -fx-background-radius: 10;" text="Image Name" textFill="WHITE" visible="false">
+                     <padding>
+                        <Insets bottom="4.0" left="5.0" right="5.0" top="4.0" />
+                     </padding>
+                     <font>
+                        <Font name="SansSerif Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="runningContainersTextLabel" layoutX="233.0" layoutY="25.0" prefHeight="59.0" prefWidth="126.0" text="Running Containers" textFill="WHITE" visible="false">
+                     <font>
+                        <Font name="SansSerif Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="stoppedContainersTextLabel" layoutX="412.0" layoutY="24.0" prefHeight="59.0" prefWidth="125.0" text="Stopped Containers" textFill="WHITE" visible="false">
+                     <font>
+                        <Font name="SansSerif Regular" size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="startingLabel" layoutX="189.0" layoutY="90.0" prefHeight="83.0" prefWidth="576.0" text="Click on an image for more information.." textFill="WHITE">
+                     <font>
+                        <Font name="SansSerif Bold Italic" size="29.0" />
+                     </font>
+                  </Label>
                </children></Pane>
          </children>
       </AnchorPane>
@@ -184,6 +249,7 @@
                   <Image url="@images/watchdog.png" />
                </image>
             </ImageView>
+            <VBox fx:id="notificationBox" prefHeight="26.0" prefWidth="494.0" />
          </children>
       </HBox>
    </top>

@@ -220,6 +220,19 @@ public class DockerController {
     }
 
     /**
+     * Endpoint for HTTP GET request to retrieve all Docker containers for a specific image.
+     * Used in Images panel so when a user clicks on an image to see all the containers
+     * and info about them in the info panel.
+     *
+     * @param imageName the name of the image for which to retrieve all Docker containers
+     * @return a list of all Docker containers for the specified image
+     */
+    @GetMapping("/images/getContainers/{imageName}")
+    public List<Instance> getInstancesByImage(@PathVariable("imageName") String imageName) {
+        return dockerService.getInstancesByImage(imageName);
+    }
+
+    /**
      * Endpoint for HTTP POST request to pull a specific Docker image.
      * Used in Images panel to pull a specific Docker image.
      *

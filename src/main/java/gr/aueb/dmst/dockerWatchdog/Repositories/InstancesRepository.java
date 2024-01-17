@@ -60,12 +60,13 @@ public interface InstancesRepository extends JpaRepository<Instance, Long> {
     Long findAllByMetricId(@Param("metricid") Integer metricid);
 
     /**
-     * This method returns a list of all instances associated with a specific image name.
-     * We use it so to get all instances of an image and start or stop them.
+     * This method returns a list of all instances associated with a specific image name and max metric ID.
+     * We use it so to get all instances of an image and display them in the dashboard in Images Panel but also
+     * to get the instances of an image and start or stop them all.
      *
      * @param imageName the image name to filter by.
      * @return a list of instances.
      */
-    @Query("SELECT i FROM Instance i WHERE i.image = :imageName")
+    @Query("SELECT i FROM Instance i WHERE i.image = :imageName AND i.metricid = (SELECT MAX(i2.metricid) FROM Instance i2)")
     List<Instance> findAllByImageName(@Param("imageName") String imageName);
 }
