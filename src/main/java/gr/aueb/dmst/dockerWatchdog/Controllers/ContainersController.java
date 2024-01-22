@@ -971,7 +971,7 @@ public class ContainersController implements Initializable {
 
             // Create a VBox to hold the title and content Labels and style it.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);

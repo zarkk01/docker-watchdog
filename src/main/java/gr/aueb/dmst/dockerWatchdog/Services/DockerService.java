@@ -192,9 +192,10 @@ public class DockerService {
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
+            // If the container is exited, start it, else don't bother
             if (container.getStatus().equals("exited")) {
-                System.out.println("Starting " + container.getId());
                 try {
+                    // Call the right method of Executor Thread and give the id of the container
                     ExecutorThread.startContainer(container.getId());
                 } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                     logger.error(e.getMessage());
@@ -214,9 +215,10 @@ public class DockerService {
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
+            // If the container is running, stop it, else don't bother
             if (container.getStatus().equals("running")) {
-                System.out.println("Stoppiing " + container.getId());
                 try {
+                    // Call the right method of Executor Thread and give the id of the container
                     ExecutorThread.stopContainer(container.getId());
                 } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                     logger.error(e.getMessage());

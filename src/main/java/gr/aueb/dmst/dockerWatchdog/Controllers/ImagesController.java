@@ -15,6 +15,7 @@ import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import jakarta.persistence.SecondaryTable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -226,7 +227,6 @@ public class ImagesController implements Initializable {
             imagesTableView.getSelectionModel().selectedItemProperty().addListener(
                     (obs, oldSelection, newSelection) -> {
                         if (newSelection != null) {
-                            startingLabel.setVisible(false);
                             // Get the selected image and set it to the imageScene variable.
                             ImageScene selectedImage = newSelection;
                             imageScene = selectedImage;
@@ -307,8 +307,11 @@ public class ImagesController implements Initializable {
             }
         });
 
-        // Make all these visible because firstly only the startingLabel which says
-        // "Click...for more information" is visible.
+        //Make the startingLabel invisible because we have instances to show.
+        startingLabel.setVisible(false);
+
+        // Make all these visible because, firstly only the startingLabel which says
+        // "Click...for more information" was visible.
         instancesTableView.setVisible(true);
         totalContainersCircle.setVisible(true);
         runningContainersCircle.setVisible(true);
@@ -398,8 +401,12 @@ public class ImagesController implements Initializable {
         instancesTableView.getItems().clear();
         instancesTableView.setPlaceholder(new Label("No instances available for " + image.getName() + "."));
 
+        //Make the startingLabel invisible because we have instances to show.
+        startingLabel.setVisible(false);
+
         // Make all these visible because firstly only the startingLabel which says
-        // "Click...for more information" is visible.
+        // "Click...for more information" was visible.
+        startingLabel.setVisible(false);
         instancesTableView.setVisible(true);
         totalContainersCircle.setVisible(true);
         runningContainersCircle.setVisible(true);
@@ -657,6 +664,7 @@ public class ImagesController implements Initializable {
 
             refreshImages();
 
+            Thread.sleep(50);
             // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
             if(imageScene != null && imageScene.getName().equals(image.getName())) {
                 adjustInfoPanel(imageScene);
@@ -693,6 +701,7 @@ public class ImagesController implements Initializable {
             showNotification("Success", "All containers started successfully");
             refreshImages();
 
+            Thread.sleep(50);
             // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
             if(imageScene != null && imageScene.getName().equals(imageName)) {
                 adjustInfoPanel(imageScene);
@@ -729,6 +738,7 @@ public class ImagesController implements Initializable {
             showNotification("Success", "All containers stopped successfully");
             refreshImages();
 
+            Thread.sleep(50);
             // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
             if(imageScene != null && imageScene.getName().equals(imageName)) {
                 adjustInfoPanel(imageScene);
@@ -797,9 +807,21 @@ public class ImagesController implements Initializable {
             showNotification("Success", "Image removed successfully");
             refreshImages();
 
-            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
+            // Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
             if(imageScene != null && imageScene.getName().equals(imageName)) {
-                adjustZeroInfoPanel(imageScene);
+                instancesTableView.setVisible(false);
+                totalContainersCircle.setVisible(false);
+                runningContainersCircle.setVisible(false);
+                stoppedContainersCircle.setVisible(false);
+                totalContainersTextLabel.setVisible(false);
+                runningContainersTextLabel.setVisible(false);
+                stoppedContainersTextLabel.setVisible(false);
+                totalContainersText.setVisible(false);
+                runningContainersText.setVisible(false);
+                stoppedContainersText.setVisible(false);
+                imageNameLabel.setVisible(false);
+
+                startingLabel.setVisible(true);
             }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while removing image: " + e.getMessage(), imageName);
@@ -827,9 +849,9 @@ public class ImagesController implements Initializable {
             Label contentLabel = new Label(content);
             contentLabel.setTextFill(Color.WHITE);
 
-            // Create a VBox to hold the title and content Labels and style it.
+            // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);

@@ -8,5 +8,5 @@ Button:hover {
     -fx-background-color:  #F6615E;
 }
 Button:pressed {
-    -fx-background-color: #FF6360; /* Even lighter red when pressed */
+    -fx-background-color: #FF6360;
 }

@@ -438,9 +438,9 @@ public class VolumesController implements Initializable {
             Label contentLabel = new Label(content);
             contentLabel.setTextFill(Color.WHITE);
 
-            // Create a VBox to hold the title and content Labels and style it.
+            // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #EC625F; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);
