@@ -283,14 +283,14 @@ public class IndividualContainerController {
         try {
             // Create the POST request to start the selected container and send it.
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(BASE_URL + "containers/" + this.instanceScene.getId() + "/start"))
+                    .uri(new URI(BASE_URL + this.instanceScene.getId() + "/start"))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // If the container is successfully started, show a notification and update the container's status.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + this.instanceScene.getName() + " has started.");
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " has started.");
                 this.instanceScene.setStatus("running");
                 containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
             }
@@ -310,14 +310,14 @@ public class IndividualContainerController {
         try {
             // Create the POST request to stop the selected container and send it.
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(BASE_URL + "containers/" + this.instanceScene.getId() + "/stop"))
+                    .uri(new URI(BASE_URL + this.instanceScene.getId() + "/stop"))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             // If the container is successfully stopped, show a notification and update the container's status.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + this.instanceScene.getName() + " has stopped.");
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " is about to stop.");
                 this.instanceScene.setStatus("exited");
                 containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
             }
@@ -328,12 +328,20 @@ public class IndividualContainerController {
 
     /**
      * Pauses the selected container.
-     * This method sends a POST request to the WATCHDOG REST API to pause the selected container.
+     * This method checks if the container is running and if it is, then it
+     * sends a POST request to the WATCHDOG REST API to pause the selected container.
      * If the container is successfully paused, it updates the container's status and shows a notification.
      *
      * @throws ContainerActionFailedException If the container fails to pause.
      */
     public void pauseContainer() throws ContainerActionFailedException {
+        // Check if the container is already paused so to not even bother trying to pause.
+        if(this.instanceScene.getStatus().equals("paused")) {
+            // If it is paused, show a notification and return.
+            showNotification("Woof!", "Container " + this.instanceScene.getName() + " is already paused.");
+            return;
+        }
+
         try {
             // Create the POST request to pause the selected container and send it.
             HttpRequest request = HttpRequest.newBuilder()
@@ -344,8 +352,8 @@ public class IndividualContainerController {
 
             // If the container is successfully paused, show a notification and update the container's status.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + this.instanceScene.getName() + " has pause.");
-                this.instanceScene.setStatus("Paused");
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " has paused.");
+                this.instanceScene.setStatus("paused");
                 containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
             }
         } catch (Exception e) {
@@ -355,12 +363,20 @@ public class IndividualContainerController {
 
     /**
      * Unpauses the selected container.
-     * This method sends a POST request to the WATCHDOG REST API to unpause the selected container.
+     * This method checks if the container is paused and if it is, then it
+     * sends a POST request to the WATCHDOG REST API to unpause the selected container.
      * If the container is successfully unpaused, it updates the container's status and shows a notification.
      *
      * @throws ContainerActionFailedException If the container fails to unpause.
      */
     public void unpauseContainer() throws ContainerActionFailedException {
+        // Check if the container is not paused so to not even bother trying to unpause.
+        if(this.instanceScene.getStatus().equals("running")) {
+            // If it is running, show a notification and return.
+            showNotification("Woof!", "Container " + this.instanceScene.getName() + " is not paused.");
+            return;
+        }
+
         try {
             // Create the POST request to unpause the selected container and send it.
             HttpRequest request = HttpRequest.newBuilder()
@@ -371,8 +387,8 @@ public class IndividualContainerController {
 
             // If the container is successfully unpaused, show a notification and update the container's status.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + this.instanceScene.getName() + " has unpause.");
-                this.instanceScene.setStatus("Unpaused");
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " has unpause.");
+                this.instanceScene.setStatus("running");
                 containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
             }
         } catch (Exception e) {
@@ -411,7 +427,7 @@ public class IndividualContainerController {
 
                     // If the container is successfully renamed, show a notification and update the container's name.
                     if (response.statusCode() == 200) {
-                        showNotification("Container Event", "Container " + this.instanceScene.getName() + " has renamed to " + newName + ".");
+                        showNotification("Woof!", "Container " + this.instanceScene.getName() + " has renamed to " + newName + ".");
                         containerNameLabel.setText("Name: " + newName);
                         this.instanceScene.setName(newName);
                     }
