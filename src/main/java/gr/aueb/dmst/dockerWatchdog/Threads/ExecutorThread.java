@@ -12,6 +12,9 @@ import gr.aueb.dmst.dockerWatchdog.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * ExecutorThread is a class that provides methods for managing Docker containers and images.
  * It is where the actual Docker actions are performed.
@@ -23,6 +26,9 @@ public class ExecutorThread implements Runnable {
 
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
+
+    // ExecutorService instance used for thread management.
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(8);
 
     // Run method is empty because it is used only for creating the thread.
     @Override
