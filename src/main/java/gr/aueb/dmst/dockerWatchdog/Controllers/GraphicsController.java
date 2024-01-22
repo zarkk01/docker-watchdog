@@ -90,7 +90,7 @@ public class GraphicsController implements Initializable {
      * This method is called after all @FXML annotated members have been injected and
      * set up the environment for charts. After starting them,
      * it sets a timeline to update the CPU and Memory charts every 4 seconds
-     * and the PIDs chart every 30 seconds.
+     * and the PIDs chart and Allocation pie every 30 seconds.
      * Finally, it sets a hover effect for the sidebar images.
      *
      * @param arg0 The location used to resolve relative paths for the root object, or null if the location is not known.
@@ -101,8 +101,11 @@ public class GraphicsController implements Initializable {
         try {
             // Start the charts.
             startCharts();
-            // Update the CPU, Memory, and PIDs charts.
+            // Update the CPU and Memory charts.
             updateCpuMemoryCharts();
+            // Update the PIDs chart and the Pie chart.
+            updatePidsChart();
+            updatePieChart();
         } catch (Exception e) {
             // Log any errors that occur.
             logger.error(e.getMessage());
@@ -138,19 +141,6 @@ public class GraphicsController implements Initializable {
 
         // Set a hover effect for the sidebar images.
         hoveredSideBarImages();
-    }
-
-    /**
-     * Stops the Timeline if it is not null.
-     * This method is used to stop the Timeline when the user leaves the scene.
-     * Stopping the Timeline can help to reduce lag in the program.
-     */
-    public void stopTimeline(Timeline timeline) {
-        // Check if the timeline is not null
-        if (timeline != null) {
-            // If it's not null, stop the timeline
-            timeline.stop();
-        }
     }
 
     /**
@@ -482,32 +472,6 @@ public class GraphicsController implements Initializable {
     }
 
     /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     * It also stops the timelines to keep Watchdog clean and reduce lag.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Stop the timelines to reduce lag.
-        stopTimeline(timelineForPidsPie);
-        stopTimeline(timelineForCpuMemory);
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    /**
      * Changes the current scene to the Containers scene.
      * This method calls the `changeScene` method with
      * the action event that triggered the scene change
@@ -551,6 +515,7 @@ public class GraphicsController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // Get the controller of the Volumes scene and refresh the volumes so to be ready before displaying.
         VolumesController volumesController = loader.getController();
         volumesController.refreshVolumes();
 
@@ -569,5 +534,44 @@ public class GraphicsController implements Initializable {
      */
     public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "imagesScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the timelines to keep Watchdog clean and reduce lag.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the timelines to reduce lag.
+        stopTimeline(timelineForPidsPie);
+        stopTimeline(timelineForCpuMemory);
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline(Timeline timeline) {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
+        }
     }
 }
