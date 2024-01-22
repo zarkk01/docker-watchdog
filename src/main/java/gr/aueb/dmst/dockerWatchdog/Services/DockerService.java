@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.github.dockerjava.api.exception.DockerException;
 
+import gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotModifiedException;
@@ -217,7 +218,7 @@ public class DockerService {
                 // If the container is exited, start it, else don't bother
                 if (container.getStatus().equals("exited")) {
                     try {
-                        // Call the right method of Executor Thread and give the id of the container
+                        // Call the right method of Executor Thread and give the ID of the container
                         ExecutorThread.startContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                         logger.error(e.getMessage());
@@ -242,7 +243,7 @@ public class DockerService {
                 // If the container is running, stop it, else don't bother
                 if (container.getStatus().equals("running")) {
                     try {
-                        // Call the right method of Executor Thread and give the id of the container
+                        // Call the right method of Executor Thread and give the ID of the container
                         ExecutorThread.stopContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                         logger.error(e.getMessage());

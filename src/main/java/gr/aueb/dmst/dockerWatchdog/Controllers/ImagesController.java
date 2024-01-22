@@ -252,7 +252,6 @@ public class ImagesController implements Initializable {
         }
     }
 
-
     /**
      * This method is called when the user clicks on an image in the TableView.
      * It fills down info panel with the selected image's info and sets up the instancesTableView
@@ -326,6 +325,45 @@ public class ImagesController implements Initializable {
     }
 
     /**
+     * This method is called when the user clicks on an image in the TableView which is not in use from
+     * any instance. In this case, we don't need to send a GET request to the WATCHDOG REST API, and we just set 0 all
+     * the labels and circles of the down info panel.
+     *
+     * @param image
+     */
+    public void adjustZeroInfoPanel(ImageScene image) {
+        // Set the text of the label with the name of the image.
+        imageNameLabel.setText(image.getName());
+
+        // Set the text of the labels with the number of total, running, and stopped containers.
+        totalContainersText.setText("0");
+        runningContainersText.setText("0");
+        stoppedContainersText.setText("0");
+
+        // Clear the current items in the instancesTableView and add the instances.
+        instancesTableView.getItems().clear();
+        instancesTableView.setPlaceholder(new Label("No instances available for " + image.getName() + "."));
+
+        //Make the startingLabel invisible because we have instances to show.
+        startingLabel.setVisible(false);
+
+        // Make all these visible because firstly only the startingLabel which says
+        // "Click...for more information" was visible.
+        startingLabel.setVisible(false);
+        instancesTableView.setVisible(true);
+        totalContainersCircle.setVisible(true);
+        runningContainersCircle.setVisible(true);
+        stoppedContainersCircle.setVisible(true);
+        totalContainersTextLabel.setVisible(true);
+        runningContainersTextLabel.setVisible(true);
+        stoppedContainersTextLabel.setVisible(true);
+        totalContainersText.setVisible(true);
+        runningContainersText.setVisible(true);
+        stoppedContainersText.setVisible(true);
+        imageNameLabel.setVisible(true);
+    }
+
+    /**
      * This method is sending a GET request to the WATCHDOG REST API to retrieve all instances of the specific image user clicked.
      * It parses the response body to extract the details of each instance, and
      * it creates a new InstanceScene object for each instance and adds it to the list.
@@ -379,58 +417,6 @@ public class ImagesController implements Initializable {
                     false));
         }
         return instances;
-    }
-
-    /**
-     * This method is called when the user clicks on an image in the TableView which is not in use from
-     * any instance. In this case, we don't need to send a GET request to the WATCHDOG REST API, and we just set 0 all
-     * the labels and circles of the down info panel.
-     *
-     * @param image
-     */
-    public void adjustZeroInfoPanel(ImageScene image) {
-        // Set the text of the label with the name of the image.
-        imageNameLabel.setText(image.getName());
-
-        // Set the text of the labels with the number of total, running, and stopped containers.
-        totalContainersText.setText("0");
-        runningContainersText.setText("0");
-        stoppedContainersText.setText("0");
-
-        // Clear the current items in the instancesTableView and add the instances.
-        instancesTableView.getItems().clear();
-        instancesTableView.setPlaceholder(new Label("No instances available for " + image.getName() + "."));
-
-        //Make the startingLabel invisible because we have instances to show.
-        startingLabel.setVisible(false);
-
-        // Make all these visible because firstly only the startingLabel which says
-        // "Click...for more information" was visible.
-        startingLabel.setVisible(false);
-        instancesTableView.setVisible(true);
-        totalContainersCircle.setVisible(true);
-        runningContainersCircle.setVisible(true);
-        stoppedContainersCircle.setVisible(true);
-        totalContainersTextLabel.setVisible(true);
-        runningContainersTextLabel.setVisible(true);
-        stoppedContainersTextLabel.setVisible(true);
-        totalContainersText.setVisible(true);
-        runningContainersText.setVisible(true);
-        stoppedContainersText.setVisible(true);
-        imageNameLabel.setVisible(true);
-    }
-
-    /**
-     * Stops the Timeline if it is not null.
-     * This method is used to stop the Timeline when the user leaves the scene.
-     * Stopping the Timeline can help to reduce lag in the program.
-     */
-    public void stopTimeline() {
-        // Check if the timeline is not null
-        if (timeline != null) {
-            // If it's not null, stop the timeline
-            timeline.stop();
-        }
     }
 
     /**
@@ -558,6 +544,7 @@ public class ImagesController implements Initializable {
      * If the 'usedImagesCheckbox' is not selected, all images are added to the TableView.
      * The images are filtered by the text in the 'searchField' TextField.
      * Only images whose name contains the text in the 'searchField' are added to the TableView.
+     * It also refreshes the infoPanel if there is an image in it.
      */
     public void refreshImages() {
         try {
@@ -582,6 +569,11 @@ public class ImagesController implements Initializable {
                         imagesTableView.getItems().add(image);
                     }
                 }
+            }
+
+            // If there is an image in the infoPanel, refresh the infoPanel too.
+            if (imageScene != null) {
+                adjustInfoPanel(imageScene);
             }
         } catch (Exception e) {
             System.out.println("Error occurred while refreshing images: " + e.getMessage());
@@ -638,7 +630,7 @@ public class ImagesController implements Initializable {
      * This method sends a POST request to the WATCHDOG REST API to create a container from the image.
      * If the response status code is not 200 meaning we are in big trouble, an ImageActionException is thrown.
      * If the container is created successfully, the status of the image is set to "In use" and the images are refreshed.
-     * Also, a noti is displayed.
+     * Also, a notification is displayed.
      *
      * @param image The image from which the container is to be created.
      * @throws ImageActionException If an error occurs while creating the container.
@@ -661,14 +653,8 @@ public class ImagesController implements Initializable {
             // Also, show a notification.
             showNotification("Success", "Container created successfully");
             image.setStatus("In use");
-
+            // Refreshing images also will adjust the info panel of this image if it is in the info panel.
             refreshImages();
-
-            Thread.sleep(50);
-            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
-            if(imageScene != null && imageScene.getName().equals(image.getName())) {
-                adjustInfoPanel(imageScene);
-            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while creating container: " + e.getMessage(), image.getName());
         }
@@ -699,13 +685,8 @@ public class ImagesController implements Initializable {
 
             // If all containers are started successfully, refresh the images and show a notification.
             showNotification("Success", "All containers started successfully");
+            // Refreshing images also will adjust the info panel of this image if it is in the info panel.
             refreshImages();
-
-            Thread.sleep(50);
-            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
-            if(imageScene != null && imageScene.getName().equals(imageName)) {
-                adjustInfoPanel(imageScene);
-            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while starting all containers: " + e.getMessage(), imageName);
         }
@@ -736,13 +717,8 @@ public class ImagesController implements Initializable {
 
             // If all containers are stopped successfully, refresh the images and show a notification.
             showNotification("Success", "All containers stopped successfully");
+            // Refreshing images also will adjust the info panel of this image if it is in the info panel.
             refreshImages();
-
-            Thread.sleep(50);
-            // Also, if in the infoPanel, there is the same image, refresh the infoPanel.
-            if(imageScene != null && imageScene.getName().equals(imageName)) {
-                adjustInfoPanel(imageScene);
-            }
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while stopping all containers: " + e.getMessage(), imageName);
         }
@@ -768,6 +744,7 @@ public class ImagesController implements Initializable {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            // If all went good, show a notification and refresh the images.
             if (response.statusCode() == 200) {
                 showNotification("Success", "Image pulled successfully");
                 refreshImages();
@@ -785,6 +762,7 @@ public class ImagesController implements Initializable {
      * This method sends a POST request to the WATCHDOG REST API to remove the image.
      * If the response status code is not 200, an ImageActionException is thrown.
      * If the image is removed successfully, the images are refreshed and a notification is displayed.
+     * Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
      *
      * @param imageName The name of the image to be removed.
      * @throws ImageActionException If an error occurs while removing the image.
@@ -805,10 +783,11 @@ public class ImagesController implements Initializable {
 
             // If the image is removed successfully, refresh the images and show a notification.
             showNotification("Success", "Image removed successfully");
-            refreshImages();
 
             // Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
             if(imageScene != null && imageScene.getName().equals(imageName)) {
+                // Also, make imageScene null as it is not in our images from now on.
+                imageScene = null;
                 instancesTableView.setVisible(false);
                 totalContainersCircle.setVisible(false);
                 runningContainersCircle.setVisible(false);
@@ -823,6 +802,9 @@ public class ImagesController implements Initializable {
 
                 startingLabel.setVisible(true);
             }
+
+            // Refresh the images table so that the removed image is not displayed anymore.
+            refreshImages();
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while removing image: " + e.getMessage(), imageName);
         }
@@ -866,31 +848,6 @@ public class ImagesController implements Initializable {
             Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
             timelineNotification.play();
         });
-    }
-
-    /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     * It also stops the timeline to prevent our program from lagging and keep it clean.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Stop the timeline to prevent our program from lagging.
-        stopTimeline();
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
     }
 
     /**
@@ -955,5 +912,43 @@ public class ImagesController implements Initializable {
      */
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the timeline to prevent our program from lagging and keep it clean.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the timeline to prevent our program from lagging.
+        stopTimeline();
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
+        }
     }
 }

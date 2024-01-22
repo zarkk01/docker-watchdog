@@ -166,7 +166,7 @@
                      <Font name="SansSerif Regular" size="14.0" />
                   </font>
                   </Button>
-               <TextField fx:id="datetimeTextField" layoutX="10.0" layoutY="11.0" prefHeight="30.0" prefWidth="263.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #474745; -fx-text-fill: white;">
+               <TextField fx:id="datetimeTextField" layoutX="10.0" layoutY="11.0" prefHeight="30.0" prefWidth="269.0" promptText="Write a datetime (ex.  2024-01-01 23:58:16)" style="-fx-background-color: #474745; -fx-text-fill: white;">
                      <font>
                         <Font name="SansSerif Regular" size="13.0" />
                      </font></TextField>
@@ -179,7 +179,7 @@
                      <Font name="SansSerif Bold" size="19.0" />
                   </font>
                </Text>
-               <Button fx:id="clearButton" layoutX="389.0" layoutY="11.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="53.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE">
+               <Button fx:id="clearButton" layoutX="386.0" layoutY="11.0" mnemonicParsing="false" onAction="#clearInfo" prefHeight="28.0" prefWidth="60.0" style="-fx-cursor: hand;" stylesheets="@styles/buttons.css" text="Clear" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Regular" size="13.0" />
                      </font></Button>

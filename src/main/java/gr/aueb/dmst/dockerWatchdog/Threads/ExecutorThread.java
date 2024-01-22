@@ -28,7 +28,7 @@ public class ExecutorThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
 
     // ExecutorService instance used for thread management.
-    public static final ExecutorService executorService = Executors.newFixedThreadPool(8);
+    public static final ExecutorService executorService = Executors.newFixedThreadPool(9);
 
     // Run method is empty because it is used only for creating the thread.
     @Override
