@@ -236,26 +236,25 @@ public class DockerService {
      * @param imageName the name of the Docker image whose containers to start
      * */
     public void startAllContainers(String imageName) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            // Get all containers and then iterate them to start them
-            List<Instance> containers =
-                    instancesRepository.findAllByImageName(imageName);
-            for (Instance container : containers) {
-                // If the container is stopped, start it, else don't bother
-                if (container.getStatus().equals("exited")) {
-                    try {
-                        // Call the right method of Executor Thread and give the ID of the container
-                        ExecutorThread.startContainer(container.getId());
-                    } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
-                        logger.error(e.getMessage());
-                    }
-                }
-            }
-        });
+        // Get all containers and then iterate them to start them
+        List<Instance> containers =
+                instancesRepository.findAllByImageName(imageName);
+        for (Instance container : containers) {
+            // If the container is stopped, start it, else don't bother
+            if (container.getStatus().equals("exited")) {
+                    CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                        try {
+                            ExecutorThread.startContainer(container.getId());
+                        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                            logger.error(e.getMessage());
+                        }
+                    });
 
-        future.thenRun(() -> {
-            System.out.println("All containers started");
-        });
+                future.thenRun(() -> {
+                    System.out.println("Container " + container.getId() + " started");
+                });
+            }
+        }
     }
 
     /**
@@ -265,26 +264,25 @@ public class DockerService {
      * @param imageName the name of the Docker image whose containers to stop
      */
     public void stopAllContainers(String imageName) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            // Get all containers and then iterate them to stop them
-            List<Instance> containers =
-                    instancesRepository.findAllByImageName(imageName);
-            for (Instance container : containers) {
-                // If the container is running, stop it, else don't bother
-                if (container.getStatus().equals("running")) {
+        // Get all containers and then iterate them to stop them
+        List<Instance> containers =
+                instancesRepository.findAllByImageName(imageName);
+        for (Instance container : containers) {
+            // If the container is running, stop it, else don't bother
+            if (container.getStatus().equals("running")) {
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
-                        // Call the right method of Executor Thread and give the ID of the container
                         ExecutorThread.stopContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                         logger.error(e.getMessage());
                     }
-                }
-            }
-        });
+                });
 
-        future.thenRun(() -> {
-            System.out.println("All containers stopped");
-        });
+                future.thenRun(() -> {
+                    System.out.println("Container " + container.getId() + " stopped");
+                });
+            }
+        }
     }
 
     /**

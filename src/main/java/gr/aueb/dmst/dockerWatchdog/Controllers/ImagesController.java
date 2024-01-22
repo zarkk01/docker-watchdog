@@ -15,7 +15,7 @@ import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import jakarta.persistence.SecondaryTable;
+import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -42,6 +42,7 @@ import javafx.util.Duration;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.context.event.EventListener;
 
 /**
  * The ImagesController class is an FX Controller responsible for managing the Images Panel in the application.
@@ -53,6 +54,9 @@ import org.json.JSONObject;
 public class ImagesController implements Initializable {
     // Base URL for Watchdog API regarding images
     private static final String BASE_URL = "http://localhost:8080/api/images/";
+
+    // This variable is used to know which image is selected and displayed in the down info panel.
+    private ImageScene imageInfoPanel;
 
     private Stage stage;
     private Parent root;
@@ -128,9 +132,6 @@ public class ImagesController implements Initializable {
     @FXML
     private ImageView watchdogImage;
     private Timeline timeline;
-    // This variable is used to know which image is selected and displayed in the down info panel.
-    private ImageScene imageScene;
-
 
     /**
      * This method is automatically called when user navigates to Images Panel.
@@ -229,7 +230,7 @@ public class ImagesController implements Initializable {
                         if (newSelection != null) {
                             // Get the selected image and set it to the imageScene variable.
                             ImageScene selectedImage = newSelection;
-                            imageScene = selectedImage;
+                            imageInfoPanel = selectedImage;
                             try {
                                 // Depending on the usage of the image, fill down info panel with the selected image's info.
                                 if(selectedImage.getStatus().equals("In use")) {
@@ -572,8 +573,8 @@ public class ImagesController implements Initializable {
             }
 
             // If there is an image in the infoPanel, refresh the infoPanel too.
-            if (imageScene != null) {
-                adjustInfoPanel(imageScene);
+            if (imageInfoPanel != null) {
+                adjustInfoPanel(imageInfoPanel);
             }
         } catch (Exception e) {
             System.out.println("Error occurred while refreshing images: " + e.getMessage());
@@ -785,9 +786,9 @@ public class ImagesController implements Initializable {
             showNotification("Success", "Image removed successfully");
 
             // Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
-            if(imageScene != null && imageScene.getName().equals(imageName)) {
+            if(imageInfoPanel != null && imageInfoPanel.getName().equals(imageName)) {
                 // Also, make imageScene null as it is not in our images from now on.
-                imageScene = null;
+                imageInfoPanel = null;
                 instancesTableView.setVisible(false);
                 totalContainersCircle.setVisible(false);
                 runningContainersCircle.setVisible(false);
