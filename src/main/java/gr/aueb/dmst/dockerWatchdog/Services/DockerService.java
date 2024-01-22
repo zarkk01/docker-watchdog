@@ -3,11 +3,10 @@ package gr.aueb.dmst.dockerWatchdog.Services;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.dockerjava.api.exception.DockerException;
 
-import gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotModifiedException;
@@ -33,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  * SpringBoot's Service class for managing Docker instances, images, volumes
  * and changes(metrics).
  * Executes the logic of our REST API, calling the appropriate methods from
- * {@link ExecutorThread} using its ExecutorService so the actions can be performed on the background.
+ * {@link ExecutorThread} using CompletableFutures so the actions can be performed on the background.
  * Contains methods for actions like starting and stopping
  * containers and also methods for retrieving data from the database.
  */
@@ -43,9 +42,6 @@ public class DockerService {
 
     // Logger instance used mainly for errors.
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
-
-    // ExecutorService instance from ExecutorThread used for performing actions without blocking the main thread.
-    private final ExecutorService executorService = ExecutorThread.executorService;
 
     private final InstancesRepository instancesRepository;
     private final MetricsRepository metricsRepository;
@@ -77,12 +73,16 @@ public class DockerService {
      * @param containerId the ID of the Docker container to start
      */
     public void startContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " started");
         });
     }
 
@@ -93,12 +93,16 @@ public class DockerService {
      * @param containerId the ID of the Docker container to stop
      */
     public void stopContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.stopContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " stopped");
         });
     }
 
@@ -109,12 +113,16 @@ public class DockerService {
      * @param containerId the ID of the Docker container to delete
      */
     public void removeContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.removeContainer(containerId);
             } catch (ContainerNotFoundException | ContainerRunningException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " deleted");
         });
     }
 
@@ -126,12 +134,16 @@ public class DockerService {
      * @param newName the new name for the Docker container
      */
     public void renameContainer(String containerId, String newName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.renameContainer(containerId, newName);
             } catch (ContainerNotFoundException | ContainerNameConflictException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " renamed to " + newName);
         });
     }
 
@@ -142,12 +154,16 @@ public class DockerService {
      * @param containerId the ID of the Docker container to pause
      */
     public void pauseContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.pauseContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " paused");
         });
     }
 
@@ -158,12 +174,16 @@ public class DockerService {
      * @param containerId the ID of the Docker container to unpause
      */
     public void unpauseContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.unpauseContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " unpaused");
         });
     }
 
@@ -175,13 +195,17 @@ public class DockerService {
      * @param containerId the ID of the Docker container to restart
      */
     public void restartContainer(String containerId) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.stopContainer(containerId);
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container " + containerId + " restarted");
         });
     }
 
@@ -192,14 +216,16 @@ public class DockerService {
      * @param imageName the name of the Docker image to use for creating the container
      */
     public void createContainer(String imageName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.runContainer(imageName);
-            } catch (ImageNotFoundException
-                    | ContainerCreationException
-                    | ContainerNotModifiedException e) {
+            } catch (ContainerCreationException | ImageNotFoundException | ContainerNotModifiedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Container created");
         });
     }
 
@@ -210,12 +236,12 @@ public class DockerService {
      * @param imageName the name of the Docker image whose containers to start
      * */
     public void startAllContainers(String imageName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             // Get all containers and then iterate them to start them
             List<Instance> containers =
                     instancesRepository.findAllByImageName(imageName);
             for (Instance container : containers) {
-                // If the container is exited, start it, else don't bother
+                // If the container is stopped, start it, else don't bother
                 if (container.getStatus().equals("exited")) {
                     try {
                         // Call the right method of Executor Thread and give the ID of the container
@@ -226,6 +252,10 @@ public class DockerService {
                 }
             }
         });
+
+        future.thenRun(() -> {
+            System.out.println("All containers started");
+        });
     }
 
     /**
@@ -235,7 +265,7 @@ public class DockerService {
      * @param imageName the name of the Docker image whose containers to stop
      */
     public void stopAllContainers(String imageName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             // Get all containers and then iterate them to stop them
             List<Instance> containers =
                     instancesRepository.findAllByImageName(imageName);
@@ -251,6 +281,10 @@ public class DockerService {
                 }
             }
         });
+
+        future.thenRun(() -> {
+            System.out.println("All containers stopped");
+        });
     }
 
     /**
@@ -259,12 +293,16 @@ public class DockerService {
      * @param imageName the name of the Docker image to pull
      */
     public void pullImage(String imageName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.pullImage(imageName);
-            } catch (ImageNotFoundException | DockerException | InterruptedException e) {
+            } catch (DockerException | ImageNotFoundException | InterruptedException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Image pulled");
         });
     }
 
@@ -274,12 +312,16 @@ public class DockerService {
      * @param imageName the name of the Docker image to remove
      */
     public void removeImage(String imageName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.removeImage(imageName);
-            } catch (ImageNotFoundException e) {
+            } catch (DockerException | ImageNotFoundException e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Image removed");
         });
     }
 
@@ -386,12 +428,16 @@ public class DockerService {
      * @param volumeName the name of the Docker volume to remove
      */
     public void removeVolume(String volumeName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.removeVolume(volumeName);
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Volume " + volumeName + " removed");
         });
     }
 
@@ -401,12 +447,16 @@ public class DockerService {
      * @param volumeName the name of the Docker volume to create
      */
     public void createVolume(String volumeName) {
-        executorService.submit(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 ExecutorThread.createVolume(volumeName);
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
+        });
+
+        future.thenRun(() -> {
+            System.out.println("Volume " + volumeName + " created");
         });
     }
 }
