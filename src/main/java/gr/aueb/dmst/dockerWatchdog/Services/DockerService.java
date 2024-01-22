@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.github.dockerjava.api.exception.DockerException;
 
+import gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotModifiedException;
@@ -210,76 +211,102 @@ public class DockerService {
     }
 
     /**
-     * Creates a Docker container with the given image name, calling
-     * the right method of Executor Thread.
+     * Creates a Docker container with the given image name.
+     * This method uses a CompletableFuture to perform the container creation operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Once the container creation operation is complete, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to use for creating the container
      */
     public void createContainer(String imageName) {
+        // Create a CompletableFuture to run the container creation operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's runContainer method to create the Docker container
                 ExecutorThread.runContainer(imageName);
             } catch (ContainerCreationException | ImageNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container creation operation
                 logger.error(e.getMessage());
             }
         });
 
+        // Once the CompletableFuture is complete, display a notification to the user
         future.thenRun(() -> {
-            System.out.println("Container created");
+            // Call the ImagesController's showNotification method to display the notification
+            ImagesController.showNotification("Woof!", "Container created from " + imageName);
         });
     }
 
+
     /**
-     * Starts all Docker containers with the given image name
-     * searching for them in the database checking if some of them are already running.
+     * Starts all Docker containers associated with the given image name.
+     * This method retrieves all containers associated with the image from the database,
+     * and then iterates over them to start each one that is currently stopped.
+     * The container start operation is performed asynchronously using a CompletableFuture,
+     * ensuring that the main thread is not blocked.
+     * Once a container is started, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image whose containers to start
-     * */
+     */
     public void startAllContainers(String imageName) {
-        // Get all containers and then iterate them to start them
-        List<Instance> containers =
-                instancesRepository.findAllByImageName(imageName);
-        for (Instance container : containers) {
-            // If the container is stopped, start it, else don't bother
-            if (container.getStatus().equals("exited")) {
-                    CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                        try {
-                            ExecutorThread.startContainer(container.getId());
-                        } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
-                            logger.error(e.getMessage());
-                        }
-                    });
+        // Get all containers associated with the image from the database
+        List<Instance> containers = instancesRepository.findAllByImageName(imageName);
 
+        // Iterate over the containers
+        for (Instance container : containers) {
+            // If the container is stopped, start it
+            if (container.getStatus().equals("exited")) {
+                CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                    try {
+                        // Call the ExecutorThread's startContainer method to start the Docker container
+                        ExecutorThread.startContainer(container.getId());
+                    } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                        // Log any exceptions that occur during the container start operation
+                        logger.error(e.getMessage());
+                    }
+                });
+
+                // Once the CompletableFuture is complete, display a notification to the user
                 future.thenRun(() -> {
-                    System.out.println("Container " + container.getId() + " started");
+                    // Call the ImagesController's showNotification method to display the notification
+                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " started");
                 });
             }
         }
     }
 
     /**
-     * Stops all Docker containers with the given image name
-     * searching for them in the database checking if some of them are already stopped.
+     * Stops all Docker containers associated with the given image name.
+     * This method retrieves all containers associated with the image from the database,
+     * and then iterates over them to stop each one that is currently running.
+     * The container stop operation is performed asynchronously using a CompletableFuture,
+     * ensuring that the main thread is not blocked.
+     * Once a container is stopped, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image whose containers to stop
      */
     public void stopAllContainers(String imageName) {
-        // Get all containers and then iterate them to stop them
-        List<Instance> containers =
-                instancesRepository.findAllByImageName(imageName);
+        // Get all containers associated with the image from the database
+        List<Instance> containers = instancesRepository.findAllByImageName(imageName);
+
+        // Iterate over the containers
         for (Instance container : containers) {
-            // If the container is running, stop it, else don't bother
+            // If the container is running, stop it
             if (container.getStatus().equals("running")) {
                 CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
+                        // Call the ExecutorThread's stopContainer method to stop the Docker container
                         ExecutorThread.stopContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                        // Log any exceptions that occur during the container stop operation
                         logger.error(e.getMessage());
                     }
                 });
 
+                // Once the CompletableFuture is complete, display a notification to the user
                 future.thenRun(() -> {
-                    System.out.println("Container " + container.getId() + " stopped");
+                    // Call the ImagesController's showNotification method to display the notification
+                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " stopped");
                 });
             }
         }
@@ -287,39 +314,55 @@ public class DockerService {
 
     /**
      * Pulls a Docker image with the given name.
+     * This method uses a CompletableFuture to perform the image pulling operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Once the image pulling operation is complete, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to pull
      */
     public void pullImage(String imageName) {
+        // Create a CompletableFuture to run the image pulling operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's pullImage method to pull the Docker image
                 ExecutorThread.pullImage(imageName);
             } catch (DockerException | ImageNotFoundException | InterruptedException e) {
+                // Log any exceptions that occur during the image pulling operation
                 logger.error(e.getMessage());
             }
         });
 
+        // Once the CompletableFuture is complete, display a notification to the user
         future.thenRun(() -> {
-            System.out.println("Image pulled");
+            // Call the ImagesController's showNotification method to display the notification
+            ImagesController.showNotification("Woof!", imageName + " pulled");
         });
     }
 
     /**
-     * Removes a Docker image with the given name.
+     * Asynchronously removes a Docker image with the given name.
+     * This method uses a CompletableFuture to perform the image removal operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Once the image removal operation is complete, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to remove
      */
     public void removeImage(String imageName) {
+        // Create a CompletableFuture to run the image removal operation in the background.
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's removeImage method to remove the Docker image.
                 ExecutorThread.removeImage(imageName);
             } catch (DockerException | ImageNotFoundException e) {
+                // Log any exceptions that occur during the image removal operation.
                 logger.error(e.getMessage());
             }
         });
 
+        // Once the CompletableFuture is complete, display a notification to the user.
         future.thenRun(() -> {
-            System.out.println("Image removed");
+            // Call the ImagesController's showNotification method to display the notification.
+            ImagesController.showNotification("Woof!",imageName + " removed");
         });
     }
 

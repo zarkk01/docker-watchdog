@@ -103,6 +103,7 @@
             <Pane prefHeight="123.0" prefWidth="155.0">
                <children>
                   <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
+                  <VBox fx:id="notificationBox" layoutY="27.0" prefHeight="23.0" prefWidth="154.0" />
                </children>
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
@@ -254,7 +255,6 @@
                   <Image url="@images/watchdog.png" />
                </image>
             </ImageView>
-            <VBox fx:id="notificationBox" prefHeight="26.0" prefWidth="494.0" />
          </children>
       </HBox>
    </top>

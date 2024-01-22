@@ -13,9 +13,9 @@ import java.io.IOException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageActionException;
 import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
+
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -42,7 +42,6 @@ import javafx.util.Duration;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.context.event.EventListener;
 
 /**
  * The ImagesController class is an FX Controller responsible for managing the Images Panel in the application.
@@ -86,8 +85,11 @@ public class ImagesController implements Initializable {
     private TextField pullImageTextField;
     @FXML
     private TextField searchField;
+
+    // This is the VBox that contains the notifications.
     @FXML
     private VBox notificationBox;
+    private static VBox notificationBoxStatic;
 
     @FXML
     private Button containersButton;
@@ -159,6 +161,8 @@ public class ImagesController implements Initializable {
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage, woof);
+
+            ImagesController.notificationBoxStatic = this.notificationBox;
 
             // Set up the cell factories for the TableView columns that contain buttons.
             createContainerCollumn.setCellFactory(createButtonCellFactory(
@@ -248,6 +252,9 @@ public class ImagesController implements Initializable {
             timeline = new Timeline(new KeyFrame(Duration.seconds(1.5), evt -> refreshImages()));
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
+
+            // Set up the notificationBoxStatic variable so that we can use it in the DockerService class.
+            notificationBoxStatic = this.notificationBox;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -651,8 +658,6 @@ public class ImagesController implements Initializable {
             }
 
             // If the container is created successfully, set the status of the image to "In use" and refresh the images.
-            // Also, show a notification.
-            showNotification("Success", "Container created successfully");
             image.setStatus("In use");
             // Refreshing images also will adjust the info panel of this image if it is in the info panel.
             refreshImages();
@@ -684,9 +689,8 @@ public class ImagesController implements Initializable {
                 throw new ImageActionException("Starting all containers failed", imageName);
             }
 
-            // If all containers are started successfully, refresh the images and show a notification.
-            showNotification("Success", "All containers started successfully");
-            // Refreshing images also will adjust the info panel of this image if it is in the info panel.
+            // If all containers are stopped successfully, refresh the images.
+            // It will also adjust the info panel of this image if it is in the info panel.
             refreshImages();
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while starting all containers: " + e.getMessage(), imageName);
@@ -697,7 +701,7 @@ public class ImagesController implements Initializable {
      * Stops all containers created from the given image.
      * This method sends a POST request to the WATCHDOG REST API to stop all containers created from the image.
      * If the response status code is not 200, an ImageActionException is thrown.
-     * If all containers are stopped successfully, the images are refreshed and a noti is displayed.
+     * If all containers are stopped successfully, the images are refreshed.
      *
      * @param imageName The name of the image from which the containers were created.
      * @throws ImageActionException If an error occurs while stopping the containers.
@@ -716,9 +720,8 @@ public class ImagesController implements Initializable {
                 throw new ImageActionException("Stopping all containers failed", imageName);
             }
 
-            // If all containers are stopped successfully, refresh the images and show a notification.
-            showNotification("Success", "All containers stopped successfully");
-            // Refreshing images also will adjust the info panel of this image if it is in the info panel.
+            // If all containers are stopped successfully, refresh the images.
+            // It will also adjust the info panel of this image if it is in the info panel.
             refreshImages();
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while stopping all containers: " + e.getMessage(), imageName);
@@ -729,7 +732,7 @@ public class ImagesController implements Initializable {
      * Pulls the given image from the Docker registry.
      * This method sends a POST request to the WATCHDOG REST API to pull the image.
      * If the response status code is not 200, an ImageActionException is thrown.
-     * If the image is pulled successfully, the images are refreshed and a notification is displayed.
+     * If the image is pulled successfully, the images are refreshed.
      *
      * @throws ImageActionException If an error occurs while pulling the image.
      */
@@ -745,9 +748,8 @@ public class ImagesController implements Initializable {
                     .build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // If all went good, show a notification and refresh the images.
+            // If all went good, refresh the images.
             if (response.statusCode() == 200) {
-                showNotification("Success", "Image pulled successfully");
                 refreshImages();
             } else {
                 // If the response status code is not 200, throw an ImageActionException.
@@ -762,7 +764,7 @@ public class ImagesController implements Initializable {
      * Removes the given image.
      * This method sends a POST request to the WATCHDOG REST API to remove the image.
      * If the response status code is not 200, an ImageActionException is thrown.
-     * If the image is removed successfully, the images are refreshed and a notification is displayed.
+     * If the image is removed successfully, the images are refreshed.
      * Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
      *
      * @param imageName The name of the image to be removed.
@@ -781,9 +783,6 @@ public class ImagesController implements Initializable {
             if (response.statusCode() != 200) {
                 throw new ImageActionException("Image removal failed", imageName);
             }
-
-            // If the image is removed successfully, refresh the images and show a notification.
-            showNotification("Success", "Image removed successfully");
 
             // Also, if in the infoPanel, there is the that image, make all info invisible and show the startingLabel.
             if(imageInfoPanel != null && imageInfoPanel.getName().equals(imageName)) {
@@ -812,14 +811,15 @@ public class ImagesController implements Initializable {
     }
 
     /**
-     * Displays a notification with the given title and content.
-     * It helps us keep user informed about events that occur in images.
-     * After 3 seconds, the Popup is automatically hidden.
+     * Displays a notification to the user.
+     * This method is called from DockerService when an action has been performed.
+     * The method creates a notification with the given title and content and displays it on the screen.
+     * The notification fades out after a certain period of time.
      *
      * @param title The title of the notification.
      * @param content The content of the notification.
      */
-    public void showNotification(String title, String content) {
+    public static void showNotification(String title, String content) {
         Platform.runLater(() -> {
             // Create a new Popup for the notification.
             Popup notification = new Popup();
@@ -834,20 +834,28 @@ public class ImagesController implements Initializable {
 
             // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);
 
             // Calculate the position of the Popup on the screen.
-            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
 
             // Show the Popup on the screen at the calculated position.
-            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+            notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
 
-            // Create a Timeline that will hide the Popup after 3 seconds.
-            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            // Create a FadeTransition for the VBox.
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.0);
+
+            // Create a Timeline that will start the FadeTransition after 3 seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> fadeTransition.play()));
             timelineNotification.play();
+
+            // Hide the Popup when the FadeTransition is finished.
+            fadeTransition.setOnFinished(event -> notification.hide());
         });
     }
 
