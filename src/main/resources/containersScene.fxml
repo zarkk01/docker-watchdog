@@ -101,6 +101,7 @@
             <Pane prefHeight="123.0" prefWidth="155.0">
                <children>
                   <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
+               <VBox fx:id="notificationBox" alignment="TOP_RIGHT" layoutX="1.0" layoutY="62.0" prefHeight="54.0" prefWidth="153.0" />
                </children>
             </Pane>
             <Pane prefHeight="306.0" prefWidth="155.0">
@@ -209,7 +210,6 @@
                         <URL value="@styles/hoverRunningPane.css" />
                      </stylesheets>
                </Pane>
-               <VBox fx:id="notificationBox" alignment="TOP_RIGHT" layoutX="381.0" layoutY="192.0" prefHeight="54.0" prefWidth="235.0" />
                   <Text fill="#b8bec3" layoutX="260.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Running Containers" wrappingWidth="190.8941650390625">
                      <font>
                         <Font name="SansSerif Bold" size="19.0" />

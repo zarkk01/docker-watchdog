@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.github.dockerjava.api.exception.DockerException;
 
+import gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController;
 import gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
@@ -83,7 +84,7 @@ public class DockerService {
         });
 
         future.thenRun(() -> {
-            System.out.println("Container " + containerId + " started");
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started");
         });
     }
 
@@ -103,7 +104,7 @@ public class DockerService {
         });
 
         future.thenRun(() -> {
-            System.out.println("Container " + containerId + " stopped");
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped");
         });
     }
 
@@ -123,7 +124,7 @@ public class DockerService {
         });
 
         future.thenRun(() -> {
-            System.out.println("Container " + containerId + " deleted");
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. removed");
         });
     }
 
@@ -184,7 +185,7 @@ public class DockerService {
         });
 
         future.thenRun(() -> {
-            System.out.println("Container " + containerId + " unpaused");
+            System.out.println("Container " + containerId.substring(0,5) + ".. unpaused");
         });
     }
 
@@ -206,7 +207,7 @@ public class DockerService {
         });
 
         future.thenRun(() -> {
-            System.out.println("Container " + containerId + " restarted");
+            System.out.println("Container " + containerId.substring(0,5) + ".. restarted");
         });
     }
 
@@ -236,7 +237,6 @@ public class DockerService {
             ImagesController.showNotification("Woof!", "Container created from " + imageName);
         });
     }
-
 
     /**
      * Starts all Docker containers associated with the given image name.

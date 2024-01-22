@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
+import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -87,6 +88,7 @@ public class ContainersController implements Initializable {
 
     @FXML
     private VBox notificationBox;
+    private static VBox notificationBoxStatic;
 
     @FXML
     private TextField searchField;
@@ -171,6 +173,8 @@ public class ContainersController implements Initializable {
                 refreshInstances();
             });
 
+            // Set the notificationBoxStatic to the notificationBox.
+            notificationBoxStatic = this.notificationBox;
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);
@@ -467,7 +471,7 @@ public class ContainersController implements Initializable {
      * Starts a Docker container.
      * This method sends a POST request to the WATCHDOG REST API to start a Docker container with a given ID.
      * If the container is currently paused, it sends a POST request to unpause the container instead.
-     * After the container is started or unpaused, it shows a notification and refreshes the instances table view.
+     * After the container is started or unpaused, it refreshes the instances table view.
      *
      * @param instance The InstanceScene object representing the Docker container to be started.
      * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
@@ -482,35 +486,31 @@ public class ContainersController implements Initializable {
                     .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/unpause"))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
-
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
+            // If the response status code is 200 (meaning the request was successful), refresh the instances.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + instance.getName() + " has unpaused.");
+                refreshInstances();
             }
-            refreshInstances();
         } else {
             // If the container is not paused, send a POST request to the WATCHDOG REST API to start the container.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/start"))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
-
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
+            // If the response status code is 200 (meaning the request was successful), refresh the instances.
             if (response.statusCode() == 200) {
-                showNotification("Container Event", "Container " + instance.getName() + " has started.");
+                refreshInstances();
             }
-            refreshInstances();
         }
     }
 
     /**
      * Stops a Docker container.
      * This method sends a POST request to the WATCHDOG REST API to stop a Docker container with a given ID.
-     * After the container is stopped, it shows a notification and refreshes the instances table view.
+     * After the container is stopped, it refreshes the instances table view.
      *
      * @param instance The InstanceScene object representing the Docker container to be stopped.
      * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
@@ -523,15 +523,13 @@ public class ContainersController implements Initializable {
                 .uri(new URI("http://localhost:8080/api/containers/" + instance.getId() + "/stop"))
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
-
         // Send the request and get the response.
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // If the response status code is 200 (meaning the request was successful), show a notification and refresh the instances.
+        // If the response status code is 200 (meaning the request was successful), refresh the instances.
         if (response.statusCode() == 200) {
-            showNotification("Container Event", "Container " + instance.getName() + " has stopped.");
+            refreshInstances();
         }
-        refreshInstances();
     }
 
     /**
@@ -831,32 +829,31 @@ public class ContainersController implements Initializable {
 
             // Iterate over the checkbox states map.
             for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
-                String id = entry.getKey();
+                String containerId = entry.getKey();
                 boolean isSelected = entry.getValue();
 
                 if (isSelected) {
                     // Send a POST request to stop the container
                     HttpRequest request1 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/stop"))
+                            .uri(new URI("http://localhost:8080/api/containers/" + containerId + "/stop"))
                             .POST(HttpRequest.BodyPublishers.noBody())
                             .build();
-
                     client.send(request1, HttpResponse.BodyHandlers.ofString());
 
                     // Send a POST request to delete the container
                     HttpRequest request2 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + id + "/delete"))
+                            .uri(new URI("http://localhost:8080/api/containers/" + containerId + "/delete"))
                             .POST(HttpRequest.BodyPublishers.noBody())
                             .build();
-
                     client.send(request2, HttpResponse.BodyHandlers.ofString());
 
-                    checkboxStates.put(id, false);
+                    checkboxStates.put(containerId, false);
                 }
             }
             // Update the checkbox states map.
             updateCheckboxStates(checkboxStates);
 
+            // If any container is still selected after the removal, make the remove button visible.
             if (checkboxStates.containsValue(true)) {
                 removeButton.visibleProperty().setValue(true);
             } else {
@@ -949,14 +946,16 @@ public class ContainersController implements Initializable {
     }
 
     /**
-     * Displays a notification with the given title and content.
-     * It helps us keep user informed about events that occur in containers.
-     * After 3 seconds, the Popup is automatically hidden.
+     * Displays a notification about start, stop or remove container(s).
+     * This method is static because it is called by DockerService when the action has been performed.
+     * It creates a new Popup for the notification and Labels for the title and content.
+     * The Labels are added to a VBox, which is then added to the Popup.
+     * The Popup is displayed on the screen at a calculated position.
      *
      * @param title The title of the notification.
      * @param content The content of the notification.
      */
-    public void showNotification(String title, String content) {
+    public static void showNotification(String title, String content) {
         Platform.runLater(() -> {
             // Create a new Popup for the notification.
             Popup notification = new Popup();
@@ -969,22 +968,30 @@ public class ContainersController implements Initializable {
             Label contentLabel = new Label(content);
             contentLabel.setTextFill(Color.WHITE);
 
-            // Create a VBox to hold the title and content Labels and style it.
+            // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);
 
             // Calculate the position of the Popup on the screen.
-            Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
+            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
 
             // Show the Popup on the screen at the calculated position.
-            notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
+            notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
 
-            // Create a Timeline that will hide the Popup after 3 seconds.
-            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
-            timeline.play();
+            // Create a FadeTransition for the VBox.
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.0);
+
+            // Create a Timeline that will start the FadeTransition after 3 seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(4), evt -> fadeTransition.play()));
+            timelineNotification.play();
+
+            // Hide the Popup when the FadeTransition is finished.
+            fadeTransition.setOnFinished(event -> notification.hide());
         });
     }
 
