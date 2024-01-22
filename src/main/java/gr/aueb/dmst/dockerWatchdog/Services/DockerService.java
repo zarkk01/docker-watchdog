@@ -183,7 +183,7 @@ public class DockerService {
 
     /**
      * Starts all Docker containers with the given image name
-     * searching for them in the database.
+     * searching for them in the database checking if some of them are already running.
      *
      * @param imageName the name of the Docker image whose containers to start
      * */
@@ -192,18 +192,20 @@ public class DockerService {
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
-            try {
-                System.out.println(container.getId());
-                ExecutorThread.startContainer(container.getId());
-            } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
-                logger.error(e.getMessage());
+            if (container.getStatus().equals("exited")) {
+                System.out.println("Starting " + container.getId());
+                try {
+                    ExecutorThread.startContainer(container.getId());
+                } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                    logger.error(e.getMessage());
+                }
             }
         }
     }
 
     /**
      * Stops all Docker containers with the given image name
-     * searching for them in the database.
+     * searching for them in the database checking if some of them are already stopped.
      *
      * @param imageName the name of the Docker image whose containers to stop
      */
@@ -212,10 +214,13 @@ public class DockerService {
         List<Instance> containers =
                 instancesRepository.findAllByImageName(imageName);
         for (Instance container : containers) {
-            try {
-                ExecutorThread.stopContainer(container.getId());
-            } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
-                logger.error(e.getMessage());
+            if (container.getStatus().equals("running")) {
+                System.out.println("Stoppiing " + container.getId());
+                try {
+                    ExecutorThread.stopContainer(container.getId());
+                } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                    logger.error(e.getMessage());
+                }
             }
         }
     }
