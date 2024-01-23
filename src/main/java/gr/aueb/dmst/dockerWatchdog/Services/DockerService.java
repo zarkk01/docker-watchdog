@@ -138,7 +138,7 @@ public class DockerService {
      */
     public void removeContainer(String containerId) {
         // Create a CompletableFuture to run the container delete operation in the background
-        CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 // Call the ExecutorThread's removeContainer method to delete the Docker container
                 ExecutorThread.removeContainer(containerId);
@@ -146,6 +146,11 @@ public class DockerService {
                 // Log any exceptions that occur during the container delete operation
                 logger.error(e.getMessage());
             }
+        });
+
+        // Once the CompletableFuture is complete, display a notification to the user
+        future.thenRun(() -> {
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. removed.", 3);
         });
     }
 
@@ -159,7 +164,7 @@ public class DockerService {
      * @param newName the new name for the Docker container
      */
     public void renameContainer(String containerId, String newName) {
-        // Create a CompletableFuture to run the container rename operation in the background
+        // Use a CompletableFuture to run the container rename operation in the background
         CompletableFuture.runAsync(() -> {
             try {
                 // Call the ExecutorThread's renameContainer method to rename the Docker container
@@ -180,7 +185,7 @@ public class DockerService {
      * @param containerId the ID of the Docker container to pause
      */
     public void pauseContainer(String containerId) {
-        // Create a CompletableFuture to run the container pause operation in the background
+        // Use a CompletableFuture to run the container pause operation in the background
         CompletableFuture.runAsync(() -> {
             try {
                 // Call the ExecutorThread's pauseContainer method to pause the Docker container
@@ -201,7 +206,7 @@ public class DockerService {
      * @param containerId the ID of the Docker container to unpause
      */
     public void unpauseContainer(String containerId) {
-        // Create a CompletableFuture to run the container unpause operation in the background
+        // Use a CompletableFuture to run the container unpause operation in the background
         CompletableFuture.runAsync(() -> {
             try {
                 // Call the ExecutorThread's unpauseContainer method to unpause the Docker container
@@ -223,7 +228,7 @@ public class DockerService {
      * @param containerId the ID of the Docker container to restart
      */
     public void restartContainer(String containerId) {
-        // Create a CompletableFuture to run the container restart operation in the background
+        // Use a CompletableFuture to run the container restart operation in the background
         CompletableFuture.runAsync(() -> {
             try {
                 // Call the ExecutorThread's stopContainer method to stop the Docker container

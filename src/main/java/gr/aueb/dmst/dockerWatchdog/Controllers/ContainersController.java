@@ -1071,7 +1071,7 @@ public class ContainersController implements Initializable {
             notification.getContent().add(box);
 
             // Calculate the position of the Popup on the screen.
-            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
+            Point2D point = notificationBoxStatic.localToScreen(0, 0);
 
             // Show the Popup on the screen at the calculated position.
             // notificationBoxStatic can be null if user has changed panels.
