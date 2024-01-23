@@ -12,9 +12,6 @@ import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -42,6 +39,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -179,6 +179,52 @@ public class ContainersController implements Initializable {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Sets the hover effect for the sidebar images.
+     * This method applies a hover effect to the sidebar buttons.
+     * The `setHoverEffect` method takes a button and two image paths as parameters:
+     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     */
+    private void hoveredSideBarImages() {
+        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
+        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
+        setHoverEffect(kubernetesButton, "/images/kubernetesGrey.png", "/images/kubernetes.png");
+        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
+    }
+
+    /**
+     * Sets the hover effect for a button.
+     * This method applies a hover effect to our 4 buttons in the sidebar.
+     * When the mouse pointer hovers over the button,
+     * the image of the button changes to a different image to indicate that the button is being hovered over.
+     * When the mouse pointer moves away from the button,
+     * the image of the button changes back to the original image.
+     *
+     * @param button The button to which the hover effect is to be applied.
+     * @param originalImagePath The path to the original image of the button.
+     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
+     */
+    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
+        // Load the original image and the hovered image.
+        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
+        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
+
+        // Set the original image as the button's graphic.
+        ((ImageView) button.getGraphic()).setImage(originalImage);
+
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        button.setOnMouseEntered(event -> {
+            button.getStyleClass().add("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(hoveredImage);
+        });
+
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        button.setOnMouseExited(event -> {
+            button.getStyleClass().remove("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(originalImage);
+        });
     }
 
     /**
@@ -455,19 +501,6 @@ public class ContainersController implements Initializable {
     };
 
     /**
-     * Stops the Timeline if it is not null.
-     * This method is used to stop the Timeline when the user leaves the scene.
-     * Stopping the Timeline can help to reduce lag in the program.
-     */
-    public void stopTimeline() {
-        // Check if the timeline is not null
-        if (timeline != null) {
-            // If it's not null, stop the timeline
-            timeline.stop();
-        }
-    }
-
-    /**
      * Starts a Docker container.
      * This method sends a POST request to the WATCHDOG REST API to start a Docker container with a given ID.
      * If the container is currently paused, it sends a POST request to unpause the container instead.
@@ -528,83 +561,87 @@ public class ContainersController implements Initializable {
 
         // If the response status code is 200 (meaning the request was successful), refresh the instances.
         if (response.statusCode() == 200) {
+            // Also, show a notification to the user to wait a few seconds for the container to stop.
+            showNotification("Be patient." , "Container is stopping.", 4);
             refreshInstances();
         }
     }
 
     /**
-     * Retrieves the maximum metric ID.
-     * This method sends a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
-     * The maximum metric ID represents the highest number of changes (metrics) that have been recorded for the Docker containers.
-     * If the response body is empty, it returns 1. Otherwise, it parses the response body to an integer and returns it.
-     *
-     * @return The maximum metric ID.
-     * @throws Exception If an error occurs when sending or receiving the HTTP request.
+     * Removes the selected containers.
+     * This method iterates over the checkboxStates map, which holds the container ID and its selection state.
+     * If a container is selected (checkbox state is true), it sends a POST request to the WATCHDOG REST API to delete the container.
+     * After all selected containers are removed, it refreshes the instances table view.
+     * If any container is still selected after the removal, it makes the remove button visible.
+     * If no container is selected, it hides the remove button.
      */
-    public Integer getMaxMetricId() throws Exception {
-        // Send a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://localhost:8080/api/containers/lastMetricId"))
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+    public void removeSelectedContainers() {
+        try {
+            Map<String, Boolean> checkboxStates = getCheckboxStates();
 
-        // Parse the response body to extract the maximum metric ID.
-        String responseBody = response.body();
-        if (responseBody.isEmpty()) {
-            return 1;
-        } else {
-            return Integer.parseInt(responseBody);
+            // Iterate over the checkbox states map.
+            for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
+                String containerId = entry.getKey();
+                boolean isSelected = entry.getValue();
+
+                if (isSelected) {
+                    // Send a POST request to delete the container
+                    HttpRequest request2 = HttpRequest.newBuilder()
+                            .uri(new URI("http://localhost:8080/api/containers/" + containerId + "/delete"))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build();
+                    client.send(request2, HttpResponse.BodyHandlers.ofString());
+
+                    checkboxStates.put(containerId, false);
+                }
+            }
+            // Update the checkbox states map.
+            updateCheckboxStates(checkboxStates);
+
+            // If any container is still selected after the removal, make the remove button visible.
+            if (checkboxStates.containsValue(true)) {
+                removeButton.visibleProperty().setValue(true);
+            } else {
+                removeButton.visibleProperty().setValue(false);
+            }
+
+            // Refresh the instances table view.
+            refreshInstances();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     /**
-     * Handles the upload of a Docker Compose file.
-     * This method opens a FileChooser dialog that allows the user to select a Docker Compose file (.yaml) from their file system.
-     * If a file is selected, it gets the absolute path of the file and loads the Compose scene.
-     * The path of the selected file is then passed to the ComposeController.
-     * If no file is selected, the method does nothing.
+     * Updates the checkbox states map with new states.
+     * This method clears the existing checkboxStates map and puts all entries from the newStates map into it.
      *
-     * @param actionEvent The event that triggered the file upload.
+     * @param newStates The map containing the new checkbox states.
      */
-    public void handleUploadFile(ActionEvent actionEvent) {
-        // Create a FileChooser.
-        FileChooser fileChooser = new FileChooser();
+    private void updateCheckboxStates(Map<String, Boolean> newStates) {
+        checkboxStates.clear();
+        checkboxStates.putAll(newStates);
+    }
 
-        // Set the extension filter to .yaml files.
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
-        fileChooser.getExtensionFilters().add(extFilter);
+    /**
+     * Returns the checkbox states map.
+     * This map holds the container ID and its selection state.
+     *
+     * @return The checkbox states map.
+     */
+    private Map<String, Boolean> getCheckboxStates() {
+        return checkboxStates;
+    }
 
-        // Open the FileChooser dialog.
-        Stage stage = (Stage) uploadButton.getScene().getWindow();
-        File file = fileChooser.showOpenDialog(stage);
-
-        // If a file is selected, load the Compose scene and pass the file path to the ComposeController.
-        if (file != null) {
-            try {
-                // Get the absolute path of the selected Docker Compose file.
-                String dockerComposeFilePath = file.getAbsolutePath();
-
-                // Create a new FXMLLoader and load the Compose scene from the FXML file.
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/composeScene.fxml"));
-                Parent root = loader.load();
-
-                // Get the controller for the Compose scene.
-                ComposeController controller = loader.getController();
-
-                // Pass the path of the Docker Compose file to the ComposeController.
-                controller.setYamlFilePath(dockerComposeFilePath);
-
-                // Get the current stage from the action event source.
-                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-
-                // Set the Compose scene as the root of the stage and display it.
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    /**
+     * Returns the checkbox state of a container by its ID.
+     * If the container ID does not exist in the checkboxStates map, it returns false.
+     *
+     * @param id The ID of the container.
+     * @return The checkbox state of the container.
+     */
+    private boolean getCheckboxStateById(String id) {
+        return checkboxStates.getOrDefault(id, false);
     }
 
     /**
@@ -748,6 +785,32 @@ public class ContainersController implements Initializable {
     }
 
     /**
+     * Retrieves the maximum metric ID.
+     * This method sends a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
+     * The maximum metric ID represents the highest number of changes (metrics) that have been recorded for the Docker containers.
+     * If the response body is empty, it returns 1. Otherwise, it parses the response body to an integer and returns it.
+     *
+     * @return The maximum metric ID.
+     * @throws Exception If an error occurs when sending or receiving the HTTP request.
+     */
+    public Integer getMaxMetricId() throws Exception {
+        // Send a GET request to the WATCHDOG REST API to retrieve the maximum metric ID.
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://localhost:8080/api/containers/lastMetricId"))
+                .GET()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Parse the response body to extract the maximum metric ID.
+        String responseBody = response.body();
+        if (responseBody.isEmpty()) {
+            return 1;
+        } else {
+            return Integer.parseInt(responseBody);
+        }
+    }
+
+    /**
      * Displays the state of the Docker cluster at a given datetime.
      * This method is called when the user inputs a datetime
      * and wants to see the state of the Docker cluster at that time.
@@ -816,208 +879,52 @@ public class ContainersController implements Initializable {
     }
 
     /**
-     * Removes the selected containers.
-     * This method iterates over the checkboxStates map, which holds the container ID and its selection state.
-     * If a container is selected (checkbox state is true), it sends a POST request to the WATCHDOG REST API to stop and delete the container.
-     * After all selected containers are removed, it refreshes the instances table view.
-     * If any container is still selected after the removal, it makes the remove button visible.
-     * If no container is selected, it hides the remove button.
+     * Handles the upload of a Docker Compose file.
+     * This method opens a FileChooser dialog that allows the user to select a Docker Compose file (.yaml) from their file system.
+     * If a file is selected, it gets the absolute path of the file and loads the Compose scene.
+     * The path of the selected file is then passed to the ComposeController.
+     * If no file is selected, the method does nothing.
+     *
+     * @param actionEvent The event that triggered the file upload.
      */
-    public void removeSelectedContainers() {
-        try {
-            Map<String, Boolean> checkboxStates = getCheckboxStates();
+    public void handleUploadFile(ActionEvent actionEvent) {
+        // Create a FileChooser.
+        FileChooser fileChooser = new FileChooser();
 
-            // Iterate over the checkbox states map.
-            for (Map.Entry<String, Boolean> entry : checkboxStates.entrySet()) {
-                String containerId = entry.getKey();
-                boolean isSelected = entry.getValue();
+        // Set the extension filter to .yaml files.
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("YAML files (*.yaml)", "*.yaml");
+        fileChooser.getExtensionFilters().add(extFilter);
 
-                if (isSelected) {
-                    // Send a POST request to stop the container
-                    HttpRequest request1 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + containerId + "/stop"))
-                            .POST(HttpRequest.BodyPublishers.noBody())
-                            .build();
-                    client.send(request1, HttpResponse.BodyHandlers.ofString());
+        // Open the FileChooser dialog.
+        Stage stage = (Stage) uploadButton.getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
 
-                    // Send a POST request to delete the container
-                    HttpRequest request2 = HttpRequest.newBuilder()
-                            .uri(new URI("http://localhost:8080/api/containers/" + containerId + "/delete"))
-                            .POST(HttpRequest.BodyPublishers.noBody())
-                            .build();
-                    client.send(request2, HttpResponse.BodyHandlers.ofString());
+        // If a file is selected, load the Compose scene and pass the file path to the ComposeController.
+        if (file != null) {
+            try {
+                // Get the absolute path of the selected Docker Compose file.
+                String dockerComposeFilePath = file.getAbsolutePath();
 
-                    checkboxStates.put(containerId, false);
-                }
+                // Create a new FXMLLoader and load the Compose scene from the FXML file.
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/composeScene.fxml"));
+                Parent root = loader.load();
+
+                // Get the controller for the Compose scene.
+                ComposeController controller = loader.getController();
+
+                // Pass the path of the Docker Compose file to the ComposeController.
+                controller.setYamlFilePath(dockerComposeFilePath);
+
+                // Get the current stage from the action event source.
+                stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+
+                // Set the Compose scene as the root of the stage and display it.
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Update the checkbox states map.
-            updateCheckboxStates(checkboxStates);
-
-            // If any container is still selected after the removal, make the remove button visible.
-            if (checkboxStates.containsValue(true)) {
-                removeButton.visibleProperty().setValue(true);
-            } else {
-                removeButton.visibleProperty().setValue(false);
-            }
-
-            // Refresh the instances table view.
-            refreshInstances();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Updates the checkbox states map with new states.
-     * This method clears the existing checkboxStates map and puts all entries from the newStates map into it.
-     *
-     * @param newStates The map containing the new checkbox states.
-     */
-    private void updateCheckboxStates(Map<String, Boolean> newStates) {
-        checkboxStates.clear();
-        checkboxStates.putAll(newStates);
-    }
-
-    /**
-     * Returns the checkbox states map.
-     * This map holds the container ID and its selection state.
-     *
-     * @return The checkbox states map.
-     */
-    private Map<String, Boolean> getCheckboxStates() {
-        return checkboxStates;
-    }
-
-    /**
-     * Returns the checkbox state of a container by its ID.
-     * If the container ID does not exist in the checkboxStates map, it returns false.
-     *
-     * @param id The ID of the container.
-     * @return The checkbox state of the container.
-     */
-    private boolean getCheckboxStateById(String id) {
-        return checkboxStates.getOrDefault(id, false);
-    }
-
-    /**
-     * Sets the hover effect for the sidebar images.
-     * This method applies a hover effect to the sidebar buttons.
-     * The `setHoverEffect` method takes a button and two image paths as parameters:
-     * the path to the original image and the path to the image to be displayed when the button is hovered over.
-     */
-    private void hoveredSideBarImages() {
-        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
-        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
-        setHoverEffect(kubernetesButton, "/images/kubernetesGrey.png", "/images/kubernetes.png");
-        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
-    }
-
-    /**
-     * Sets the hover effect for a button.
-     * This method applies a hover effect to our 4 buttons in the sidebar.
-     * When the mouse pointer hovers over the button,
-     * the image of the button changes to a different image to indicate that the button is being hovered over.
-     * When the mouse pointer moves away from the button,
-     * the image of the button changes back to the original image.
-     *
-     * @param button The button to which the hover effect is to be applied.
-     * @param originalImagePath The path to the original image of the button.
-     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
-     */
-    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
-        // Load the original image and the hovered image.
-        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
-        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
-
-        // Set the original image as the button's graphic.
-        ((ImageView) button.getGraphic()).setImage(originalImage);
-
-        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
-        button.setOnMouseEntered(event -> {
-            button.getStyleClass().add("button-hovered");
-            ((ImageView) button.getGraphic()).setImage(hoveredImage);
-        });
-
-        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
-        button.setOnMouseExited(event -> {
-            button.getStyleClass().remove("button-hovered");
-            ((ImageView) button.getGraphic()).setImage(originalImage);
-        });
-    }
-
-    /**
-     * Displays a notification about start, stop or remove container(s).
-     * This method is static because it is called by DockerService when the action has been performed.
-     * It creates a new Popup for the notification and Labels for the title and content.
-     * The Labels are added to a VBox, which is then added to the Popup.
-     * The Popup is displayed on the screen at a calculated position.
-     *
-     * @param title The title of the notification.
-     * @param content The content of the notification.
-     */
-    public static void showNotification(String title, String content) {
-        Platform.runLater(() -> {
-            // Create a new Popup for the notification.
-            Popup notification = new Popup();
-
-            // Create a Label for the title of the notification and style it.
-            Label titleLabel = new Label(title);
-            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
-
-            // Create a Label for the content of the notification and style it.
-            Label contentLabel = new Label(content);
-            contentLabel.setTextFill(Color.WHITE);
-
-            // Create a VBox to hold the title and content Labels and style it with our brand colors.
-            VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
-
-            // Add the VBox to the Popup.
-            notification.getContent().add(box);
-
-            // Calculate the position of the Popup on the screen.
-            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
-
-            // Show the Popup on the screen at the calculated position.
-            notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
-
-            // Create a FadeTransition for the VBox.
-            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
-            fadeTransition.setFromValue(1.0);
-            fadeTransition.setToValue(0.0);
-
-            // Create a Timeline that will start the FadeTransition after 3 seconds.
-            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(4), evt -> fadeTransition.play()));
-            timelineNotification.play();
-
-            // Hide the Popup when the FadeTransition is finished.
-            fadeTransition.setOnFinished(event -> notification.hide());
-        });
-    }
-
-    /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     * It also stops the Timeline to prevent Watchdog from lagging and keep it clean.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Stop the Timeline to prevent Watchdog from lagging.
-        stopTimeline();
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
     }
 
     /**
@@ -1083,5 +990,98 @@ public class ContainersController implements Initializable {
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
         // Change the scene to the Volumes scene.
         changeScene(actionEvent, "kubernetesScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the Timeline to prevent Watchdog from lagging and keep it clean.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the Timeline to prevent Watchdog from lagging.
+        stopTimeline();
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
+        }
+    }
+
+    /**
+     * Displays a notification with the given title and content.
+     * This method creates a new Popup and adds a VBox to it that contains two Labels: one for the title and one for the content of the notification.
+     * The Popup is displayed on the screen at a position relative to the notificationBoxStatic.
+     * A FadeTransition is applied to the VBox, which gradually decreases its opacity from 1.0 to 0.0 over the course of 1 second.
+     * The FadeTransition is started after 4 seconds by a Timeline.
+     * When the FadeTransition is finished, the Popup is hidden.
+     *
+     * @param title The title of the notification.
+     * @param content The content of the notification.
+     * @param duration The duration of the notification in seconds.
+     */
+    public static void showNotification(String title, String content, int duration) {
+        Platform.runLater(() -> {
+            // Create a new Popup for the notification.
+            Popup notification = new Popup();
+
+            // Create a Label for the title of the notification and style it.
+            Label titleLabel = new Label(title);
+            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
+
+            // Create a Label for the content of the notification and style it.
+            Label contentLabel = new Label(content);
+            contentLabel.setTextFill(Color.WHITE);
+
+            // Create a VBox to hold the title and content Labels and style it with our brand colors.
+            VBox box = new VBox(titleLabel, contentLabel);
+            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+
+            // Add the VBox to the Popup.
+            notification.getContent().add(box);
+
+            // Calculate the position of the Popup on the screen.
+            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
+
+            // Show the Popup on the screen at the calculated position.
+            // notificationBoxStatic can be null if user has changed panels.
+            if (notificationBoxStatic.getScene() != null ) {
+                notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
+            }
+
+            // Create a FadeTransition for the VBox.
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.0);
+
+            // Create a Timeline that will start the FadeTransition after given seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(duration), evt -> fadeTransition.play()));
+            timelineNotification.play();
+
+            // Hide the Popup when the FadeTransition is finished.
+            fadeTransition.setOnFinished(event -> notification.hide());
+        });
     }
 }

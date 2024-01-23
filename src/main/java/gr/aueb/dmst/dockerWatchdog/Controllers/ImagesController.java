@@ -657,6 +657,9 @@ public class ImagesController implements Initializable {
                 throw new ImageActionException("Container creation failed", image.getName());
             }
 
+            // Inform user that it may take a while.
+            showNotification("Woof!", "Creating your container is under the way.",2);
+
             // If the container is created successfully, set the status of the image to "In use" and refresh the images.
             image.setStatus("In use");
             // Refreshing images also will adjust the info panel of this image if it is in the info panel.
@@ -689,6 +692,9 @@ public class ImagesController implements Initializable {
                 throw new ImageActionException("Starting all containers failed", imageName);
             }
 
+            // Inform user that it may take a while.
+            showNotification("Be patient..", "It may take a few seconds to start all containers.",2);
+
             // If all containers are stopped successfully, refresh the images.
             // It will also adjust the info panel of this image if it is in the info panel.
             refreshImages();
@@ -720,6 +726,9 @@ public class ImagesController implements Initializable {
                 throw new ImageActionException("Stopping all containers failed", imageName);
             }
 
+            // Inform user that it may take a while.
+            showNotification("Hang on a moment..", "It may take a bit to stop all containers.",4);
+
             // If all containers are stopped successfully, refresh the images.
             // It will also adjust the info panel of this image if it is in the info panel.
             refreshImages();
@@ -750,6 +759,7 @@ public class ImagesController implements Initializable {
 
             // If all went good, refresh the images.
             if (response.statusCode() == 200) {
+                showNotification("Be patient...", "It may take a few seconds to pull your image.",5);
                 refreshImages();
             } else {
                 // If the response status code is not 200, throw an ImageActionException.
@@ -814,12 +824,13 @@ public class ImagesController implements Initializable {
      * Displays a notification to the user.
      * This method is called from DockerService when an action has been performed.
      * The method creates a notification with the given title and content and displays it on the screen.
-     * The notification fades out after a certain period of time.
+     * The notification fades out after a certain period of time. If user has changed panels, the notification is not displayed.
      *
      * @param title The title of the notification.
      * @param content The content of the notification.
+     * @param duration The duration of the notification in seconds.
      */
-    public static void showNotification(String title, String content) {
+    public static void showNotification(String title, String content, int duration) {
         Platform.runLater(() -> {
             // Create a new Popup for the notification.
             Popup notification = new Popup();
@@ -843,15 +854,18 @@ public class ImagesController implements Initializable {
             Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
 
             // Show the Popup on the screen at the calculated position.
-            notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
+            // notificationBoxStatic can be null if user has changed panels.
+            if (notificationBoxStatic.getScene() != null ) {
+                notification.show(notificationBoxStatic.getScene().getWindow(), point.getX(), point.getY());
+            }
 
             // Create a FadeTransition for the VBox.
             FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
             fadeTransition.setFromValue(1.0);
             fadeTransition.setToValue(0.0);
 
-            // Create a Timeline that will start the FadeTransition after 3 seconds.
-            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> fadeTransition.play()));
+            // Create a Timeline that will start the FadeTransition after given seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(duration), evt -> fadeTransition.play()));
             timelineNotification.play();
 
             // Hide the Popup when the FadeTransition is finished.

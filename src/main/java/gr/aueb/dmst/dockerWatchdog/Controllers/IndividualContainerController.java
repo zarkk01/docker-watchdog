@@ -11,14 +11,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.core.command.LogContainerResultCallback;
-
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerActionFailedException;
-import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -41,6 +34,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
+
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerActionFailedException;
+import gr.aueb.dmst.dockerWatchdog.Main;
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import org.json.JSONObject;
 
@@ -192,19 +193,6 @@ public class IndividualContainerController {
     }
 
     /**
-     * Stops the Timeline if it is not null.
-     * This method is used to stop the Timeline when the user leaves the scene.
-     * Stopping the Timeline can help to reduce lag in the program.
-     */
-    public void stopTimeline() {
-        // Check if the timeline is not null
-        if (timeline != null) {
-            // If it's not null, stop the timeline
-            timeline.stop();
-        }
-    }
-
-    /**
      * Sets up a button with an image and hover effect.
      * The image changes when the mouse enters and exits the button.
      * The button's graphic is set to an ImageView of the image.
@@ -317,7 +305,7 @@ public class IndividualContainerController {
 
             // If the container is successfully stopped, show a notification and update the container's status.
             if (response.statusCode() == 200) {
-                showNotification("Woof!", "Container " + this.instanceScene.getName() + " is about to stop.");
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " is about to stop. It may take a few seconds.");
                 this.instanceScene.setStatus("exited");
                 containerStatusLabel.setText("Status: " + this.instanceScene.getStatus());
             }
@@ -589,7 +577,7 @@ public class IndividualContainerController {
     /**
      * Displays a notification with the given title and content.
      * It helps us keep user informed about events that occur in the instance.
-     * After 3 seconds, the Popup is automatically hidden.
+     * After 4 seconds, the Popup is automatically hidden.
      *
      * @param title The title of the notification.
      * @param content The content of the notification.
@@ -609,7 +597,7 @@ public class IndividualContainerController {
 
             // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);
@@ -620,36 +608,18 @@ public class IndividualContainerController {
             // Show the Popup on the screen at the calculated position.
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
-            // Create a Timeline that will hide the Popup after 3 seconds.
-            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
+            // Create a FadeTransition for the VBox.
+            FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), box);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.0);
+
+            // Create a Timeline that will start the FadeTransition after 4 seconds.
+            Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(4), evt -> fadeTransition.play()));
             timelineNotification.play();
+
+            // Hide the Popup when the FadeTransition is finished.
+            fadeTransition.setOnFinished(event -> notification.hide());
         });
-    }
-
-    /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     * It also stops the Timeline which keeps updating the CPU usage chart and prevents
-     * the Timeline from running in the background when the user is not on the IndividualContainer scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Stop the Timeline which keeps updating the CPU usage chart.
-        stopTimeline();
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
     }
 
     /**
@@ -734,6 +704,45 @@ public class IndividualContainerController {
             changeScene(actionEvent, "containersScene.fxml");
         } else {
             changeScene(actionEvent, "imagesScene.fxml");
+        }
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     * It also stops the Timeline which keeps updating the CPU usage chart and prevents
+     * the Timeline from running in the background when the user is not on the IndividualContainer scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Stop the Timeline which keeps updating the CPU usage chart.
+        stopTimeline();
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    /**
+     * Stops the Timeline if it is not null.
+     * This method is used to stop the Timeline when the user leaves the scene.
+     * Stopping the Timeline can help to reduce lag in the program.
+     */
+    public void stopTimeline() {
+        // Check if the timeline is not null
+        if (timeline != null) {
+            // If it's not null, stop the timeline
+            timeline.stop();
         }
     }
 }

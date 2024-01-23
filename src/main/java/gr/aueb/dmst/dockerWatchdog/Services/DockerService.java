@@ -9,12 +9,7 @@ import com.github.dockerjava.api.exception.DockerException;
 
 import gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController;
 import gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNameConflictException;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotFoundException;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerNotModifiedException;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerRunningException;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageNotFoundException;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerCreationException;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.*;
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
 import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Repositories.ImagesRepository;
@@ -69,146 +64,202 @@ public class DockerService {
     }
 
     /**
-     * Starts a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Starts a Docker container with the given ID.
+     * This method uses a CompletableFuture to perform the start operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the start operation are logged.
+     * Once the start operation is complete, a notification is displayed to the user.
      *
      * @param containerId the ID of the Docker container to start
      */
     public void startContainer(String containerId) {
+        // Create a CompletableFuture to run the container start operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's startContainer method to start the Docker container
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container start operation
                 logger.error(e.getMessage());
             }
         });
 
-        future.thenRun(() -> {
-            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started");
-        });
+        // Once the CompletableFuture is complete, display a notification to the user
+        future.thenRun(() -> ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started.", 3));
     }
 
     /**
-     * Stops a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Stops a Docker container with the given ID.
+     * This method uses a CompletableFuture to perform the stop operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the stop operation are logged.
      *
      * @param containerId the ID of the Docker container to stop
      */
     public void stopContainer(String containerId) {
+        // Create a CompletableFuture to run the container stop operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's stopContainer method to stop the Docker container
                 ExecutorThread.stopContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container stop operation
                 logger.error(e.getMessage());
             }
         });
 
-        future.thenRun(() -> {
-            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped");
-        });
+        // Once the CompletableFuture is complete, display a notification to the user
+        future.thenRun(() -> ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped.", 3));
     }
 
     /**
-     * Deletes a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Deletes a Docker container with the given ID.
+     * This method uses a CompletableFuture to perform the delete operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the delete operation are logged.
      *
      * @param containerId the ID of the Docker container to delete
      */
     public void removeContainer(String containerId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        // Create a CompletableFuture to run the container delete operation in the background
+        CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's removeContainer method to delete the Docker container
                 ExecutorThread.removeContainer(containerId);
             } catch (ContainerNotFoundException | ContainerRunningException e) {
+                // Log any exceptions that occur during the container delete operation
                 logger.error(e.getMessage());
             }
-        });
-
-        future.thenRun(() -> {
-            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. removed");
         });
     }
 
     /**
-     * Renames a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Renames a Docker container with the given ID and new name.
+     * This method uses a CompletableFuture to perform the rename operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the rename operation are logged.
      *
      * @param containerId the ID of the Docker container to rename
      * @param newName the new name for the Docker container
      */
     public void renameContainer(String containerId, String newName) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        // Create a CompletableFuture to run the container rename operation in the background
+        CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's renameContainer method to rename the Docker container
                 ExecutorThread.renameContainer(containerId, newName);
             } catch (ContainerNotFoundException | ContainerNameConflictException e) {
+                // Log any exceptions that occur during the container rename operation
                 logger.error(e.getMessage());
             }
-        });
-
-        future.thenRun(() -> {
-            System.out.println("Container " + containerId + " renamed to " + newName);
         });
     }
 
     /**
-     * Pauses a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Pauses a Docker container with the given ID.
+     * This method uses a CompletableFuture to perform the pause operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the pause operation are logged.
      *
      * @param containerId the ID of the Docker container to pause
      */
     public void pauseContainer(String containerId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        // Create a CompletableFuture to run the container pause operation in the background
+        CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's pauseContainer method to pause the Docker container
                 ExecutorThread.pauseContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container pause operation
                 logger.error(e.getMessage());
             }
-        });
-
-        future.thenRun(() -> {
-            System.out.println("Container " + containerId + " paused");
         });
     }
 
     /**
-     * Unpauses a Docker container with the given ID calling
-     * the right method of Executor Thread.
+     * Unpauses a Docker container with the given ID.
+     * This method uses a CompletableFuture to perform the unpause operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the unpause operation are logged.
      *
      * @param containerId the ID of the Docker container to unpause
      */
     public void unpauseContainer(String containerId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        // Create a CompletableFuture to run the container unpause operation in the background
+        CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's unpauseContainer method to unpause the Docker container
                 ExecutorThread.unpauseContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container unpause operation
                 logger.error(e.getMessage());
             }
-        });
-
-        future.thenRun(() -> {
-            System.out.println("Container " + containerId.substring(0,5) + ".. unpaused");
         });
     }
 
     /**
      * Restarts a Docker container with the given ID.
-     * Basically, it stops and then starts again the container calling
-     * the right methods of Executor Thread.
+     * This method first stops the container and then starts it again.
+     * Both operations are performed asynchronously using a CompletableFuture,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the stop or start operations are logged.
      *
      * @param containerId the ID of the Docker container to restart
      */
     public void restartContainer(String containerId) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+        // Create a CompletableFuture to run the container restart operation in the background
+        CompletableFuture.runAsync(() -> {
             try {
+                // Call the ExecutorThread's stopContainer method to stop the Docker container
                 ExecutorThread.stopContainer(containerId);
+                // Call the ExecutorThread's startContainer method to start the Docker container
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
+                // Log any exceptions that occur during the container restart operation
                 logger.error(e.getMessage());
             }
         });
+    }
 
-        future.thenRun(() -> {
-            System.out.println("Container " + containerId.substring(0,5) + ".. restarted");
-        });
+    /**
+     * Retrieves all Docker instances with the maximum metric ID.
+     *
+     * @return a list of Docker instances with the maximum metric ID
+     */
+    public List<Instance> getAllInstancesMaxId() {
+        return instancesRepository.findAllByMaxMetricId();
+    }
+
+    /**
+     * Retrieves all Docker instances with the given image name
+     * so to display them in the dashboard in Images Panel.
+     *
+     * @param imageName the name of the image whose instances to retrieve
+     * @return a list of Docker instances with the given image name
+     */
+    public List<Instance> getInstancesByImage(String imageName) {
+        return instancesRepository.findAllByImageName(imageName);
+    }
+
+    /**
+     * Retrieves most recent information about a Docker instance with the given ID.
+     *
+     * @param id the ID of the Docker instance to retrieve information about
+     * @return the Docker instance with the given ID
+     */
+    public Instance getInstanceInfo(String id) {
+        return instancesRepository.findByContainerId(id);
+    }
+
+    /**
+     * Retrieves all pulled Docker images from the database
+     * so to display them and do actions on them
+     * on our Images panel.
+     *
+     * @return a list of all pulled Docker images
+     */
+    public List<Image> getAllImages() {
+        return imagesRepository.findAll();
     }
 
     /**
@@ -234,7 +285,7 @@ public class DockerService {
         // Once the CompletableFuture is complete, display a notification to the user
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification
-            ImagesController.showNotification("Woof!", "Container created from " + imageName);
+            ImagesController.showNotification("Woof!", "Container created from " + imageName, 3);
         });
     }
 
@@ -269,7 +320,7 @@ public class DockerService {
                 // Once the CompletableFuture is complete, display a notification to the user
                 future.thenRun(() -> {
                     // Call the ImagesController's showNotification method to display the notification
-                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " started");
+                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " started", 3);
                 });
             }
         }
@@ -306,7 +357,7 @@ public class DockerService {
                 // Once the CompletableFuture is complete, display a notification to the user
                 future.thenRun(() -> {
                     // Call the ImagesController's showNotification method to display the notification
-                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " stopped");
+                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " stopped", 3);
                 });
             }
         }
@@ -335,7 +386,7 @@ public class DockerService {
         // Once the CompletableFuture is complete, display a notification to the user
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification
-            ImagesController.showNotification("Woof!", imageName + " pulled");
+            ImagesController.showNotification("Woof!", imageName + " pulled", 3);
         });
     }
 
@@ -362,38 +413,60 @@ public class DockerService {
         // Once the CompletableFuture is complete, display a notification to the user.
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification.
-            ImagesController.showNotification("Woof!",imageName + " removed");
+            ImagesController.showNotification("Woof!",imageName + " removed", 3);
         });
     }
 
     /**
-     * Retrieves all Docker instances with the maximum metric ID.
+     * Retrieves all Docker volumes so to display them
+     * in our Volumes panel.
      *
-     * @return a list of Docker instances with the maximum metric ID
+     * @return a list of all Docker volumes
      */
-    public List<Instance> getAllInstancesMaxId() {
-        return instancesRepository.findAllByMaxMetricId();
+    public List<Volume> getAllVolumes() {
+        return volumesRepository.findAll();
     }
 
     /**
-     * Retrieves all Docker instances with the given image name
-     * so to display them in the dashboard in Images Panel.
+     * Removes a Docker volume with the given name.
+     * This method uses a CompletableFuture to perform the volume removal operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the volume removal operation are logged.
      *
-     * @param imageName the name of the image whose instances to retrieve
-     * @return a list of Docker instances with the given image name
+     * @param volumeName the name of the Docker volume to remove
      */
-    public List<Instance> getInstancesByImage(String imageName) {
-        return instancesRepository.findAllByImageName(imageName);
+    public void removeVolume(String volumeName) {
+        // Create a CompletableFuture to run the volume removal operation in the background
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Call the ExecutorThread's removeVolume method to remove the Docker volume
+                ExecutorThread.removeVolume(volumeName);
+            } catch (Exception e) {
+                // Log any exceptions that occur during the volume removal operation
+                logger.error(e.getMessage());
+            }
+        });
     }
 
     /**
-     * Retrieves most recent information about a Docker instance with the given ID.
+     * Creates a Docker volume with the given name.
+     * This method uses a CompletableFuture to perform the volume creation operation in the background,
+     * ensuring that the main thread is not blocked.
+     * Any exceptions that occur during the volume creation operation are logged.
      *
-     * @param id the ID of the Docker instance to retrieve information about
-     * @return the Docker instance with the given ID
+     * @param volumeName the name of the Docker volume to create
      */
-    public Instance getInstanceInfo(String id) {
-        return instancesRepository.findByContainerId(id);
+    public void createVolume(String volumeName) {
+        // Create a CompletableFuture to run the volume creation operation in the background
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Call the ExecutorThread's createVolume method to create the Docker volume
+                ExecutorThread.createVolume(volumeName);
+            } catch (Exception e) {
+                // Log any exceptions that occur during the volume creation operation
+                logger.error(e.getMessage());
+            }
+        });
     }
 
     /**
@@ -440,64 +513,5 @@ public class DockerService {
                 runningContainers,
                 totalContainers,
                 stoppedContainers);
-    }
-
-    /**
-     * Retrieves all pulled Docker images from the database
-     * so to display them and do actions on them
-     * on our Images panel.
-     *
-     * @return a list of all pulled Docker images
-     */
-    public List<Image> getAllImages() {
-        return imagesRepository.findAll();
-    }
-
-    /**
-     * Retrieves all Docker volumes so to display them
-     * in our Volumes panel.
-     *
-     * @return a list of all Docker volumes
-     */
-    public List<Volume> getAllVolumes() {
-        return volumesRepository.findAll();
-    }
-
-    /**
-     * Removes a Docker volume with the given name.
-     *
-     * @param volumeName the name of the Docker volume to remove
-     */
-    public void removeVolume(String volumeName) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            try {
-                ExecutorThread.removeVolume(volumeName);
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        });
-
-        future.thenRun(() -> {
-            System.out.println("Volume " + volumeName + " removed");
-        });
-    }
-
-    /**
-     * Creates a Docker volume with the given name.
-     *
-     * @param volumeName the name of the Docker volume to create
-     */
-    public void createVolume(String volumeName) {
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-            try {
-                ExecutorThread.createVolume(volumeName);
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-        });
-
-        future.thenRun(() -> {
-            System.out.println("Volume " + volumeName + " created");
-        });
     }
 }

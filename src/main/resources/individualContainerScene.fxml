@@ -105,6 +105,7 @@
                 <Pane prefHeight="123.0" prefWidth="155.0">
                     <children>
                         <Line endX="57.83079528808594" endY="-46.99310302734375" layoutX="78.0" layoutY="60.0" opacity="0.7" startX="-64.42865753173828" startY="-46.99310302734375" stroke="#909090" />
+                  <VBox fx:id="notificationBox" layoutY="24.0" prefHeight="76.0" prefWidth="137.0" />
                     </children>
                 </Pane>
                 <Pane prefHeight="306.0" prefWidth="155.0">
@@ -144,7 +145,6 @@
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="376.0" prefWidth="600.0" style="-fx-background-color: #474745; -fx-border-color: #474745;">
                                             <children>
-                                    <VBox fx:id="notificationBox" layoutX="251.0" layoutY="66.0" prefHeight="76.0" prefWidth="177.0" />
                                     <LineChart fx:id="individualCpuChart" layoutX="3.0" layoutY="20.0" prefHeight="347.0" prefWidth="561.0" style="-fx-background-color: #474745;" stylesheets="@styles/chartColor.css">
                                       <xAxis>
                                         <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
