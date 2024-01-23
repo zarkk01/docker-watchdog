@@ -138,7 +138,7 @@
                <children>
                <Pane layoutX="496.0" layoutY="86.0" prefHeight="160.0" prefWidth="163.0">
                   <children>
-                     <Label fx:id="stoppedContainersText" layoutX="52.0" layoutY="26.0" prefHeight="110.0" prefWidth="75.0" text="4" textFill="WHITE">
+                     <Label fx:id="stoppedContainersText" alignment="CENTER" contentDisplay="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="5" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -151,7 +151,7 @@
                </Pane>
                <Pane layoutX="40.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
                   <children>
-                     <Label fx:id="totalContainersText" layoutX="57.0" layoutY="26.0" text="4" textFill="WHITE">
+                     <Label fx:id="totalContainersText" alignment="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="50" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -187,7 +187,7 @@
                      </font></Button>
                <Pane layoutX="709.0" layoutY="86.0" prefHeight="157.0" prefWidth="163.0">
                   <children>
-                     <Label fx:id="metricsLabel" layoutX="53.0" layoutY="26.0" text="2" textFill="WHITE">
+                     <Label fx:id="metricsLabel" alignment="CENTER" layoutX="7.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="50+" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -200,7 +200,7 @@
                </Pane>
                <Pane layoutX="266.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
                   <children>
-                     <Label fx:id="runningContainersText" alignment="CENTER" layoutX="57.0" layoutY="26.0" text="3" textFill="WHITE">
+                     <Label fx:id="runningContainersText" alignment="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="3" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
