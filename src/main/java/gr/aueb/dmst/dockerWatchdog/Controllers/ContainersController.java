@@ -183,7 +183,6 @@ public class ContainersController implements Initializable {
             // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
-
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);

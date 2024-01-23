@@ -281,8 +281,11 @@ public class DockerService {
     /**
      * Creates a Docker container with the given image name.
      * This method uses a CompletableFuture to perform the container creation operation in the background,
-     * ensuring that the main thread is not blocked.
-     * Once the container creation operation is complete, a notification is displayed to the user.
+     * ensuring that the main thread is not blocked. Also, calls the ImagesController's
+     * showLoading method to display a loading animation to the user while the container creation is
+     * in progress. In the end, calls the ImagesController's hideLoading method to hide the
+     * loading animation. Once the container creation operation is complete,
+     * a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to use for creating the container
      */
@@ -290,6 +293,8 @@ public class DockerService {
         // Create a CompletableFuture to run the container creation operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ImagesController's showLoading method to display the loading animation
+                ImagesController.showLoading();
                 // Call the ExecutorThread's runContainer method to create the Docker container
                 ExecutorThread.runContainer(imageName);
             } catch (ContainerCreationException | ImageNotFoundException | ContainerNotModifiedException e) {
@@ -298,10 +303,12 @@ public class DockerService {
             }
         });
 
-        // Once the CompletableFuture is complete, display a notification to the user
+        // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification
             ImagesController.showNotification("Woof!", "Container created from " + imageName, 3);
+            // Call the ImagesController's hideLoading method to hide the loading animation
+            ImagesController.hideLoading();
         });
     }
 
@@ -310,8 +317,10 @@ public class DockerService {
      * This method retrieves all containers associated with the image from the database,
      * and then iterates over them to start each one that is currently stopped.
      * The container start operation is performed asynchronously using a CompletableFuture,
-     * ensuring that the main thread is not blocked.
-     * Once a container is started, a notification is displayed to the user.
+     * ensuring that the main thread is not blocked. Also, calls the ImagesController's
+     * showLoading method to display a loading animation to the user while the start operation is
+     * in progress. In the end, calls the ImagesController's hideLoading method to hide the
+     * loading animation. Once a container is started, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image whose containers to start
      */
@@ -325,6 +334,8 @@ public class DockerService {
             if (container.getStatus().equals("exited")) {
                 CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
+                        // Call the ImagesController's showLoading method to display the loading animation
+                        ImagesController.showLoading();
                         // Call the ExecutorThread's startContainer method to start the Docker container
                         ExecutorThread.startContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -333,10 +344,12 @@ public class DockerService {
                     }
                 });
 
-                // Once the CompletableFuture is complete, display a notification to the user
+                // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
                 future.thenRun(() -> {
                     // Call the ImagesController's showNotification method to display the notification
                     ImagesController.showNotification("Woof!", "Container " + container.getName() + " started", 3);
+                    // Call the ImagesController's hideLoading method to hide the loading animation
+                    ImagesController.hideLoading();
                 });
             }
         }
@@ -347,8 +360,10 @@ public class DockerService {
      * This method retrieves all containers associated with the image from the database,
      * and then iterates over them to stop each one that is currently running.
      * The container stop operation is performed asynchronously using a CompletableFuture,
-     * ensuring that the main thread is not blocked.
-     * Once a container is stopped, a notification is displayed to the user.
+     * ensuring that the main thread is not blocked. Also, calls the ImagesController's
+     * showLoading method to display a loading animation to the user while the stop operation is
+     * in progress. In the end, calls the ImagesController's hideLoading method to hide the
+     * loading animation. Once a container is stopped, a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image whose containers to stop
      */
@@ -362,6 +377,8 @@ public class DockerService {
             if (container.getStatus().equals("running")) {
                 CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                     try {
+                        // Call the ImagesController's showLoading method to display the loading animation
+                        ImagesController.showLoading();
                         // Call the ExecutorThread's stopContainer method to stop the Docker container
                         ExecutorThread.stopContainer(container.getId());
                     } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -370,10 +387,12 @@ public class DockerService {
                     }
                 });
 
-                // Once the CompletableFuture is complete, display a notification to the user
+                // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
                 future.thenRun(() -> {
                     // Call the ImagesController's showNotification method to display the notification
                     ImagesController.showNotification("Woof!", "Container " + container.getName() + " stopped", 3);
+                    // Call the ImagesController's hideLoading method to hide the loading animation
+                    ImagesController.hideLoading();
                 });
             }
         }
@@ -382,8 +401,11 @@ public class DockerService {
     /**
      * Pulls a Docker image with the given name.
      * This method uses a CompletableFuture to perform the image pulling operation in the background,
-     * ensuring that the main thread is not blocked.
-     * Once the image pulling operation is complete, a notification is displayed to the user.
+     * ensuring that the main thread is not blocked. Also, calls the ImagesController's
+     * showLoading method to display a loading animation to the user while the image pulling is
+     * in progress. In the end, calls the ImagesController's hideLoading method to hide the
+     * loading animation. Once the image pulling operation is complete,
+     * a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to pull
      */
@@ -391,6 +413,8 @@ public class DockerService {
         // Create a CompletableFuture to run the image pulling operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ImagesController's showLoading method to display the loading animation
+                ImagesController.showLoading();
                 // Call the ExecutorThread's pullImage method to pull the Docker image
                 ExecutorThread.pullImage(imageName);
             } catch (DockerException | ImageNotFoundException | InterruptedException e) {
@@ -403,14 +427,19 @@ public class DockerService {
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification
             ImagesController.showNotification("Woof!", imageName + " pulled", 3);
+            // Call the ImagesController's hideLoading method to hide the loading animation
+            ImagesController.hideLoading();
         });
     }
 
     /**
      * Asynchronously removes a Docker image with the given name.
      * This method uses a CompletableFuture to perform the image removal operation in the background,
-     * ensuring that the main thread is not blocked.
-     * Once the image removal operation is complete, a notification is displayed to the user.
+     * ensuring that the main thread is not blocked. Also, calls the ImagesController's
+     * showLoading method to display a loading animation to the user while the image removal is
+     * in progress. In the end, calls the ImagesController's hideLoading method to hide the
+     * loading animation. Once the image removal operation is complete,
+     * a notification is displayed to the user.
      *
      * @param imageName the name of the Docker image to remove
      */
@@ -418,6 +447,8 @@ public class DockerService {
         // Create a CompletableFuture to run the image removal operation in the background.
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ImagesController's showLoading method to display the loading animation.
+                ImagesController.showLoading();
                 // Call the ExecutorThread's removeImage method to remove the Docker image.
                 ExecutorThread.removeImage(imageName);
             } catch (DockerException | ImageNotFoundException e) {
@@ -430,6 +461,8 @@ public class DockerService {
         future.thenRun(() -> {
             // Call the ImagesController's showNotification method to display the notification.
             ImagesController.showNotification("Woof!",imageName + " removed", 3);
+            // Call the ImagesController's hideLoading method to hide the loading animation.
+            ImagesController.hideLoading();
         });
     }
 

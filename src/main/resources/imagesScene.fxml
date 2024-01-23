@@ -255,6 +255,11 @@
                   <Image url="@images/watchdog.png" />
                </image>
             </ImageView>
+            <ImageView fx:id="loadingImageView" fitHeight="26.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <HBox.margin>
+                  <Insets left="846.0" />
+               </HBox.margin>
+            </ImageView>
          </children>
       </HBox>
    </top>

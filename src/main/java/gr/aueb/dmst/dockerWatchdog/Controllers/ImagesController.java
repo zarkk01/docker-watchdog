@@ -92,6 +92,10 @@ public class ImagesController implements Initializable {
     private static VBox notificationBoxStatic;
 
     @FXML
+    private ImageView loadingImageView;
+    private static ImageView loadingImageViewStatic;
+
+    @FXML
     private Button containersButton;
     @FXML
     private Button graphicsButton;
@@ -255,6 +259,10 @@ public class ImagesController implements Initializable {
 
             // Set up the notificationBoxStatic variable so that we can use it in the DockerService class.
             notificationBoxStatic = this.notificationBox;
+
+            // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
+            loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
+            loadingImageViewStatic = this.loadingImageView;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -973,5 +981,23 @@ public class ImagesController implements Initializable {
             // If it's not null, stop the timeline
             timeline.stop();
         }
+    }
+
+    /**
+     * Displays the loading animation.
+     * This method sets the loadingImageViewStatic to visible, and it is called from
+     * DockerService when the user clicks on an action button.
+     */
+    public static void showLoading() {
+        loadingImageViewStatic.setVisible(true);
+    }
+
+    /**
+     * Hides the loading animation.
+     * This method sets the loadingImageViewStatic to invisible, and it is called from
+     * DockerService when the action is done.
+     */
+    public static void hideLoading() {
+        loadingImageViewStatic.setVisible(false);
     }
 }
