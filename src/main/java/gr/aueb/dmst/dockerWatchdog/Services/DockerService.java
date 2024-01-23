@@ -66,7 +66,10 @@ public class DockerService {
     /**
      * Starts a Docker container with the given ID.
      * This method uses a CompletableFuture to perform the start operation in the background,
-     * ensuring that the main thread is not blocked.
+     * ensuring that the main thread is not blocked. Also, calls the ContainersController's
+     * showLoading method to display a loading animation to the user while the start operation is
+     * in progress. In the end, calls the ContainersController's hideLoading method to hide the
+     * loading animation.
      * Any exceptions that occur during the start operation are logged.
      * Once the start operation is complete, a notification is displayed to the user.
      *
@@ -76,6 +79,8 @@ public class DockerService {
         // Create a CompletableFuture to run the container start operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ContainersController's showLoading method to display the loading animation
+                ContainersController.showLoading();
                 // Call the ExecutorThread's startContainer method to start the Docker container
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -84,14 +89,20 @@ public class DockerService {
             }
         });
 
-        // Once the CompletableFuture is complete, display a notification to the user
-        future.thenRun(() -> ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started.", 3));
+        // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
+        future.thenRun(() -> {
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started.", 3);
+            ContainersController.hideLoading();
+        });
     }
 
     /**
      * Stops a Docker container with the given ID.
      * This method uses a CompletableFuture to perform the stop operation in the background,
-     * ensuring that the main thread is not blocked.
+     * ensuring that the main thread is not blocked. Also, calls the ContainersController's
+     * showLoading method to display a loading animation to the user while the stop operation is
+     * in progress. In the end, calls the ContainersController's hideLoading method to hide the
+     * loading animation.
      * Any exceptions that occur during the stop operation are logged.
      *
      * @param containerId the ID of the Docker container to stop
@@ -100,6 +111,8 @@ public class DockerService {
         // Create a CompletableFuture to run the container stop operation in the background
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
+                // Call the ContainersController's showLoading method to display the loading animation
+                ContainersController.showLoading();
                 // Call the ExecutorThread's stopContainer method to stop the Docker container
                 ExecutorThread.stopContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -108,8 +121,11 @@ public class DockerService {
             }
         });
 
-        // Once the CompletableFuture is complete, display a notification to the user
-        future.thenRun(() -> ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped.", 3));
+        // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
+        future.thenRun(() -> {
+            ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped.", 3);
+            ContainersController.hideLoading();
+        });
     }
 
     /**

@@ -122,6 +122,10 @@ public class ContainersController implements Initializable {
     @FXML
     private ImageView watchdogImage;
 
+    @FXML
+    private ImageView loadingImageView;
+    private static ImageView loadingImageViewStatic;
+
     private Boolean selectedDateTime = false;
 
     private Map<String, Boolean> checkboxStates = new HashMap<>();
@@ -175,6 +179,11 @@ public class ContainersController implements Initializable {
 
             // Set the notificationBoxStatic to the notificationBox.
             notificationBoxStatic = this.notificationBox;
+
+            // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
+            loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
+            loadingImageViewStatic = this.loadingImageView;
+
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);
@@ -1083,5 +1092,23 @@ public class ContainersController implements Initializable {
             // Hide the Popup when the FadeTransition is finished.
             fadeTransition.setOnFinished(event -> notification.hide());
         });
+    }
+
+    /**
+     * Displays the loading animation.
+     * This method sets the loadingImageViewStatic to visible, and it is called from
+     * DockerService when the user clicks on an action button.
+     */
+    public static void showLoading() {
+        loadingImageViewStatic.setVisible(true);
+    }
+
+    /**
+     * Hides the loading animation.
+     * This method sets the loadingImageViewStatic to invisible, and it is called from
+     * DockerService when the action is done.
+     */
+    public static void hideLoading() {
+        loadingImageViewStatic.setVisible(false);
     }
 }
