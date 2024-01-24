@@ -12,9 +12,9 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
-
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ComposeController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
@@ -102,7 +102,7 @@
                 </Pane>
                 <Pane prefHeight="306.0" prefWidth="155.0">
                     <children>
-                        <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="296.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
+                        <Pane fx:id="dockerPane" layoutX="-3.0" layoutY="293.0" prefHeight="19.0" prefWidth="160.0" style="-fx-background-color: #00AC93;">
                             <children>
                                 <ImageView fitHeight="15.0" fitWidth="20.0" layoutX="15.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -129,9 +129,9 @@
     <top>
         <HBox prefHeight="29.0" prefWidth="600.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="178.21630859375">
+                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" wrappingWidth="201.1421661376953">
                     <font>
-                        <Font name="System Bold" size="22.0" />
+                        <Font name="SansSerif Bold" size="22.0" />
                     </font>
                 </Text>
                 <ImageView fx:id="watchdogImage" fitHeight="30.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
@@ -139,13 +139,13 @@
                         <Image url="@images/watchdog.png" />
                     </image>
                 </ImageView>
-                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0">
+                <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="30.0" prefWidth="281.0">
                </VBox>
             </children>
         </HBox>
     </top>
    <center>
-       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
+       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="878.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
            <Button fx:id="backButton" layoutX="4.0" layoutY="6.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="34.0" prefWidth="35.0" style="-fx-background-color: #474745; -fx-cursor: hand;" />
            <children>
                 <TextArea fx:id="yamlContentArea" layoutX="40.0" layoutY="100.0" prefHeight="445.0" prefWidth="414.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="127.0" AnchorPane.leftAnchor="39.0" AnchorPane.rightAnchor="492.0" AnchorPane.topAnchor="99.0">

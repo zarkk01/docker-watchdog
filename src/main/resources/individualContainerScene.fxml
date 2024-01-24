@@ -212,7 +212,7 @@
                                        <children>
                                                       <Label fx:id="containerIdLabel" prefHeight="50.0" prefWidth="385.0" text="ID " textFill="WHITE">
                                                           <font>
-                                                              <Font name="SansSerif Regular" size="22.0" />
+                                                              <Font name="SansSerif Regular" size="24.0" />
                                                           </font>
                                                       </Label>
                                                       <Label fx:id="containerNameLabel" prefHeight="38.0" prefWidth="410.0" text="Name" textFill="WHITE">

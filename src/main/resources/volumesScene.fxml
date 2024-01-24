@@ -16,6 +16,23 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.VolumesController">
+   <top>
+      <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
+               <font>
+                  <Font name="SansSerif Bold" size="22.0" />
+               </font>
+            </Text>
+            <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/watchdog.png" />
+               </image>
+            </ImageView>
+            <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
+         </children>
+      </HBox>
+   </top>
    <left>
       <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
          <children>
@@ -150,21 +167,4 @@
          </children>
       </AnchorPane>
    </center>
-   <top>
-      <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
-         <children>
-            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
-               <font>
-                  <Font name="SansSerif Bold" size="22.0" />
-               </font>
-            </Text>
-            <ImageView fx:id="watchdogImage" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@images/watchdog.png" />
-               </image>
-            </ImageView>
-            <VBox fx:id="notificationBox" alignment="TOP_RIGHT" prefHeight="29.0" prefWidth="399.0" />
-         </children>
-      </HBox>
-   </top>
 </BorderPane>
