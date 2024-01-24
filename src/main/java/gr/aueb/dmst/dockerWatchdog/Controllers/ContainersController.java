@@ -735,6 +735,11 @@ public class ContainersController implements Initializable {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // This error indicates that we be in trouble. User should try again.
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to retrieve instances. Try run Watchdog again.");
+        }
+
         // Parse the response body to extract the details of each instance.
         JSONArray jsonArray = new JSONArray(response.body());
         List<InstanceScene> instances = new ArrayList<>();

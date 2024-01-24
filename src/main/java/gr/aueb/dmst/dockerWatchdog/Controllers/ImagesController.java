@@ -210,10 +210,16 @@ public class ImagesController implements Initializable {
                     "/images/binRed.png",
                     "/images/binHover.png",
                     "/images/binClick.png", image -> {
-                        try {
-                            this.removeImage(image.getName());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        // If the image is in use, show a notification that the user cannot delete it.
+                        if (image.getStatus().equals("In use")) {
+                            showNotification("Grrr!", "You cannot delete an image that is in use.", 3);
+                        } else {
+                            try {
+                                // If the image is not in use, remove it.
+                                this.removeImage(image.getName());
+                            } catch (ImageActionException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
                     }));
 
@@ -270,6 +276,7 @@ public class ImagesController implements Initializable {
 
     /**
      * This method is called when the user clicks on an image in the TableView.
+     * Firstly, it checks if the image is in use or not and then it adjusts the info panel accordingly.
      * It fills down info panel with the selected image's info and sets up the instancesTableView
      * so to be ready when clicked to move in individualContainersPanel.
      *
@@ -280,8 +287,12 @@ public class ImagesController implements Initializable {
         // Get all instances of the selected image.
         List<InstanceScene> instances = getAllInstancesByImage(image.getName());
 
-        // Set the text of the label with the name of the image.
-        imageNameLabel.setText(image.getName());
+        // Set the text of the label with the name of the image so to not overflow the label.
+        if(image.getName().length() > 15) {
+            imageNameLabel.setText(image.getName().substring(0, 15) + "...");
+        } else {
+            imageNameLabel.setText(image.getName());
+        }
 
         // Set the text of the labels with the number of total, running, and stopped containers.
         totalContainersText.setText(String.valueOf(instances.size()));
@@ -348,8 +359,12 @@ public class ImagesController implements Initializable {
      * @param image
      */
     public void adjustZeroInfoPanel(ImageScene image) {
-        // Set the text of the label with the name of the image.
-        imageNameLabel.setText(image.getName());
+        // Set the text of the label with the name of the image so to not overflow the label.
+        if(image.getName().length() > 15) {
+            imageNameLabel.setText(image.getName().substring(0, 15) + "...");
+        } else {
+            imageNameLabel.setText(image.getName());
+        }
 
         // Set the text of the labels with the number of total, running, and stopped containers.
         totalContainersText.setText("0");
@@ -589,7 +604,13 @@ public class ImagesController implements Initializable {
 
             // If there is an image in the infoPanel, refresh the infoPanel too.
             if (imageInfoPanel != null) {
-                adjustInfoPanel(imageInfoPanel);
+                // If the image is in use, adjust the info panel accordingly.
+                if (imageInfoPanel.getStatus().equals("In use")) {
+                    adjustInfoPanel(imageInfoPanel);
+                } else {
+                    // If the image is not in use, call the method responsible for unused images.
+                    adjustZeroInfoPanel(imageInfoPanel);
+                }
             }
         } catch (Exception e) {
             System.out.println("Error occurred while refreshing images: " + e.getMessage());
@@ -832,7 +853,8 @@ public class ImagesController implements Initializable {
      * Displays a notification to the user.
      * This method is called from DockerService when an action has been performed.
      * The method creates a notification with the given title and content and displays it on the screen.
-     * The notification fades out after a certain period of time. If user has changed panels, the notification is not displayed.
+     * The notification fades out after a certain period of time which is given by user.
+     * If user has changed panels, the notification is not displayed.
      *
      * @param title The title of the notification.
      * @param content The content of the notification.
@@ -853,13 +875,13 @@ public class ImagesController implements Initializable {
 
             // Create a VBox to hold the title and content Labels and style it with our brand colors.
             VBox box = new VBox(titleLabel, contentLabel);
-            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
+            box.setStyle("-fx-background-color: #e14b4e; -fx-padding: 5; -fx-border-color: #525252; -fx-border-width: 1px;");
 
             // Add the VBox to the Popup.
             notification.getContent().add(box);
 
             // Calculate the position of the Popup on the screen.
-            Point2D point = notificationBoxStatic.localToScreen(notificationBoxStatic.getWidth() - box.getWidth(), notificationBoxStatic.getHeight() - box.getHeight());
+            Point2D point = notificationBoxStatic.localToScreen(0, 0);
 
             // Show the Popup on the screen at the calculated position.
             // notificationBoxStatic can be null if user has changed panels.
