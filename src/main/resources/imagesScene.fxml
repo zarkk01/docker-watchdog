@@ -120,7 +120,7 @@
                               <Font name="SansSerif Regular" size="11.0" />
                            </font>
                         </Text>
-                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="115.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="116.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/watchdog.png" />
                            </image>

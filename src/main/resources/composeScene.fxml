@@ -13,8 +13,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.Label?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ComposeController">
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
@@ -114,7 +112,7 @@
                                         <Font name="SansSerif Regular" size="11.0" />
                                     </font>
                                 </Text>
-                                <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="115.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                <ImageView fitHeight="13.0" fitWidth="13.0" layoutX="116.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@images/watchdog.png" />
                                     </image>
