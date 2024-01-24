@@ -263,10 +263,21 @@ public class MonitorThread implements Runnable {
     // Helper method to handle the destroy event of a container.
     private void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
         Main.myInstances.remove(instance);
+        // Checking if this destroy event, converted an image from in use to unused.
+        boolean found = false;
         for (MyInstance checkingInstance : Main.myInstances) {
+            // If another container is using this image, we don't change its status.
             if (checkingInstance.getImage().equals(instance.getImage())) {
-                MyImage imageToSetUnused = MyImage.getImageByName(instance.getImage());
-                imageToSetUnused.setStatus("Unused");
+                found = true;
+                break;
+            }
+        }
+        // If no other container is using this image, we change its status to unused.
+        if (!found) {
+            for (MyImage image : Main.myImages) {
+                if (image.getName().equals(instance.getImage())) {
+                    image.setStatus("Unused");
+                }
             }
         }
 
