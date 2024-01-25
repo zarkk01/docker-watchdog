@@ -143,10 +143,10 @@ public class VolumesController implements Initializable {
                         if (volume.getContainerNamesUsing().isEmpty()) {
                             removeVolume(volume.getName());
                             // Show a notification to the user that the volume was successfully removed.
-                            showNotification("Success", "Volume " + volumeNameCut + "... was successfully removed.");
+                            showNotification("Woof!", "Volume " + volumeNameCut + "... was successfully removed.");
                         } else {
                             // Show a notification to the user that the volume is currently in use by a container.
-                            showNotification("Error", "Volume " + volumeNameCut + "... is currently in use by a container.");
+                            showNotification("Grrr!", "Volume " + volumeNameCut + "... is currently in use by a container.");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -304,7 +304,7 @@ public class VolumesController implements Initializable {
                         volumeNameCut = volumeName.substring(0,6) + "...";
                     }
                     // Show a notification to the user that the volume was successfully created.
-                    showNotification("Success", "Volume " + volumeNameCut + " was successfully created.");
+                    showNotification("Woof!", "Volume " + volumeNameCut + " was successfully created.");
                 }
             } catch (Exception e) {
                 showNotification("Error", "Volume " + volumeName + " was not created.");

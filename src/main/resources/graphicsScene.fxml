@@ -132,12 +132,12 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" layoutX="420.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graphics" wrappingWidth="100.3505859375">
+            <Text fill="WHITE" layoutX="420.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Graphics" wrappingWidth="108.4552001953125">
                <font>
-                  <Font name="System Bold" size="25.0" />
+                  <Font name="System Bold" size="28.0" />
                </font>
             </Text>
-            <LineChart fx:id="cpuChart" layoutX="-1.0" layoutY="85.0" prefHeight="340.0" prefWidth="462.0" stylesheets="@styles/chartColor.css" title="Total CPU Usage in %">
+            <LineChart fx:id="cpuChart" layoutX="-1.0" layoutY="78.0" prefHeight="340.0" prefWidth="462.0" stylesheets="@styles/chartColor.css" title="Total CPU Usage in %">
                <xAxis>
                   <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
                </xAxis>
@@ -145,7 +145,7 @@
                   <NumberAxis minorTickCount="10" side="LEFT" tickLabelFill="WHITE" tickLabelGap="5.0" upperBound="3.0" />
                </yAxis>
             </LineChart>
-            <BarChart fx:id="pidsChart" layoutX="456.0" layoutY="84.0" prefHeight="347.0" prefWidth="502.0" stylesheets="@styles/chartColor.css" title="PIDs ">
+            <BarChart fx:id="pidsChart" layoutX="456.0" layoutY="78.0" prefHeight="347.0" prefWidth="502.0" stylesheets="@styles/chartColor.css" title="PIDs ">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
               </xAxis>
@@ -153,8 +153,8 @@
                 <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="50.0" />
               </yAxis>
             </BarChart>
-            <Pane layoutX="585.0" layoutY="389.0" prefHeight="80.0" prefWidth="253.0" style="-fx-background-color: #474745;" />
-            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="416.0" prefHeight="348.0" prefWidth="522.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
+            <Pane layoutX="585.0" layoutY="391.0" prefHeight="80.0" prefWidth="253.0" style="-fx-background-color: #474745;" />
+            <LineChart fx:id="memoryChart" layoutX="438.0" layoutY="413.0" prefHeight="348.0" prefWidth="522.0" stylesheets="@styles/chartColor.css" title="Total Memory Usage in MB">
               <xAxis>
                 <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
               </xAxis>
@@ -163,7 +163,7 @@
               </yAxis>
             </LineChart>
             <Pane layoutX="190.0" layoutY="382.0" prefHeight="80.0" prefWidth="81.0" style="-fx-background-color: #474745;" />
-            <PieChart fx:id="pieChartImages" labelLineLength="15.0" layoutX="7.0" layoutY="397.0" prefHeight="386.0" prefWidth="448.0" title="Containers Allocation">
+            <PieChart fx:id="pieChartImages" labelLineLength="15.0" layoutX="7.0" layoutY="385.0" prefHeight="386.0" prefWidth="448.0" title="Containers Allocation">
                <stylesheets>
                   <URL value="@styles/chartColor.css" />
                   <URL value="@styles/pieChart.css" />
