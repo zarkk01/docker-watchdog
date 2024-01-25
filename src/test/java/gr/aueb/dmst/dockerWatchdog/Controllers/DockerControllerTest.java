@@ -1,17 +1,16 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
-import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Volume;
 import gr.aueb.dmst.dockerWatchdog.Services.DockerService;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -68,21 +67,6 @@ public class DockerControllerTest {
         assertEquals("Container " + containerId + " stopped", responseEntity.getBody());
         Mockito.verify(dockerServiceMock).stopContainer(containerId);
     }
-
-//    @Test
-//    public void testGetInstanceInfo() {
-//        DockerService dockerServiceMock = Mockito.mock(DockerService.class);
-//        String containerId = "containerId";
-//        Instance mockInstance = new Instance();
-//        Mockito.when(dockerServiceMock.getInstanceInfo(containerId)).thenReturn(mockInstance);
-//
-//        DockerController dockerController = new DockerController(dockerServiceMock);
-//        ResponseEntity<?> responseEntity = dockerController.getInstanceInfo(containerId);
-//
-//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//        assertEquals(mockInstance, responseEntity.getBody());
-//        Mockito.verify(dockerServiceMock).getInstanceInfo(containerId);
-//    }
 
     @Test
     public void testStartAllContainers() {

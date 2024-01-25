@@ -2,7 +2,6 @@ package gr.aueb.dmst.dockerWatchdog.Models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.sql.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +33,6 @@ public class MetricTest {
         metric.setId(2);
         Timestamp newTimestamp = new Timestamp(System.currentTimeMillis());
         metric.setDatetime(newTimestamp);
-
         assertEquals(2, metric.getId());
         assertEquals(newTimestamp, metric.getDatetime());
     }

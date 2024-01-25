@@ -2,7 +2,6 @@ package gr.aueb.dmst.dockerWatchdog.Models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageSceneTest {
@@ -17,7 +16,6 @@ public class ImageSceneTest {
     public void testConstructor() {
         assertEquals("12345678910111213".substring(7), imageScene.getId());
         assertEquals("TestImage", imageScene.getName());
-//        assertEquals(1024L, imageScene.getSize());
         assertEquals("In use", imageScene.getStatus());
     }
 
@@ -25,7 +23,6 @@ public class ImageSceneTest {
     public void testGetters() {
         assertEquals("12345678910111213".substring(7), imageScene.getId());
         assertEquals("TestImage", imageScene.getName());
-//        assertEquals(1024L, imageScene.getSize());
         assertEquals("In use", imageScene.getStatus());
     }
 
@@ -38,7 +35,6 @@ public class ImageSceneTest {
 
         assertEquals("4567891011121314".substring(7), imageScene.getId());
         assertEquals("NewImage", imageScene.getName());
-//        assertEquals(2048L, imageScene.getSize());
         assertEquals("Unused", imageScene.getStatus());
     }
 }
