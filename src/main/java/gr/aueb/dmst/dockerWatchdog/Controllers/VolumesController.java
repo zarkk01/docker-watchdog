@@ -134,14 +134,19 @@ public class VolumesController implements Initializable {
                 "/images/binHover.png",
                 "/images/binClick.png", volume -> {
                     try {
+                        // If volume name is too long, cut it.
+                        String volumeNameCut = volume.getName();
+                        if (volume.getName().length() > 6) {
+                            volumeNameCut = volume.getName().substring(0, 6) + "...";
+                        }
                         // Check if the volume is currently in use by a container.
                         if (volume.getContainerNamesUsing().isEmpty()) {
                             removeVolume(volume.getName());
                             // Show a notification to the user that the volume was successfully removed.
-                            showNotification("Success", "Volume " + volume.getName() + " was successfully removed.");
+                            showNotification("Success", "Volume " + volumeNameCut + "... was successfully removed.");
                         } else {
                             // Show a notification to the user that the volume is currently in use by a container.
-                            showNotification("Error", "Volume " + volume.getName().substring(0,6) + "... is currently in use by a container.");
+                            showNotification("Error", "Volume " + volumeNameCut + "... is currently in use by a container.");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -242,6 +247,9 @@ public class VolumesController implements Initializable {
             Thread.sleep(50);
             refreshVolumes();
         } catch (Exception e) {
+            if (volumeName.length() > 6) {
+                volumeName = volumeName.substring(0,6) + "...";
+            }
             showNotification("Error", "Volume " + volumeName + " was not removed.");
             logger.error(e.getMessage());
         }
@@ -267,8 +275,13 @@ public class VolumesController implements Initializable {
             List<VolumeScene> volumes = getAllVolumes();
             for (VolumeScene volume : volumes) {
                 if (volume.getName().equals(volumeName)) {
+                    // If volume name is too long, cut it.
+                    String volumeNameCut = volumeName;
+                    if(volumeName.length() > 6){
+                        volumeNameCut = volumeName.substring(0,6) + "...";
+                    }
                     // If yes, show a notification to the user that he cannot create and return.
-                    showNotification("Error", "Volume " + volumeName + " already exists.");
+                    showNotification("Error", "Volume " + volumeNameCut + " already exists.");
                     return;
                 }
             }
@@ -285,8 +298,13 @@ public class VolumesController implements Initializable {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() ==  200){
+                    // If volume name is too long, cut it.
+                    String volumeNameCut = volumeName;
+                    if(volumeName.length() > 6){
+                        volumeNameCut = volumeName.substring(0,6) + "...";
+                    }
                     // Show a notification to the user that the volume was successfully created.
-                    showNotification("Success", "Volume " + volumeName + " was successfully created.");
+                    showNotification("Success", "Volume " + volumeNameCut + " was successfully created.");
                 }
             } catch (Exception e) {
                 showNotification("Error", "Volume " + volumeName + " was not created.");
@@ -300,7 +318,6 @@ public class VolumesController implements Initializable {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-
     }
 
     /**

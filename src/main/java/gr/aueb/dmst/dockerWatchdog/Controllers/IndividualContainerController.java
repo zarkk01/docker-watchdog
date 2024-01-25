@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.io.InputStream;
 import java.util.Optional;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -155,9 +156,9 @@ public class IndividualContainerController {
         unpauseButton.setEffect(dropShadow);
         renameButton.setEffect(dropShadow);
 
-        setupButton(backButton, new ImageView(), "/images/back.png", "/images/backHover.png", 20);
-        setupButton(removeButton, new ImageView(), "/images/binRed.png", "/images/binHover.png", 50);
-        setupButton(copyButton, new ImageView(), "/images/copy.png", "/images/copyHover.png", 38);
+        setupButton(backButton, new ImageView(), "back.png", "backHover.png", 20);
+        setupButton(removeButton, new ImageView(), "binRed.png", "binHover.png", 50);
+        setupButton(copyButton, new ImageView(), "copy.png", "copyHover.png", 38);
 
         // Set up the CPU usage chart for the selected container.
         individualCpuSeries = new XYChart.Series<>();
@@ -206,7 +207,8 @@ public class IndividualContainerController {
      */
     private void setupButton(Button button, ImageView view, String imagePath, String hoverImagePath, double fitHeight) {
         // Load the image from the given path and set it to the ImageView.
-        Image img = new Image(getClass().getResource(imagePath).toExternalForm());
+        InputStream imgStream = getClass().getResourceAsStream("/images/" + imagePath);
+        Image img = new Image(imgStream);
         view.setImage(img);
 
         // Fit the ImageView to the given height and preserve its ratio.
@@ -215,7 +217,8 @@ public class IndividualContainerController {
         button.setGraphic(view);
 
         // Load the hover image from the given path.
-        Image imgHover = new Image(getClass().getResource(hoverImagePath).toExternalForm());
+        InputStream imgHoverStream = getClass().getResourceAsStream("/images/" + hoverImagePath);
+        Image imgHover = new Image(imgHoverStream);
 
         // Set the hover effect: when the mouse enters the button, change the image and reduce its opacity.
         button.setOnMouseEntered(event -> {
