@@ -174,10 +174,7 @@
                </ImageView>
             <Pane layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="226.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Button fx:id="pullButton" layoutX="168.0" layoutY="1.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="0.0" prefWidth="51.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font></Button>
+                  <Button fx:id="pullButton" layoutX="168.0" layoutY="1.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="0.0" prefWidth="51.0" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE" />
                   <TextField fx:id="pullImageTextField" layoutY="-1.0" prefHeight="30.0" prefWidth="153.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
                      <font>
                         <Font name="SansSerif Regular" size="15.0" />
