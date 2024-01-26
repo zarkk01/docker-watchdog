@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog.Services;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -325,13 +326,16 @@ public class DockerService {
      * ensuring that the main thread is not blocked. Also, calls the ImagesController's
      * showLoading method to display a loading animation to the user while the start operation is
      * in progress. In the end, calls the ImagesController's hideLoading method to hide the
-     * loading animation. Once a container is started, a notification is displayed to the user.
+     * loading animation and displays a notification to the user that all containers have been started.
      *
      * @param imageName the name of the Docker image whose containers to start
      */
     public void startAllContainers(String imageName) {
         // Get all containers associated with the image from the database
         List<Instance> containers = instancesRepository.findAllByImageName(imageName);
+
+        // Create a list to hold all the CompletableFuture objects
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         // Iterate over the containers
         for (Instance container : containers) {
@@ -349,15 +353,21 @@ public class DockerService {
                     }
                 });
 
-                // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
-                future.thenRun(() -> {
-                    // Call the ImagesController's showNotification method to display the notification
-                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " started", 3);
-                    // Call the ImagesController's hideLoading method to hide the loading animation
-                    ImagesController.hideLoading();
-                });
+                // Add the CompletableFuture to the list
+                futures.add(future);
             }
         }
+
+        // Create a CompletableFuture that completes when all the futures in the list complete
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // Once all the futures are complete, display a notification to the user and hide the loading animation
+        allFutures.thenRun(() -> {
+            // Call the ImagesController's showNotification method to display the notification
+            ImagesController.showNotification("Woof!", "All containers for " + imageName + " started", 3);
+            // Call the ImagesController's hideLoading method to hide the loading animation
+            ImagesController.hideLoading();
+        });
     }
 
     /**
@@ -368,13 +378,16 @@ public class DockerService {
      * ensuring that the main thread is not blocked. Also, calls the ImagesController's
      * showLoading method to display a loading animation to the user while the stop operation is
      * in progress. In the end, calls the ImagesController's hideLoading method to hide the
-     * loading animation. Once a container is stopped, a notification is displayed to the user.
+     * loading animation and displays a notification to the user that all containers have been stopped.
      *
      * @param imageName the name of the Docker image whose containers to stop
      */
     public void stopAllContainers(String imageName) {
         // Get all containers associated with the image from the database
         List<Instance> containers = instancesRepository.findAllByImageName(imageName);
+
+        // Create a list to hold all the CompletableFuture objects
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         // Iterate over the containers
         for (Instance container : containers) {
@@ -392,15 +405,21 @@ public class DockerService {
                     }
                 });
 
-                // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
-                future.thenRun(() -> {
-                    // Call the ImagesController's showNotification method to display the notification
-                    ImagesController.showNotification("Woof!", "Container " + container.getName() + " stopped", 3);
-                    // Call the ImagesController's hideLoading method to hide the loading animation
-                    ImagesController.hideLoading();
-                });
+                // Add the CompletableFuture to the list
+                futures.add(future);
             }
         }
+
+        // Create a CompletableFuture that completes when all the futures in the list complete
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+
+        // Once all the futures are complete, display a notification to the user
+        allFutures.thenRun(() -> {
+            // Call the ImagesController's showNotification method to display the notification
+            ImagesController.showNotification("Woof!", "All containers for " + imageName + " stopped", 3);
+            // Call the ImagesController's hideLoading method to hide the loading animation
+            ImagesController.hideLoading();
+        });
     }
 
     /**

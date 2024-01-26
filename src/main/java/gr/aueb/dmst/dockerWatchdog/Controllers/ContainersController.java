@@ -570,7 +570,7 @@ public class ContainersController implements Initializable {
         // If the response status code is 200 (meaning the request was successful), refresh the instances.
         if (response.statusCode() == 200) {
             // Also, show a notification to the user to wait a few seconds for the container to stop.
-            showNotification("Be patient." , "Container is stopping.", 4);
+            showNotification("Be patient.." , "Container is stopping.", 4);
             refreshInstances();
         }
     }

@@ -10,11 +10,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.IOException;
 
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageActionException;
-import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -40,8 +35,15 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ImageActionException;
+import gr.aueb.dmst.dockerWatchdog.Models.ImageScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 
 /**
  * The ImagesController class is an FX Controller responsible for managing the Images Panel in the application.
@@ -54,8 +56,8 @@ public class ImagesController implements Initializable {
     // Base URL for Watchdog API regarding images
     private static final String BASE_URL = "http://localhost:8080/api/images/";
 
-    // This variable is used to know which image is selected and displayed in the down info panel.
-    private ImageScene imageInfoPanel;
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(ImagesController.class);
 
     private Stage stage;
     private Parent root;
@@ -91,6 +93,7 @@ public class ImagesController implements Initializable {
     private VBox notificationBox;
     private static VBox notificationBoxStatic;
 
+    // This is the ImageView that contains the loading gif up right.
     @FXML
     private ImageView loadingImageView;
     private static ImageView loadingImageViewStatic;
@@ -134,9 +137,11 @@ public class ImagesController implements Initializable {
     private Text runningContainersText;
     @FXML
     private Text stoppedContainersText;
-
     @FXML
     private ImageView watchdogImage;
+
+    // This variable is used to know which image is selected and displayed in the down info panel.
+    private ImageScene imageInfoPanel;
     private Timeline timeline;
 
     /**
@@ -152,12 +157,6 @@ public class ImagesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            // Set up the TableView columns.
-            idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-            sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
-            statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
             // Set up the hover effects for the sidebar images.
             hoveredSideBarImages();
 
@@ -166,18 +165,23 @@ public class ImagesController implements Initializable {
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage, woof);
 
-            ImagesController.notificationBoxStatic = this.notificationBox;
+            // Set up the TableView columns.
+            idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
+            statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-            // Set up the cell factories for the TableView columns that contain buttons.
+            // Set up the TableView columns that contain buttons using cell factories.
             createContainerCollumn.setCellFactory(createButtonCellFactory(
                     "Create a Container",
                     "/images/create.png",
                     "/images/createHover.png",
                     "/images/playClick.png", image -> {
                         try {
+                            // Create a container from the image.
                             this.createContainer(image);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (ImageActionException e) {
+                            logger.error(e.getMessage());
                         }
                     }));
 
@@ -187,9 +191,15 @@ public class ImagesController implements Initializable {
                     "/images/playHover.png",
                     "/images/playClick.png", image -> {
                         try {
-                            this.startAllContainers(image.getName());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            // If the image is in use, start all containers created from the image
+                            if (image.getStatus().equals("In use")) {
+                                this.startAllContainers(image.getName());
+                            } else {
+                                // If the image is not in use, show a notification that the user cannot start something
+                                showNotification("Grrr!", "This is image have no containers.", 3);
+                            }
+                        } catch (ImageActionException e) {
+                            logger.error(e.getMessage());
                         }
                     }));
 
@@ -199,9 +209,15 @@ public class ImagesController implements Initializable {
                     "/images/stopHover.png",
                     "/images/stopClick.png", image -> {
                         try {
-                            this.stopAllContainers(image.getName());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            // If the image is in use, stop all containers created from the image.
+                            if (image.getStatus().equals("In use")) {
+                                this.stopAllContainers(image.getName());
+                            } else {
+                                // If the image is not in use, show a notification that the user cannot stop something
+                                showNotification("Grrr!", "This is image have no containers.", 3);
+                            }
+                        } catch (ImageActionException e) {
+                            logger.error(e.getMessage());
                         }
                     }));
 
@@ -281,7 +297,6 @@ public class ImagesController implements Initializable {
      * so to be ready when clicked to move in individualContainersPanel.
      *
      * @param image
-     * @throws Exception
      */
     public void adjustInfoPanel(ImageScene image) throws Exception {
         // Get all instances of the selected image.
@@ -667,7 +682,6 @@ public class ImagesController implements Initializable {
      * This method sends a POST request to the WATCHDOG REST API to create a container from the image.
      * If the response status code is not 200 meaning we are in big trouble, an ImageActionException is thrown.
      * If the container is created successfully, the status of the image is set to "In use" and the images are refreshed.
-     * Also, a notification is displayed.
      *
      * @param image The image from which the container is to be created.
      * @throws ImageActionException If an error occurs while creating the container.
@@ -685,9 +699,6 @@ public class ImagesController implements Initializable {
             if (response.statusCode() != 200) {
                 throw new ImageActionException("Container creation failed", image.getName());
             }
-
-            // Inform user that it may take a while.
-            showNotification("Woof!", "Creating your container is under the way.",2);
 
             // If the container is created successfully, set the status of the image to "In use" and refresh the images.
             image.setStatus("In use");
@@ -720,9 +731,6 @@ public class ImagesController implements Initializable {
             if (response.statusCode() != 200) {
                 throw new ImageActionException("Starting all containers failed", imageName);
             }
-
-            // Inform user that it may take a while.
-            showNotification("Be patient..", "It may take a few seconds to start all containers.",2);
 
             // If all containers are stopped successfully, refresh the images.
             // It will also adjust the info panel of this image if it is in the info panel.
