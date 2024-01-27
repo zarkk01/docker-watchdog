@@ -110,6 +110,17 @@ public class IndividualContainerController {
     public ImageView watchdogImage;
 
     @FXML
+    private Button containersButton;
+    @FXML
+    private Button imagesButton;
+    @FXML
+    private Button volumesButton;
+    @FXML
+    private Button kubernetesButton;
+    @FXML
+    private Button graphicsButton;
+
+    @FXML
     private Button removeButton;
 
     @FXML
@@ -127,6 +138,7 @@ public class IndividualContainerController {
      * @param instance The InstanceScene object representing the selected container.
      */
     public void onInstanceDoubleClick(InstanceScene instance, String fromWhere) {
+        // Set the fromWhere variable so to navigate back to the correct scene.
         this.fromWhere = fromWhere;
         // Set the selected instance.
         this.instanceScene = instance;
@@ -156,11 +168,13 @@ public class IndividualContainerController {
         unpauseButton.setEffect(dropShadow);
         renameButton.setEffect(dropShadow);
 
+        // Set up the hover effects for sidebar images.
+        hoveredSideBarImages();
+
         // Set up the hover effects for all buttons.
         setupButton(backButton, new ImageView(), "back.png", "backHover.png", 20);
         setupButton(removeButton, new ImageView(), "binRed.png", "binHover.png", 50);
-        setupButton(copyButton, new ImageView(), "copy.png", "copyHover.png", 38);
-
+        setupButton(copyButton, new ImageView(), "copy.png", "CopyClick.png", 38);
 
         // Set up the CPU usage chart for the selected container.
         individualCpuSeries = new XYChart.Series<>();
@@ -187,12 +201,89 @@ public class IndividualContainerController {
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
+        // This timeline going to stop when the user leaves the scene.
         timeline.play();
 
         // Install funny tooltip on watchdog imageView
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
+    }
+
+    /**
+     * This method uses the Docker Java API to fetch the logs of the selected container.
+     * The logs are appended to the TextArea in the GUI.
+     *
+     * @param instance The InstanceScene object representing the selected container.
+     */
+    public void containerLogInfoAppender(InstanceScene instance) {
+        // Get the ID of the selected container.
+        String containerId = instance.getId();
+
+        // Start the log fetcher for the selected container.
+        Main.dockerClient.logContainerCmd(containerId)
+                .withStdErr(true)
+                .withStdOut(true)
+                .withFollowStream(true)
+                .exec(new LogContainerResultCallback() {
+                    @Override
+                    public void onNext(Frame item) {
+                        // Convert the log frame to a string.
+                        String logLine = item.toString();
+
+                        // Append the log line to the TextArea in the GUI.
+                        javafx.application.Platform.runLater(() -> {
+                            textArea.appendText(logLine + "\n");
+                        });
+                    }
+                });
+    }
+
+    /**
+     * Sets the hover effect for the sidebar images.
+     * This method applies a hover effect to the sidebar buttons.
+     * The `setHoverEffect` method takes a button and two image paths as parameters:
+     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     */
+    private void hoveredSideBarImages() {
+        setHoverEffect(containersButton, "/images/containerGrey.png", "/images/container.png");
+        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
+        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
+        setHoverEffect(kubernetesButton, "/images/kubernetesGrey.png", "/images/kubernetes.png");
+        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
+    }
+
+    /**
+     * Sets the hover effect for a button.
+     * This method applies a hover effect to our 4 buttons in the sidebar.
+     * When the mouse pointer hovers over the button,
+     * the image of the button changes to a different image to indicate that the button is being hovered over.
+     * When the mouse pointer moves away from the button,
+     * the image of the button changes back to the original image.
+     *
+     * @param button The button to which the hover effect is to be applied.
+     * @param originalImagePath The path to the original image of the button.
+     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
+     */
+    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
+        // Load the original image and the hovered image.
+        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
+        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
+
+        // Set the original image as the button's graphic.
+        ((ImageView) button.getGraphic()).setImage(originalImage);
+
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        button.setOnMouseEntered(event -> {
+            button.getStyleClass().add("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(hoveredImage);
+        });
+
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        button.setOnMouseExited(event -> {
+            button.getStyleClass().remove("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(originalImage);
+        });
     }
 
     /**
@@ -234,35 +325,6 @@ public class IndividualContainerController {
             view.setImage(img);
             view.setOpacity(1);
         });
-    }
-
-    /**
-     * This method uses the Docker Java API to fetch the logs of the selected container.
-     * The logs are appended to the TextArea in the GUI.
-     *
-     * @param instance The InstanceScene object representing the selected container.
-     */
-    public void containerLogInfoAppender(InstanceScene instance) {
-        // Get the ID of the selected container.
-        String containerId = instance.getId();
-
-        // Start the log fetcher for the selected container.
-        Main.dockerClient.logContainerCmd(containerId)
-                .withStdErr(true)
-                .withStdOut(true)
-                .withFollowStream(true)
-                .exec(new LogContainerResultCallback() {
-                    @Override
-                    public void onNext(Frame item) {
-                        // Convert the log frame to a string.
-                        String logLine = item.toString();
-
-                        // Append the log line to the TextArea in the GUI.
-                        javafx.application.Platform.runLater(() -> {
-                            textArea.appendText(logLine + "\n");
-                        });
-                    }
-                });
     }
 
     /**

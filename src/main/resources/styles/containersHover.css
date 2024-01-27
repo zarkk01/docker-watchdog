@@ -1,12 +1,10 @@
-/* style.css */
-
 .button:hover {
-    -fx-text-fill: white; /* Change text color to red on hover */
+    -fx-text-fill: white;
 }
 
 .button:hover .image-view {
-    -fx-graphic: url("../images/container.png"); /* Set the path to your hover image */
+    -fx-graphic: url("../images/container.png");
 }
 .button {
-    -fx-text-fill: #909090; /* Set the default text color to gray */
+    -fx-text-fill: #909090;
 }
