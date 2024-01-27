@@ -146,7 +146,7 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="422.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volumes" wrappingWidth="126.0213623046875">
+            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="385.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volumes" wrappingWidth="126.0213623046875">
                <font>
                   <Font name="SansSerif Bold" size="29.0" />
                </font>
@@ -163,7 +163,15 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button fx:id="createVolumeButton" layoutX="805.0" layoutY="18.0" mnemonicParsing="false" onAction="#createVolume" prefHeight="35.0" prefWidth="89.0" stylesheets="@styles/darkButtons.css" text="CREATE +" textFill="WHITE" />
+            <Button fx:id="createVolumeButton" alignment="BASELINE_LEFT" layoutX="827.0" layoutY="21.0" mnemonicParsing="false" onAction="#createVolume" prefHeight="32.0" prefWidth="77.0" style="-fx-background-radius: 14;" stylesheets="@styles/darkButtons.css" text="create" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font></Button>
+            <ImageView fitHeight="12.0" fitWidth="16.0" layoutX="881.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/volumes.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </center>
