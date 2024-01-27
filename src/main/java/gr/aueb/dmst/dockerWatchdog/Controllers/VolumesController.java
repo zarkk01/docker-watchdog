@@ -129,7 +129,7 @@ public class VolumesController implements Initializable {
         containerNamesUsingColumn.setCellValueFactory(new PropertyValueFactory<>("containerNamesUsing"));
         // Using a custom cell factory to create a button for each volume.
         removeVolumeColumn.setCellFactory(createButtonCellFactory(
-                "Delete Volume",
+                "Delete volume",
                 "/images/binRed.png",
                 "/images/binHover.png",
                 "/images/binClick.png", volume -> {

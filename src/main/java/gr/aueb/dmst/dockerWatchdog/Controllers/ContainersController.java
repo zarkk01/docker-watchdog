@@ -363,13 +363,13 @@ public class ContainersController implements Initializable {
                 private final Button btnStop = new Button();
 
                 // Tooltip and images for the start button
-                private final Tooltip startTooltip = new Tooltip("Start Container");
+                private final Tooltip startTooltip = new Tooltip("Start container");
                 private final ImageView viewStart = new ImageView(new Image(getClass().getResource("/images/play.png").toExternalForm()));
                 private final ImageView viewStartHover = new ImageView(new Image(getClass().getResource("/images/playHover.png").toExternalForm()));
                 private final ImageView viewStartClick = new ImageView(new Image(getClass().getResource("/images/playClick.png").toExternalForm()));
 
                 // Tooltip and images for the stop button
-                private final Tooltip stopTooltip = new Tooltip("Stop Container");
+                private final Tooltip stopTooltip = new Tooltip("Stop container");
                 Image imgStop = new Image(getClass().getResource("/images/stopRed.png").toExternalForm());
                 ImageView viewStop = new ImageView(imgStop);
 
@@ -570,7 +570,7 @@ public class ContainersController implements Initializable {
         // If the response status code is 200 (meaning the request was successful), refresh the instances.
         if (response.statusCode() == 200) {
             // Also, show a notification to the user to wait a few seconds for the container to stop.
-            showNotification("Be patient." , "Container is stopping.", 4);
+            showNotification("Be patient.." , "Container is stopping.", 4);
             refreshInstances();
         }
     }

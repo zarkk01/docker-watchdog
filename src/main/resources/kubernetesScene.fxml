@@ -140,7 +140,7 @@
     <center>
         <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" layoutX="384.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
+                <Text fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
                     <font>
                         <Font name="SansSerif Bold" size="36.0" />
                     </font>
