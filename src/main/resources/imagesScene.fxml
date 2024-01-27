@@ -134,7 +134,7 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="427.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="128.3505859375">
+            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="128.3505859375">
                <font>
                   <Font name="SansSerif Bold" size="36.0" />
                </font>
@@ -172,9 +172,9 @@
                      <Image url="@images/search.png" />
                   </image>
                </ImageView>
-            <Pane layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="226.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="220.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Button fx:id="pullButton" layoutX="168.0" layoutY="1.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="0.0" prefWidth="51.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
+                  <Button fx:id="pullButton" layoutX="168.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="28.0" prefWidth="52.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font></Button>

@@ -137,7 +137,7 @@
                <children>
                <Pane layoutX="496.0" layoutY="86.0" prefHeight="160.0" prefWidth="163.0">
                   <children>
-                     <Label fx:id="stoppedContainersText" alignment="CENTER" contentDisplay="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="5" textFill="WHITE">
+                     <Label fx:id="stoppedContainersText" alignment="CENTER" contentDisplay="CENTER" layoutX="1.0" layoutY="26.0" prefHeight="110.0" prefWidth="161.0" text="5" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -150,7 +150,7 @@
                </Pane>
                <Pane layoutX="40.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
                   <children>
-                     <Label fx:id="totalContainersText" alignment="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="50" textFill="WHITE">
+                     <Label fx:id="totalContainersText" alignment="CENTER" layoutX="1.0" layoutY="26.0" prefHeight="110.0" prefWidth="168.0" text="50" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -186,7 +186,7 @@
                      </font></Button>
                <Pane layoutX="709.0" layoutY="86.0" prefHeight="157.0" prefWidth="163.0">
                   <children>
-                     <Label fx:id="metricsLabel" alignment="CENTER" layoutX="7.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="50+" textFill="WHITE">
+                     <Label fx:id="metricsLabel" alignment="CENTER" layoutY="26.0" prefHeight="110.0" prefWidth="161.0" text="50+" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -199,7 +199,7 @@
                </Pane>
                <Pane layoutX="266.0" layoutY="86.0" prefHeight="160.0" prefWidth="169.0">
                   <children>
-                     <Label fx:id="runningContainersText" alignment="CENTER" layoutX="8.0" layoutY="26.0" prefHeight="110.0" prefWidth="154.0" text="3" textFill="WHITE">
+                     <Label fx:id="runningContainersText" alignment="CENTER" layoutX="1.0" layoutY="26.0" prefHeight="110.0" prefWidth="161.0" text="3" textFill="WHITE">
                         <font>
                            <Font name="SansSerif Regular" size="90.0" />
                         </font>
@@ -227,12 +227,12 @@
                   </Text>
                </children>
             </Pane>
-         <Text fill="WHITE" layoutX="363.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
+         <Text fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
             <font>
                <Font name="SansSerif Bold" size="36.0" />
             </font>
          </Text>
-         <TableView fx:id="instancesTableView" layoutX="12.0" layoutY="60.0" prefHeight="242.0" prefWidth="920.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="376.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="59.0">
+         <TableView fx:id="instancesTableView" layoutX="15.0" layoutY="58.0" prefHeight="239.0" prefWidth="927.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="378.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="57.0">
             <columns>
                <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                <TableColumn fx:id="nameColumn" editable="false" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -264,9 +264,9 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane layoutX="12.0" layoutY="309.0" prefHeight="35.0" prefWidth="205.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="332.0" AnchorPane.leftAnchor="12.0">
+            <Pane layoutX="15.0" layoutY="302.0" prefHeight="29.0" prefWidth="205.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.leftAnchor="13.0">
                <children>
-               <CheckBox fx:id="runningInstancesCheckbox" layoutX="13.0" layoutY="2.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7">
+               <CheckBox fx:id="runningInstancesCheckbox" layoutX="13.0" layoutY="4.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7">
                      <font>
                         <Font name="SansSerif Regular" size="12.0" />
                      </font>

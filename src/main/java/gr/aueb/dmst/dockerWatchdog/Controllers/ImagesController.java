@@ -173,7 +173,7 @@ public class ImagesController implements Initializable {
 
             // Set up the TableView columns that contain buttons using cell factories.
             createContainerCollumn.setCellFactory(createButtonCellFactory(
-                    "Create a Container",
+                    "Create a container",
                     "/images/create.png",
                     "/images/createHover.png",
                     "/images/playClick.png", image -> {
@@ -186,7 +186,7 @@ public class ImagesController implements Initializable {
                     }));
 
             startAllCollumn.setCellFactory(createButtonCellFactory(
-                    "Start All Containers",
+                    "Start all containers",
                     "/images/play.png",
                     "/images/playHover.png",
                     "/images/playClick.png", image -> {
@@ -204,7 +204,7 @@ public class ImagesController implements Initializable {
                     }));
 
             stopAllCollumn.setCellFactory(createButtonCellFactory(
-                    "Stop All Containers",
+                    "Stop all containers",
                     "/images/stop.png",
                     "/images/stopHover.png",
                     "/images/stopClick.png", image -> {
@@ -222,7 +222,7 @@ public class ImagesController implements Initializable {
                     }));
 
             removeImageColumn.setCellFactory(createButtonCellFactory(
-                    "Delete Image",
+                    "Delete image",
                     "/images/binRed.png",
                     "/images/binHover.png",
                     "/images/binClick.png", image -> {
