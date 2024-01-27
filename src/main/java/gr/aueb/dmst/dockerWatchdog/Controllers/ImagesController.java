@@ -787,6 +787,11 @@ public class ImagesController implements Initializable {
             // Take the name of the image user wants to pull from DockerHub.
             String imageName = pullImageTextField.getText();
 
+            // If the user has not given a tag, add the latest tag.
+            if (!imageName.contains(":")) {
+                imageName += ":latest";
+            }
+
             // Create a new HttpRequest that sends a POST request to the WATCHDOG REST API to pull the image.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(BASE_URL + "pull/" + imageName))
