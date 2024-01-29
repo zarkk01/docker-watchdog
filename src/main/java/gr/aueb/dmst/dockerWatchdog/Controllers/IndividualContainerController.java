@@ -522,7 +522,8 @@ public class IndividualContainerController {
 
     /**
      * Removes the selected container.
-     * This method sends a POST request to the WATCHDOG REST API to remove the selected container.
+     * This method checks if the containers is exited and if it is, then it
+     * sends a POST request to the WATCHDOG REST API to remove the selected container.
      * If the container is successfully removed, it changes the scene to the Containers scene.
      *
      * @param actionEvent The event that triggered the container removal.
@@ -530,6 +531,12 @@ public class IndividualContainerController {
      */
     public void removeContainer(ActionEvent actionEvent) throws ContainerActionFailedException {
         try {
+            // Check if the container is running so to not even bother trying to remove.
+            if (this.instanceScene.getStatus().equals("running")) {
+                showNotification("Woof!", "Container " + this.instanceScene.getName() + " is running. Please stop it first.");
+                return;
+            }
+
             // Create the POST request to remove the selected container and send it.
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(BASE_URL + this.instanceScene.getId() + "/delete"))
