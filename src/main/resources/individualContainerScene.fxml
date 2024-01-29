@@ -26,7 +26,7 @@
     <left>
         <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="#909090">
+                <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                     <font>
                         <Font name="SansSerif Bold" size="13.0" />
                     </font>
@@ -37,6 +37,10 @@
                             </image>
                         </ImageView>
                     </graphic>
+               <stylesheets>
+                  <URL value="@styles/buttons.css" />
+                  <URL value="@styles/containersHover.css" />
+               </stylesheets>
                 </Button>
                 <Button fx:id="imagesButton" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="36.0" prefWidth="153.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Images" textFill="#909090">
                     <font>

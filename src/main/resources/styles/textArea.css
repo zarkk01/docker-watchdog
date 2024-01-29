@@ -1,6 +1,6 @@
 .text-area {
-    -fx-text-fill: white; /* Black text color */
-    -fx-control-inner-background: #31312F; /* Red background color */
+    -fx-text-fill: white;
+    -fx-control-inner-background: #31312F;
 }
 .text-area .scroll-pane .scroll-bar:vertical,
 .text-area .scroll-pane .scroll-bar:vertical .track,
@@ -8,22 +8,22 @@
 .text-area .scroll-pane .scroll-bar:horizontal,
 .text-area .scroll-pane .scroll-bar:horizontal .track,
 .text-area .scroll-pane .scroll-bar:horizontal .track-background {
-    -fx-background-color: #1D1D1B; /* Green scroll bar color */
+    -fx-background-color: #1D1D1B;
 }
 
 .text-area .scroll-pane .scroll-bar .increment-button,
 .text-area .scroll-pane .scroll-bar .decrement-button {
-    -fx-opacity: 1.0; /* Full opacity for scroll buttons */
+    -fx-opacity: 1.0;
     -fx-padding: 2;
 }
 
 .text-area .scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #474745; /* Blue thumb color for vertical scroll bar */
+    -fx-background-color: #474745;
 }
 
 .text-area .scroll-pane .scroll-bar:horizontal .thumb {
-    -fx-background-color: #474745; /* Blue thumb color for horizontal scroll bar */
+    -fx-background-color: #474745;
 }
 .text-area .scroll-pane .scroll-bar:corner {
-    -fx-background-color: #474745; /* Blue color for the corner square */
+    -fx-background-color: #474745;
 }
