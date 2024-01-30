@@ -196,7 +196,7 @@ public class ImagesController implements Initializable {
                                 this.startAllContainers(image.getName());
                             } else {
                                 // If the image is not in use, show a notification that the user cannot start something
-                                showNotification("Grrr!", "This is image have no containers.", 3);
+                                showNotification("Grrr!", "This is image have no containers.", 2);
                             }
                         } catch (ImageActionException e) {
                             logger.error(e.getMessage());
@@ -214,7 +214,7 @@ public class ImagesController implements Initializable {
                                 this.stopAllContainers(image.getName());
                             } else {
                                 // If the image is not in use, show a notification that the user cannot stop something
-                                showNotification("Grrr!", "This is image have no containers.", 3);
+                                showNotification("Grrr!", "This is image have no containers.", 2);
                             }
                         } catch (ImageActionException e) {
                             logger.error(e.getMessage());
@@ -228,7 +228,7 @@ public class ImagesController implements Initializable {
                     "/images/binClick.png", image -> {
                         // If the image is in use, show a notification that the user cannot delete it.
                         if (image.getStatus().equals("In use")) {
-                            showNotification("Grrr!", "You cannot delete an image that is in use.", 3);
+                            showNotification("Grrr!", "You cannot delete an image that is in use.", 2);
                         } else {
                             try {
                                 // If the image is not in use, remove it.
@@ -702,6 +702,13 @@ public class ImagesController implements Initializable {
 
             // If the container is created successfully, set the status of the image to "In use" and refresh the images.
             image.setStatus("In use");
+
+            // Also, if in the infoPanel, there is the that image, make its status "In use" so when we refresh the images
+            // it will call adjustInfoPanel method, not adjustZeroInfoPanel.
+            if (imageInfoPanel != null && imageInfoPanel.getName().equals(image.getName())) {
+                imageInfoPanel.setStatus("In use");
+            }
+
             // Refreshing images also will adjust the info panel of this image if it is in the info panel.
             refreshImages();
         } catch (Exception e) {
