@@ -256,12 +256,12 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to update the status of a container.
-    private void updateContainerStatus(MyInstance instance, String status) {
+    public void updateContainerStatus(MyInstance instance, String status) {
         instance.setStatus(status);
     }
 
     // Helper method to handle the destroy event of a container.
-    private void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
+    public void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
         Main.myInstances.remove(instance);
         // Checking if this destroy event, converted an image from in use to unused.
         boolean found = false;
@@ -290,7 +290,7 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to handle the create event of a container.
-    private void handleContainerCreateEvent(String containerId) throws LiveStatsException, DatabaseOperationException {
+    public void handleContainerCreateEvent(String containerId) throws LiveStatsException, DatabaseOperationException {
         InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
 
         // Creating our custom MyInstance model.
@@ -339,7 +339,7 @@ public class MonitorThread implements Runnable {
      *
      * @throws EventHandlingException if an error occurs when calling the handleImagePullEvent() method.
      */
-    private void handleImageEvent(String eventAction, String imageName) throws EventHandlingException {
+    public void handleImageEvent(String eventAction, String imageName) throws EventHandlingException {
         try {
             switch (eventAction) {
                 case "pull":
@@ -356,7 +356,7 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to handle the pull event of an image.
-    private void handleImagePullEvent(String imageName) throws EventHandlingException {
+    public void handleImagePullEvent(String imageName) throws EventHandlingException {
         try {
             InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
 
@@ -377,7 +377,7 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to handle the delete event of an image.
-    private void handleImageDeleteEvent(String imageName) throws EventHandlingException {
+    public void handleImageDeleteEvent(String imageName) throws EventHandlingException {
         try {
             MyImage imageToRemove = MyImage.getImageByID(imageName);
             if (imageToRemove != null) {
@@ -416,7 +416,7 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to handle the create event of a volume.
-    private void handleVolumeCreateEvent(String volumeName) throws EventHandlingException {
+    public void handleVolumeCreateEvent(String volumeName) throws EventHandlingException {
         try {
             InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(volumeName).exec();
             // Creating our custom MyVolume model.
@@ -445,7 +445,7 @@ public class MonitorThread implements Runnable {
     }
 
     // Helper method to handle the destroy event of a volume.
-    private void handleVolumeDestroyEvent(String volumeName) throws EventHandlingException {
+    public void handleVolumeDestroyEvent(String volumeName) throws EventHandlingException {
         try {
             MyVolume volumeToRemove = MyVolume.getVolumeByName(volumeName);
             if (volumeToRemove != null) {
