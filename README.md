@@ -8,76 +8,81 @@ Watchdog is a desktop Spring Boot application designed to monitor your docker cl
 
 To run the application:
 
-1. Ensure Java and Maven are installed.
-2. Depending on your platform:
+**A.** Ensure Java and Maven are installed.
 
-       For MacOS
-   
-       i) Have MYSQL server downloaded on your computer
 
-       ii) Setup a new connection for your database
+**B.** Depending on your platform:
 
-       iii) Export connection NAME, USERNAME, PASSWORD as enviroment variables following the next steps:
 
-       Open the terminal and type the following commands to open the shell profile file: 
 
-       For bash shell:  
+**For MacOS:**
 
-       nano ~/.bashrc
+1. Download MYSQL server on your computer.
+2. Set up a new connection for your database.
+3. Export connection NAME, USERNAME, PASSWORD as environment variables:
 
-       For zsh shell:  
+    Open the terminal and type the following commands to open the shell profile file:
 
-       nano ~/.zshrc
+    For bash shell:
+    ```bash
+    nano ~/.bashrc
+    ```
 
-       Add these lines at the end of the file:  
+    For zsh shell:
+    ```bash
+    nano ~/.zshrc
+    ```
 
-       export DOCKER_DB_NAME="your_database_name"
+    Add these lines at the end of the file:
+    ```bash
+    export DOCKER_DB_NAME="your_database_name"
+    export DOCKER_DB_USERNAME="your_username"
+    export DOCKER_DB_PASSWORD="your_password"
+    ```
 
-       export DOCKER_DB_USERNAME="your_username"
+    Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal or source the profile file using one of the following commands:
 
-       export DOCKER_DB_PASSWORD="your_password"
+    For bash shell:
+    ```bash
+    source ~/.bashrc
+    ```
 
-       Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name.  To make these changes take effect, close and reopen your terminal or source the profile file using one of the following commands: 
+    For zsh shell:
+    ```bash
+    source ~/.zshrc
+    ```
 
-       For bash shell:  
 
-       source ~/.bashrc
 
-       For zsh shell:
+**For Windows:**
 
-       source ~/.zshrc
-   
+1. Download MYSQL server on your computer.
+2. Set up a new connection for your database.
+3. Export connection NAME, USERNAME, PASSWORD as environment variables:
 
-       For Windows:
-   
-       i) Have MYSQL server downloaded on your computer
-   
-       ii) Setup a new connection for your database
-   
-       iii) Export connection NAME, USERNAME, PASSWORD as
-   
-       enviroment variables following the next steps:
-   
-       Open Command Prompt as an administrator.  
-   
-       To set the environment variables, use the setx command followed by the variable name and its value. For example:
-   
-       setx DOCKER_DB_NAME "your_database_name"
-   
-       setx DOCKER_DB_USERNAME "your_username"
-   
-       setx DOCKER_DB_PASSWORD "your_password"
-   
-       Please replace "your_database_name", "your_username", and "your_password" with your actual database name, username, and password.
-   
-       Close and reopen Command Prompt to make sure the changes take effect.
-   
-3. Ensure docker desktop is running and kubernetes is enabled in settings
-4. Clone the repository.
+    Open Command Prompt as an administrator.
+
+    To set the environment variables, use the setx command followed by the variable name and its value. For example:
+
+    ```cmd
+    setx DOCKER_DB_NAME "your_database_name"
+    setx DOCKER_DB_USERNAME "your_username"
+    setx DOCKER_DB_PASSWORD "your_password"
+    ```
+
+    Please replace "your_database_name", "your_username", and "your_password" with your actual database name, username, and password.
+
+    Close and reopen Command Prompt to make sure the changes take effect.
+
+
+**C.** Ensure docker desktop is running and kubernetes is enabled in settings
+
+
+**D.** Clone the repository.
 ```bash
-git clone https://github.com/zarkk01/docker-watchdog.git
+    git clone https://github.com/zarkk01/docker-watchdog.git
 ```
-5. Navigate to the root directory and run `mvn spring-boot:run`.
+**E.** Navigate to the root directory and run `mvn spring-boot:run`.
 
 ## Project Structure
 
