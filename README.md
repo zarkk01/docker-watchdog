@@ -38,7 +38,7 @@ To run the application:
     export WATCHDOG_MYSQL_PASSWORD="example_password"
     ```
    
-    Replace "example_username" and "example_password" with your actual MySQL user and password. Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal.
+    Replace "example_username" and "example_password" with your actual MySQL username and password. Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal.
 
 
 
@@ -56,7 +56,7 @@ To run the application:
     setx WATCHDOG_MYSQL_PASSWORD "example_password"
     ```
 
-    Replace "example_username" and "example_password" with your actual MySQL user and password.
+    Replace "example_username" and "example_password" with your actual MySQL username and password.
     Close and reopen Command Prompt to make sure the changes take effect.
 
 
