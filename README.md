@@ -8,7 +8,7 @@ Watchdog is a desktop Spring Boot application designed to monitor your docker cl
 
 To run the application:
 
-**A.** Ensure Java and Maven are installed.
+**A.** Ensure Java, Maven and MySQL are installed.
 
 
 **B.** Depending on your platform:
@@ -17,9 +17,8 @@ To run the application:
 
 **For MacOS:**
 
-1. Download MYSQL server on your computer.
-2. Set up a new connection for your database.
-3. Export connection NAME, USERNAME, PASSWORD as environment variables:
+1. Set up a new MySQL connection or make of an existing one.
+2. Export your USERNAME and PASSWORD as environment variables:
 
     Open the terminal and type the following commands to open the shell profile file:
 
@@ -35,43 +34,29 @@ To run the application:
 
     Add these lines at the end of the file:
     ```bash
-    export DOCKER_DB_NAME="your_database_name"
-    export DOCKER_DB_USERNAME="your_username"
-    export DOCKER_DB_PASSWORD="your_password"
+    export WATCHDOG_MYSQL_USERNAME="example_username"
+    export WATCHDOG_MYSQL_PASSWORD="example_password"
     ```
-
-    Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal or source the profile file using one of the following commands:
-
-    For bash shell:
-    ```bash
-    source ~/.bashrc
-    ```
-
-    For zsh shell:
-    ```bash
-    source ~/.zshrc
-    ```
+   
+    Replace "example_username" and "example_password" with your actual MySQL user and password. Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal.
 
 
 
 **For Windows:**
 
-1. Download MYSQL server on your computer.
-2. Set up a new connection for your database.
-3. Export connection NAME, USERNAME, PASSWORD as environment variables:
+1. Set up a new MySQL connection or make of an existing one.
+2. Export your USERNAME and PASSWORD as environment variables:
 
     Open Command Prompt as an administrator.
 
     To set the environment variables, use the setx command followed by the variable name and its value. For example:
 
     ```cmd
-    setx DOCKER_DB_NAME "your_database_name"
-    setx DOCKER_DB_USERNAME "your_username"
-    setx DOCKER_DB_PASSWORD "your_password"
+    setx WATCHDOG_MYSQL_USERNAME "example_username"
+    setx WATCHDOG_MYSQL_PASSWORD "example_password"
     ```
 
-    Please replace "your_database_name", "your_username", and "your_password" with your actual database name, username, and password.
-
+    Replace "example_username" and "example_password" with your actual MySQL user and password.
     Close and reopen Command Prompt to make sure the changes take effect.
 
 
@@ -85,6 +70,8 @@ To run the application:
 **E.** Navigate to the root directory and run `mvn install`
 
 **F.**  Run `java -jar target/watchdog.jar`
+
+**G.** Enhance your workflow with Watchdog
 ## Project Structure
 
 ```
