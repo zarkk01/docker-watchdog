@@ -82,8 +82,9 @@ To run the application:
 ```bash
     git clone https://github.com/zarkk01/docker-watchdog.git
 ```
-**E.** Navigate to the root directory and run `mvn spring-boot:run`.
+**E.** Navigate to the root directory and run `mvn install`
 
+**F.**  Run `java -jar target/watchdog.jar`
 ## Project Structure
 
 ```
