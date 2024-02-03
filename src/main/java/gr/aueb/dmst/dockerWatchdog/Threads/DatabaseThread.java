@@ -1,9 +1,9 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
 import java.util.Date;
-import java.sql.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.sql.*;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.DatabaseOperationException;
 import gr.aueb.dmst.dockerWatchdog.Main;
@@ -26,10 +26,9 @@ public class DatabaseThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
     // Database connection details as environment variables from user.
-    private static final String DOCKER_DB_NAME = System.getenv("DOCKER_DB_NAME");
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/" + DOCKER_DB_NAME;
-    private static final String USER = System.getenv("DOCKER_DB_USERNAME");
-    private static final String PASS = System.getenv("DOCKER_DB_PASSWORD");
+    private final static String DB_URL = "jdbc:mysql://localhost:3306/watchdog_database";
+    private static final String USER = System.getenv("WATCHDOG_MYSQL_USERNAME");
+    private static final String PASS = System.getenv("WATCHDOG_MYSQL_PASSWORD");
 
     /**
      * This method is responsible for creating Instances, Images and Volumes
@@ -47,8 +46,49 @@ public class DatabaseThread implements Runnable {
     }
 
     /**
+     * This method is responsible for creating the watchdog_database in the MySQL server.
+     * First, it drops the database if it exists, and then it creates it again fresh.
+     * It is called from Monitor Thread's fillLists() method after the initialization
+     * of the lists, and it is the first thing happening regarding database operations.
+     *
+     * @throws DatabaseOperationException if an error occurs while creating the database.
+     */
+    public static void createDatabase() throws DatabaseOperationException {
+        try {
+            // Configure the connection to the database, first without specifying the database name.
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/", USER, PASS);
+
+            // Drop the database if it exists because we want no old data in our monitoring.
+            try {
+                String dropDatabase = "DROP DATABASE IF EXISTS watchdog_database";
+                PreparedStatement dropDatabaseStmt = conn.prepareStatement(dropDatabase);
+                // Goodbye old watchdog_database
+                dropDatabaseStmt.execute();
+            } catch (Exception e) {
+                throw new DatabaseOperationException("dropping database", "watchdog_database");
+            }
+
+            // Create the database named watchdog_database which will be used for the application.
+            try {
+                String createDatabase = "CREATE DATABASE IF NOT EXISTS watchdog_database";
+                PreparedStatement createDatabaseStmt = conn.prepareStatement(createDatabase);
+                // Database is created right here
+                createDatabaseStmt.execute();
+            } catch (Exception e) {
+                throw new DatabaseOperationException("creating database", "watchdog_database");
+            }
+
+            // Close the connection to the database.
+            conn.close();
+        } catch (SQLException e) {
+            throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
+                    " username and the right password");
+        }
+    }
+
+    /**
      * This method, called from Monitor Thread's fillLists() method after the initialization
-     * of the lists, deletes any existing tables in our docker_database, so we start fresh clean our monitoring.
+     * of the lists, deletes any existing tables in our watchdog_database, so we start fresh clean our monitoring.
      * It creates, then, Instances, Images and Volumes tables in the database.
      * Also, create Metrics (Changes) table. After every creation, it calls
      * keepTrackOf...() method so the tables are filled with the appropriate data.
@@ -155,7 +195,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username and the right password");
         }
     }
 
@@ -225,7 +265,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username and the right password");
         }
     }
 
@@ -260,7 +300,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username and the right password");
         }
     }
 
@@ -288,7 +328,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username and the right password");
         }
     }
 
@@ -328,7 +368,7 @@ public class DatabaseThread implements Runnable {
             conn.close();
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection and you have the right" +
-                    " user : docker_db and the right password : dockerW4tchd0g$");
+                    " username and the right password");
         }
     }
 
@@ -363,6 +403,7 @@ public class DatabaseThread implements Runnable {
      * This method is responsible for updating live metrics of instances in the database.
      * It uses a Timer to schedule the update task to run every 2.5 seconds.
      * It updates the Instances table with the current metrics of instances.
+     *
      * @throws DatabaseOperationException if an error occurs while updating live metrics.
      */
     public static void updateLiveMetrics() throws DatabaseOperationException {

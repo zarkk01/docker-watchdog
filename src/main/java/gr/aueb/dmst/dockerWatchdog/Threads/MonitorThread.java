@@ -21,6 +21,8 @@ import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.xml.crypto.Data;
+
 /**
  * This Thread is communicating with the Docker API and provide the state of the Docker Cluster to the app.
  * Starts by filling the lists with Containers, Images and Volumes and then uses a custom ResultCallback so
@@ -130,7 +132,9 @@ public class MonitorThread implements Runnable {
             throw new ListFillingException("Volumes");
         }
 
-        // In the end, call the method to create the tables in the database as we are sure that our lists are filled.
+        // After filling the lists, watchdog is ready for database operations, so we create the watchdog_database.
+        DatabaseThread.createDatabase();
+        //Call the method to create the tables in the database as we are sure that our lists are filled.
         DatabaseThread.createAllTables();
     }
 
