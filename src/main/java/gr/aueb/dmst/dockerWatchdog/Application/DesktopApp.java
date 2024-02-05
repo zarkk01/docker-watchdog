@@ -8,6 +8,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+
 
 /**
  * This class represents the main application window for the Docker Watchdog application.
@@ -41,6 +43,9 @@ public class DesktopApp extends Application {
 
         // Create the containers' scene.
         Scene scene = new Scene(fxmlLoader.load(),1100,700);
+
+        Image image = new Image("/images/watchdogRed.png");
+        stage.getIcons().add(image);
 
         // Set the scene on the stage.
         stage.setScene(scene);

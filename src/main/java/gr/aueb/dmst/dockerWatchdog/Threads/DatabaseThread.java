@@ -26,7 +26,7 @@ public class DatabaseThread implements Runnable {
     private static final Logger logger = LogManager.getLogger(DatabaseThread.class);
 
     // Database connection details as environment variables from user.
-    private final static String DB_URL = "jdbc:mysql://localhost:3306/watchdog_database";
+    private final static String DB_URL = "jdbc:mysql://localhost:3306/docker_database";
     private static final String USER = System.getenv("WATCHDOG_MYSQL_USERNAME");
     private static final String PASS = System.getenv("WATCHDOG_MYSQL_PASSWORD");
 
