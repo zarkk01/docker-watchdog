@@ -52,16 +52,19 @@ public class MonitorThread implements Runnable {
         startListening();
     }
 
-    /** This method fills the lists with our custom My... models after getting info from original Docker Components.
-     * In this way we can handle effectively in our way the Docker Cluster and maintain control.
+    /**
+     * This method fills the lists with our custom My... models after getting info from original Docker Components.
+     * In this way we can handle effectively the Docker Cluster and maintain control.
      *
      * @throws ListFillingException with the appropriate message for the error.
      * @throws DatabaseOperationException if an error occurs when createAllTables() is called.
      */
     public void fillLists() throws ListFillingException, DatabaseOperationException {
+        // Images list is filled with MyImage objects.
         try {
-            // Images list is filled with MyImage objects.
+            // Getting the list of images from the Docker API.
             List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
+            // Iterate through the images and get the info of each one.
             for (Image image : images) {
                 InspectImageResponse imageInfo = Main.dockerClient.inspectImageCmd(image.getId()).exec();
                 // Creating our custom MyImage model.
@@ -71,15 +74,19 @@ public class MonitorThread implements Runnable {
                         imageInfo.getSize(),
                         getImageUsageStatus(imageInfo.getRepoTags().get(0))
                 );
+                // Adding it to our list of MyImage objects.
                 Main.myImages.add(newImage);
             }
         } catch (Exception e) {
+            // If an error occurs, throw an exception specifying that Images list is not filled.
             throw new ListFillingException("Images");
         }
 
+        // Containers list is filled with MyInstance objects.
         try {
-            // Containers list is filled with MyInstance objects.
+            // Getting the list of containers from the Docker API.
             List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
+            // Iterate through the containers and get the info of each one.
             for (Container container : containers) {
                 InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
                 // Creating our custom MyInstance model.
@@ -101,15 +108,19 @@ public class MonitorThread implements Runnable {
                         newInstance.addVolume(volumeName.getName());
                     }
                 }
+                // Adding it to our list of MyInstance objects.
                 Main.myInstances.add(newInstance);
             }
         } catch (Exception e) {
-            throw new ListFillingException("Containers");
+            // If an error occurs, throw an exception specifying that Instances list is not filled.
+            throw new ListFillingException("Instances");
         }
 
+        // Volumes list is filled with MyVolume objects.
         try {
-            // Volumes list is filled with MyVolume objects.
+            // Getting the list of volumes from the Docker API.
             List<InspectVolumeResponse> volumes = Main.dockerClient.listVolumesCmd().exec().getVolumes();
+            // Iterate through the volumes and get the info of each one.
             for (InspectVolumeResponse volume : volumes) {
                 // Creating our custom MyVolume model.
                 MyVolume newVolume = new MyVolume(
@@ -118,7 +129,9 @@ public class MonitorThread implements Runnable {
                         volume.getMountpoint(),
                         new ArrayList<String>()
                 );
+                // Checking for containers using this volume and adding them to the list.
                 for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+                    // For each container, check if it uses this volume and add it to the list.
                     for (ContainerMount volumeName : container.getMounts()) {
                         if (volumeName.getName() == null) {continue; }
                         if (volumeName.getName().equals(volume.getName())) {
@@ -126,9 +139,11 @@ public class MonitorThread implements Runnable {
                         }
                     }
                 }
+                // Adding it to our list of MyVolume objects.
                 Main.myVolumes.add(newVolume);
             }
         } catch (Exception e) {
+            // If an error occurs, throw an exception specifying that Volumes list is not filled.
             throw new ListFillingException("Volumes");
         }
 
@@ -165,11 +180,11 @@ public class MonitorThread implements Runnable {
         }
     }
 
-
     /**
      * This method is used to listen for events happening in the Docker Cluster.
      * It uses the Docker API to get the events, and then it recognises the type
-     * of the event and calls the appropriate method to handle it.
+     * of the event and calls the appropriate method to handle it. It makes use of the
+     * EventResultCallback to get the events and then update the lists accordingly.
      */
     public void startListening() {
         Main.dockerClient.eventsCmd().exec(new EventsResultCallback() {
@@ -380,9 +395,21 @@ public class MonitorThread implements Runnable {
         }
     }
 
+    // Helper method to get the status of an image.
+    public String getImageUsageStatus(String name){
+        // Iterate through the containers and check if the image is used by at least one.
+        for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+            if (container.getImage().equals(name)) {
+                return "In use";
+            }
+        }
+        return "Unused";
+    }
+
     // Helper method to handle the delete event of an image.
     public void handleImageDeleteEvent(String imageName) throws EventHandlingException {
         try {
+            // Make use of our custom's MyImage method to get the image given its name.
             MyImage imageToRemove = MyImage.getImageByID(imageName);
             if (imageToRemove != null) {
                 // Say goodbye to image.
@@ -464,20 +491,10 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    // Helper method to get the status of an image.
-    public String getImageUsageStatus(String name){
-        // Iterate through the containers and check if the image is used by at least one.
-        for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
-            if (container.getImage().equals(name)) {
-                return "In use";
-            }
-        }
-        return "Unused";
-    }
-
     /**
-     * CustomResultCallback is a custom implementation of the ResultCallbackTemplate class.
-     * It is used to handle the statistics of a Docker container.
+     * CustomResultCallback is an implementation of the ResultCallbackTemplate class responsible for
+     * getting the statistics of a Docker container and updating the lists accordingly. Every new or existing
+     * container has its own CustomResultCallback object to maintain its state in real time.
      * It includes methods for getting CPU usage, memory usage, number of PIDs, and block I/O statistics.
      */
     private static class CustomResultCallback extends ResultCallbackTemplate<CustomResultCallback, Statistics > {
@@ -486,7 +503,7 @@ public class MonitorThread implements Runnable {
         public String id;
 
         // The AsyncDockerCmd object we use to get the statistics.
-        private AsyncDockerCmd < StatsCmd,Statistics > asyncStatsCmd;
+        private AsyncDockerCmd <StatsCmd, Statistics> asyncStatsCmd;
 
         /**
          * Constructor for the CustomResultCallback class.
@@ -496,11 +513,10 @@ public class MonitorThread implements Runnable {
         public CustomResultCallback(String id, AsyncDockerCmd < StatsCmd, Statistics > asyncStatsCmd) {
             this.id = id;
             this.asyncStatsCmd = asyncStatsCmd;
-
         }
 
         /**
-         * This method is called when the next item is available.
+         * This method is called when the next item is available meaning that the statistics are updated.
          * It updates the CPU usage, memory usage, number of PIDs, and block I/O statistics of the Docker container.
          * @param stats The statistics of the Docker container.
          */
@@ -570,16 +586,16 @@ public class MonitorThread implements Runnable {
         // This method is called when an error occurs.
         @Override
         public void onError(Throwable throwable) {
-            throwable.printStackTrace();
+            logger.error(throwable.getMessage());
         }
 
-        // This method is called when the stream is closed.
+        // This method is called when the stream is closed and the statistics are complete.
         @Override
         public void onComplete() {
             asyncStatsCmd.close();
         }
 
-        // This method is called when the stream is started.
+        // This method is called when the stream is started and the statistics are available.
         @Override
         public void onStart(Closeable closeable) {}
     }
