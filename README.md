@@ -17,8 +17,8 @@ To run the application:
 
 **For MacOS:**
 
-1. Set up a new MySQL connection or make of an existing one.
-2. Export your USERNAME and PASSWORD as environment variables:
+1. Set up a new MySQL connection or make use of an existing one.
+2. Export your MySQL USERNAME and PASSWORD as environment variables:
 
     Open the terminal and type the following commands to open the shell profile file:
 
@@ -44,8 +44,8 @@ To run the application:
 
 **For Windows:**
 
-1. Set up a new MySQL connection or make of an existing one.
-2. Export your USERNAME and PASSWORD as environment variables:
+1. Set up a new MySQL connection or make use of an existing one.
+2. Export your MySQL USERNAME and PASSWORD as environment variables:
 
     Open Command Prompt as an administrator.
 
