@@ -3,6 +3,10 @@ package gr.aueb.dmst.dockerWatchdog;
 import java.util.ArrayList;
 import javafx.application.Application;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.boot.SpringApplication;
+
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
@@ -15,8 +19,6 @@ import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 
-import org.springframework.boot.SpringApplication;
-
 /**
  * The main class of the application.
  * It initializes the Docker client and lists for instances, images, and volumes,
@@ -26,6 +28,9 @@ import org.springframework.boot.SpringApplication;
  * which supports our REST API.
  */
 public class Main {
+
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
      * Configuration for the Docker client.
@@ -60,36 +65,36 @@ public class Main {
     public static ArrayList<MyVolume> myVolumes = new ArrayList<>();
 
     /**
-     * Main method of the application.
-     * It starts the Spring Boot application, the JavaFX application,
-     * and the threads for monitoring Docker events, executing actions on Docker Components,
-     * and database operations. It first starts the Spring Boot application so that
-     * the REST API is available before the JavaFX application starts.
+     * The main entry point of the application and responsible for initializing and starting all the necessary components
+     * It starts the threads for monitoring Docker events, executing actions on Docker components, and performing database operations.
+     * It also starts the Spring Boot application to make the REST API available before the launch of the JavaFX application for the GUI.
      *
-     * @param args command line arguments
+     * If any exception occurs during the startup process, it is caught and logged.
+     *
+     * @param args command line arguments passed to the application. Currently, these arguments are not used.
      */
     public static void main(String[] args) {
 
         try {
 
-            // Start Spring Boot application
-            SpringApplication.run(WebApp.class, args);
-
             // Start threads in a specific order so to prevent errors
-            Thread newMonitorThread = new Thread(new MonitorThread());
-            newMonitorThread.start();
+            Thread monitorThread = new Thread(new MonitorThread());
+            monitorThread.start();
 
             Thread executorThread = new Thread(new ExecutorThread());
             executorThread.start();
 
-            Thread dbThread = new Thread(new DatabaseThread());
-            dbThread.start();
+            Thread databaseThread = new Thread(new DatabaseThread());
+            databaseThread.start();
+
+            // Start Spring Boot application
+            SpringApplication.run(WebApp.class, args);
 
             // Start JavaFX application and GUI displays
             Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("An error occurred while starting the application: " + e.getMessage());
         }
     }
 }
