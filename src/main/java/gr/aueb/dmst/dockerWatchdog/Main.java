@@ -94,7 +94,7 @@ public class Main {
             Application.launch(DesktopApp.class, args);
 
         } catch (Exception e) {
-            logger.error("An error occurred while starting the application: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -12,10 +12,13 @@ import java.net.http.HttpResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.scene.control.Button;
 import javafx.animation.KeyFrame;
@@ -39,12 +42,15 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import javafx.scene.layout.Pane;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Controller for the Containers scene.
@@ -58,6 +64,9 @@ import org.json.JSONObject;
  * the backend and send requests for information and actions.
  */
 public class ContainersController implements Initializable {
+
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(ContainersController.class);
     private Stage stage;
     private Parent root;
 
@@ -85,6 +94,19 @@ public class ContainersController implements Initializable {
     private TableColumn<InstanceScene, Void> actionButtonColumn;
     @FXML
     private TableColumn<InstanceScene, Void> selectColumn;
+
+    @FXML
+    private Text containersHead;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private VBox sideBar;
+    @FXML
+    private Pane infoDownPane;
+    @FXML
+    private Pane runningPane;
+    @FXML
+    private Pane searchPane;
 
     @FXML
     private VBox notificationBox;
@@ -135,7 +157,7 @@ public class ContainersController implements Initializable {
     /**
      * Initializes the ContainersController.
      * This method is called after the ContainersController is constructed.
-     * It sets up the sidebar images, table columns, remove button, instances table view, and refreshes the instances.
+     * It sets up shadows, sidebar images, table columns, remove button, instances table view, and refreshes the instances.
      * It also creates a Timeline that refreshes the instances every 2 seconds and starts it.
      * If the runningInstancesCheckbox is selected, it refreshes the instances.
      * If an error occurs during the initialization, it throws a RuntimeException.
@@ -147,13 +169,15 @@ public class ContainersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+            // Set up the shadows for the components.
+            setUpShadows();
+
             // Set up the sidebar images.
             hoveredSideBarImages();
 
             // Set up a tooltip for the watchdogImage.
-            Tooltip woof = new Tooltip("Woof!");
-            woof.setShowDelay(Duration.millis(20));
-            Tooltip.install(watchdogImage,woof);
+            setUpWoofTooltip();
 
             // Set up the table columns.
             setupTableColumns();
@@ -178,15 +202,37 @@ public class ContainersController implements Initializable {
             });
 
             // Set the notificationBoxStatic to the notificationBox.
+            // It is static so to be able to be called by DockerService.java where the actions are performed.
             notificationBoxStatic = this.notificationBox;
 
             // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
+            // It is static so to be able to be manipulated by DockerService.java.
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Sets up the drop shadow effect for various components in the scene.
+     * This method creates a new DropShadow effect and applies it to the infoDownPane, runningPane, searchPane,
+     * instancesTableView, topBar, sideBar and containersHead.
+     * The radius of the shadow is set to 8 and the color is set to a semi-transparent black.
+     */
+    private void setUpShadows() {
+        // Set up drop shadow effect for the components.
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(7.5);
+        shadow.setColor(Color.color(0, 0, 0, 0.4));
+        infoDownPane.setEffect(shadow);
+        runningPane.setEffect(shadow);
+        searchPane.setEffect(shadow);
+        instancesTableView.setEffect(shadow);
+        topBar.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        containersHead.setEffect(shadow);
     }
 
     /**
@@ -233,6 +279,12 @@ public class ContainersController implements Initializable {
             button.getStyleClass().remove("button-hovered");
             ((ImageView) button.getGraphic()).setImage(originalImage);
         });
+    }
+
+    private void setUpWoofTooltip() {
+        Tooltip woof = new Tooltip("Woof!");
+        woof.setShowDelay(Duration.millis(20));
+        Tooltip.install(watchdogImage,woof);
     }
 
     /**
@@ -454,7 +506,6 @@ public class ContainersController implements Initializable {
             return cell;
         }
     };
-
 
     /**
      * Creates a cell factory for the select column.
@@ -711,7 +762,7 @@ public class ContainersController implements Initializable {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error("Failed to refresh instances.", e);
         }
     }
 
@@ -792,7 +843,6 @@ public class ContainersController implements Initializable {
                         getCheckboxStateById(id)));
             }
         }
-
         // Return the list of InstanceScene objects.
         return instances;
     }
@@ -833,10 +883,6 @@ public class ContainersController implements Initializable {
      * running instances, total instances, and stopped instances.
      * These metrics are then displayed in the corresponding labels in the user interface.
      * If the datetime is not in the correct format, an error message is printed.
-     *
-     * @throws ParseException If the datetime given by the user is not in the correct format.
-     * @throws IOException If an I/O error occurs when sending or receiving the HTTP request.
-     * @throws InterruptedException If the operation is interrupted.
      */
     public void showDataFromGivenDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -871,10 +917,8 @@ public class ContainersController implements Initializable {
             runningContainersText.setText(runningInstances);
             totalContainersText.setText(totalInstances);
             stoppedContainersText.setText(stoppedInstances);
-        } catch (ParseException pe) {
-            System.out.println("Error parsing date: " + pe.getMessage());
-        } catch (Exception ex) {
-            System.out.println("Error occurred: " + ex.getMessage());
+        } catch (Exception e) {
+           logger.error("Failed to show data from given datetime.", e);
         }
     }
 
@@ -935,7 +979,7 @@ public class ContainersController implements Initializable {
                 stage.setScene(new Scene(root));
                 stage.show();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to handle upload file.", e);
             }
         }
     }
@@ -1099,20 +1143,13 @@ public class ContainersController implements Initializable {
     }
 
     /**
-     * Displays the loading animation.
-     * This method sets the loadingImageViewStatic to visible, and it is called from
-     * DockerService when the user clicks on an action button.
+     * Changes the visibility of the loading image.
+     * This method is used to show or hide the loading image in the user interface.
+     * It is called by DockerService upon start or complete of an operation.
+     *
+     * @param toBeShown A boolean indicating whether the loading image should be shown or hidden.
      */
-    public static void showLoading() {
-        loadingImageViewStatic.setVisible(true);
-    }
-
-    /**
-     * Hides the loading animation.
-     * This method sets the loadingImageViewStatic to invisible, and it is called from
-     * DockerService when the action is done.
-     */
-    public static void hideLoading() {
-        loadingImageViewStatic.setVisible(false);
+    public static void showLoading(boolean toBeShown) {
+        loadingImageViewStatic.setVisible(toBeShown);
     }
 }

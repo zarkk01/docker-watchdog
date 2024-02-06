@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController">
 <left>
-   <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
+   <VBox fx:id="sideBar" prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
       <children>
          <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" stylesheets="@styles/buttons.css" text="Containers" textFill="WHITE">
             <font>
@@ -133,7 +122,7 @@
 <center>
    <AnchorPane fx:id="anchorPane" prefHeight="615.0" prefWidth="975.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" BorderPane.alignment="CENTER">
       <children>
-         <Pane layoutX="12.0" layoutY="353.0" prefHeight="313.0" prefWidth="920.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0">
+         <Pane fx:id="infoDownPane" layoutX="12.0" layoutY="353.0" prefHeight="313.0" prefWidth="920.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0">
                <children>
                <Pane layoutX="496.0" layoutY="86.0" prefHeight="160.0" prefWidth="163.0">
                   <children>
@@ -227,12 +216,12 @@
                   </Text>
                </children>
             </Pane>
-         <Text fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
+         <Text fx:id="containersHead" fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Containers" wrappingWidth="203.89892578125">
             <font>
                <Font name="SansSerif Bold" size="36.0" />
             </font>
          </Text>
-         <TableView fx:id="instancesTableView" layoutX="15.0" layoutY="58.0" prefHeight="239.0" prefWidth="927.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="378.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="57.0">
+         <TableView fx:id="instancesTableView" layoutX="15.0" layoutY="59.0" prefHeight="236.0" prefWidth="917.0" stylesheets="@styles/styles.css" AnchorPane.bottomAnchor="380.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="58.0">
             <columns>
                <TableColumn fx:id="idColumn" prefWidth="110.0" text="ID" />
                <TableColumn fx:id="nameColumn" editable="false" minWidth="0.0" prefWidth="75.0" text="Name" />
@@ -250,7 +239,7 @@
                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
          </TableView>
-            <Pane layoutX="18.0" layoutY="18.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="619.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="17.0">
+            <Pane fx:id="searchPane" layoutX="13.0" layoutY="17.0" prefHeight="35.0" prefWidth="175.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.bottomAnchor="621.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="17.0">
                <children>
                <TextField fx:id="searchField" layoutX="29.0" layoutY="2.0" prefHeight="30.0" prefWidth="146.0" promptText="Search for a container" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;">
                      <font>
@@ -264,7 +253,7 @@
                   </ImageView>
                </children>
             </Pane>
-            <Pane layoutX="15.0" layoutY="302.0" prefHeight="29.0" prefWidth="205.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.leftAnchor="13.0">
+            <Pane fx:id="runningPane" layoutX="15.0" layoutY="302.0" prefHeight="29.0" prefWidth="205.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" AnchorPane.leftAnchor="13.0">
                <children>
                <CheckBox fx:id="runningInstancesCheckbox" layoutX="13.0" layoutY="4.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="191.0" style="-fx-text-fill: white; -fx-border-radius: 10; -fx-opacity: 0.7;" text="Show only running containers" textFill="#b2a7a7">
                      <font>
@@ -279,7 +268,7 @@
    </AnchorPane>
 </center>
 <top>
-   <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+   <HBox fx:id="topBar" prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
       <children>
          <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
             <font>

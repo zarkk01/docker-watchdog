@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.github.dockerjava.api.exception.DockerException;
 
 import gr.aueb.dmst.dockerWatchdog.Controllers.ContainersController;
@@ -20,11 +25,6 @@ import gr.aueb.dmst.dockerWatchdog.Models.Instance;
 import gr.aueb.dmst.dockerWatchdog.Models.Metric;
 import gr.aueb.dmst.dockerWatchdog.Repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * SpringBoot's Service class for managing Docker instances, images, volumes
@@ -81,7 +81,7 @@ public class DockerService {
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 // Call the ContainersController's showLoading method to display the loading animation
-                ContainersController.showLoading();
+                ContainersController.showLoading(true);
                 // Call the ExecutorThread's startContainer method to start the Docker container
                 ExecutorThread.startContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -93,7 +93,7 @@ public class DockerService {
         // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
         future.thenRun(() -> {
             ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. started.", 3);
-            ContainersController.hideLoading();
+            ContainersController.showLoading(false);
         });
     }
 
@@ -113,7 +113,7 @@ public class DockerService {
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 // Call the ContainersController's showLoading method to display the loading animation
-                ContainersController.showLoading();
+                ContainersController.showLoading(true);
                 // Call the ExecutorThread's stopContainer method to stop the Docker container
                 ExecutorThread.stopContainer(containerId);
             } catch (ContainerNotFoundException | ContainerNotModifiedException e) {
@@ -125,7 +125,7 @@ public class DockerService {
         // Once the CompletableFuture is complete, display a notification to the user and hide the loading animation
         future.thenRun(() -> {
             ContainersController.showNotification("Woof!", "Container " + containerId.substring(0,5) + ".. stopped.", 3);
-            ContainersController.hideLoading();
+            ContainersController.showLoading(false);
         });
     }
 
