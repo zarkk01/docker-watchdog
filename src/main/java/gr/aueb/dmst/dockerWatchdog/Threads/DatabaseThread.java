@@ -31,10 +31,9 @@ public class DatabaseThread implements Runnable {
     private static final String PASS = System.getenv("WATCHDOG_MYSQL_PASSWORD");
 
     /**
-     * This method is responsible for creating Instances, Images and Volumes
-     * tables in the database. Also, create Metrics (Changes) table and starts the updateLiveMetrics
-     * method which is responsible for updating every 2.5 seconds the live data
-     * of the containers.
+     * The entry point for the DatabaseThread when it is started.
+     * This method calls the updateLiveMetrics method to update the live metrics of instances(CPU, Memory, PIDS..) in the database.
+     * If a DatabaseOperationException is thrown, it logs the error message.
      */
     @Override
     public void run() {
@@ -46,10 +45,99 @@ public class DatabaseThread implements Runnable {
     }
 
     /**
+     * This method is responsible for updating live metrics of instances in the database.
+     * It uses a Timer to schedule the update task to run every 2.5 seconds.
+     * It updates the Instances table with the current metrics of instances.
+     *
+     * @throws DatabaseOperationException if an error occurs while updating live metrics.
+     */
+    public static void updateLiveMetrics() throws DatabaseOperationException {
+        // Create a new Timer and TimerTask to schedule the update task.
+        Timer timer = new Timer();
+        TimerTask updateTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    // Configure the connection to the database.
+                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+                    // Get the latest metric ID.
+                    String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
+                    Statement findLatestMetricIdStmt = conn.createStatement();
+                    ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
+
+                    int latestMetricId = 0;
+                    if (latestMetricIdResult.next()) {
+                        latestMetricId = latestMetricIdResult.getInt("latestMetricId");
+                    }
+
+                    // Prepare the SQL statement to update the instances.
+                    String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
+                            "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
+                    PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
+
+                    // Iterate through all the instances and update the Instances table.
+                    for (MyInstance instance : Main.myInstances) {
+                        // Volumes are in an ArrayList, we need to convert them to a String.
+                        String volumesUsing = "";
+                        for (String volumeName : instance.getVolumes()) {
+                            volumesUsing += volumeName + ",";
+                        }
+
+                        // Set the parameters in the SQL statement.
+                        updateInstancesStmt.setString(1, instance.getName());
+                        updateInstancesStmt.setString(2, instance.getImage());
+                        updateInstancesStmt.setString(3, instance.getStatus());
+                        updateInstancesStmt.setDouble(4, instance.getMemoryUsage());
+                        updateInstancesStmt.setLong(5, instance.getPids());
+                        updateInstancesStmt.setDouble(6, instance.getCpuUsage());
+                        updateInstancesStmt.setDouble(7, instance.getBlockI());
+                        updateInstancesStmt.setDouble(8, instance.getBlockO());
+                        updateInstancesStmt.setString(9, volumesUsing);
+                        updateInstancesStmt.setString(10, instance.getSubnet());
+                        updateInstancesStmt.setString(11, instance.getGateway());
+                        updateInstancesStmt.setInt(12, instance.getPrefixLen());
+                        updateInstancesStmt.setInt(13, latestMetricId);
+                        updateInstancesStmt.setString(14, instance.getId());
+
+                        // Execute the SQL statement.
+                        updateInstancesStmt.executeUpdate();
+                    }
+
+                    // Close the connection to the database.
+                    conn.close();
+                } catch (SQLException e) {
+                    logger.error("Error while updating live metrics in database: " + e.getMessage());
+                }
+            }
+        };
+
+        // Schedule the task to run every 2.5 seconds
+        timer.scheduleAtFixedRate(updateTask, 0, 2500);
+    }
+
+    /**
+     * This method is responsible for setting up the database and its tables.
+     * It is called by the fillLists() method of the MonitorThread class after the lists are filled.
+     * It creates the database and all the necessary tables for storing instances, images, volumes and metrics.
+     *
+     * If a DatabaseOperationException is thrown during the creation of the database or tables, it logs the error message.
+     */
+    public static void setUpDatabase() {
+        try {
+            // Create the database named watchdog_database.
+            createDatabase();
+            // Create the tables for instances, images, and volumes and metrics (changes).
+            createAllTables();
+        } catch (DatabaseOperationException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    /**
      * This method is responsible for creating the watchdog_database in the MySQL server.
      * First, it drops the database if it exists, and then it creates it again fresh.
-     * It is called from Monitor Thread's fillLists() method after the initialization
-     * of the lists, and it is the first thing happening regarding database operations.
+     * It is called by the setUpDatabase and it the first method called in the database setup process.
      *
      * @throws DatabaseOperationException if an error occurs while creating the database.
      */
@@ -87,13 +175,12 @@ public class DatabaseThread implements Runnable {
     }
 
     /**
-     * This method, called from Monitor Thread's fillLists() method after the initialization
-     * of the lists, deletes any existing tables in our watchdog_database, so we start fresh clean our monitoring.
-     * It creates, then, Instances, Images and Volumes tables in the database.
-     * Also, create Metrics (Changes) table. After every creation, it calls
-     * keepTrackOf...() method so the tables are filled with the appropriate data.
+     * This method is responsible for creating all the necessary tables in the database.
+     * It first drops any existing tables to ensure a clean start, then creates new tables for Instances, Metrics, Images, and Volumes.
+     * After creating the tables, it calls methods to fill these tables with initial data.
+     * It is called by the setUpDatabase method during the database setup process.
      *
-     * @throws DatabaseOperationException if an error occurs while creating the tables.
+     * @throws DatabaseOperationException if an error occurs while creating the tables or inserting initial data.
      */
     public static void createAllTables() throws DatabaseOperationException {
         try {
@@ -397,76 +484,5 @@ public class DatabaseThread implements Runnable {
         } catch (SQLException e) {
             throw new DatabaseOperationException("connecting in database", "mySQL connection");
         }
-    }
-
-    /**
-     * This method is responsible for updating live metrics of instances in the database.
-     * It uses a Timer to schedule the update task to run every 2.5 seconds.
-     * It updates the Instances table with the current metrics of instances.
-     *
-     * @throws DatabaseOperationException if an error occurs while updating live metrics.
-     */
-    public static void updateLiveMetrics() throws DatabaseOperationException {
-        Timer timer = new Timer();
-        TimerTask updateTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    // Configure the connection to the database.
-                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-
-                    // Get the latest metric ID.
-                    String findLatestMetricIdQuery = "SELECT MAX(id) AS latestMetricId FROM Metrics";
-                    Statement findLatestMetricIdStmt = conn.createStatement();
-                    ResultSet latestMetricIdResult = findLatestMetricIdStmt.executeQuery(findLatestMetricIdQuery);
-
-                    int latestMetricId = 0;
-                    if (latestMetricIdResult.next()) {
-                        latestMetricId = latestMetricIdResult.getInt("latestMetricId");
-                    }
-
-                    // Prepare the SQL statement to update the instances.
-                    String updateInstancesQuery = "UPDATE Instances SET name = ?, image = ?, status = ?, " +
-                            "memoryusage = ?, pids = ?, cpuusage = ?, blockI = ?, blockO = ?,volumes = ?,subnet = ?,gateway = ?,prefixlen = ? WHERE metricid = ? && id = ?";
-                    PreparedStatement updateInstancesStmt = conn.prepareStatement(updateInstancesQuery);
-
-                    // Iterate through all the instances and update the Instances table.
-                    for (MyInstance instance : Main.myInstances) {
-                        // Volumes are in an ArrayList, we need to convert them to a String.
-                        String volumesUsing = "";
-                        for (String volumeName : instance.getVolumes()) {
-                            volumesUsing += volumeName + ",";
-                        }
-
-                        // Set the parameters in the SQL statement.
-                        updateInstancesStmt.setString(1, instance.getName());
-                        updateInstancesStmt.setString(2, instance.getImage());
-                        updateInstancesStmt.setString(3, instance.getStatus());
-                        updateInstancesStmt.setDouble(4, instance.getMemoryUsage());
-                        updateInstancesStmt.setLong(5, instance.getPids());
-                        updateInstancesStmt.setDouble(6, instance.getCpuUsage());
-                        updateInstancesStmt.setDouble(7, instance.getBlockI());
-                        updateInstancesStmt.setDouble(8, instance.getBlockO());
-                        updateInstancesStmt.setString(9, volumesUsing);
-                        updateInstancesStmt.setString(10, instance.getSubnet());
-                        updateInstancesStmt.setString(11, instance.getGateway());
-                        updateInstancesStmt.setInt(12, instance.getPrefixLen());
-                        updateInstancesStmt.setInt(13, latestMetricId);
-                        updateInstancesStmt.setString(14, instance.getId());
-
-                        // Execute the SQL statement.
-                        updateInstancesStmt.executeUpdate();
-                    }
-
-                    // Close the connection to the database.
-                    conn.close();
-                } catch (SQLException e) {
-                    logger.error("Error while updating live metrics in database: " + e.getMessage());
-                }
-            }
-        };
-
-        // Schedule the task to run every 2.5 seconds
-        timer.scheduleAtFixedRate(updateTask, 0, 2500);
     }
 }

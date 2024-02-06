@@ -4,6 +4,9 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
@@ -17,11 +20,6 @@ import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.xml.crypto.Data;
 
 /**
  * This Thread is communicating with the Docker API and provide the state of the Docker Cluster to the app.
@@ -54,7 +52,8 @@ public class MonitorThread implements Runnable {
 
     /**
      * This method fills the lists with our custom My... models after getting info from original Docker Components.
-     * In this way we can handle effectively the Docker Cluster and maintain control.
+     * In this way we can handle effectively the Docker Cluster and maintain control. Then, since custom lists are filled,
+     * it calls the method to set up the database so to store the custom lists.
      *
      * @throws ListFillingException with the appropriate message for the error.
      * @throws DatabaseOperationException if an error occurs when createAllTables() is called.
@@ -147,10 +146,9 @@ public class MonitorThread implements Runnable {
             throw new ListFillingException("Volumes");
         }
 
-        // After filling the lists, watchdog is ready for database operations, so we create the watchdog_database.
-        DatabaseThread.createDatabase();
-        //Call the method to create the tables in the database as we are sure that our lists are filled.
-        DatabaseThread.createAllTables();
+        // After filling the lists, we are ready to set up our database
+        // since it will store the contents of these lists.
+        DatabaseThread.setUpDatabase();
     }
 
     /**
