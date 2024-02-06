@@ -403,8 +403,6 @@ public class ContainersController implements Initializable {
      * - If the container is running, the Button stops the container.
      * - If the container is not running, the Button starts the container.
      * The Button's graphic changes when the mouse enters or exits the Button, providing a hover effect.
-     *
-     * @return A Callback that creates a TableCell for each row in the action column.
      */
     Callback<TableColumn<InstanceScene, Void>, TableCell<InstanceScene, Void>> actionCellFactory = new Callback<>() {
         @Override
@@ -658,16 +656,12 @@ public class ContainersController implements Initializable {
             updateCheckboxStates(checkboxStates);
 
             // If any container is still selected after the removal, make the remove button visible.
-            if (checkboxStates.containsValue(true)) {
-                removeButton.visibleProperty().setValue(true);
-            } else {
-                removeButton.visibleProperty().setValue(false);
-            }
+            removeButton.visibleProperty().setValue(checkboxStates.containsValue(true));
 
             // Refresh the instances table view.
             refreshInstances();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error("Failed to remove selected containers.", e);
         }
     }
 
