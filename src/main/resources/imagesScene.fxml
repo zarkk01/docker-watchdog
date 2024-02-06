@@ -22,7 +22,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.ImagesController">
    <left>
-      <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
+      <VBox fx:id="sideBar" prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
          <children>
             <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                <font>
@@ -134,7 +134,7 @@
    <center>
       <AnchorPane fx:id="anchorPane" prefHeight="697.0" prefWidth="752.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <Text fill="WHITE" fontSmoothingType="LCD" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="128.3505859375">
+            <Text fx:id="imagesHead" fill="WHITE" fontSmoothingType="LCD" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Images" wrappingWidth="128.3505859375">
                <font>
                   <Font name="SansSerif Bold" size="36.0" />
                </font>
@@ -157,12 +157,12 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </TableView>
-            <Pane layoutX="6.0" layoutY="375.0" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
+            <Pane fx:id="usedPane" layoutX="6.0" layoutY="375.0" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
             <CheckBox fx:id="usedImagesCheckbox" cache="true" layoutX="13.0" layoutY="381.0" mnemonicParsing="false" opacity="0.7" prefHeight="18.0" prefWidth="165.0" style="-fx-border-radius: 10;" text="Show only used images" textFill="WHITE">
                <font>
                   <Font name="SansSerif Regular" size="12.0" />
                </font></CheckBox>
-            <Pane layoutX="10.0" layoutY="17.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
+            <Pane fx:id="searchPane" layoutX="10.0" layoutY="17.0" prefHeight="30.0" prefWidth="156.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
                <TextField fx:id="searchField" layoutX="28.0" layoutY="17.0" prefHeight="30.0" prefWidth="137.0" promptText="Search for an image" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: white;">
                <font>
                   <Font name="SansSerif Regular" size="13.0" />
@@ -172,7 +172,7 @@
                      <Image url="@images/search.png" />
                   </image>
                </ImageView>
-            <Pane layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="220.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane fx:id="pullImagePane" layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="220.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Button fx:id="pullButton" layoutX="168.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="28.0" prefWidth="52.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
                      <font>
@@ -184,7 +184,7 @@
                      </font>
                   </TextField>
                </children></Pane>
-            <Pane layoutX="6.0" layoutY="413.0" prefHeight="254.0" prefWidth="931.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane fx:id="downInfoPane" layoutX="6.0" layoutY="413.0" prefHeight="254.0" prefWidth="931.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Pane fx:id="totalContainersCircle" layoutX="38.0" layoutY="71.0" prefHeight="152.0" prefWidth="151.0" style="-fx-border-radius: 100; -fx-background-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false">
                      <children>
@@ -253,7 +253,7 @@
       </AnchorPane>
    </center>
    <top>
-      <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+      <HBox fx:id="topBar" prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
                <font>
