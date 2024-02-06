@@ -14,8 +14,10 @@ import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
@@ -60,6 +62,16 @@ public class ComposeController {
     private boolean isShowingConfig = false;
     @FXML
     private Button validateButton;
+    @FXML
+    private Button startComposeButton;
+    @FXML
+    private Button stopComposeButton;
+    @FXML
+    private Button saveButton;
+    @FXML
+    private VBox sideBar;
+    @FXML
+    private HBox topBar;
 
     @FXML
     private Label fileNameLabel;
@@ -83,6 +95,7 @@ public class ComposeController {
 
         // Set up the shadows for the components of the Compose scene.
         setUpShadows();
+
         // Set up a listener for the text property of the yamlContentArea.
         // This listener updates the savedLabel to "Unsaved" whenever the text changes.
         yamlContentArea.textProperty().addListener((observable, oldValue, newValue) ->
@@ -98,10 +111,25 @@ public class ComposeController {
     }
 
     /**
-     * This method sets up the shadows for the components of the Compose scene.
-     * It sets the shadow for the yamlContentArea, the backButton, and the showConfigButton.
+     * Sets up the drop shadow effect for various components in the scene.
+     * This method creates a new DropShadow effect and applies it to the yamlContentArea,
+     * backButton, showConfigButton, validateButton, startComposeButton, stopComposeButton,
+     * saveButton, sideBar, and topBar.
+     * The radius of the shadow is set to 5 and the color is set to a semi-transparent black.
      */
     private void setUpShadows() {
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(5);
+        shadow.setColor(Color.color(0.0, 0.0, 0.0, 0.3));
+        yamlContentArea.setEffect(shadow);
+        backButton.setEffect(shadow);
+        showConfigButton.setEffect(shadow);
+        validateButton.setEffect(shadow);
+        startComposeButton.setEffect(shadow);
+        stopComposeButton.setEffect(shadow);
+        saveButton.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        topBar.setEffect(shadow);
     }
 
     /**
@@ -194,7 +222,7 @@ public class ComposeController {
         if (exitCode == 0) {
             // Extract the file name from the YAML file path
             String fileName = Paths.get(yamlFilePath).getFileName().toString();
-            showNotification(fileName + " started", "The Docker Compose file " + fileName + " has been started");
+            showNotification(fileName + " started", "The file " + fileName + " has been started");
         }
     }
 
@@ -360,28 +388,6 @@ public class ComposeController {
     }
 
     /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    /**
      * Changes the current scene to the Containers scene.
      * This method calls the `changeScene` method with
      * the action event that triggered the scene change
@@ -457,5 +463,27 @@ public class ComposeController {
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
         // Change the scene to the Volumes scene.
         changeScene(actionEvent, "kubernetesScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
     }
 }
