@@ -9,10 +9,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
