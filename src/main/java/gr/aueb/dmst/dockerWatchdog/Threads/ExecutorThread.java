@@ -1,5 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog.Threads;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.exception.ConflictException;
 import com.github.dockerjava.api.exception.DockerException;
@@ -8,9 +11,6 @@ import com.github.dockerjava.core.command.PullImageResultCallback;
 
 import gr.aueb.dmst.dockerWatchdog.Exceptions.*;
 import gr.aueb.dmst.dockerWatchdog.Main;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * ExecutorThread is a class that provides methods for managing Docker containers and images.
@@ -30,7 +30,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Starts a Docker container with the given ID.
+     * Starts a Docker container with the given ID after checking if it is not already running, paused, or dead.
      *
      * @param containerId the ID of the container to start
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -56,7 +56,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Stops a Docker container with the given ID.
+     * Stops a Docker container with the given ID after checking if it is not already stopped, paused, or dead.
      *
      * @param containerId the ID of the container to stop
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -82,7 +82,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Removes a Docker container with the given ID.
+     * Removes a Docker container with the given ID after checking if it is not currently running.
      *
      * @param containerId the ID of the container to remove
      * @throws ContainerNotFoundException if the container with the given ID is not found
@@ -104,7 +104,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Pauses a Docker container with the given ID.
+     * Pauses a Docker container with the given ID after checking if it is not already paused or not running.
      *
      * @param containerId the ID of the container to pause
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -129,7 +129,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Unpauses a Docker container with the given ID.
+     * Unpauses a Docker container with the given ID after checking if it is not already paused.
      *
      * @param containerId the ID of the container to unpause
      * @throws ContainerNotFoundException    if the container with the given ID is not found
