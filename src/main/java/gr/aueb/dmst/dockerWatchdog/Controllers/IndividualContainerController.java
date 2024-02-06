@@ -1,7 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
-import java.io.InputStream;
 import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -9,8 +10,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.io.InputStream;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -30,11 +30,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import org.json.JSONObject;
 
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
@@ -43,8 +46,6 @@ import gr.aueb.dmst.dockerWatchdog.Exceptions.ContainerActionFailedException;
 import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
-import org.json.JSONObject;
 
 /**
  * FX Controller for the IndividualContainer panel.
@@ -122,6 +123,11 @@ public class IndividualContainerController {
 
     @FXML
     private Button removeButton;
+    @FXML
+    private VBox sideBar;
+    @FXML
+    private HBox topBar;
+
 
     @FXML
     private LineChart<String,Number> individualCpuChart;
@@ -152,21 +158,14 @@ public class IndividualContainerController {
         containerSubnetLabel.setText("Subnet:" + instance.getSubnet() + "/" + instance.getPrefixLen());
         containerGatewayLabel.setText("Gateway:" + instance.getGateway());
 
+        // Set up the shadows for various elements in the IndividualContainer panel.
+        setUpShadows();
+
         // Start the log fetcher for the selected container.
         containerLogInfoAppender(instance);
 
         // Make the info card visible.
         infoCard.setVisible(true);
-
-        // Set up the hover effects for all buttons.
-        DropShadow dropShadow = new DropShadow();
-        removeButton.setEffect(dropShadow);
-        startButton.setEffect(dropShadow);
-        stopButton.setEffect(dropShadow);
-        restartButton.setEffect(dropShadow);
-        pauseContainerButton.setEffect(dropShadow);
-        unpauseButton.setEffect(dropShadow);
-        renameButton.setEffect(dropShadow);
 
         // Set up the hover effects for sidebar images.
         hoveredSideBarImages();
@@ -208,6 +207,30 @@ public class IndividualContainerController {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
+    }
+
+    /**
+     * Sets up the drop shadow effect for various components in the scene.
+     * This method creates a new DropShadow effect and applies it to the topBar, sideBar,
+     * infoCard, individualCpuChart, removeButton, startButton, stopButton, restartButton,
+     * pauseContainerButton, unpauseButton, and renameButton.
+     * The radius of the shadow is set to 10 and the color is set to a semi-transparent black.
+     */
+    private void setUpShadows() {
+        // Set up drop shadow effect for the components.
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(10);
+        shadow.setColor(Color.color(0, 0, 0, 0.4));
+        topBar.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        infoCard.setEffect(shadow);
+        removeButton.setEffect(shadow);
+        startButton.setEffect(shadow);
+        stopButton.setEffect(shadow);
+        restartButton.setEffect(shadow);
+        pauseContainerButton.setEffect(shadow);
+        unpauseButton.setEffect(shadow);
+        renameButton.setEffect(shadow);
     }
 
     /**

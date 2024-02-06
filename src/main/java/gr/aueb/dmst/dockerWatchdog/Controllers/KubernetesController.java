@@ -14,8 +14,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -38,6 +43,8 @@ import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Config;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * FX Controller for the Kubernetes scene.
@@ -46,6 +53,10 @@ import io.kubernetes.client.util.Config;
  * Services.
  */
 public class KubernetesController implements Initializable {
+
+    // Logger instance used mainly for errors.
+    private static final Logger logger = LogManager.getLogger(VolumesController.class);
+
     // Stage and Parent for the scene.
     private Stage stage;
     private Parent root;
@@ -96,6 +107,21 @@ public class KubernetesController implements Initializable {
     @FXML
     public ImageView watchdogImage;
 
+    @FXML
+    private HBox topBar;
+    @FXML
+    private VBox sideBar;
+    @FXML
+    private Text kubernetesHead;
+    @FXML
+    private Label podsHead;
+    @FXML
+    private Label deploymentsHead;
+    @FXML
+    private Label statefulSetsHead;
+    @FXML
+    private Label servicesHead;
+
     /**
      * Initializes the KubernetesController.
      * This method is called after all @FXML annotated members have been injected.
@@ -111,20 +137,95 @@ public class KubernetesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            // Set up the shadows for the components
+            setUpShadows();
+
+            // Set up the hover effect for the sidebar images
+            hoveredSideBarImages();
+
+            // Set up the Kubernetes API client
             setupApiClient();
+
+            // Populate the tables with kubernetes data
             populatePodsTable();
             populateDeploymentsTable();
             populateStatefulSetsTable();
             populateServicesTable();
-            hoveredSideBarImages();
 
             // Install funny tooltip on watchdog imageView
-            Tooltip woof = new Tooltip("Woof!");
-            woof.setShowDelay(Duration.millis(20));
-            Tooltip.install(watchdogImage,woof);
+            setUpWoofTooltip();
         } catch (ApiException | IOException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
+    }
+
+    /**
+     * Sets up the drop shadow effect for various components in the scene.
+     * This method creates a new DropShadow effect and applies it to the kubernetesHead, topBar, sideBar, podsTableView, podsHead, deploymentsTableView, deploymentsHead, statefulSetsHead, statefulSetsTableView, servicesHead, and servicesTableView.
+     * The radius of the shadow is set to 7.5 and the color is set to a semi-transparent black.
+     */
+    private void setUpShadows() {
+        // Set up drop shadow effect for the components.
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(7.5);
+        shadow.setColor(Color.color(0, 0, 0, 0.4));
+        kubernetesHead.setEffect(shadow);
+        topBar.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        podsTableView.setEffect(shadow);
+        podsHead.setEffect(shadow);
+        deploymentsTableView.setEffect(shadow);
+        deploymentsHead.setEffect(shadow);
+        statefulSetsHead.setEffect(shadow);
+        statefulSetsTableView.setEffect(shadow);
+        servicesHead.setEffect(shadow);
+        servicesTableView.setEffect(shadow);
+    }
+
+    /**
+     * Sets the hover effect for the sidebar images.
+     * This method applies a hover effect to the sidebar buttons.
+     * The `setHoverEffect` method takes a button and two image paths as parameters:
+     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     */
+    private void hoveredSideBarImages() {
+        setHoverEffect(containersButton, "/images/containerGrey.png", "/images/container.png");
+        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
+        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
+        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
+    }
+
+    /**
+     * Sets the hover effect for a button.
+     * This method applies a hover effect to our 4 buttons in the sidebar.
+     * When the mouse pointer hovers over the button,
+     * the image of the button changes to a different image to indicate that the button is being hovered over.
+     * When the mouse pointer moves away from the button,
+     * the image of the button changes back to the original image.
+     *
+     * @param button The button to which the hover effect is to be applied.
+     * @param originalImagePath The path to the original image of the button.
+     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
+     */
+    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
+        // Load the original image and the hovered image.
+        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
+        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
+
+        // Set the original image as the button's graphic.
+        ((ImageView) button.getGraphic()).setImage(originalImage);
+
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        button.setOnMouseEntered(event -> {
+            button.getStyleClass().add("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(hoveredImage);
+        });
+
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        button.setOnMouseExited(event -> {
+            button.getStyleClass().remove("button-hovered");
+            ((ImageView) button.getGraphic()).setImage(originalImage);
+        });
     }
 
     /**
@@ -266,71 +367,14 @@ public class KubernetesController implements Initializable {
     }
 
     /**
-     * Sets the hover effect for the sidebar images.
-     * This method applies a hover effect to the sidebar buttons.
-     * The `setHoverEffect` method takes a button and two image paths as parameters:
-     * the path to the original image and the path to the image to be displayed when the button is hovered over.
+     * Sets up the tooltip for the watchdog image.
+     * This method creates a new Tooltip and sets it to be displayed when the mouse hovers over the watchdog image.
+     * The tooltip is set to show after a delay of 20 milliseconds.
      */
-    private void hoveredSideBarImages() {
-        setHoverEffect(containersButton, "/images/containerGrey.png", "/images/container.png");
-        setHoverEffect(imagesButton, "/images/imageGrey.png", "/images/image.png");
-        setHoverEffect(volumesButton, "/images/volumesGrey.png", "/images/volumes.png");
-        setHoverEffect(graphicsButton, "/images/graphicsGrey.png", "/images/graphics.png");
-    }
-
-    /**
-     * Sets the hover effect for a button.
-     * This method applies a hover effect to our 4 buttons in the sidebar.
-     * When the mouse pointer hovers over the button,
-     * the image of the button changes to a different image to indicate that the button is being hovered over.
-     * When the mouse pointer moves away from the button,
-     * the image of the button changes back to the original image.
-     *
-     * @param button The button to which the hover effect is to be applied.
-     * @param originalImagePath The path to the original image of the button.
-     * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
-     */
-    private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
-        // Load the original image and the hovered image.
-        Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
-        Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
-
-        // Set the original image as the button's graphic.
-        ((ImageView) button.getGraphic()).setImage(originalImage);
-
-        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
-        button.setOnMouseEntered(event -> {
-            button.getStyleClass().add("button-hovered");
-            ((ImageView) button.getGraphic()).setImage(hoveredImage);
-        });
-
-        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
-        button.setOnMouseExited(event -> {
-            button.getStyleClass().remove("button-hovered");
-            ((ImageView) button.getGraphic()).setImage(originalImage);
-        });
-    }
-
-    /**
-     * Changes the current scene to a new scene.
-     * This method loads the FXML file for the new scene,
-     * sets it as the root of the current stage,
-     * and displays the new scene. It is used to navigate between different scenes in the application.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @param fxmlFile The name of the FXML file for the new scene.
-     * @throws IOException If an error occurs while loading the FXML file.
-     */
-    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Load the FXML file for the new scene.
-        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
-
-        // Get the current stage.
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-
-        // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
+    private void setUpWoofTooltip() {
+        Tooltip woof = new Tooltip("Woof!");
+        woof.setShowDelay(Duration.millis(20));
+        Tooltip.install(watchdogImage,woof);
     }
 
     /**
@@ -395,5 +439,27 @@ public class KubernetesController implements Initializable {
      */
     public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "graphicsScene.fxml");
+    }
+
+    /**
+     * Changes the current scene to a new scene.
+     * This method loads the FXML file for the new scene,
+     * sets it as the root of the current stage,
+     * and displays the new scene. It is used to navigate between different scenes in the application.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @param fxmlFile The name of the FXML file for the new scene.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
+        // Load the FXML file for the new scene.
+        root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
+
+        // Get the current stage.
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+
+        // Set the new scene as the root of the stage and display it.
+        stage.getScene().setRoot(root);
+        stage.show();
     }
 }

@@ -19,7 +19,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gr.aueb.dmst.dockerWatchdog.Controllers.KubernetesController">
     <left>
-        <VBox prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
+        <VBox fx:id="sideBar" prefHeight="565.0" prefWidth="155.0" style="-fx-background-color: #1D1D1B;" BorderPane.alignment="CENTER">
             <children>
                 <Button fx:id="containersButton" alignment="BASELINE_LEFT" graphicTextGap="5.0" mnemonicParsing="false" onAction="#changeToContainersScene" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 0px 0px;" text="Containers" textFill="#909090">
                     <font>
@@ -140,7 +140,7 @@
     <center>
         <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
             <children>
-                <Text fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
+                <Text fx:id="kubernetesHead" fill="WHITE" layoutX="397.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
                     <font>
                         <Font name="SansSerif Bold" size="36.0" />
                     </font>
@@ -163,7 +163,7 @@
                                           <URL value="@styles/splitPane.css" />
                                        </stylesheets>
                                                 </TableView>
-                                                <Label layoutX="24.0" layoutY="6.0" prefHeight="31.0" prefWidth="200.0" text="DEPLOYMENTS" textFill="WHITE">
+                                                <Label fx:id="deploymentsHead" layoutX="24.0" layoutY="6.0" prefHeight="31.0" prefWidth="200.0" text="DEPLOYMENTS" textFill="WHITE">
                                                     <font>
                                                         <Font name="SansSerif Bold" size="26.0" />
                                                     </font>
@@ -174,7 +174,7 @@
                                 </SplitPane>
                         <AnchorPane layoutY="-2.0" prefHeight="303.0" prefWidth="398.0" style="-fx-border-color: #474745;">
                            <children>
-                                      <Label layoutX="9.0" layoutY="3.0" text="SERVICES" textFill="WHITE">
+                                      <Label fx:id="servicesHead" layoutX="9.0" layoutY="3.0" text="SERVICES" textFill="WHITE">
                                           <font>
                                               <Font name="SansSerif Bold" size="26.0" />
                                           </font>
@@ -199,7 +199,7 @@
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="321.0" prefWidth="391.0" style="-fx-background-color: #474745; -fx-border-color: #474745;" stylesheets="@styles/splitPane.css">
                                             <children>
-                                                <Label layoutX="10.0" layoutY="10.0" prefHeight="9.0" prefWidth="80.0" text="PODS" textFill="WHITE">
+                                                <Label fx:id="podsHead" layoutX="10.0" layoutY="10.0" prefHeight="9.0" prefWidth="80.0" text="PODS" textFill="WHITE">
                                                     <font>
                                                         <Font name="SansSerif Bold" size="26.0" />
                                                     </font>
@@ -219,7 +219,7 @@
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #474745;" stylesheets="@styles/splitPane.css">
                                             <children>
-                                                <Label layoutX="8.0" layoutY="11.0" text="STATEFUL SETS" textFill="WHITE">
+                                                <Label fx:id="statefulSetsHead" layoutX="8.0" layoutY="11.0" text="STATEFUL SETS" textFill="WHITE">
                                                     <font>
                                                         <Font name="SansSerif Bold" size="26.0" />
                                                     </font>
@@ -247,7 +247,7 @@
         </AnchorPane>
     </center>
     <top>
-        <HBox prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+        <HBox fx:id="topBar" prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
             <children>
                 <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
                     <font>

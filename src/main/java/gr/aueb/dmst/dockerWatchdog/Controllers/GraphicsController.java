@@ -25,8 +25,13 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -70,6 +75,13 @@ public class GraphicsController implements Initializable {
     private XYChart.Series<String, Number> memorySeries;
 
     @FXML
+    private VBox sideBar;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private Text graphicsHead;
+
+    @FXML
     private  Button containersButton;
     @FXML
     private Button imagesButton;
@@ -99,6 +111,10 @@ public class GraphicsController implements Initializable {
     @Override
     public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
         try {
+
+            // Set up shadows for the components.
+            setUpShadows();
+
             // Start the charts.
             startCharts();
             // Update the CPU and Memory charts.
@@ -141,6 +157,25 @@ public class GraphicsController implements Initializable {
 
         // Set a hover effect for the sidebar images.
         hoveredSideBarImages();
+    }
+
+    /**
+     * Sets up shadows for the components.
+     * This method applies a drop shadow effect to the components in the Graphics Panel header,top bar and sidebar, along
+     * with the charts, to make them stand out and give a 3D effect.
+     */
+    private void setUpShadows() {
+        // Set up drop shadow effect for the components.
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(15);
+        shadow.setColor(Color.color(0, 0, 0, 0.4));
+        cpuChart.setEffect(shadow);
+        memoryChart.setEffect(shadow);
+        pidsChart.setEffect(shadow);
+        pieChartImages.setEffect(shadow);
+        topBar.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        graphicsHead.setEffect(shadow);
     }
 
     /**

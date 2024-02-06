@@ -80,6 +80,9 @@ public class ComposeController {
      * and installs a Tooltip on the watchdogImage.
      */
     public void initialize() {
+
+        // Set up the shadows for the components of the Compose scene.
+        setUpShadows();
         // Set up a listener for the text property of the yamlContentArea.
         // This listener updates the savedLabel to "Unsaved" whenever the text changes.
         yamlContentArea.textProperty().addListener((observable, oldValue, newValue) ->
@@ -92,6 +95,13 @@ public class ComposeController {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage, woof);
+    }
+
+    /**
+     * This method sets up the shadows for the components of the Compose scene.
+     * It sets the shadow for the yamlContentArea, the backButton, and the showConfigButton.
+     */
+    private void setUpShadows() {
     }
 
     /**

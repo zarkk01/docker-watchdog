@@ -27,22 +27,23 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
-
-import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
-import gr.aueb.dmst.dockerWatchdog.Models.VolumeScene;
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
+import gr.aueb.dmst.dockerWatchdog.Models.VolumeScene;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 /**
  * FX Controller class for the Volumes panel.
  * This class handles user interactions with the Volumes scene, such as navigating to other scenes and refreshing the volumes table. Also,
@@ -83,6 +84,15 @@ public class VolumesController implements Initializable {
     private ImageView watchdogImage;
 
     @FXML
+    private Button createVolumeButton;
+    @FXML
+    private VBox sideBar;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private Text volumesHead;
+
+    @FXML
     private VBox notificationBox;
 
     /**
@@ -98,6 +108,8 @@ public class VolumesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            // Set up the drop shadow effect for various components in the scene.
+            setUpShadows();
             // Set up the table columns.
             setupTableColumns();
             // Apply the hover effect to the sidebar buttons.
@@ -114,6 +126,23 @@ public class VolumesController implements Initializable {
             System.err.println("An error occurred while initializing the VolumesController: " + e.getMessage());
             volumesTableView.setPlaceholder(new Label("An error occurred while loading the volumes."));
         }
+    }
+
+    /**
+     * Sets up the drop shadow effect for various components in the scene.
+     * This method creates a new DropShadow effect and applies it to the volumesHead, topBar, sideBar, volumesTableView, and createVolumeButton.
+     * The radius of the shadow is set to 7.5 and the color is set to a semi-transparent black.
+     */
+    private void setUpShadows() {
+        // Set up drop shadow effect for the components.
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(7.5);
+        shadow.setColor(Color.color(0, 0, 0, 0.4));
+        volumesHead.setEffect(shadow);
+        topBar.setEffect(shadow);
+        sideBar.setEffect(shadow);
+        volumesTableView.setEffect(shadow);
+        createVolumeButton.setEffect(shadow);
     }
 
     /**
