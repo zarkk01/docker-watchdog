@@ -44,6 +44,7 @@ public class DesktopApp extends Application {
         // Create the containers' scene.
         Scene scene = new Scene(fxmlLoader.load(),1100,700);
 
+        //Set the icon of the application to watchogRed logo
         Image image = new Image("/images/watchdogRed.png");
         stage.getIcons().add(image);
 
