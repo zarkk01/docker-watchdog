@@ -37,29 +37,29 @@ public class DesktopApp extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        // Load the FXML file for the containers scene which is the main panel.
+        // Load the FXML file for the containers panel which is the main panel
         FXMLLoader fxmlLoader = new FXMLLoader(DesktopApp.class.getResource("/containersScene.fxml"));
 
-        // Create the containers' scene.
+        // Create the containers' scene
         Scene scene = new Scene(fxmlLoader.load(),1100,700);
 
-        //Set the icon of the application to watchogRed logo
+        //Set the icon of the application to watchdogRed logo
         Image image = new Image("/images/watchdogRed.png");
         stage.getIcons().add(image);
 
-        // Set the scene on the stage.
+        // Set the scene on the stage
         stage.setScene(scene);
 
-        // Set the title of the window.
+        // Set the title of the window
         stage.setTitle("Docker Watchdog");
 
-        // Prevent the window from being resized so to maintain full control of how the GUI looks.
+        // Prevent the window from being resized so to maintain full control of how the GUI looks
         stage.setResizable(false);
 
-        // Show the stage.
+        // Show the stage
         stage.show();
 
-        // When the window is closed, exit the application.
+        // When the window is closed, exit the application
         stage.setOnCloseRequest(event -> {
             Platform.exit();
             System.exit(0);
