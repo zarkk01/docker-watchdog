@@ -1,6 +1,7 @@
 package gr.aueb.dmst.dockerWatchdog;
 
 import java.util.ArrayList;
+
 import javafx.application.Application;
 
 import org.apache.logging.log4j.LogManager;
@@ -29,11 +30,11 @@ import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
  */
 public class Main {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
-     * Configuration for the Docker client.
+     * Configuration for the Docker client
      */
     private static final DefaultDockerClientConfig builder =
             DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -47,19 +48,19 @@ public class Main {
             DockerClientBuilder.getInstance(builder).build();
 
     /**
-     * Lists for Docker containers so that we can keep track of them
+     * List for Docker containers so that we can keep track of them
      * and then store them in the database.
      */
     public static ArrayList<MyInstance> myInstances = new ArrayList<>();
 
     /**
-     * Lists for Docker images so that we can keep track of them
+     * List for Docker images so that we can keep track of them
      * and then store them in the database.
      */
     public static ArrayList<MyImage> myImages = new ArrayList<>();
 
     /**
-     * Lists for Docker volumes so that we can keep track of them
+     * List for Docker volumes so that we can keep track of them
      * and then store them in the database.
      */
     public static ArrayList<MyVolume> myVolumes = new ArrayList<>();
@@ -68,7 +69,6 @@ public class Main {
      * The main entry point of the application and responsible for initializing and starting all the necessary components
      * It starts the threads for monitoring Docker events, executing actions on Docker components, and performing database operations.
      * It also starts the Spring Boot application to make the REST API available before the launch of the JavaFX application for the GUI.
-     *
      * If any exception occurs during the startup process, it is caught and logged.
      *
      * @param args command line arguments passed to the application. Currently, these arguments are not used.
@@ -76,7 +76,6 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-
             // Start threads in a specific order so to prevent errors
             Thread monitorThread = new Thread(new MonitorThread());
             monitorThread.start();
@@ -92,9 +91,9 @@ public class Main {
 
             // Start JavaFX application and GUI displays
             Application.launch(DesktopApp.class, args);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            // Log any exception that occurs during the startup process
+            logger.error("An error occurred during the startup process: " + e.getMessage());
         }
     }
 }
