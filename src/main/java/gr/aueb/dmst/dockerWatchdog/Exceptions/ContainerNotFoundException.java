@@ -6,7 +6,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the ID of the container that was not found.
  */
 public class ContainerNotFoundException extends Exception {
-    // The ID of the container that was not found.
+    // The ID of the container that was not found
     private final String containerId;
 
     /**

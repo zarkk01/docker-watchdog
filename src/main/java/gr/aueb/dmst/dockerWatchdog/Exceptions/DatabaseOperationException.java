@@ -5,9 +5,9 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the operation that failed and the actors involved in the operation.
  */
 public class DatabaseOperationException extends Exception {
-    // The operation that failed.
+    // The operation that failed
     private final String operation;
-    // The actors (instances, images, volumes) involved in the operation.
+    // The actors (instances, images, volumes) involved in the operation
     private final String actors;
 
     /**

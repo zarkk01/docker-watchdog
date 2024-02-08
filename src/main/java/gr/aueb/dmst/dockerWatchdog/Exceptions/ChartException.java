@@ -5,7 +5,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * The class contains a single field, `chartName`, which represents the name of the chart where the error occurred.
  */
 public class ChartException extends Exception {
-    private String chartName;
+    private final String chartName;
 
     /**
      * Constructs a new ChartException with the specified detail message.
@@ -14,7 +14,7 @@ public class ChartException extends Exception {
      */
     public ChartException(String chartName) {
         super("Error occurred in chart: " + chartName);
-        // Save the chart name for later retrieval.
+        // Save the chart name for later retrieval
         this.chartName = chartName;
     }
 

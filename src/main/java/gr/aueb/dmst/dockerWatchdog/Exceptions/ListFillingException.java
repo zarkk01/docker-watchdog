@@ -5,7 +5,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the name of the list that failed to be filled.
  */
 public class ListFillingException extends Exception {
-    // The name of the list that failed to be filled.
+    // The name of the list that failed to be filled
     private final String listName;
 
     /**

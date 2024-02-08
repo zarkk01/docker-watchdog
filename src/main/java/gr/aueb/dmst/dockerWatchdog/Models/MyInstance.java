@@ -316,7 +316,7 @@ public class MyInstance {
      * @param id The ID of the instance to search for.
      * @return The MyInstance instance with the specified ID, or null if not found.
      */
-    public static MyInstance getInstanceByid(String id) {
+    public static MyInstance getInstanceByID(String id) {
         MyInstance instanceToReturn = null;
         for (MyInstance instance: Main.myInstances) {
             if (id.equals(instance.getId())) {

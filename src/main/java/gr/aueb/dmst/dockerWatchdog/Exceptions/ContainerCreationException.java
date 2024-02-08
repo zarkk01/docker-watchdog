@@ -5,7 +5,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the name of the image that was used in the attempt to create the container.
  */
 public class ContainerCreationException extends Exception {
-    // The name of the image that was used in the attempt to create the container.
+    // The name of the image that was used in the attempt to create the container
     private final String imageName;
 
     /**

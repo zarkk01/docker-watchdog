@@ -30,7 +30,7 @@ import gr.aueb.dmst.dockerWatchdog.Exceptions.LiveStatsException;
  */
 public class MonitorThread implements Runnable {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(MonitorThread.class);
 
     /**
@@ -42,11 +42,15 @@ public class MonitorThread implements Runnable {
     @Override
     public void run() {
         try {
+            // Filling the lists with our custom Docker components
             fillLists();
+            // Start the live monitoring of the Docker Cluster with null parameter
+            // so to get the statistics of ALL containers.
             liveMeasure(null);
         } catch (ListFillingException | LiveStatsException | DatabaseOperationException e) {
             logger.error(e.getMessage());
         }
+        // Start listening for events happening in the Docker Cluster
         startListening();
     }
 
@@ -61,34 +65,34 @@ public class MonitorThread implements Runnable {
     public void fillLists() throws ListFillingException, DatabaseOperationException {
         // Images list is filled with MyImage objects.
         try {
-            // Getting the list of images from the Docker API.
+            // Getting the list of images from the Docker API
             List<Image> images = Main.dockerClient.listImagesCmd().withShowAll(true).exec();
-            // Iterate through the images and get the info of each one.
+            // Iterate through the images and get the info of each one
             for (Image image : images) {
                 InspectImageResponse imageInfo = Main.dockerClient.inspectImageCmd(image.getId()).exec();
-                // Creating our custom MyImage model.
+                // Creating our custom MyImage model
                 MyImage newImage = new MyImage(
                         imageInfo.getRepoTags().get(0),
                         imageInfo.getId(),
                         imageInfo.getSize(),
                         getImageUsageStatus(imageInfo.getRepoTags().get(0))
                 );
-                // Adding it to our list of MyImage objects.
+                // Adding it to our list of MyImage objects
                 Main.myImages.add(newImage);
             }
         } catch (Exception e) {
-            // If an error occurs, throw an exception specifying that Images list is not filled.
+            // If an error occurs, throw an exception specifying that Images list is not filled
             throw new ListFillingException("Images");
         }
 
-        // Containers list is filled with MyInstance objects.
+        // Containers list is filled with MyInstance objects
         try {
-            // Getting the list of containers from the Docker API.
+            // Getting the list of containers from the Docker API
             List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
-            // Iterate through the containers and get the info of each one.
+            // Iterate through the containers and get the info of each one
             for (Container container : containers) {
                 InspectContainerResponse containerInfo = Main.dockerClient.inspectContainerCmd(container.getId()).exec();
-                // Creating our custom MyInstance model.
+                // Creating our custom MyInstance model
                 MyInstance newInstance = new MyInstance(
                         containerInfo.getId(),
                         containerInfo.getName(),
@@ -101,25 +105,25 @@ public class MonitorThread implements Runnable {
                         containerInfo.getNetworkSettings().getIpPrefixLen()
                 );
 
-                // Checking for volumes and adding them to the list.
+                // Checking for volumes and adding them to the list
                 if (containerInfo.getMounts() != null) {
                     for (InspectContainerResponse.Mount volumeName : containerInfo.getMounts()) {
                         newInstance.addVolume(volumeName.getName());
                     }
                 }
-                // Adding it to our list of MyInstance objects.
+                // Adding it to our list of MyInstance objects
                 Main.myInstances.add(newInstance);
             }
         } catch (Exception e) {
-            // If an error occurs, throw an exception specifying that Instances list is not filled.
+            // If an error occurs, throw an exception specifying that Instances list is not filled
             throw new ListFillingException("Instances");
         }
 
-        // Volumes list is filled with MyVolume objects.
+        // Volumes list is filled with MyVolume objects
         try {
-            // Getting the list of volumes from the Docker API.
+            // Getting the list of volumes from the Docker API
             List<InspectVolumeResponse> volumes = Main.dockerClient.listVolumesCmd().exec().getVolumes();
-            // Iterate through the volumes and get the info of each one.
+            // Iterate through the volumes and get the info of each one
             for (InspectVolumeResponse volume : volumes) {
                 // Creating our custom MyVolume model.
                 MyVolume newVolume = new MyVolume(
@@ -128,9 +132,9 @@ public class MonitorThread implements Runnable {
                         volume.getMountpoint(),
                         new ArrayList<String>()
                 );
-                // Checking for containers using this volume and adding them to the list.
+                // Checking for containers using this volume and adding them to the list
                 for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
-                    // For each container, check if it uses this volume and add it to the list.
+                    // For each container, check if it uses this volume and add it to the list
                     for (ContainerMount volumeName : container.getMounts()) {
                         if (volumeName.getName() == null) {continue; }
                         if (volumeName.getName().equals(volume.getName())) {
@@ -138,11 +142,11 @@ public class MonitorThread implements Runnable {
                         }
                     }
                 }
-                // Adding it to our list of MyVolume objects.
+                // Adding it to our list of MyVolume objects
                 Main.myVolumes.add(newVolume);
             }
         } catch (Exception e) {
-            // If an error occurs, throw an exception specifying that Volumes list is not filled.
+            // If an error occurs, throw an exception specifying that Volumes list is not filled
             throw new ListFillingException("Volumes");
         }
 
@@ -163,13 +167,13 @@ public class MonitorThread implements Runnable {
     public static void liveMeasure(String containerId) throws LiveStatsException {
         List<Container> containers = Main.dockerClient.listContainersCmd().withShowAll(true).exec();
 
-        // Iterate through the containers and get the statistics of each one.
+        // Iterate through the containers and get the statistics of each one
         for (Container container : containers) {
-            // If the containerId is null, get the statistics of all containers.
+            // If the containerId is null, get the statistics of all containers
             if (containerId == null || container.getId().equals(containerId)) {
                 AsyncDockerCmd<StatsCmd, Statistics> asyncStatsCmd = Main.dockerClient.statsCmd(container.getId());
                 try {
-                    // Use the custom ResultCallback to get the statistics.
+                    // Use the custom ResultCallback to get the statistics
                     asyncStatsCmd.exec(new CustomResultCallback(container.getId(), asyncStatsCmd));
                 } catch (Exception e) {
                     throw new LiveStatsException();
@@ -185,31 +189,29 @@ public class MonitorThread implements Runnable {
      * EventResultCallback to get the events and then update the lists accordingly.
      */
     public void startListening() {
+        // Get the events happening in the Docker Cluster
         Main.dockerClient.eventsCmd().exec(new EventsResultCallback() {
             @Override
             public void onNext(Event event) {
 
-                // Get the info of the event.
+                // Get the info of the event
                 EventType eventType = event.getType();
                 String eventAction = event.getAction();
                 String id = event.getActor().getId();
 
+                // Recognise the type of the event and call the appropriate method to handle it
                 switch (eventType) {
                     case CONTAINER:
                         try {
-                            // If it is a container event, call the method to handle it.
+                            // If it is a container event, call the method to handle it
                             handleContainerEvent(eventAction, id, event);
-
-                            // Update the lists in the database.
-                            DatabaseThread.keepTrackOfInstances();
-                            DatabaseThread.keepTrackOfImages();
-                        } catch (LiveStatsException | EventHandlingException | DatabaseOperationException e) {
+                        } catch (EventHandlingException  e) {
                             logger.error(e.getMessage());
                         }
                         break;
                     case IMAGE:
                         try {
-                            // If it is an image event, call the method to handle it.
+                            // If it is an image event, call the method to handle it
                             handleImageEvent(eventAction, id);
                         } catch (EventHandlingException e) {
                             logger.error(e.getMessage());
@@ -217,7 +219,7 @@ public class MonitorThread implements Runnable {
                         break;
                     case VOLUME:
                         try {
-                            // If it is a volume event, call the method to handle it.
+                            // If it is a volume event, call the method to handle it
                             handleVolumeEvent(eventAction, id);
                         } catch (EventHandlingException e) {
                             logger.error(e.getMessage());
@@ -237,12 +239,11 @@ public class MonitorThread implements Runnable {
      * @param containerId the id of the container the event happened.
      * @param event the event.
      *
-     * @throws LiveStatsException if an error occurs when calling the liveMeasure() method.
-     * @throws EventHandlingException if an error occurs when calling the handleContainerDestroyEvent() method.
+     * @throws EventHandlingException if an error occurs
      */
-    public void handleContainerEvent(String eventAction, String containerId, Event event) throws LiveStatsException, EventHandlingException {
-        // Given the ID, we get the custom MyInstance object.
-        MyInstance instance = MyInstance.getInstanceByid(containerId);
+    public void handleContainerEvent(String eventAction, String containerId, Event event) throws EventHandlingException {
+        // Given the ID, we get the custom MyInstance object
+        MyInstance instance = MyInstance.getInstanceByID(containerId);
         try {
             switch (eventAction) {
                 case "start":
@@ -257,7 +258,7 @@ public class MonitorThread implements Runnable {
                     updateContainerStatus(instance, "paused");
                     break;
                 case "rename":
-                    // To get the name of the container, we use event.getActor(), since we are provided only with containerId.
+                    // To get the name of the container, we use event.getActor(), since we are provided only with containerId
                     instance.setName(event.getActor().getAttributes().get("name"));
                     break;
                 case "destroy":
@@ -267,29 +268,33 @@ public class MonitorThread implements Runnable {
                     handleContainerCreateEvent(containerId);
                     break;
             }
+            // Update the instances table in the database
+            DatabaseThread.keepTrackOfInstances();
+            // Also, update the images table in the database because the status of an image may change
+            DatabaseThread.keepTrackOfImages();
         } catch (Exception e) {
             throw new EventHandlingException("container");
         }
     }
 
-    // Helper method to update the status of a container.
+    // Helper method to update the status of a container
     public void updateContainerStatus(MyInstance instance, String status) {
         instance.setStatus(status);
     }
 
-    // Helper method to handle the destroy event of a container.
+    // Helper method to handle the destroy event of a container
     public void handleContainerDestroyEvent(MyInstance instance) throws DatabaseOperationException {
         Main.myInstances.remove(instance);
-        // Checking if this destroy event, converted an image from in use to unused.
+        // Checking if this event, converted an image from in use to unused
         boolean found = false;
         for (MyInstance checkingInstance : Main.myInstances) {
-            // If another container is using this image, we don't change its status.
+            // If another container is using this image, we don't change its status
             if (checkingInstance.getImage().equals(instance.getImage())) {
                 found = true;
                 break;
             }
         }
-        // If no other container is using this image, we change its status to unused.
+        // If no other container is using this image, we change its status to unused
         if (!found) {
             for (MyImage image : Main.myImages) {
                 if (image.getName().equals(instance.getImage())) {
@@ -298,19 +303,21 @@ public class MonitorThread implements Runnable {
             }
         }
 
-        // Checking if any volume are effected by this destroy event.
+        // Checking if any volume are effected by this destroy event
         for(String volumeName : instance.getVolumes()){
             MyVolume vol = MyVolume.getVolumeByName(volumeName);
             if (vol != null) {vol.removeContainerNameUsing(instance.getName()); }
         }
+        // Update the volumes table in the database
         DatabaseThread.keepTrackOfVolumes();
     }
 
-    // Helper method to handle the create event of a container.
+    // Helper method to handle the create event of a container
     public void handleContainerCreateEvent(String containerId) throws LiveStatsException, DatabaseOperationException {
+        // Get the info of the newborn container
         InspectContainerResponse container = Main.dockerClient.inspectContainerCmd(containerId).exec();
 
-        // Creating our custom MyInstance model.
+        // Creating our custom MyInstance model for that container
         MyInstance newInstance = new MyInstance(
                 container.getId(),
                 container.getName(),
@@ -322,14 +329,18 @@ public class MonitorThread implements Runnable {
                 container.getNetworkSettings().getIpPrefixLen()
         );
 
-        // Adding to it the volumes that are used, if any.
+        // Adding to our custom MyInstance the volumes that are used, if any
         if (container.getMounts() != null) {
+            // For each volume, add it to the list of volumes used by this container
             for (InspectContainerResponse.Mount volumeName : container.getMounts()) {
                 if (volumeName.getName() == null) {continue;}
+                // Here we add the volume to the list of volumes used by this container
                 newInstance.addVolume(volumeName.getName());
                 MyVolume vol = MyVolume.getVolumeByName(volumeName.getName());
                 assert vol != null;
+                // But also, add the container to the list of containers using this volume
                 vol.addContainerNameUsing(newInstance.getName());
+                // Update the volumes table in the database
                 DatabaseThread.keepTrackOfVolumes();
             }
         }
@@ -341,8 +352,9 @@ public class MonitorThread implements Runnable {
             }
         }
 
-        // Adding it to our list and start monitoring it.
+        // Adding it to our list of MyInstance objects
         Main.myInstances.add(newInstance);
+        // Start the live monitoring(CPU, PIDs..) of the newborn container
         liveMeasure(newInstance.getId());
     }
 
@@ -358,12 +370,15 @@ public class MonitorThread implements Runnable {
      */
     public void handleImageEvent(String eventAction, String imageName) throws EventHandlingException {
         try {
+            // Recognise the type of the event and call the appropriate method to handle it
             switch (eventAction) {
                 case "pull":
+                    // If it is a pull event, call the method to handle it
                     handleImagePullEvent(imageName);
                     break;
                 case "delete":
                 case "untag":
+                    // If it is a delete event, call the method to handle it
                     handleImageDeleteEvent(imageName);
                     break;
             }
@@ -372,12 +387,13 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    // Helper method to handle the pull event of an image.
+    // Helper method to handle the pull event of an image
     public void handleImagePullEvent(String imageName) throws EventHandlingException {
         try {
+            // Get the info of the pulled image
             InspectImageResponse image = Main.dockerClient.inspectImageCmd(imageName).exec();
 
-            // Using the original Image object, we create our custom MyImage model.
+            // Using the original Image object, we create our custom MyImage model
             MyImage newImage = new MyImage(
                     image.getRepoTags().get(0),
                     image.getId(),
@@ -385,15 +401,16 @@ public class MonitorThread implements Runnable {
                     getImageUsageStatus(image.getRepoTags().get(0))
             );
 
-            // We add it to our list and update the database.
+            // We add it to our list and update the database
             Main.myImages.add(newImage);
+            // Update the images table in the database
             DatabaseThread.keepTrackOfImages();
         } catch (Exception e) {
             throw new EventHandlingException("image");
         }
     }
 
-    // Helper method to get the status of an image.
+    // Helper method to get the status of an image
     public String getImageUsageStatus(String name){
         // Iterate through the containers and check if the image is used by at least one.
         for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
@@ -404,10 +421,10 @@ public class MonitorThread implements Runnable {
         return "Unused";
     }
 
-    // Helper method to handle the delete event of an image.
+    // Helper method to handle the delete event of an image
     public void handleImageDeleteEvent(String imageName) throws EventHandlingException {
         try {
-            // Make use of our custom's MyImage method to get the image given its name.
+            // Make use of our custom's MyImage method getImageByID() to get the image given its name
             MyImage imageToRemove = MyImage.getImageByID(imageName);
             if (imageToRemove != null) {
                 // Say goodbye to image.
@@ -431,11 +448,14 @@ public class MonitorThread implements Runnable {
      */
     public void handleVolumeEvent(String eventAction, String volumeName) throws EventHandlingException {
         try {
+            // Recognise the type of the event and call the appropriate method to handle it
             switch (eventAction) {
                 case "create":
+                    // If it is a create event, call the method to handle it
                     handleVolumeCreateEvent(volumeName);
                     break;
                 case "destroy":
+                    // If it is a destroy event, call the method to handle it
                     handleVolumeDestroyEvent(volumeName);
                     break;
             }
@@ -444,11 +464,12 @@ public class MonitorThread implements Runnable {
         }
     }
 
-    // Helper method to handle the create event of a volume.
+    // Helper method to handle the create event of a volume
     public void handleVolumeCreateEvent(String volumeName) throws EventHandlingException {
         try {
+            // Get the info of the created volume
             InspectVolumeResponse volume = Main.dockerClient.inspectVolumeCmd(volumeName).exec();
-            // Creating our custom MyVolume model.
+            // Creating our custom MyVolume model
             MyVolume newVolume = new MyVolume(
                     volume.getName(),
                     volume.getDriver(),
@@ -456,26 +477,30 @@ public class MonitorThread implements Runnable {
                     new ArrayList<String>()
             );
 
-            // Checking if any container is using this volume, so to add it in containerNamesUsing.
+            // Checking if any container is using this volume, so to add it in containerNamesUsing
             for (Container container : Main.dockerClient.listContainersCmd().withShowAll(true).exec()) {
+                // For each container, check if it uses this volume and add it to the list
                 for (ContainerMount volumeMount : container.getMounts()) {
                     if (volumeMount.getName() != null && volumeMount.getName().equals(volume.getName())) {
+                        // Here we add the container to the list of containers using this volume
                         newVolume.addContainerNameUsing(container.getNames()[0]);
                     }
                 }
             }
 
-            // Adding it to our list and update the database.
+            // Adding it to our list and update the database
             Main.myVolumes.add(newVolume);
+            // Update the volumes table in the database
             DatabaseThread.keepTrackOfVolumes();
         } catch (Exception e) {
             throw new EventHandlingException("volume");
         }
     }
 
-    // Helper method to handle the destroy event of a volume.
+    // Helper method to handle the destroy event of a volume
     public void handleVolumeDestroyEvent(String volumeName) throws EventHandlingException {
         try {
+            // Make use of our custom's MyVolume method getVolumeByName() to get the volume given its name
             MyVolume volumeToRemove = MyVolume.getVolumeByName(volumeName);
             if (volumeToRemove != null) {
                 // Sad to see you go, volume.
@@ -497,54 +522,58 @@ public class MonitorThread implements Runnable {
      */
     private static class CustomResultCallback extends ResultCallbackTemplate<CustomResultCallback, Statistics > {
 
-        // The ID of the container we want to get the statistics.
-        public String id;
+        // The ID of the container we want to get the statistics
+        public String containerId;
 
-        // The AsyncDockerCmd object we use to get the statistics.
+        // The AsyncDockerCmd object we use to get the statistics
         private AsyncDockerCmd <StatsCmd, Statistics> asyncStatsCmd;
 
         /**
          * Constructor for the CustomResultCallback class.
+         *
          * @param id The ID of the Docker container.
          * @param asyncStatsCmd The asynchronous command to get the statistics of the Docker container.
          */
         public CustomResultCallback(String id, AsyncDockerCmd < StatsCmd, Statistics > asyncStatsCmd) {
-            this.id = id;
+            this.containerId = id;
             this.asyncStatsCmd = asyncStatsCmd;
         }
 
         /**
          * This method is called when the next item is available meaning that the statistics are updated.
          * It updates the CPU usage, memory usage, number of PIDs, and block I/O statistics of the Docker container.
+         *
          * @param stats The statistics of the Docker container.
          */
         @Override
         public void onNext(Statistics stats) {
+            // Get the custom MyInstance object given the containerId
+            MyInstance instance = MyInstance.getInstanceByID(containerId);
 
-            // Get and update the CPU usage of the Docker container.
+            // Get and update the CPU usage of the Docker container
             long cpuUsage = getCpuUsageInNanos(stats);
-            if (MyInstance.getInstanceByid(id) != null) {
+            if (instance != null) {
                 if (cpuUsage != 0) {
-                    MyInstance.getInstanceByid(id).setCpuUsage((double) cpuUsage / 1_000_000_000);
+                   instance.setCpuUsage((double) cpuUsage / 1_000_000_000);
                 } else {
-                    MyInstance.getInstanceByid(id).setCpuUsage(0.0);
+                    instance.setCpuUsage(0.0);
                 }
             }
 
             // Get and update the memory usage of the Docker container.
             Long usage = stats.getMemoryStats().getUsage();
             long memoryUsage = (usage != null) ? usage / (1024 * 1024) : 0L;
-            if (MyInstance.getInstanceByid(id) != null) {
-                MyInstance.getInstanceByid(id).setMemoryUsage(memoryUsage);
+            if (instance != null) {
+                instance.setMemoryUsage(memoryUsage);
             }
 
             // Get and update the number of PIDs of the Docker container.
             Long pids = stats.getPidsStats().getCurrent();
-            if (MyInstance.getInstanceByid(id) != null) {
+            if (instance != null) {
                 if (pids != null) {
-                    MyInstance.getInstanceByid(id).setPids(pids);
+                    instance.setPids(pids);
                 } else {
-                    MyInstance.getInstanceByid(id).setPids(0);
+                    instance.setPids(0);
                 }
             }
 
@@ -558,20 +587,20 @@ public class MonitorThread implements Runnable {
             if (ioServiceBytes != null) {
                 writeBytes = getIoServiceBytesValue(ioServiceBytes, "Write");
             }
-            if (MyInstance.getInstanceByid(id) != null) {
-                MyInstance.getInstanceByid(id).setBlockI(readBytes != null ? (double) readBytes / (1024 * 1024) : 0.0);
-                MyInstance.getInstanceByid(id).setBlockO(writeBytes != null ? (double) writeBytes / (1024 * 1024) : 0.0);
+            if (instance != null) {
+               instance.setBlockI(readBytes != null ? (double) readBytes / (1024 * 1024) : 0.0);
+                instance.setBlockO(writeBytes != null ? (double) writeBytes / (1024 * 1024) : 0.0);
             }
         }
 
-        // Helper method to get the CPU usage of a Docker container.
+        // Helper method to get the CPU usage of a Docker container
         private Long getCpuUsageInNanos(Statistics stats) {
             Long cpuDelta = stats.getCpuStats().getCpuUsage().getTotalUsage() -
                     stats.getPreCpuStats().getCpuUsage().getTotalUsage();
             return cpuDelta >= 0 ? cpuDelta : 0L;
         }
 
-        // Helper method to get the block I/O statistics of a Docker container.
+        // Helper method to get the block I/O statistics of a Docker container
         private Long getIoServiceBytesValue(List < BlkioStatEntry > ioServiceBytes, String type) {
             for (BlkioStatEntry entry: ioServiceBytes) {
                 if (entry.getOp().equalsIgnoreCase(type)) {
@@ -581,19 +610,19 @@ public class MonitorThread implements Runnable {
             return null;
         }
 
-        // This method is called when an error occurs.
+        // This method is called when an error occurs
         @Override
         public void onError(Throwable throwable) {
             logger.error(throwable.getMessage());
         }
 
-        // This method is called when the stream is closed and the statistics are complete.
+        // This method is called when the stream is closed and the statistics are complete
         @Override
         public void onComplete() {
             asyncStatsCmd.close();
         }
 
-        // This method is called when the stream is started and the statistics are available.
+        // This method is called when the stream is started and the statistics are available
         @Override
         public void onStart(Closeable closeable) {}
     }

@@ -6,7 +6,8 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * This image name is included in the exception message.
  */
 public class ImageActionException extends Exception {
-    private String imageName;
+    // The name of the image that caused the exception
+    private final String imageName;
 
     /**
      * Constructs a new ImageActionException with the specified detail message and image name.

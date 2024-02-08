@@ -3,14 +3,15 @@ package gr.aueb.dmst.dockerWatchdog.Repositories;
 import java.util.Optional;
 import java.sql.Timestamp;
 
-import gr.aueb.dmst.dockerWatchdog.Models.Metric;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+
+import gr.aueb.dmst.dockerWatchdog.Models.Metric;
+
 /**
- * MetricsRepository is an interface that helps us with executing MYSQL queries on the Metric entity.
+ * MetricsRepository is an interface that helps us with executing MySQL queries on the Metric entity.
  * More specifically, declares custom methods for specific database access needs.
  */
 public interface MetricsRepository extends JpaRepository<Metric, Integer> {

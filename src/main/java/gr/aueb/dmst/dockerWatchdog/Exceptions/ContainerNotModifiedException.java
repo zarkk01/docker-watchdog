@@ -6,9 +6,9 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the ID of the container that could not be modified and the reason for the failure.
  */
 public class ContainerNotModifiedException extends Exception {
-    // The ID of the container that could not be modified.
+    // The ID of the container that could not be modified
     private final String containerId;
-    // The reason for the failure to modify the container.
+    // The reason for the failure to modify the container
     private final String reason;
 
     /**

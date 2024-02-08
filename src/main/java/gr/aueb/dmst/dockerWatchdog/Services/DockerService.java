@@ -38,7 +38,7 @@ import gr.aueb.dmst.dockerWatchdog.Repositories.MetricsRepository;
 @Transactional
 public class DockerService {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
 
     private final InstancesRepository instancesRepository;
@@ -47,7 +47,7 @@ public class DockerService {
     private final VolumesRepository volumesRepository;
 
     /**
-     * Constructor for DockerService.
+     * Constructor for DockerService
      *
      * @param instancesRepository the repository for Docker instances
      * @param metricsRepository the repository for Docker metrics
@@ -471,9 +471,9 @@ public class DockerService {
         // Create a CompletableFuture to run the image removal operation in the background.
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
-                // Call the ImagesController's showLoading method to display the loading animation.
+                // Call the ImagesController's showLoading method to display the loading animation
                 ImagesController.showLoading();
-                // Call the ExecutorThread's removeImage method to remove the Docker image.
+                // Call the ExecutorThread's removeImage method to remove the Docker image
                 ExecutorThread.removeImage(imageName);
             } catch (DockerException | ImageNotFoundException e) {
                 // Log any exceptions that occur during the image removal operation.
@@ -481,11 +481,11 @@ public class DockerService {
             }
         });
 
-        // Once the CompletableFuture is complete, display a notification to the user.
+        // Once the CompletableFuture is complete, display a notification to the user
         future.thenRun(() -> {
-            // Call the ImagesController's showNotification method to display the notification.
+            // Call the ImagesController's showNotification method to display the notification
             ImagesController.showNotification("Woof!",imageName + " removed", 3);
-            // Call the ImagesController's hideLoading method to hide the loading animation.
+            // Call the ImagesController's hideLoading method to hide the loading animation
             ImagesController.hideLoading();
         });
     }

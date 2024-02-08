@@ -5,7 +5,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the actor involved in the event handling operation.
  */
 public class EventHandlingException extends Exception {
-    // The actor involved in the event handling operation.
+    // The actor involved in the event handling operation
     private final String actor;
 
     /**

@@ -21,10 +21,10 @@ import gr.aueb.dmst.dockerWatchdog.Main;
  */
 public class ExecutorThread implements Runnable {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
 
-    // Run method is empty because it is used only for creating the thread.
+    // Run method is empty because it is used only for creating the thread
     @Override
     public void run() {
     }
@@ -38,15 +38,19 @@ public class ExecutorThread implements Runnable {
      */
     public static void startContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
+            // Check if the container is already running, paused, or dead
             if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                // If the container is already running, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is already running.");
             } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                // If the container is paused, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is paused.");
             } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+                // If the container is dead, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is dead.");
             }
 
-            // This is where the container is actually started.
+            // This is where the container is actually started
             Main.dockerClient.startContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
@@ -64,15 +68,19 @@ public class ExecutorThread implements Runnable {
      */
     public static void stopContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
+            // Check if the container is already stopped, paused, or dead
             if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                // If the container is already stopped, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is already stopped.");
             } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                // If the container is paused, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is paused.");
             } else if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getDead()) {
+                // If the container is dead, throw a ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is dead.");
             }
 
-            // This is where the container is actually stopped.
+            // This is where the container is actually stopped
             Main.dockerClient.stopContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
@@ -90,7 +98,9 @@ public class ExecutorThread implements Runnable {
      */
     public static void removeContainer(String containerId) throws ContainerNotFoundException, ContainerRunningException {
         try {
+            // Check if the container is running
             if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                // If the container is running, throw a ContainerRunningException
                 throw new ContainerRunningException(containerId);
             }
 
@@ -113,13 +123,16 @@ public class ExecutorThread implements Runnable {
      */
     public static void pauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
+            // Check if the container is already paused or not running
             if (Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                // If the container is already paused, throw an ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is already paused.");
             } else if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getRunning()) {
+                // If the container is not running, throw an ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is not running.");
             }
 
-            // This is where the container is actually paused.
+            // This is where the container is actually paused
             Main.dockerClient.pauseContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
@@ -137,11 +150,13 @@ public class ExecutorThread implements Runnable {
      */
     public static void unpauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
+            // Check if the container is not paused
             if (!Main.dockerClient.inspectContainerCmd(containerId).exec().getState().getPaused()) {
+                // If the container is not paused, throw an ContainerNotModifiedException
                 throw new ContainerNotModifiedException(containerId, "Container is not paused.");
             }
 
-            // This is where the container is actually unpaused.
+            // This is where the container is actually unpaused
             Main.dockerClient.unpauseContainerCmd(containerId).exec();
         } catch (NotFoundException e) {
             throw new ContainerNotFoundException(containerId);
@@ -160,7 +175,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void renameContainer(String containerId, String newName) throws ContainerNotFoundException, ContainerNameConflictException {
         try {
-            // This is where the container is actually renamed.
+            // This is where the container is actually renamed
             Main.dockerClient.renameContainerCmd(containerId)
                     .withName(newName)
                     .exec();
@@ -184,7 +199,7 @@ public class ExecutorThread implements Runnable {
     public static void runContainer(String imageName) throws ImageNotFoundException, ContainerCreationException, ContainerNotModifiedException {
         CreateContainerResponse container;
         try {
-            // This is where the container is actually being created.
+            // This is where the container is actually being created
             container = Main.dockerClient.createContainerCmd(imageName)
                     .withCmd("sleep", "infinity")
                     .exec();
@@ -195,7 +210,7 @@ public class ExecutorThread implements Runnable {
         }
 
         try {
-            // Here, the newborn container is doing its first steps.
+            // Here, the newborn container is doing its first steps meaning it is being started
             Main.dockerClient.startContainerCmd(container.getId()).exec();
         } catch (DockerException e) {
             throw new ContainerNotModifiedException(container.getId(), " Failed to start container.");
@@ -211,7 +226,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void pullImage(String imageName) throws ImageNotFoundException, DockerException, InterruptedException {
         try {
-            // This is where the image is actually pulled.
+            // This is where the image is actually pulled
             Main.dockerClient.pullImageCmd(imageName)
                     .exec(new PullImageResultCallback())
                     .awaitCompletion();
@@ -230,7 +245,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void removeImage(String imageName) throws ImageNotFoundException {
         try {
-            // This is where the image is actually removed.
+            // This is where the image is actually removed
             Main.dockerClient.removeImageCmd(imageName).exec();
         } catch (NotFoundException e) {
             throw new ImageNotFoundException(imageName);
@@ -262,7 +277,7 @@ public class ExecutorThread implements Runnable {
      */
     public static void createVolume(String volumeName) throws VolumeNotModifiedException {
         try {
-            // This is where the volume is actually created.
+            // This is where the volume is actually created
             Main.dockerClient.createVolumeCmd().withName(volumeName).exec();
         } catch (Exception e) {
             throw new VolumeNotModifiedException(volumeName);

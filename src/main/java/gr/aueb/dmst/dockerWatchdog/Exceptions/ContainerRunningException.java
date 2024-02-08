@@ -5,7 +5,7 @@ package gr.aueb.dmst.dockerWatchdog.Exceptions;
  * It includes the ID of the container that is currently running.
  */
 public class ContainerRunningException extends Exception {
-    // The ID of the container that is currently running.
+    // The ID of the container that is currently running
     private final String containerId;
 
     /**

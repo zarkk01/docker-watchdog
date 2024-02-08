@@ -2,15 +2,15 @@ package gr.aueb.dmst.dockerWatchdog.Repositories;
 
 import java.util.List;
 
-import gr.aueb.dmst.dockerWatchdog.Models.Instance;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import gr.aueb.dmst.dockerWatchdog.Models.Instance;
+
 /**
  * InstancesRepository is an interface that help us
- * with executing MYSQL queries on the Instance entity.
+ * with executing MySQL queries on the Instance entity.
  * InstancesRepository declares custom methods
  * for specific database access needs.
  */
