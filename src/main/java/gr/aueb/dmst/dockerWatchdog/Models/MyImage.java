@@ -88,27 +88,16 @@ public class MyImage {
     }
 
     /**
-     * Helper method that retrieves a MyImage instance from the
-     * myImagesList based on its name.
-     *
-     * @param name The name of the image to search for.
-     * @return The MyImage instance with the specified name, null if not found.
-     */
-    public static MyImage getImageByName(String name) {
-        return Main.myImages.stream()
-                .filter(image -> image.getName().equals(name))
-                .findFirst()
-                .orElse(null);
-    }
-
-    /**
      * Helper method that retrieves a MyImage instance
-     * from the myImagesList based on its ID.
+     * from the myImagesList based on its ID. This method is used
+     * whenever we have only the ID of an image, and we want to find
+     * the corresponding MyImage instance, especially in MonitorThread events.
      *
      * @param id The ID of the image to search for.
      * @return The MyImage instance with the specified ID, or null if not found.
      */
     public static MyImage getImageByID(String id) {
+        // Search for the image with the specified ID in the myImagesList.
         return Main.myImages.stream()
                 .filter(image -> image.getId().equals(id))
                 .findFirst()
