@@ -12,6 +12,7 @@ import com.github.dockerjava.core.command.PullImageResultCallback;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.*;
 import gr.aueb.dmst.dockerWatchdog.Main;
 
+
 /**
  * ExecutorThread is a class that provides methods for managing Docker containers and images.
  * It is where the actual Docker actions are performed.
@@ -31,6 +32,7 @@ public class ExecutorThread implements Runnable {
 
     /**
      * Starts a Docker container with the given ID after checking if it is not already running, paused, or dead.
+     * To do this, it uses the Docker JAVA API.
      *
      * @param containerId the ID of the container to start
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -61,6 +63,7 @@ public class ExecutorThread implements Runnable {
 
     /**
      * Stops a Docker container with the given ID after checking if it is not already stopped, paused, or dead.
+     * To do this, it uses the Docker JAVA API.
      *
      * @param containerId the ID of the container to stop
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -91,6 +94,7 @@ public class ExecutorThread implements Runnable {
 
     /**
      * Removes a Docker container with the given ID after checking if it is not currently running.
+     * To do this, it uses the Docker JAVA API.
      *
      * @param containerId the ID of the container to remove
      * @throws ContainerNotFoundException if the container with the given ID is not found
@@ -115,11 +119,11 @@ public class ExecutorThread implements Runnable {
 
     /**
      * Pauses a Docker container with the given ID after checking if it is not already paused or not running.
+     * To do this, it uses the Docker JAVA API.
      *
      * @param containerId the ID of the container to pause
      * @throws ContainerNotFoundException    if the container with the given ID is not found
-     * @throws ContainerNotModifiedException if the container with the given ID is already paused
-     *                                       or if it is not running
+     * @throws ContainerNotModifiedException if the container with the given ID is already paused or not running
      */
     public static void pauseContainer(String containerId) throws ContainerNotFoundException, ContainerNotModifiedException {
         try {
@@ -142,7 +146,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Unpauses a Docker container with the given ID after checking if it is not already paused.
+     * Unpauses a Docker container with the given ID after checking if it is not already paused using Docker JAVA API.
      *
      * @param containerId the ID of the container to unpause
      * @throws ContainerNotFoundException    if the container with the given ID is not found
@@ -166,7 +170,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Renames a Docker container with the given ID.
+     * Renames a Docker container with the given ID using Docker JAVA API.
      *
      * @param containerId the ID of the container to rename
      * @param newName     the new name for the container
@@ -189,7 +193,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Creates and starts a Docker container with the given image name.
+     * Creates and starts a Docker container with the given image name using Docker JAVA API.
      *
      * @param imageName the name of the Docker image to use for creating the container
      * @throws ImageNotFoundException        if the image with the given name is not found
@@ -218,7 +222,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Pulls a Docker image with the given name.
+     * Pulls a Docker image with the given name using Docker JAVA API.
      *
      * @param imageName the name of the Docker image to pull
      * @throws ImageNotFoundException if the image with the given name is not found
@@ -238,7 +242,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Removes a Docker image with the given name.
+     * Removes a Docker image with the given name using Docker JAVA API.
      *
      * @param imageName the name of the Docker image to remove
      * @throws ImageNotFoundException if the image with the given name is not found
@@ -255,7 +259,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Removes a Docker volume with the given name.
+     * Removes a Docker volume with the given name using Docker JAVA API.
      *
      * @param volumeName the name of the Docker volume to remove
      * @throws VolumeNotModifiedException if the volume with the given name is not found
@@ -270,7 +274,7 @@ public class ExecutorThread implements Runnable {
     }
 
     /**
-     * Creates a Docker volume with the given name.
+     * Creates a Docker volume with the given name using Docker JAVA API.
      *
      * @param volumeName the name of the Docker volume to create
      * @throws VolumeNotModifiedException if the volume cannot be created

@@ -14,6 +14,7 @@ import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
 
+
 /**
  * This thread is responsible for handling database operations.
  * It implements Runnable to allow database operations to be performed in a separate thread.
@@ -38,6 +39,7 @@ public class DatabaseThread implements Runnable {
     @Override
     public void run() {
         try {
+            // Start the live and constant updating of instances live metrics (CPU, Memory, PIDS..)
             updateLiveMetrics();
         } catch (DatabaseOperationException e) {
             // Log the error message if a DatabaseOperationException is thrown

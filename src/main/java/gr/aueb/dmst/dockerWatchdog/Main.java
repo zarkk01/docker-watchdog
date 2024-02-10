@@ -20,6 +20,7 @@ import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
 
+
 /**
  * The main class of the application.
  * It initializes the Docker client and lists for instances, images, and volumes,
@@ -71,18 +72,16 @@ public class Main {
      * It also starts the Spring Boot application to make the REST API available before the launch of the JavaFX application for the GUI.
      * If any exception occurs during the startup process, it is caught and logged.
      *
-     * @param args command line arguments passed to the application. Currently, these arguments are not used.
+     * @param args command line arguments passed to the application
      */
     public static void main(String[] args) {
 
         try {
-            // Start threads in a specific order so to prevent errors
+            // Start all three Threads for monitoring, executing, and database operations
             Thread monitorThread = new Thread(new MonitorThread());
             monitorThread.start();
-
             Thread executorThread = new Thread(new ExecutorThread());
             executorThread.start();
-
             Thread databaseThread = new Thread(new DatabaseThread());
             databaseThread.start();
 

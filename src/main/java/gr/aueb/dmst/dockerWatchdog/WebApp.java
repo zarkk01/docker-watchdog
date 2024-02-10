@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 /**
  * The main entry point for the Spring Boot application.
  * From here, the application will search for the other
