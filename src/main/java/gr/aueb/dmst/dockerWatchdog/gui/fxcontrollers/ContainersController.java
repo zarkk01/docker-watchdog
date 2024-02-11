@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
+import java.text.ParseException;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
@@ -881,7 +882,7 @@ public class ContainersController implements Initializable {
      * The metrics include the number of metrics done (meaning changes),
      * running instances, total instances, and stopped instances.
      * These metrics are then displayed in the corresponding labels in the user interface.
-     * If the datetime is not in the correct format, an error message is printed.
+     * If the datetime is not in the correct format, it shows a notification to the user.
      */
     public void showDataFromGivenDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -916,8 +917,10 @@ public class ContainersController implements Initializable {
             runningContainersText.setText(runningInstances);
             totalContainersText.setText(totalInstances);
             stoppedContainersText.setText(stoppedInstances);
+        } catch (ParseException e) {
+            showNotification("Invalid datetime", "Valid format datetime is 'yyyy-MM-dd HH:mm:ss'.", 3);
         } catch (Exception e) {
-           logger.error("Failed to show data from given datetime.", e);
+            logger.error("Failed to show data from given datetime.", e);
         }
     }
 
