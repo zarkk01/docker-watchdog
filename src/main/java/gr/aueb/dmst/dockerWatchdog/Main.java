@@ -12,13 +12,13 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 
-import gr.aueb.dmst.dockerWatchdog.Application.DesktopApp;
-import gr.aueb.dmst.dockerWatchdog.Models.MyImage;
-import gr.aueb.dmst.dockerWatchdog.Models.MyInstance;
-import gr.aueb.dmst.dockerWatchdog.Models.MyVolume;
-import gr.aueb.dmst.dockerWatchdog.Threads.DatabaseThread;
-import gr.aueb.dmst.dockerWatchdog.Threads.ExecutorThread;
-import gr.aueb.dmst.dockerWatchdog.Threads.MonitorThread;
+import gr.aueb.dmst.dockerWatchdog.gui.GUIApplication;
+import gr.aueb.dmst.dockerWatchdog.models.MyImage;
+import gr.aueb.dmst.dockerWatchdog.models.MyInstance;
+import gr.aueb.dmst.dockerWatchdog.models.MyVolume;
+import gr.aueb.dmst.dockerWatchdog.threads.DatabaseThread;
+import gr.aueb.dmst.dockerWatchdog.threads.ExecutorThread;
+import gr.aueb.dmst.dockerWatchdog.threads.MonitorThread;
 
 
 /**
@@ -89,7 +89,7 @@ public class Main {
             SpringApplication.run(WebApp.class, args);
 
             // Start JavaFX application and GUI displays
-            Application.launch(DesktopApp.class, args);
+            Application.launch(GUIApplication.class, args);
         } catch (Exception e) {
             // Log any exception that occurs during the startup process
             logger.error("An error occurred during the startup process: " + e.getMessage());
