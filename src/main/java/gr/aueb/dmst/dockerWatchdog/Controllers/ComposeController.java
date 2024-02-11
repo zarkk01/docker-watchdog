@@ -35,6 +35,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
 
+
 /**
  * The ComposeController class is an FX Controller responsible for
  * managing the Compose scene in the application.
@@ -92,7 +93,6 @@ public class ComposeController {
      * and installs a Tooltip on the watchdogImage.
      */
     public void initialize() {
-
         // Set up the shadows for the components of the Compose scene.
         setUpShadows();
 
@@ -102,7 +102,7 @@ public class ComposeController {
                 savedLabel.setText("Unsaved"));
 
         // Call the setupBackButton method to set up the back button.
-        setupBackButton();
+        setUpBackButton();
 
         // Create a new Tooltip and install it on the logo.
         Tooltip woof = new Tooltip("Woof!");
@@ -136,7 +136,7 @@ public class ComposeController {
      * This method loads the images for the back button, sets the image view,
      * and adds mouse event handlers to change the image when the mouse enters and exits the button.
      */
-    private void setupBackButton() {
+    private void setUpBackButton() {
         // Load the images for the back button.
         Image img = new Image(getClass().getResource("/images/back.png").toExternalForm());
         Image imgHover = new Image(getClass().getResource("/images/backHover.png").toExternalForm());

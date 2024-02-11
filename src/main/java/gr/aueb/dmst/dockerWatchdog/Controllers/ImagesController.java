@@ -819,7 +819,7 @@ public class ImagesController implements Initializable {
             }
 
             // Inform user that it may take a while.
-            showNotification("Hang on a moment..", "It may take a bit to stop all containers.",4);
+            showNotification("Hang on a moment..", "It may take a bit to stop all containers.",2);
 
             // If all containers are stopped successfully, refresh the images.
             // It will also adjust the info panel of this image if it is in the info panel.

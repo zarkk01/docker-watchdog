@@ -44,6 +44,8 @@ import org.json.JSONObject;
 import gr.aueb.dmst.dockerWatchdog.Exceptions.VolumeFetchException;
 import gr.aueb.dmst.dockerWatchdog.Models.VolumeScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+
+
 /**
  * FX Controller class for the Volumes panel.
  * This class handles user interactions with the Volumes scene, such as navigating to other scenes and refreshing the volumes table. Also,
@@ -53,7 +55,7 @@ import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
  */
 public class VolumesController implements Initializable {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(VolumesController.class);
 
     private Stage stage;
@@ -100,31 +102,28 @@ public class VolumesController implements Initializable {
      * It sets up the table columns, applies the hover effect to the sidebar buttons, sets the placeholder for the volumes table,
      * and refreshes the volumes table.
      * It also installs a tooltip on the watchdog image.
-     *
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param resourceBundle The resources used to localize the root object, or null if the root object was not localized.
-     * @throws IOException If an error occurs while initializing the VolumesController.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            // Set up the drop shadow effect for various components in the scene.
+            // Set up the drop shadow effect for various components in the scene
             setUpShadows();
-            // Set up the table columns.
-            setupTableColumns();
-            // Apply the hover effect to the sidebar buttons.
+
+            // Set up the table columns
+            setUpTableColumns();
+            // Apply the hover effect to the sidebar buttons
             hoveredSideBarImages();
-            // Set the placeholder for the volumes table.
+            // Set the placeholder for the volumes table
             volumesTableView.setPlaceholder(new Label("No volumes available."));
-            // Refresh the volumes table.
+            // Refresh the volumes table
             refreshVolumes();
+
             // Install funny tooltip on watchdog imageView
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
         } catch (Exception e) {
-            System.err.println("An error occurred while initializing the VolumesController: " + e.getMessage());
-            volumesTableView.setPlaceholder(new Label("An error occurred while loading the volumes."));
+           logger.error("An error occurred while initializing the VolumesController: " + e.getMessage());
         }
     }
 
@@ -151,30 +150,30 @@ public class VolumesController implements Initializable {
      * that should be displayed in each cell of the table column. Also, it creates an additional column
      * with a button for each volume, which allows the user to remove the volume.
      */
-    private void setupTableColumns() {
+    private void setUpTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         driverColumn.setCellValueFactory(new PropertyValueFactory<>("driver"));
         mountpointColumn.setCellValueFactory(new PropertyValueFactory<>("mountpoint"));
         containerNamesUsingColumn.setCellValueFactory(new PropertyValueFactory<>("containerNamesUsing"));
-        // Using a custom cell factory to create a button for each volume.
+        // Using a custom cell factory to create a button for each volume
         removeVolumeColumn.setCellFactory(createButtonCellFactory(
                 "Delete volume",
                 "/images/binRed.png",
                 "/images/binHover.png",
                 "/images/binClick.png", volume -> {
                     try {
-                        // If volume name is too long, cut it.
+                        // If volume name is too long, cut it
                         String volumeNameCut = volume.getName();
                         if (volume.getName().length() > 6) {
                             volumeNameCut = volume.getName().substring(0, 6) + "...";
                         }
-                        // Check if the volume is currently in use by a container.
+                        // Check if the volume is currently in use by a container
                         if (volume.getContainerNamesUsing().isEmpty()) {
                             removeVolume(volume.getName());
-                            // Show a notification to the user that the volume was successfully removed.
+                            // Show a notification to the user that the volume was successfully removed
                             showNotification("Woof!", "Volume " + volumeNameCut + "... was successfully removed.");
                         } else {
-                            // Show a notification to the user that the volume is currently in use by a container.
+                            // Show a notification to the user that the volume is currently in use by a container
                             showNotification("Grrr!", "Volume " + volumeNameCut + "... is currently in use by a container.");
                         }
                     } catch (Exception e) {
@@ -196,19 +195,21 @@ public class VolumesController implements Initializable {
      */
     private Callback<TableColumn<VolumeScene, Void>, TableCell<VolumeScene, Void>> createButtonCellFactory(String tooltipText, String imagePath, String hoverImagePath, String clickImagePath, Consumer<VolumeScene> action) {
         return new Callback<>() {
+            // This method creates a new TableCell containing a button with the given properties
             @Override
             public TableCell<VolumeScene, Void> call(final TableColumn<VolumeScene, Void> param) {
                 final TableCell<VolumeScene, Void> cell = new TableCell<>() {
                     private final Button btn = new Button();
                     private final Tooltip tooltip = new Tooltip(tooltipText);
 
-                    // Create the images for the button.
+                    // Create the images for the button
                     private final ImageView view = new ImageView(new Image(getClass().getResource(imagePath).toExternalForm()));
                     private final ImageView viewHover = new ImageView(new Image(getClass().getResource(hoverImagePath).toExternalForm()));
                     private final ImageView viewClick = new ImageView(new Image(getClass().getResource(clickImagePath).toExternalForm()));
 
+                    // Block of code regarding the button's setup
                     {
-                        // Set up the button and its effects.
+                        // Set up the button and its effects
                         DropShadow dropShadow = new DropShadow();
                         btn.setEffect(dropShadow);
                         tooltip.setShowDelay(Duration.millis(50));
@@ -222,22 +223,22 @@ public class VolumesController implements Initializable {
                         view.setOpacity(0.8);
                         btn.setGraphic(view);
 
-                        // Set up the removal action for the button.
+                        // Set up the removal action for the button
                         btn.setOnAction((ActionEvent event) -> {
                             VolumeScene volume = getTableView().getItems().get(getIndex());
                             action.accept(volume);
-                            // Then refresh the volumes table to be without the old volume.
+                            // Then refresh the volumes table to be without the old volume
                             refreshVolumes();
                         });
 
-                        // Set up the hover and click effects for the button.
+                        // Set up the hover and click effects for the button
                         btn.setOnMouseEntered(e -> view.setImage(viewHover.getImage()));
                         btn.setOnMouseExited(e -> view.setImage(new Image(getClass().getResource(imagePath).toExternalForm())));
                         btn.setOnMousePressed(e -> view.setImage(viewClick.getImage()));
                         btn.setOnMouseReleased(e -> view.setImage(viewHover.getImage()));
                     }
 
-                    // This method updates the item whenever the cell is updated.
+                    // This method updates the item whenever the cell is updated
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
@@ -262,7 +263,7 @@ public class VolumesController implements Initializable {
     public void removeVolume(String volumeName) {
         // Send a POST request to the WATCHDOG REST API to remove the volume.
         try {
-            // Create a new HTTP request to the WATCHDOG REST API.
+            // Create a new HTTP request to the WATCHDOG REST API
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/volumes/" + volumeName + "/remove"))
                     .POST(HttpRequest.BodyPublishers.noBody())
@@ -293,46 +294,46 @@ public class VolumesController implements Initializable {
      */
     public void createVolume(){
         try {
-            // Create a TextInputDialog so to get the name of the volume to be created.
+            // Create a TextInputDialog so to get the name of the volume to be created
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Create Volume");
             dialog.setHeaderText("Enter Volume Name");
             dialog.setContentText("Name:");
             String volumeName = dialog.showAndWait().get();
 
-            // Check if the volume with this name already exists.
+            // Check if the volume with this name already exists
             List<VolumeScene> volumes = getAllVolumes();
             for (VolumeScene volume : volumes) {
                 if (volume.getName().equals(volumeName)) {
-                    // If volume name is too long, cut it.
+                    // If volume name is too long, cut it
                     String volumeNameCut = volumeName;
                     if(volumeName.length() > 6){
                         volumeNameCut = volumeName.substring(0,6) + "...";
                     }
-                    // If yes, show a notification to the user that he cannot create and return.
+                    // If yes, show a notification to the user that he cannot create and return
                     showNotification("Error", "Volume " + volumeNameCut + " already exists.");
                     return;
                 }
             }
 
-            // If not, create a new volume with the given name.
+            // If not, create a new volume with the given name
             try {
-                // Create a new HTTP request to the WATCHDOG REST API.
+                // Create a new HTTP request to the WATCHDOG REST API
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(new URI("http://localhost:8080/api/volumes/" + volumeName + "/create"))
                         .POST(HttpRequest.BodyPublishers.noBody())
                         .build();
 
-                // Send the request.
+                // Send the request
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() ==  200){
-                    // If volume name is too long, cut it.
+                    // If volume name is too long, cut it
                     String volumeNameCut = volumeName;
                     if(volumeName.length() > 6){
                         volumeNameCut = volumeName.substring(0,6) + "...";
                     }
-                    // Show a notification to the user that the volume was successfully created.
+                    // Show a notification to the user that the volume was successfully created
                     showNotification("Woof!", "Volume " + volumeNameCut + " was successfully created.");
                 }
             } catch (Exception e) {
@@ -356,19 +357,19 @@ public class VolumesController implements Initializable {
      */
     public void refreshVolumes() {
         try {
-            // Clear the volumes table.
+            // Clear the volumes table
             volumesTableView.getItems().clear();
 
-            // Retrieve all volumes.
+            // Retrieve all volumes
             List<VolumeScene> volumes = getAllVolumes();
 
-            // Create an ObservableList to hold the VolumeScene objects.
+            // Create an ObservableList to hold the VolumeScene objects
             ObservableList<VolumeScene> observableVolumes = FXCollections.observableArrayList();
 
-            // Add all volumes to the ObservableList.
+            // Add all volumes to the ObservableList
             observableVolumes.addAll(volumes);
 
-            // Add the ObservableList to the volumes table.
+            // Add the ObservableList to the volumes table
             volumesTableView.setItems(observableVolumes);
         } catch (VolumeFetchException e) {
             logger.error(e.getMessage());
@@ -385,20 +386,20 @@ public class VolumesController implements Initializable {
      */
     public List<VolumeScene> getAllVolumes() throws VolumeFetchException {
         try {
-            // Create a new HTTP request to the Docker API.
+            // Create a new HTTP request to the Docker API
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI("http://localhost:8080/api/volumes"))
                     .GET()
                     .build();
 
-            // Send the request and parse the response into a JSONGArray.
+            // Send the request and parse the response into a JSONGArray
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             JSONArray jsonArray = new JSONArray(response.body());
 
-            // Create a list to hold the VolumeScene objects.
+            // Create a list to hold the VolumeScene objects
             List<VolumeScene> volumes = new ArrayList<>();
 
-            // Loop through the JSONArray and create a new VolumeScene object for each JSONObject.
+            // Loop through the JSONArray and create a new VolumeScene object for each JSONObject
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String name = jsonObject.getString("name");
@@ -408,7 +409,7 @@ public class VolumesController implements Initializable {
                 volumes.add(new VolumeScene(name, driver, mountpoint, containerNamesUsing));
             }
 
-            // Return the list of VolumeScene objects.
+            // Return the list of VolumeScene objects
             return volumes;
         } catch (Exception e) {
             throw new VolumeFetchException("Error while retrieving volumes, assure that the REST API is running and try again. Error: " + e.getMessage());
@@ -441,20 +442,20 @@ public class VolumesController implements Initializable {
      * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
      */
     private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
-        // Load the original image and the hovered image.
+        // Load the original image and the hovered image
         Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
         Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
 
-        // Set the original image as the button's graphic.
+        // Set the original image as the button's graphic
         ((ImageView) button.getGraphic()).setImage(originalImage);
 
-        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class
         button.setOnMouseEntered(event -> {
             button.getStyleClass().add("button-hovered");
             ((ImageView) button.getGraphic()).setImage(hoveredImage);
         });
 
-        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class
         button.setOnMouseExited(event -> {
             button.getStyleClass().remove("button-hovered");
             ((ImageView) button.getGraphic()).setImage(originalImage);
@@ -471,31 +472,31 @@ public class VolumesController implements Initializable {
      */
     public void showNotification(String title, String content) {
         Platform.runLater(() -> {
-            // Create a new Popup for the notification.
+            // Create a new Popup for the notification
             Popup notification = new Popup();
 
-            // Create a Label for the title of the notification and style it.
+            // Create a Label for the title of the notification and style it
             Label titleLabel = new Label(title);
             titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: white;");
 
-            // Create a Label for the content of the notification and style it.
+            // Create a Label for the content of the notification and style it
             Label contentLabel = new Label(content);
             contentLabel.setTextFill(Color.WHITE);
 
-            // Create a VBox to hold the title and content Labels and style it with our brand colors.
+            // Create a VBox to hold the title and content Labels and style it with our brand colors
             VBox box = new VBox(titleLabel, contentLabel);
             box.setStyle("-fx-background-color: #f14246; -fx-padding: 10px; -fx-border-color: #525252; -fx-border-width: 1px;");
 
-            // Add the VBox to the Popup.
+            // Add the VBox to the Popup
             notification.getContent().add(box);
 
-            // Calculate the position of the Popup on the screen.
+            // Calculate the position of the Popup on the screen
             Point2D point = notificationBox.localToScreen(notificationBox.getWidth() - box.getWidth(), notificationBox.getHeight() - box.getHeight());
 
-            // Show the Popup on the screen at the calculated position.
+            // Show the Popup on the screen at the calculated position
             notification.show(notificationBox.getScene().getWindow(), point.getX(), point.getY());
 
-            // Create a Timeline that will hide the Popup after 3 seconds.
+            // Create a Timeline that will hide the Popup after 3 seconds
             Timeline timelineNotification = new Timeline(new KeyFrame(Duration.seconds(3), evt -> notification.hide()));
             timelineNotification.play();
         });
@@ -537,7 +538,6 @@ public class VolumesController implements Initializable {
      * @throws IOException If an error occurs while changing the scene.
      */
     public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
-        // Change the scene to the Volumes scene.
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
@@ -565,13 +565,13 @@ public class VolumesController implements Initializable {
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Load the FXML file for the new scene.
+        // Load the FXML file for the new scene
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 
-        // Get the current stage.
+        // Get the current stage
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
-        // Set the new scene as the root of the stage and display it.
+        // Set the new scene as the root of the stage and display it
         stage.getScene().setRoot(root);
         stage.show();
     }

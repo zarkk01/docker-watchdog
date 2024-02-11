@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Controllers;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -35,14 +37,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
-import gr.aueb.dmst.dockerWatchdog.Exceptions.ChartException;
-import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
+import gr.aueb.dmst.dockerWatchdog.Exceptions.ChartException;
+import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
+
 
 /**
  * The GraphicsController class is an FX Controller responsible for managing the Graphics Panel in the application.
@@ -104,19 +107,16 @@ public class GraphicsController implements Initializable {
      * it sets a timeline to update the CPU and Memory charts every 4 seconds
      * and the PIDs chart and Allocation pie every 30 seconds.
      * Finally, it sets a hover effect for the sidebar images.
-     *
-     * @param arg0 The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param arg1 The resources used to localize the root object, or null if the root object was not localized.
      */
     @Override
-    public void initialize(java.net.URL arg0, java.util.ResourceBundle arg1) {
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
             // Set up shadows for the components.
             setUpShadows();
 
             // Start the charts.
             startCharts();
+
             // Update the CPU and Memory charts.
             updateCpuMemoryCharts();
             // Update the PIDs chart and the Pie chart.

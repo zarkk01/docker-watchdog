@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
+
 /**
  * Controller for the Containers scene.
  * It provides methods for handling user interactions with the Docker containers,
@@ -167,7 +168,6 @@ public class ContainersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
             // Set up the shadows for the components.
             setUpShadows();
 
@@ -178,13 +178,13 @@ public class ContainersController implements Initializable {
             setUpWoofTooltip();
 
             // Set up the table columns.
-            setupTableColumns();
+            setUpTableColumns();
 
             // Set up the remove button.
-            setupRemoveButton();
+            setUpRemoveButton();
 
             // Set up the instances table view.
-            setupInstancesTableView();
+            setUpInstancesTableView();
 
             // Refresh the instances.
             refreshInstances();
@@ -194,17 +194,17 @@ public class ContainersController implements Initializable {
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
 
-            // If the runningInstancesCheckbox is selected, refresh the instances.
+            // If the runningInstancesCheckbox got selected, refresh the instances.
             runningInstancesCheckbox.setOnAction(event -> {
                 refreshInstances();
             });
 
             // Set the notificationBoxStatic to the notificationBox.
-            // It is static so to be able to be called by DockerService.java where the actions are performed.
+            // It is static so to be able to be called by DockerService where the actions are performed.
             notificationBoxStatic = this.notificationBox;
 
             // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
-            // It is static so to be able to be manipulated by DockerService.java.
+            // It is static so to be able to be manipulated by DockerService.
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
         } catch (Exception e) {
@@ -279,6 +279,11 @@ public class ContainersController implements Initializable {
         });
     }
 
+    /**
+     * Sets up a tooltip for the watchdogImage.
+     * This method creates a new Tooltip with the text "Woof!" and sets its show delay to 20 milliseconds.
+     * The tooltip is then installed on the watchdogImage.
+     */
     private void setUpWoofTooltip() {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
@@ -292,7 +297,7 @@ public class ContainersController implements Initializable {
      * It also sets the placeholder for the table view, which is displayed when the table view is empty.
      * Finally, it sets the row factory for the table view, which changes the cursor to a hand when it hovers over a row.
      */
-    private void setupInstancesTableView() {
+    private void setUpInstancesTableView() {
         // Set the mouse click event for the table view.
         // When a row is double-clicked, load the IndividualContainer scene for the selected instance.
         instancesTableView.setOnMouseClicked(event -> {
@@ -334,7 +339,7 @@ public class ContainersController implements Initializable {
      * When the mouse pointer hovers over the button, the image of the button changes to a different image.
      * When the mouse pointer moves away from the button, the image of the button changes back to the original image.
      */
-    private void setupRemoveButton() {
+    private void setUpRemoveButton() {
         // Load the image for the remove button.
         Image binImg = new Image(getClass().getResource("/images/binRed.png").toExternalForm());
         ImageView binView = new ImageView(binImg);
@@ -371,7 +376,7 @@ public class ContainersController implements Initializable {
      * The selectColumn's cells contain a CheckBox that allows the user to select the Docker container represented by the row.
      * Finally, it hides the remove button.
      */
-    private void setupTableColumns() {
+    private void setUpTableColumns() {
         // Set the cell value factory for each column.
         // The cell value factory is a Callback that extracts a property value from the InstanceScene object and displays it in the cell.
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -617,7 +622,7 @@ public class ContainersController implements Initializable {
         // If the response status code is 200 (meaning the request was successful), refresh the instances.
         if (response.statusCode() == 200) {
             // Also, show a notification to the user to wait a few seconds for the container to stop.
-            showNotification("Be patient.." , "Container is stopping.", 4);
+            showNotification("Be patient.." , "Container is stopping.", 2);
             refreshInstances();
         }
     }
@@ -632,6 +637,7 @@ public class ContainersController implements Initializable {
      */
     public void removeSelectedContainers() {
         try {
+            // Get the checkbox states map.
             Map<String, Boolean> checkboxStates = getCheckboxStates();
 
             // Iterate over the checkbox states map.
@@ -639,6 +645,7 @@ public class ContainersController implements Initializable {
                 String containerId = entry.getKey();
                 boolean isSelected = entry.getValue();
 
+                // If the container is selected, send a POST request to delete the container.
                 if (isSelected) {
                     // Send a POST request to delete the container
                     HttpRequest request2 = HttpRequest.newBuilder()
@@ -646,7 +653,7 @@ public class ContainersController implements Initializable {
                             .POST(HttpRequest.BodyPublishers.noBody())
                             .build();
                     client.send(request2, HttpResponse.BodyHandlers.ofString());
-
+                    // Set the checkbox state to false.
                     checkboxStates.put(containerId, false);
                 }
             }
@@ -1007,6 +1014,7 @@ public class ContainersController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // Get the controller for the Volumes scene and refresh the volumes before user sees it.
         VolumesController volumesController = loader.getController();
         volumesController.refreshVolumes();
 

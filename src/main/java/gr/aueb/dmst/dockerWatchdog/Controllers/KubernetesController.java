@@ -24,6 +24,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import gr.aueb.dmst.dockerWatchdog.Models.DeploymentScene;
 import gr.aueb.dmst.dockerWatchdog.Models.PodScene;
 import gr.aueb.dmst.dockerWatchdog.Models.ServiceScene;
@@ -43,8 +46,7 @@ import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.openapi.models.V1ServiceList;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.util.Config;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 /**
  * FX Controller for the Kubernetes scene.
@@ -54,14 +56,14 @@ import org.apache.logging.log4j.Logger;
  */
 public class KubernetesController implements Initializable {
 
-    // Logger instance used mainly for errors.
+    // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(VolumesController.class);
 
-    // Stage and Parent for the scene.
+    // Stage and Parent for the scene
     private Stage stage;
     private Parent root;
 
-    // Table columns for the Pods table.
+    // Table columns for the Pods table
     @FXML
     private TableColumn<PodScene, String> podNameColumn;
     @FXML
@@ -71,7 +73,7 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableView<PodScene> podsTableView;
 
-    // Table columns for the Deployments table.
+    // Table columns for the Deployments table
     @FXML
     private TableColumn<DeploymentScene, String> deploymentNameColumn;
     @FXML
@@ -79,7 +81,7 @@ public class KubernetesController implements Initializable {
     @FXML
     TableView<DeploymentScene> deploymentsTableView;
 
-    // Table columns for the StatefulSets table.
+    // Table columns for the StatefulSets table
     @FXML
     private TableColumn<StatefulSetScene, String> statefulSetNameColumn;
     @FXML
@@ -87,7 +89,7 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableView<StatefulSetScene> statefulSetsTableView;
 
-    // Table columns for the Services table.
+    // Table columns for the Services table
     @FXML
     private TableColumn<ServiceScene, String> serviceNameColumn;
     @FXML
@@ -95,7 +97,7 @@ public class KubernetesController implements Initializable {
     @FXML
     private TableView<ServiceScene> servicesTableView;
 
-    // Buttons for the sidebar so to change scenes.
+    // Buttons for the sidebar so to change scenes
     @FXML
     private Button containersButton;
     @FXML
@@ -130,9 +132,6 @@ public class KubernetesController implements Initializable {
      * for the sidebar images, and populates the Pods, Deployments,
      * StatefulSets, and Services tables. It handles any ApiException or IOException
      * that may occur during the setup and population process by printing the stack trace.
-     *
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param resourceBundle The resources used to localize the root object, or null it was not localized.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -144,7 +143,7 @@ public class KubernetesController implements Initializable {
             hoveredSideBarImages();
 
             // Set up the Kubernetes API client
-            setupApiClient();
+            setUpApiClient();
 
             // Populate the tables with kubernetes data
             populatePodsTable();
@@ -165,7 +164,7 @@ public class KubernetesController implements Initializable {
      * The radius of the shadow is set to 7.5 and the color is set to a semi-transparent black.
      */
     private void setUpShadows() {
-        // Set up drop shadow effect for the components.
+        // Set up drop shadow effect for the components
         DropShadow shadow = new DropShadow();
         shadow.setRadius(7.5);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
@@ -208,20 +207,20 @@ public class KubernetesController implements Initializable {
      * @param hoveredImagePath The path to the image to be displayed when the button is hovered over.
      */
     private void setHoverEffect(Button button, String originalImagePath, String hoveredImagePath) {
-        // Load the original image and the hovered image.
+        // Load the original image and the hovered image
         Image originalImage = new Image(getClass().getResourceAsStream(originalImagePath));
         Image hoveredImage = new Image(getClass().getResourceAsStream(hoveredImagePath));
 
-        // Set the original image as the button's graphic.
+        // Set the original image as the button's graphic
         ((ImageView) button.getGraphic()).setImage(originalImage);
 
-        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class.
+        // Set the hover effect: when the mouse enters the button, change the image and add the hover style class
         button.setOnMouseEntered(event -> {
             button.getStyleClass().add("button-hovered");
             ((ImageView) button.getGraphic()).setImage(hoveredImage);
         });
 
-        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class.
+        // Remove the hover effect: when the mouse exits the button, change the image back to the original and remove the hover style class
         button.setOnMouseExited(event -> {
             button.getStyleClass().remove("button-hovered");
             ((ImageView) button.getGraphic()).setImage(originalImage);
@@ -235,7 +234,8 @@ public class KubernetesController implements Initializable {
      *
      * @throws IOException If an error occurs while setting up the API client.
      */
-    private void setupApiClient() throws IOException {
+    private void setUpApiClient() throws IOException {
+        // Initialize the Kubernetes API client using the default configuration
         ApiClient client = Config.defaultClient();
         Configuration.setDefaultApiClient(client);
     }
@@ -250,25 +250,25 @@ public class KubernetesController implements Initializable {
      * @throws ApiException If an error occurs while retrieving the Pods.
      */
     private void populatePodsTable() throws ApiException {
-        // Create a new CoreV1Api instance.
+        // Create a new CoreV1Api instance
         CoreV1Api api = new CoreV1Api();
 
-        // Retrieve a list of all Pods from all namespaces.
+        // Retrieve a list of all Pods from all namespaces
         V1PodList list = api.listPodForAllNamespaces(null, null, null, null, null, null, null, null, null, null, null);
 
-        // Create an ObservableList to hold PodScene objects.
+        // Create an ObservableList to hold PodScene objects
         ObservableList<PodScene> podsData = FXCollections.observableArrayList();
         for (V1Pod pod : list.getItems()) {
             podsData.add(new PodScene(pod.getMetadata().getName(), pod.getMetadata().getNamespace(), pod.getStatus().getPhase()));
         }
 
-        // Set the cell value factories for the table columns and set items of the Pods table.
+        // Set the cell value factories for the table columns and set items of the Pods table
         podNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         podNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
         podStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         podsTableView.setItems(podsData);
 
-        // Set a placeholder for the Pods table when there are no Pods available.
+        // Set a placeholder for the Pods table when there are no Pods available
         podsTableView.setPlaceholder(new Label("No Pods available"));
     }
 
@@ -282,24 +282,24 @@ public class KubernetesController implements Initializable {
      * @throws ApiException If an error occurs while retrieving the Deployments.
      */
     private void populateDeploymentsTable() throws ApiException {
-        // Create a new AppsV1Api instance.
+        // Create a new AppsV1Api instance
         AppsV1Api appsApi = new AppsV1Api();
 
-        // Retrieve a list of all Deployments from all namespaces.
+        // Retrieve a list of all Deployments from all namespaces
         V1DeploymentList deploymentList = appsApi.listDeploymentForAllNamespaces(null,null, null, null, null, null, null, null, null, null, null);
 
-        // Create an ObservableList to hold DeploymentScene objects.
+        // Create an ObservableList to hold DeploymentScene objects
         ObservableList<DeploymentScene> deploymentsData = FXCollections.observableArrayList();
         for (V1Deployment deployment : deploymentList.getItems()) {
             deploymentsData.add(new DeploymentScene(deployment.getMetadata().getName(), deployment.getMetadata().getNamespace()));
         }
 
-        // Set the cell value factories for the table columns and set items of the Deployments table.
+        // Set the cell value factories for the table columns and set items of the Deployments table
         deploymentNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         deploymentNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
         deploymentsTableView.setItems(deploymentsData);
 
-        // Set a placeholder for the Deployments table when there are no Deployments available.
+        // Set a placeholder for the Deployments table when there are no Deployments available
         deploymentsTableView.setPlaceholder(new Label("No Deployments available"));
     }
 
@@ -313,24 +313,24 @@ public class KubernetesController implements Initializable {
      * @throws ApiException If an error occurs while retrieving the StatefulSets.
      */
     private void populateStatefulSetsTable() throws ApiException {
-        // Create a new AppsV1Api instance.
+        // Create a new AppsV1Api instance
         AppsV1Api appsApi = new AppsV1Api();
 
-        // Retrieve a list of all StatefulSets from all namespaces.
+        // Retrieve a list of all StatefulSets from all namespaces
         V1StatefulSetList statefulSetList = appsApi.listStatefulSetForAllNamespaces(null, null, null, null, null, null, null, null, null, null, null);
 
-        // Create an ObservableList to hold StatefulSetScene objects.
+        // Create an ObservableList to hold StatefulSetScene objects
         ObservableList<StatefulSetScene> statefulSetsData = FXCollections.observableArrayList();
         for (V1StatefulSet statefulSet : statefulSetList.getItems()) {
             statefulSetsData.add(new StatefulSetScene(statefulSet.getMetadata().getName(), statefulSet.getMetadata().getNamespace()));
         }
 
-        // Set the cell value factories for the table columns and set items of the StatefulSets table.
+        // Set the cell value factories for the table columns and set items of the StatefulSets table
         statefulSetNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         statefulSetNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
         statefulSetsTableView.setItems(statefulSetsData);
 
-        // Set a placeholder for the StatefulSets table when there are no StatefulSets available.
+        // Set a placeholder for the StatefulSets table when there are no StatefulSets available
         statefulSetsTableView.setPlaceholder(new Label("No StatefulSets available"));
     }
 
@@ -345,24 +345,24 @@ public class KubernetesController implements Initializable {
      * @throws ApiException If an error occurs while retrieving the Services.
      */
     private void populateServicesTable() throws ApiException {
-        // Create a new CoreV1Api instance.
+        // Create a new CoreV1Api instance
         CoreV1Api api = new CoreV1Api();
 
-        // Retrieve a list of all Services from all namespaces.
+        // Retrieve a list of all Services from all namespaces
         V1ServiceList serviceList = api.listServiceForAllNamespaces(null, null, null, null, null, null, null, null, null, null, null);
 
-        // Create an ObservableList to hold ServiceScene objects.
+        // Create an ObservableList to hold ServiceScene objects
         ObservableList<ServiceScene> servicesData = FXCollections.observableArrayList();
         for (V1Service service : serviceList.getItems()) {
             servicesData.add(new ServiceScene(service.getMetadata().getName(), service.getMetadata().getNamespace()));
         }
 
-        // Set the cell value factories for the table columns and set items of the Services table.
+        // Set the cell value factories for the table columns and set items of the Services table
         serviceNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         serviceNamespaceColumn.setCellValueFactory(new PropertyValueFactory<>("namespace"));
         servicesTableView.setItems(servicesData);
 
-        // Set a placeholder for the Services table when there are no Services available.
+        // Set a placeholder for the Services table when there are no Services available
         servicesTableView.setPlaceholder(new Label("No Services available"));
     }
 
@@ -414,7 +414,7 @@ public class KubernetesController implements Initializable {
      * @throws IOException If an error occurs while changing the scene.
      */
     public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        // Load the Volumes scene and refresh the volumes.
+        // Load the Volumes scene and refresh the volumes
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
         try {
             root = loader.load();
@@ -424,7 +424,7 @@ public class KubernetesController implements Initializable {
         VolumesController volumesController = loader.getController();
         volumesController.refreshVolumes();
 
-        // Change the scene to the Volumes scene.
+        // Change the scene to the Volumes scene
         changeScene(actionEvent, "volumesScene.fxml");
     }
 
@@ -452,13 +452,13 @@ public class KubernetesController implements Initializable {
      * @throws IOException If an error occurs while loading the FXML file.
      */
     public void changeScene(ActionEvent actionEvent, String fxmlFile) throws IOException {
-        // Load the FXML file for the new scene.
+        // Load the FXML file for the new scene
         root = FXMLLoader.load(getClass().getResource("/" + fxmlFile));
 
-        // Get the current stage.
+        // Get the current stage
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
-        // Set the new scene as the root of the stage and display it.
+        // Set the new scene as the root of the stage and display it
         stage.getScene().setRoot(root);
         stage.show();
     }

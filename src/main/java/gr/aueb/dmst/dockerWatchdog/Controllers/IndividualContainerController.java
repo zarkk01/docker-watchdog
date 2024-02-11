@@ -47,6 +47,7 @@ import gr.aueb.dmst.dockerWatchdog.Main;
 import gr.aueb.dmst.dockerWatchdog.Models.InstanceScene;
 import static gr.aueb.dmst.dockerWatchdog.Application.DesktopApp.client;
 
+
 /**
  * FX Controller for the IndividualContainer panel.
  * It provides methods for handling user interactions with a specific instance like starting, stopping,
