@@ -3,6 +3,7 @@ package gr.aueb.dmst.dockerWatchdog.Models;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
+
 /**
  * This class represents an Instance that be displayed in GUI panels.
  * An InstanceScene has an id, name, status, memoryUsage, pids, cpuUsage, blockI, blockO,

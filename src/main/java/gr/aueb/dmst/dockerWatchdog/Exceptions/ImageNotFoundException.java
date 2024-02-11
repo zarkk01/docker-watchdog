@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * This class represents a custom exception that is thrown when an image is not found.
  * It includes the name of the image that was not found.

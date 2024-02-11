@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+
 /**
  * This class represents an Image that be displayed in GUI panels.
  * An ImageScene has an id, name, status, and size, and it is what the user

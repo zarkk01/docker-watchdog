@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * This class represents a custom exception that is thrown when a database operation fails.
  * It includes the operation that failed and the actors involved in the operation.

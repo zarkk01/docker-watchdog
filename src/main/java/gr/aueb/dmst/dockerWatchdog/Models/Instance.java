@@ -6,6 +6,7 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 
+
 /**
  * This class represents an Instance entity.
  * An Instance has an id, metricId, name, image, status, memoryUsage, pids, cpuUsage,

@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * This class represents a custom exception that is thrown when a Docker volume cannot be modified.
  * It extends the Exception class and overrides the getMessage method to provide a custom error message.

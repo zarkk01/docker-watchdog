@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 
+
 /**
  * This class represents the main application window for the Docker Watchdog application.
  * It initializes an HTTP client and sets up the primary stage of the JavaFX application.

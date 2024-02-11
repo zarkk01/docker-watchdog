@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * The ImageActionException class is a custom exception used in the ImagesController.
  * It includes an additional field for the name of the image that caused the exception.

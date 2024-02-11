@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+
 /**
  * This class represents a StatefulSet that can be displayed on GUI panels.
  * A StatefulSetScene has a name and a namespace, and it is used in the Kubernetes

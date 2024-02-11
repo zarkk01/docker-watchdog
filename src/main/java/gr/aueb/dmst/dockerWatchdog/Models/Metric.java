@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+
 /**
  * This class represents a Metric entity.
  * A Metric has an id and a datetime.

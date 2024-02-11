@@ -5,6 +5,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 
+
 /**
  * This class represents an Image entity.
  * An Image has an id, name, status, and size.

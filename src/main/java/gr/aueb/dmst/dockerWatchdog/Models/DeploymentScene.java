@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+
 /**
  * This class represents a Deployment that be displayed in GUI panels.
  * A deployment has a name and a namespace, and we use it in Kubernetes

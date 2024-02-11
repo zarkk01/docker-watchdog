@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import gr.aueb.dmst.dockerWatchdog.Models.Image;
 
+
 /**
  * ImagesRepository is an interface that help us with executing MySQL queries on the Image entity.
  * ImagesRepository does not declare any methods, as it relies on the standard methods provided by JpaRepository

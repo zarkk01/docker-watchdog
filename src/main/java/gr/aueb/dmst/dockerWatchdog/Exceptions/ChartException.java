@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * The ChartException class is a custom exception class used to handle specific issues related to charts in the GraphicsController.
  * The class contains a single field, `chartName`, which represents the name of the chart where the error occurred.

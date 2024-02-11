@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * This class represents a custom exception that is thrown when a list fails to be filled properly.
  * It includes the name of the list that failed to be filled.

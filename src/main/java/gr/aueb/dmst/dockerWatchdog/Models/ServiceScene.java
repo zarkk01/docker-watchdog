@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+
 /**
  * This class represents a Service that be displayed on GUI panels.
  * A ServiceScene has a name and a namespace, and we use it in Kubernetes

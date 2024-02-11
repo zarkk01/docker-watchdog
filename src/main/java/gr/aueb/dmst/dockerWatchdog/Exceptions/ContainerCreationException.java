@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * This class represents a custom exception that is thrown when a container fails to be created.
  * It includes the name of the image that was used in the attempt to create the container.

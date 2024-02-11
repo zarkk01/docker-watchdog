@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Exceptions;
 
+
 /**
  * Exception thrown when an action fails on a container in its individual panel.
  * This class extends Exception and provides a constructor that accepts the action that failed and the ID of the container.

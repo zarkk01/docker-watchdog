@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.Models;
 
 import gr.aueb.dmst.dockerWatchdog.Main;
 
+
 /**
  * This class represents an image object.
  * MyImage is a custom class we created to represent

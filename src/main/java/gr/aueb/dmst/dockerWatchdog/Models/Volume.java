@@ -5,6 +5,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 
+
 /**
  * This class represents a Volume entity.
  * * It is used as part of our REST API in our Spring Boot application.

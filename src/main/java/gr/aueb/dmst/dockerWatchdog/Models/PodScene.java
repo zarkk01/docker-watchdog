@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.Models;
 
+
 /**
  * This class represents a Pod that be displayed in GUI panels.
  * A PodScene has a name, namespace, and status, and it is what the user
