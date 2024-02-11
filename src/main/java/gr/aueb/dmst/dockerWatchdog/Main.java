@@ -85,7 +85,7 @@ public class Main {
             Thread databaseThread = new Thread(new DatabaseThread());
             databaseThread.start();
 
-            // Start Spring Boot application
+            // Start Spring Boot application and WATCHDOG REST API
             SpringApplication.run(WebApp.class, args);
 
             // Start JavaFX application and GUI displays
