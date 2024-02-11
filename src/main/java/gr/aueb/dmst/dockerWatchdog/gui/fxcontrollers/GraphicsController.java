@@ -42,9 +42,9 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import gr.aueb.dmst.dockerWatchdog.models.InstanceScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.InstanceScene;
 import gr.aueb.dmst.dockerWatchdog.exceptions.ChartException;
-import static gr.aueb.dmst.dockerWatchdog.gui.GUIApplication.client;
+import static gr.aueb.dmst.dockerWatchdog.gui.GuiApplication.client;
 
 
 /**

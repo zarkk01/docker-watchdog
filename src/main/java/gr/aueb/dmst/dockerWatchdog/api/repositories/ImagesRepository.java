@@ -2,7 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.api.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import gr.aueb.dmst.dockerWatchdog.models.Image;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Image;
 
 
 /**

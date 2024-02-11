@@ -176,7 +176,7 @@
                <children>
                   <Button fx:id="pullButton" layoutX="168.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="28.0" prefWidth="52.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
                      <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="SansSerif Bold" size="13.0" />
                      </font></Button>
                   <TextField fx:id="pullImageTextField" layoutY="-1.0" prefHeight="30.0" prefWidth="153.0" promptText="Pull an image..." style="-fx-background-color: transparent; -fx-text-fill: white;">
                      <font>

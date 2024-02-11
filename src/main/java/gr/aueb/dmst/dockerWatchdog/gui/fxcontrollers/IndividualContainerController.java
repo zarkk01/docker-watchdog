@@ -44,8 +44,8 @@ import com.github.dockerjava.core.command.LogContainerResultCallback;
 
 import gr.aueb.dmst.dockerWatchdog.exceptions.ContainerActionFailedException;
 import gr.aueb.dmst.dockerWatchdog.Main;
-import gr.aueb.dmst.dockerWatchdog.models.InstanceScene;
-import static gr.aueb.dmst.dockerWatchdog.gui.GUIApplication.client;
+import gr.aueb.dmst.dockerWatchdog.gui.models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.gui.GuiApplication.client;
 
 
 /**

@@ -165,7 +165,7 @@
             </TableView>
             <Button fx:id="createVolumeButton" alignment="BASELINE_LEFT" layoutX="827.0" layoutY="15.0" mnemonicParsing="false" onAction="#createVolume" prefHeight="32.0" prefWidth="77.0" style="-fx-background-radius: 14;" stylesheets="@styles/darkButtons.css" text="create" textAlignment="CENTER" textFill="WHITE">
                <font>
-                  <Font size="15.0" />
+                  <Font name="SansSerif Regular" size="15.0" />
                </font></Button>
             <ImageView fitHeight="12.0" fitWidth="16.0" layoutX="881.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true">
                <image>

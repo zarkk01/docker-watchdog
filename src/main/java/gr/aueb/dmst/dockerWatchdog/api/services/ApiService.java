@@ -16,13 +16,13 @@ import com.github.dockerjava.api.exception.DockerException;
 import gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers.ContainersController;
 import gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers.ImagesController;
 import gr.aueb.dmst.dockerWatchdog.exceptions.*;
-import gr.aueb.dmst.dockerWatchdog.models.Image;
-import gr.aueb.dmst.dockerWatchdog.models.Volume;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Image;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Volume;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.ImagesRepository;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.VolumesRepository;
 import gr.aueb.dmst.dockerWatchdog.threads.ExecutorThread;
-import gr.aueb.dmst.dockerWatchdog.models.Instance;
-import gr.aueb.dmst.dockerWatchdog.models.Metric;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Instance;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Metric;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.MetricsRepository;
 

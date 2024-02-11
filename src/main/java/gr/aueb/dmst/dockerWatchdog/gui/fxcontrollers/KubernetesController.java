@@ -27,10 +27,10 @@ import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gr.aueb.dmst.dockerWatchdog.models.DeploymentScene;
-import gr.aueb.dmst.dockerWatchdog.models.PodScene;
-import gr.aueb.dmst.dockerWatchdog.models.ServiceScene;
-import gr.aueb.dmst.dockerWatchdog.models.StatefulSetScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.DeploymentScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.PodScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.ServiceScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.StatefulSetScene;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;

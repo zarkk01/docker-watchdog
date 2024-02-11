@@ -42,9 +42,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import gr.aueb.dmst.dockerWatchdog.exceptions.ImageActionException;
-import gr.aueb.dmst.dockerWatchdog.models.ImageScene;
-import gr.aueb.dmst.dockerWatchdog.models.InstanceScene;
-import static gr.aueb.dmst.dockerWatchdog.gui.GUIApplication.client;
+import gr.aueb.dmst.dockerWatchdog.gui.models.ImageScene;
+import gr.aueb.dmst.dockerWatchdog.gui.models.InstanceScene;
+import static gr.aueb.dmst.dockerWatchdog.gui.GuiApplication.client;
 
 
 /**

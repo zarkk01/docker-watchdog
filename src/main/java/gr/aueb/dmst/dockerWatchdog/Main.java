@@ -12,13 +12,14 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 
-import gr.aueb.dmst.dockerWatchdog.gui.GUIApplication;
+import gr.aueb.dmst.dockerWatchdog.gui.GuiApplication;
 import gr.aueb.dmst.dockerWatchdog.models.MyImage;
 import gr.aueb.dmst.dockerWatchdog.models.MyInstance;
 import gr.aueb.dmst.dockerWatchdog.models.MyVolume;
 import gr.aueb.dmst.dockerWatchdog.threads.DatabaseThread;
 import gr.aueb.dmst.dockerWatchdog.threads.ExecutorThread;
 import gr.aueb.dmst.dockerWatchdog.threads.MonitorThread;
+import gr.aueb.dmst.dockerWatchdog.api.WebApplication;
 
 
 /**
@@ -86,10 +87,10 @@ public class Main {
             databaseThread.start();
 
             // Start Spring Boot application and WATCHDOG REST API
-            SpringApplication.run(WebApp.class, args);
+            SpringApplication.run(WebApplication.class, args);
 
             // Start JavaFX application and GUI displays
-            Application.launch(GUIApplication.class, args);
+            Application.launch(GuiApplication.class, args);
         } catch (Exception e) {
             // Log any exception that occurs during the startup process
             logger.error("An error occurred during the startup process: " + e.getMessage());

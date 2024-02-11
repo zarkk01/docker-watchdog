@@ -6,10 +6,10 @@ import java.sql.Timestamp;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import gr.aueb.dmst.dockerWatchdog.models.Image;
-import gr.aueb.dmst.dockerWatchdog.models.Volume;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Image;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Volume;
 import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
-import gr.aueb.dmst.dockerWatchdog.models.Instance;
+import gr.aueb.dmst.dockerWatchdog.api.entities.Instance;
 
 
 /**

@@ -42,8 +42,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import gr.aueb.dmst.dockerWatchdog.exceptions.VolumeFetchException;
-import gr.aueb.dmst.dockerWatchdog.models.VolumeScene;
-import static gr.aueb.dmst.dockerWatchdog.gui.GUIApplication.client;
+import gr.aueb.dmst.dockerWatchdog.gui.models.VolumeScene;
+import static gr.aueb.dmst.dockerWatchdog.gui.GuiApplication.client;
 
 
 /**
