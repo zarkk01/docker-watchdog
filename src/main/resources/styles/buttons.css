@@ -11,10 +11,11 @@ Button:pressed {
 }
 
 #loginButton:hover {
-    -fx-text-fill: #F14246;
+    -fx-border-color: #F14246;
 }
 
 #loginButton {
     -fx-background-color: transparent;
     -fx-text-fill: white;
+    -fx-border-color: white;
 }
