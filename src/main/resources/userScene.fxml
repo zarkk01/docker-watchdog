@@ -59,7 +59,7 @@
                      <font>
                         <Font name="SansSerif Regular" size="19.0" />
                      </font></PasswordField>
-                  <Button fx:id="loginButton" layoutX="200.0" layoutY="401.0" mnemonicParsing="false" onAction="#logIn" prefHeight="49.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 15;" text="Login" textFill="WHITE">
+                  <Button id="loginButton" fx:id="loginButton" layoutX="200.0" layoutY="401.0" mnemonicParsing="false" onAction="#logIn" prefHeight="49.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 15;" stylesheets="@styles/buttons.css" text="Login" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Bold" size="20.0" />
                      </font></Button>

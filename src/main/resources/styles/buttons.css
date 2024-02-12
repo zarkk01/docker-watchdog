@@ -9,3 +9,12 @@ Button:hover {
 Button:pressed {
     -fx-background-color: #776767;
 }
+
+#loginButton:hover {
+    -fx-text-fill: #F14246;
+}
+
+#loginButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
