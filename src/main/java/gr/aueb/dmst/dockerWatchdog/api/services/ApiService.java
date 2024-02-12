@@ -617,7 +617,9 @@ public class ApiService {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+            if (!response.isSuccessful()) {
+                return null;
+            };
 
             // Parse the response body to get the token
             String responseBody = Objects.requireNonNull(response.body()).string();

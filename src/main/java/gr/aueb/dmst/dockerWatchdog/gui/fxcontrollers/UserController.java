@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +25,9 @@ public class UserController {
     private Object root;
 
     @FXML
+    private Label wrongUserPass;
+
+    @FXML
     private Button backbutton;
     @FXML
     private Label loginToDockerhubLabel;
@@ -32,7 +36,7 @@ public class UserController {
     @FXML
     private TextField usernameTextField;
     @FXML
-    private TextField passwordTextField;
+    private PasswordField passwordTextField;
     @FXML
     private Label loginPrompt;
     @FXML
@@ -51,6 +55,7 @@ public class UserController {
             hideForm();
         } else {
             System.out.println("User is not logged in");
+            wrongUserPass.setVisible(false);
             passwordTextField.setVisible(true);
             loginButton.setVisible(true);
             usernameTextField.setVisible(true);
@@ -71,11 +76,16 @@ public class UserController {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
         token = ApiService.authenticateDockerHub(username, password);
-        hideForm();
-        loggedInLabel.setVisible(true);
+        if (token != null && !token.isEmpty()) {
+            loggedInLabel.setVisible(true);
+            hideForm();
+        } else {
+            wrongUserPass.setVisible(true);
+        }
     }
 
     public void hideForm() {
+        wrongUserPass.setVisible(false);
         loginToDockerhubLabel.setVisible(false);
         passwordTextField.setVisible(false);
         loginButton.setVisible(false);

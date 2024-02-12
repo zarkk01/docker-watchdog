@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -54,10 +55,10 @@
                      <font>
                         <Font name="SansSerif Regular" size="19.0" />
                      </font></TextField>
-                  <TextField fx:id="passwordTextField" layoutX="141.0" layoutY="305.0" prefHeight="49.0" prefWidth="268.0" promptText="              Password" style="-fx-background-color: transparent; -fx-border-color: green; -fx-border-radius: 15; -fx-text-fill: white;">
+                  <PasswordField fx:id="passwordTextField" accessibleRole="PASSWORD_FIELD" layoutX="141.0" layoutY="305.0" prefHeight="49.0" prefWidth="268.0" promptText="              Password" style="-fx-background-color: transparent; -fx-border-color: green; -fx-border-radius: 15; -fx-text-fill: white;">
                      <font>
                         <Font name="SansSerif Regular" size="19.0" />
-                     </font></TextField>
+                     </font></PasswordField>
                   <Button fx:id="loginButton" layoutX="200.0" layoutY="401.0" mnemonicParsing="false" onAction="#logIn" prefHeight="49.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-border-color: green; -fx-border-radius: 15;" text="Login" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Bold" size="20.0" />
@@ -72,6 +73,7 @@
                         <Font size="21.0" />
                      </font>
                   </Label>
+                  <Label fx:id="wrongUserPass" layoutX="168.0" layoutY="371.0" text="Wrong username or password. Try again." textFill="RED" visible="false" />
                </children>
             </Pane>
             <Button fx:id="backButton" layoutX="35.0" layoutY="23.0" mnemonicParsing="false" onAction="#goBack" prefHeight="39.0" prefWidth="39.0" style="-fx-background-color: transparent;" />
