@@ -94,9 +94,10 @@ public class PullImageController implements Initializable {
             protected void updateItem(SearchResultScene item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null) {
-                    setStyle("-fx-background-color: #474745;");
+                    setStyle("-fx-background-color: transparent;");
                 } else {
-                    setStyle("-fx-background-color: #474745;");
+                    setStyle("-fx-background-color: transparent" +
+                            ";");
 
                 }
             }

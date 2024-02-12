@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -38,16 +39,49 @@
    <left>
       <Pane prefHeight="851.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
          <children>
-             <TextField fx:id="imagesSearch" layoutX="424.0" layoutY="28.0" prefHeight="28.0" prefWidth="216.0" promptText="Search for an image in DockerHub.." style="-fx-background-color: #31312F; -fx-text-fill: white;" />
-             <Button fx:id="searchButton" layoutX="654.0" layoutY="29.0" mnemonicParsing="false" onAction="#searchForImages" stylesheets="@styles/darkButtons.css" text="Search" textFill="WHITE" />
-            <Button fx:id="backButton" layoutX="17.0" layoutY="16.0" mnemonicParsing="false" onAction="#changeToImagesScene" stylesheets="@styles/darkButtons.css" text="Return" textFill="WHITE" />
-            <TableView fx:id="searchResultTable" layoutX="36.0" layoutY="70.0" prefHeight="572.0" prefWidth="1030.0" styleClass="table-row-cell" stylesheets="@styles/styles.css">
+            <ImageView fitHeight="683.0" fitWidth="1099.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/blur.jpg" />
+               </image>
+            </ImageView>
+            <Pane layoutX="427.0" layoutY="15.0" prefHeight="95.0" prefWidth="308.0" style="-fx-background-color: #474745;" stylesheets="@../../../target/classes/styles/curvedPane.css" />
+             <TextField fx:id="imagesSearch" layoutX="448.0" layoutY="64.0" prefHeight="37.0" prefWidth="216.0" promptText="Search.." style="-fx-background-color: #31312F; -fx-text-fill: white;">
+               <font>
+                  <Font size="17.0" />
+               </font></TextField>
+             <Button fx:id="searchButton" layoutX="670.0" layoutY="65.0" mnemonicParsing="false" onAction="#searchForImages" prefHeight="35.0" prefWidth="37.0" stylesheets="@styles/darkButtons.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/search.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="backButton" layoutX="45.0" layoutY="48.0" mnemonicParsing="false" onAction="#changeToImagesScene" prefHeight="43.0" prefWidth="45.0" stylesheets="@styles/darkButtons.css" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="38.0" fitWidth="37.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/back.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <TableView fx:id="searchResultTable" layoutX="36.0" layoutY="117.0" prefHeight="511.0" prefWidth="1030.0" styleClass="table-row-cell" stylesheets="@styles/styles.css">
               <columns>
                 <TableColumn fx:id="imageNameColumn" prefWidth="188.31169891357422" text="Image" />
                 <TableColumn fx:id="descriptionColumn" prefWidth="712.6883087158203" text="Description" />
                   <TableColumn fx:id="pullImageColumn" prefWidth="112.6669921875" text="Pull" />
               </columns>
             </TableView>
+            <Label layoutX="447.0" layoutY="22.0" text="Browse DockerHub" textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Bold" size="24.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="28.0" fitWidth="29.0" layoutX="669.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/shoppingCart.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
    </left>
