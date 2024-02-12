@@ -204,16 +204,16 @@
                         </Pane>
                         <Pane layoutX="336.0" layoutY="765.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
-                              <Text fill="WHITE" layoutX="34.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatefulSet" wrappingWidth="179.19537353515625">
+                              <Text fill="WHITE" layoutX="40.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatefulSet" wrappingWidth="179.19537353515625">
                                  <font>
                                     <Font name="SansSerif Bold" size="24.0" />
                                  </font>
                               </Text>
                            </children>
                         </Pane>
-                        <Pane layoutX="195.0" layoutY="1062.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
+                        <Pane layoutX="195.0" layoutY="1046.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
-                              <Text fill="WHITE" layoutX="25.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Services" wrappingWidth="221.45172119140625">
+                              <Text fill="WHITE" layoutX="59.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Services" wrappingWidth="221.45172119140625">
                                  <font>
                                     <Font name="SansSerif Bold" size="24.0" />
                                  </font>
