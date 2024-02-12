@@ -77,6 +77,9 @@ public class UserController {
         // Request focus for the dummy button to prevent the text field from getting focus
         Platform.runLater(() -> dummyButton.requestFocus());
 
+        // Set up the back button with the image and hover effect
+        setupButton(backButton, new ImageView(), "back.png", "backHover.png", 20);
+
         // Check if the user is logged in
         if (token != null && !token.isEmpty()) {
             // Update the loggedInLabel with the user's name and make it visible
@@ -103,10 +106,6 @@ public class UserController {
         // Adjust the size of the image as needed
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
-
-        // Set the image as the graphic for the back button and make the button transparent
-        backButton.setGraphic(imageView);
-        backButton.setStyle("-fx-background-color: transparent;");
     }
 
     /**
@@ -135,6 +134,47 @@ public class UserController {
 
         // Hide the login prompt
         loginPrompt.setVisible(false);
+    }
+
+    /**
+     * Sets up a button with an image and hover effect.
+     * The image changes when the mouse enters and exits the button.
+     * The button's graphic is set to an ImageView of the image.
+     * It is used so to automate the process of setting up the hover effect for all 3 buttons.
+     *
+     * @param button The button to set up.
+     * @param view The ImageView to set as the button's graphic.
+     * @param imagePath The path to the image for the button.
+     * @param hoverImagePath The path to the image for the button's hover effect.
+     * @param fitHeight The height to fit the ImageView to.
+     */
+    private void setupButton(Button button, ImageView view, String imagePath, String hoverImagePath, double fitHeight) {
+        // Load the image from the given path and set it to the ImageView.
+        InputStream imgStream = getClass().getResourceAsStream("/images/" + imagePath);
+        Image img = new Image(imgStream);
+        view.setImage(img);
+
+        // Fit the ImageView to the given height and preserve its ratio.
+        view.setFitHeight(fitHeight);
+        view.setPreserveRatio(true);
+        button.setGraphic(view);
+
+        // Load the hover image from the given path.
+        InputStream imgHoverStream = getClass().getResourceAsStream("/images/" + hoverImagePath);
+        Image imgHover = new Image(imgHoverStream);
+
+        // Set the hover effect: when the mouse enters the button, change the image and reduce its opacity.
+        button.setOnMouseEntered(event -> {
+            view.setImage(imgHover);
+            view.setOpacity(0.8);
+        });
+
+        // Remove the hover effect: when the mouse exits the button,
+        // change the image back to the original and restore its opacity.
+        button.setOnMouseExited(event -> {
+            view.setImage(img);
+            view.setOpacity(1);
+        });
     }
 
     /**
