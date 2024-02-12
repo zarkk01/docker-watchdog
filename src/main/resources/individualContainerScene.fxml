@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -14,7 +15,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
@@ -288,10 +288,13 @@
                     </font>
                 </Text>
                 <ImageView fx:id="loadingImageView" fitHeight="26.0" fitWidth="34.0" layoutX="969.0" pickOnBounds="true" preserveRatio="true" visible="false" />
-                <Button fx:id="userButton" alignment="TOP_LEFT" layoutX="1011.0" layoutY="2.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="15.0" prefWidth="84.0" style="-fx-background-color: #CE1E30; -fx-border-radius: 15;" stylesheets="@styles/buttons.css" text="Log in" textFill="WHITE">
+                <Button fx:id="userButton" alignment="TOP_LEFT" layoutX="1011.0" layoutY="2.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="15.0" prefWidth="84.0" stylesheets="@styles/loginButton.css" text="Log in" textFill="WHITE">
                     <font>
                         <Font name="SansSerif Regular" size="11.0" />
                     </font>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
                 </Button>
                 <ImageView fitHeight="20.0" fitWidth="19.0" layoutX="1070.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                     <image>
