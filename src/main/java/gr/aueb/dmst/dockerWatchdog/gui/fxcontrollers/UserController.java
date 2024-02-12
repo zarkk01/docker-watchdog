@@ -45,12 +45,14 @@ public class UserController {
     private Button backButton;
     private String fromWhichScene;
     public static String token;
+    public static String name ;
 
     public void onUserSceneLoad(String fromWhere) {
         this.fromWhichScene = fromWhere;
         System.out.println(token);
         if (token != null && !token.isEmpty()) {
             System.out.println("User is logged in");
+            loggedInLabel.setText("Logged in as " + name);
             loggedInLabel.setVisible(true);
             hideForm();
         } else {
@@ -78,6 +80,7 @@ public class UserController {
         token = ApiService.authenticateDockerHub(username, password);
         if (token != null && !token.isEmpty()) {
             loggedInLabel.setVisible(true);
+            name = username;
             hideForm();
         } else {
             wrongUserPass.setVisible(true);
