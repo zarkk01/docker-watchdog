@@ -17,7 +17,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
@@ -78,9 +77,8 @@ public class ComposeController {
     private Label fileNameLabel;
     @FXML
     private Label savedLabel;
-
     @FXML
-    private VBox notificationBox;
+    public VBox notificationBox;
 
     @FXML
     private ImageView watchdogImage;
@@ -93,14 +91,6 @@ public class ComposeController {
      * and installs a Tooltip on the watchdogImage.
      */
     public void initialize() {
-
-
-        if (UserController.token == null) {
-            userButton.setText("Log in");
-        } else {
-            userButton.setText("Logged in");
-        }
-
         // Set up the shadows for the components of the Compose scene.
         setUpShadows();
 
@@ -116,6 +106,13 @@ public class ComposeController {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage, woof);
+
+        // Set the userButton text to "Log in" or "Logged in" based on the token.
+        if (UserController.token == null) {
+            userButton.setText("Log in");
+        } else {
+            userButton.setText("Logged in");
+        }
     }
 
     /**
@@ -473,6 +470,37 @@ public class ComposeController {
     }
 
     /**
+     * Changes the current scene to the User scene.
+     * This method loads the FXML file for the User scene, sets it as the root of the current stage,
+     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     * This method is typically triggered by a button click or similar action event.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            // Load the FXML file
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the FXML file, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the controller for the User scene
+        UserController userController = loader.getController();
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad("composeScene.fxml");
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the stage
+        stage.getScene().setRoot(root);
+        // Display the new scene
+        stage.show();
+    }
+
+    /**
      * Changes the current scene to a new scene.
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
@@ -490,20 +518,6 @@ public class ComposeController {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
         // Set the new scene as the root of the stage and display it.
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
     }

@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 
 import javafx.animation.FadeTransition;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -61,7 +60,7 @@ import static gr.aueb.dmst.dockerWatchdog.gui.GuiApplication.client;
  * and updating the instances table view. It also navigates user to the
  * individual container scene when a row is clicked.
  * The class uses the WATCHDOG REST API to communicate with
- * the backend and send requests for information and actions.
+ * the backend and send requests for information and actions at database.
  */
 public class ContainersController implements Initializable {
 
@@ -97,8 +96,6 @@ public class ContainersController implements Initializable {
 
     @FXML
     private Text containersHead;
-    @FXML
-    private HBox topBar;
     @FXML
     private VBox sideBar;
     @FXML
@@ -171,14 +168,6 @@ public class ContainersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
-            if (UserController.token == null) {
-                userButton.setText("Log in");
-            } else {
-                userButton.setText("Logged in");
-            }
-
-
             // Set up the shadows for the components.
             setUpShadows();
 
@@ -218,6 +207,15 @@ public class ContainersController implements Initializable {
             // It is static so to be able to be manipulated by ApiService.
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
+
+            // Set the userButton text to "Log in" if the token is null, else to "Logged in".
+            if (UserController.token == null) {
+                // If the token is null, set the userButton text to "Log in".
+                userButton.setText("Log in");
+            } else {
+                // If the token is not null, set the userButton text to "Logged in".
+                userButton.setText("Logged in");
+            }
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);

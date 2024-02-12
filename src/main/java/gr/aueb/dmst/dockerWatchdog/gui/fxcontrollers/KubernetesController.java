@@ -17,10 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -124,15 +121,6 @@ public class KubernetesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
-
-            if (UserController.token == null) {
-                userButton.setText("Log in");
-            } else {
-                userButton.setText("Logged in");
-            }
-
-
             // Set up the shadows for the components
             setUpShadows();
 
@@ -150,7 +138,17 @@ public class KubernetesController implements Initializable {
 
             // Install funny tooltip on watchdog imageView
             setUpWoofTooltip();
+
+            // Set up the user button and change text according to the user's status
+            if (UserController.token == null) {
+                // If the user is not logged in, set the button text to "Log in"
+                userButton.setText("Log in");
+            } else {
+                // If the user is logged in, set the button text to "Logged in"
+                userButton.setText("Logged in");
+            }
         } catch (ApiException | IOException e) {
+            // Log the error and print the stack trace
             logger.error(e);
         }
     }
@@ -362,6 +360,7 @@ public class KubernetesController implements Initializable {
      * The tooltip is set to show after a delay of 20 milliseconds.
      */
     private void setUpWoofTooltip() {
+        // Create a new Tooltip and set it to be displayed when the mouse hovers over the watchdog image
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
@@ -432,6 +431,36 @@ public class KubernetesController implements Initializable {
     }
 
     /**
+     * Changes the current scene to the User scene so to move to the user's profile.
+     * This method loads the FXML file for the User scene, sets it as the root of the current stage,
+     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            // Load the FXML file
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the FXML file, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the controller for the User scene
+        UserController userController = loader.getController();
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad("kubernetesScene.fxml");
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the stage
+        stage.getScene().setRoot(root);
+        // Display the new scene
+        stage.show();
+    }
+
+    /**
      * Changes the current scene to a new scene.
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
@@ -449,21 +478,6 @@ public class KubernetesController implements Initializable {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
         // Set the new scene as the root of the stage and display it
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
     }

@@ -27,7 +27,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -90,14 +89,11 @@ public class VolumesController implements Initializable {
     @FXML
     private VBox sideBar;
     @FXML
-    private HBox topBar;
-    @FXML
     private Text volumesHead;
     @FXML
     private Button userButton;
-
     @FXML
-    private VBox notificationBox;
+    public VBox notificationBox;
 
     /**
      * This method is automatically called after the fxml file has been loaded.
@@ -108,16 +104,6 @@ public class VolumesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
-
-
-            if (UserController.token == null) {
-                userButton.setText("Log in");
-            } else {
-                userButton.setText("Logged in");
-            }
-
-
             // Set up the drop shadow effect for various components in the scene
             setUpShadows();
 
@@ -134,7 +120,17 @@ public class VolumesController implements Initializable {
             Tooltip woof = new Tooltip("Woof!");
             woof.setShowDelay(Duration.millis(20));
             Tooltip.install(watchdogImage,woof);
+
+            // Check if the user is logged in and change the button text accordingly
+            if (UserController.token == null) {
+                // If the user is not logged in, set the button text to "Log in"
+                userButton.setText("Log in");
+            } else {
+                // If the user is logged in, set the button text to "Logged in"
+                userButton.setText("Logged in");
+            }
         } catch (Exception e) {
+            // Log any errors that occur during initialization
            logger.error("An error occurred while initializing the VolumesController: " + e.getMessage());
         }
     }
@@ -253,9 +249,12 @@ public class VolumesController implements Initializable {
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
+                        // If the cell is empty, set the graphic to null
                         if (empty) {
+                            // If the cell is empty, set the graphic to null
                             setGraphic(null);
                         } else {
+                            // If the cell is not empty, set the graphic to the button
                             setGraphic(btn);
                         }
                     }
@@ -566,6 +565,36 @@ public class VolumesController implements Initializable {
     }
 
     /**
+     * Changes the current scene to the User scene and passes the name of the current scene to the UserController.
+     * This method loads the FXML file for the User scene, sets it as the root of the current stage,
+     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            // Load the FXML file
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the FXML file, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the controller for the User scene
+        UserController userController = loader.getController();
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad("volumesScene.fxml");
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the stage
+        stage.getScene().setRoot(root);
+        // Display the new scene
+        stage.show();
+    }
+
+    /**
      * Changes the current scene to a new scene.
      * This method loads the FXML file for the new scene,
      * sets it as the root of the current stage,
@@ -586,22 +615,5 @@ public class VolumesController implements Initializable {
         stage.getScene().setRoot(root);
         stage.show();
     }
-
-
-
-
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "volumesScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
 }
+

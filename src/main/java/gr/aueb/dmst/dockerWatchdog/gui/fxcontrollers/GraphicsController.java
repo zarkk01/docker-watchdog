@@ -30,7 +30,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -111,19 +110,6 @@ public class GraphicsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
-
-
-            if (UserController.token == null) {
-                userButton.setText("Log in");
-            } else {
-                userButton.setText("Logged in");
-            }
-
-
-
-
-
             // Set up shadows for the components.
             setUpShadows();
 
@@ -135,6 +121,15 @@ public class GraphicsController implements Initializable {
             // Update the PIDs chart and the Pie chart.
             updatePidsChart();
             updatePieChart();
+
+            // Set the user button text to "Log in" if the user is not logged in, or "Logged in" if the user is logged in.
+            if (UserController.token == null) {
+                // If the user is not logged in, set the user button text to "Log in".
+                userButton.setText("Log in");
+            } else {
+                // If the user is logged in, set the user button text to "Logged in".
+                userButton.setText("Logged in");
+            }
         } catch (Exception e) {
             // Log any errors that occur.
             logger.error(e.getMessage());
@@ -143,8 +138,10 @@ public class GraphicsController implements Initializable {
         // Set a timeline to update the CPU and Memory charts every 4 seconds.
         timelineForCpuMemory = new Timeline(new KeyFrame(Duration.seconds(4), event -> {
             try {
+                // Update the CPU and Memory charts.
                 updateCpuMemoryCharts();
             } catch (Exception e) {
+                // Log any errors that occur.
                 logger.error(e.getMessage());
             }
         }));
@@ -583,18 +580,33 @@ public class GraphicsController implements Initializable {
         changeScene(actionEvent, "imagesScene.fxml");
     }
 
+    /**
+     * Changes the current scene to the User scene and passes the name of the current scene to the UserController.
+     * This method loads the FXML file for the User scene, sets it as the root of the current stage,
+     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
     public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
         try {
+            // Load the FXML file
             root = loader.load();
         } catch (IOException e) {
+            // If an error occurs while loading the FXML file, throw a RuntimeException
             throw new RuntimeException(e);
         }
+        // Get the controller for the User scene
         UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad("graphicsScene.fxml");
+        // Get the current stage
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the stage
         stage.getScene().setRoot(root);
+        // Display the new scene
         stage.show();
     }
 

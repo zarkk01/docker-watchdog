@@ -1,5 +1,6 @@
 package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,7 +31,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Popup;
@@ -145,16 +145,6 @@ public class IndividualContainerController {
      * @param instance The InstanceScene object representing the selected container.
      */
     public void onInstanceDoubleClick(InstanceScene instance, String fromWhere) {
-
-
-
-        if (UserController.token == null) {
-            userButton.setText("Log in");
-        } else {
-            userButton.setText("Logged in");
-        }
-
-
         // Set the fromWhere variable so to navigate back to the correct scene.
         this.fromWhere = fromWhere;
         // Set the selected instance.
@@ -218,6 +208,15 @@ public class IndividualContainerController {
         Tooltip woof = new Tooltip("Woof!");
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage,woof);
+
+        // Set up the user button and change text according to the user's status
+        if (UserController.token == null) {
+            // If the user is not logged in, set the button text to "Log in"
+            userButton.setText("Log in");
+        } else {
+            // If the user is logged in, set the button text to "Logged in"
+            userButton.setText("Logged in");
+        }
     }
 
     /**
@@ -807,25 +806,40 @@ public class IndividualContainerController {
     }
 
     public void changeToBackScene(ActionEvent actionEvent) throws IOException {
-        if(fromWhere == "containersScene.fxml") {
+        if(Objects.equals(fromWhere, "containersScene.fxml")) {
             changeScene(actionEvent, "containersScene.fxml");
         } else {
             changeScene(actionEvent, "imagesScene.fxml");
         }
     }
 
+    /**
+     * Changes the current scene to the User scene so to move to the user's profile.
+     * This method loads the FXML file for the User scene, sets it as the root of the current stage,
+     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file.
+     */
     public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
         try {
+            // Load the FXML file
             root = loader.load();
         } catch (IOException e) {
+            // If an error occurs while loading the FXML file, throw a RuntimeException
             throw new RuntimeException(e);
         }
+        // Get the controller for the User scene
         UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad("individualContainerScene.fxml");
+        // Get the current stage
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the stage
         stage.getScene().setRoot(root);
+        // Display the new scene
         stage.show();
     }
 

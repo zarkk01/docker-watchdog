@@ -28,7 +28,7 @@ import gr.aueb.dmst.dockerWatchdog.api.entities.Instance;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
-
+    // The ApiService instance to be used by the ApiController
     private final ApiService apiService;
 
     /**

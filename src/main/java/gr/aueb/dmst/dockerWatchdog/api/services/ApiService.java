@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import okhttp3.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -43,6 +44,10 @@ public class ApiService {
 
     // Logger instance used mainly for errors
     private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
+
+    // URLs for Docker Hub login and search
+    private static final String DOCKER_HUB_LOGIN_URL = "https://hub.docker.com/v2/users/login/";
+    private static final String DOCKER_HUB_SEARCH_URL = "https://hub.docker.com/v2/search/repositories/?query=";
 
     private final InstancesRepository instancesRepository;
     private final MetricsRepository metricsRepository;
@@ -554,6 +559,88 @@ public class ApiService {
     }
 
     /**
+     * Authenticates a user with Docker Hub using the provided username and password.
+     * This method sends a POST request to Docker Hub's login URL with a JSON body containing the username and password.
+     * If the authentication is successful, it returns the JWT token received in the response.
+     * If the authentication fails, it returns null and reading token we can understand that something went wrong.
+     *
+     * @param username the Docker Hub username
+     * @param password the Docker Hub password
+     * @return the JWT token if authentication is successful, null otherwise
+     * @throws IOException if an I/O error occurs when sending the request
+     */
+    public static String authenticateDockerHub(String username, String password) throws IOException {
+        // Create a new OkHttpClient so we can send the request
+        OkHttpClient client = new OkHttpClient();
+
+        // Define the media type for the request body as JSON
+        MediaType mediaType = MediaType.parse("application/json");
+        // Create the request body with the username and password
+        RequestBody body = RequestBody.create(mediaType, "{ \"username\": \"" + username + "\", \"password\": \"" + password + "\" }");
+        // Build the request with the login URL and the request body
+        Request request = new Request.Builder()
+                // Set the URL to Docker Hub's login URL
+                .url(DOCKER_HUB_LOGIN_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        // Send the request and get the response
+        try (Response response = client.newCall(request).execute()) {
+            // If the response is not successful, return null
+            // So when someone reads the token, and it is null, to understand that soemthing went wrong
+            if (!response.isSuccessful()) {
+                return null;
+            };
+
+            // Parse the response body to get the token
+            String responseBody = Objects.requireNonNull(response.body()).string();
+            // Create a JSONObject from the response body
+            JSONObject jsonObject = new JSONObject(responseBody);
+            // From this jsonObject, get only the token and as string
+            // Maybe could ve be done immediately, but for better understanding of the code, we do it in two steps
+            return jsonObject.getString("token");
+        }
+    }
+
+    /**
+     * Searches for Docker images on Docker Hub using the provided JWT token and search term.
+     * This method sends a GET request to Docker Hub's search URL with the search term.
+     * The JWT token is included in the Authorization header of the request.
+     * If the search is successful, it returns a JSONArray of the search results.
+     * If the search fails, return null.
+     *
+     * @param token the JWT token for Docker Hub authentication
+     * @param searchTerm the term to search for
+     * @return a JSONArray of the search results
+     * @throws IOException if an I/O error occurs when sending the request
+     */
+    public static JSONArray searchImages(String token, String searchTerm) throws IOException {
+        // Create a new OkHttpClient
+        OkHttpClient client = new OkHttpClient();
+
+        // Build the request with the search URL and the JWT token and the images we want to search
+        Request request = new Request.Builder()
+                // Set the URL to Docker Hub's search URL with the search term
+                .url(DOCKER_HUB_SEARCH_URL + searchTerm)
+                .get()
+                .addHeader("Authorization", "JWT " + token)
+                .build();
+
+        // Send the request and get the response
+        try (Response response = client.newCall(request).execute()) {
+            // If the response is not successful, return null
+            if (!response.isSuccessful()) {return null;}
+
+            // Parse the response body to get the results
+            String responseBody = response.body().string();
+            JSONObject jsonObject = new JSONObject(responseBody);
+            // Return the results as a JSONArray and when we do the search we can iterate them
+            return jsonObject.getJSONArray("results");
+        }
+    }
+
+    /**
      * Retrieves the last metric ID so to understand
      * which is the present state of the containers. In database,
      * there inserts of the same container but with different metric IDs.
@@ -601,52 +688,4 @@ public class ApiService {
                 totalContainers,
                 stoppedContainers);
     }
-
-
-
-    private static final String DOCKER_HUB_LOGIN_URL = "https://hub.docker.com/v2/users/login/";
-    public static String authenticateDockerHub(String username, String password) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-
-        MediaType mediaType = MediaType.parse("application/json");
-        RequestBody body = RequestBody.create(mediaType, "{ \"username\": \"" + username + "\", \"password\": \"" + password + "\" }");
-        Request request = new Request.Builder()
-                .url(DOCKER_HUB_LOGIN_URL)
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                return null;
-            };
-
-            // Parse the response body to get the token
-            String responseBody = Objects.requireNonNull(response.body()).string();
-            JSONObject jsonObject = new JSONObject(responseBody);
-            return jsonObject.getString("token");
-        }
-    }
-
-    private static final String DOCKER_HUB_SEARCH_URL = "https://hub.docker.com/v2/search/repositories/?query=";
-
-    public static JSONArray searchImages(String token, String searchTerm) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url(DOCKER_HUB_SEARCH_URL + searchTerm)
-                .get()
-                .addHeader("Authorization", "JWT " + token)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-            // Parse the response body to get the results
-            String responseBody = response.body().string();
-            JSONObject jsonObject = new JSONObject(responseBody);
-            return jsonObject.getJSONArray("results");
-        }
-    }
-
 }
