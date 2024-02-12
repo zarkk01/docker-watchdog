@@ -5,7 +5,7 @@
 - [Technical Description](#a-more-technical-description)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
-- [Project Structure and Package/Files Descriptions](#project-structure-and-packagefiles-descriptions)
+- [Package/Files Descriptions](#packagefiles-descriptions)
 - [REST Endpoints](#rest-endpoints)
 - [Libraries and Versions](#libraries-and-versions)
 - [Visuals](#visuals)
@@ -173,7 +173,7 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 
 ```
 
-## Project Structure and Package/Files Descriptions
+## Package/Files Descriptions
 
 Watchdog is structured into several packages, each with a specific role in the application:
 
