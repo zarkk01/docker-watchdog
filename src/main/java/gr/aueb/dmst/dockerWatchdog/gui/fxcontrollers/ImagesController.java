@@ -266,7 +266,6 @@ public class ImagesController implements Initializable {
         shadow.setRadius(7.5);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
         sideBar.setEffect(shadow);
-        topBar.setEffect(shadow);
         searchPane.setEffect(shadow);
         usedPane.setEffect(shadow);
         downInfoPane.setEffect(shadow);

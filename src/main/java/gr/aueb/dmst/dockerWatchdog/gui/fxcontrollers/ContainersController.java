@@ -239,7 +239,6 @@ public class ContainersController implements Initializable {
         runningPane.setEffect(shadow);
         searchPane.setEffect(shadow);
         instancesTableView.setEffect(shadow);
-        topBar.setEffect(shadow);
         sideBar.setEffect(shadow);
         containersHead.setEffect(shadow);
     }

@@ -173,7 +173,6 @@ public class GraphicsController implements Initializable {
         memoryChart.setEffect(shadow);
         pidsChart.setEffect(shadow);
         pieChartImages.setEffect(shadow);
-        topBar.setEffect(shadow);
         sideBar.setEffect(shadow);
         graphicsHead.setEffect(shadow);
     }
@@ -569,6 +568,21 @@ public class GraphicsController implements Initializable {
      */
     public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
         changeScene(actionEvent, "imagesScene.fxml");
+    }
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "containersScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
     }
 
     /**

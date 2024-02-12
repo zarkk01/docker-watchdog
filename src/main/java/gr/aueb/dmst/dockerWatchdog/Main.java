@@ -93,7 +93,8 @@ public class Main {
             Application.launch(GuiApplication.class, args);
         } catch (Exception e) {
             // Log any exception that occurs during the startup process
-            logger.error("An error occurred during the startup process: " + e.getMessage());
+            //logger.error("An error occurred during the startup process: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

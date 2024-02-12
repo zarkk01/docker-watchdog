@@ -222,7 +222,6 @@ public class IndividualContainerController {
         DropShadow shadow = new DropShadow();
         shadow.setRadius(10);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
-        topBar.setEffect(shadow);
         sideBar.setEffect(shadow);
         infoCard.setEffect(shadow);
         removeButton.setEffect(shadow);
@@ -803,6 +802,21 @@ public class IndividualContainerController {
         } else {
             changeScene(actionEvent, "imagesScene.fxml");
         }
+    }
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "containersScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
     }
 
     /**

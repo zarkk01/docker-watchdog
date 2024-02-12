@@ -150,7 +150,6 @@ public class VolumesController implements Initializable {
         shadow.setRadius(7.5);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
         volumesHead.setEffect(shadow);
-        topBar.setEffect(shadow);
         sideBar.setEffect(shadow);
         volumesTableView.setEffect(shadow);
         createVolumeButton.setEffect(shadow);
