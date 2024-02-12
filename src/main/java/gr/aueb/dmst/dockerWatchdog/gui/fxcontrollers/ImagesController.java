@@ -18,11 +18,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -213,6 +215,8 @@ public class ImagesController implements Initializable {
             // Set up the TableView columns for the instancesTableView in the down info panel.
             instancesNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
             instancesStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+            hideTableHeaders(instancesTableView);
+
 
             // Add an action listener to the TableView that fill down info panel with the selected image's info.
             imagesTableView.getSelectionModel().selectedItemProperty().addListener(
@@ -1061,6 +1065,17 @@ public class ImagesController implements Initializable {
 
 
 
+
+    public void hideTableHeaders(TableView<?> tableView) {
+        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            final TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+            header.setVisible(false);
+            header.setMaxHeight(0);
+            header.setMinHeight(0);
+            header.setPrefHeight(0);
+            header.setPadding(new Insets(0));
+        });
+    }
 
     public void changeToPullImageScene(ActionEvent actionEvent) throws IOException {
         if ( UserController.token == null ) {
