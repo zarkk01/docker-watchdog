@@ -36,7 +36,7 @@
         </HBox>
     </top>
    <center>
-      <AnchorPane prefHeight="747.0" prefWidth="1100.0" style="-fx-background-color: #474745; -fx-background-image: src/main/resources/backgroundpng;" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="747.0" prefWidth="1100.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="677.0" fitWidth="1222.0" layoutX="-1.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                <image>
