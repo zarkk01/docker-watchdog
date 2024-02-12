@@ -9,9 +9,13 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
+import javax.swing.text.View;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class UserController {
@@ -35,6 +39,8 @@ public class UserController {
     private TextField passwordTextField;
     @FXML
     private Label loggedInLabel;
+    @FXML
+    private Button backButton;
     private String fromWhichScene;
     public static String token;
 
@@ -47,13 +53,20 @@ public class UserController {
             hideForm();
         } else {
             System.out.println("User is not logged in");
-            passwordLabel.setVisible(true);
             passwordTextField.setVisible(true);
             loginButton.setVisible(true);
-            usernameLabel.setVisible(true);
             usernameTextField.setVisible(true);
             loginToDockerhubLabel.setVisible(true);
         }
+
+        InputStream imageStream = getClass().getResourceAsStream("/images/back.png");
+        Image image = new Image(imageStream);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(20); // adjust the height as needed
+        imageView.setFitWidth(20); // adjust the width as needed
+        backButton.setGraphic(imageView);
+        backButton.setStyle("-fx-background-color: transparent;");
+
     }
 
     public void logIn() throws IOException {
