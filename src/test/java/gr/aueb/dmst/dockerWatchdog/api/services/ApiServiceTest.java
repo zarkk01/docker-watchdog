@@ -1,18 +1,26 @@
 package gr.aueb.dmst.dockerWatchdog.api.services;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import gr.aueb.dmst.dockerWatchdog.api.entities.Instance;
+import gr.aueb.dmst.dockerWatchdog.api.repositories.ImagesRepository;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.InstancesRepository;
 import gr.aueb.dmst.dockerWatchdog.api.repositories.MetricsRepository;
 
-import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
+import gr.aueb.dmst.dockerWatchdog.api.repositories.VolumesRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 

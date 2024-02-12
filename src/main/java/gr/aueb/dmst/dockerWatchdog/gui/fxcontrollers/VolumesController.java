@@ -93,6 +93,8 @@ public class VolumesController implements Initializable {
     private HBox topBar;
     @FXML
     private Text volumesHead;
+    @FXML
+    private Button userButton;
 
     @FXML
     private VBox notificationBox;
@@ -106,6 +108,16 @@ public class VolumesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+
+
+            if (UserController.token == null) {
+                userButton.setText("Log in");
+            } else {
+                userButton.setText("Logged in");
+            }
+
+
             // Set up the drop shadow effect for various components in the scene
             setUpShadows();
 
@@ -572,6 +584,24 @@ public class VolumesController implements Initializable {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
         // Set the new scene as the root of the stage and display it
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+
+
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "volumesScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
     }

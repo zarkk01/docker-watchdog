@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -139,7 +140,7 @@
                   <Font name="SansSerif Bold" size="36.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="52.0" prefHeight="316.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="52.0" prefHeight="254.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -157,8 +158,8 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </TableView>
-            <Pane fx:id="usedPane" layoutX="6.0" layoutY="375.0" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
-            <CheckBox fx:id="usedImagesCheckbox" cache="true" layoutX="13.0" layoutY="381.0" mnemonicParsing="false" opacity="0.7" prefHeight="18.0" prefWidth="165.0" style="-fx-border-radius: 10;" text="Show only used images" textFill="WHITE">
+            <Pane fx:id="usedPane" layoutX="6.0" layoutY="312.0" prefHeight="30.0" prefWidth="164.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css" />
+            <CheckBox fx:id="usedImagesCheckbox" cache="true" layoutX="13.0" layoutY="318.0" mnemonicParsing="false" opacity="0.7" prefHeight="18.0" prefWidth="165.0" style="-fx-border-radius: 10;" text="Show only used images" textFill="WHITE">
                <font>
                   <Font name="SansSerif Regular" size="12.0" />
                </font></CheckBox>
@@ -172,7 +173,7 @@
                      <Image url="@images/search.png" />
                   </image>
                </ImageView>
-            <Pane fx:id="pullImagePane" layoutX="708.0" layoutY="375.0" prefHeight="29.0" prefWidth="220.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane fx:id="pullImagePane" layoutX="641.0" layoutY="629.0" prefHeight="29.0" prefWidth="220.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
                   <Button fx:id="pullButton" layoutX="168.0" mnemonicParsing="false" onAction="#pullGivenImage" prefHeight="28.0" prefWidth="52.0" style="-fx-background-radius: 11;" stylesheets="@styles/darkButtons.css" text="PULL" textFill="WHITE">
                      <font>
@@ -184,47 +185,38 @@
                      </font>
                   </TextField>
                </children></Pane>
-            <Pane fx:id="downInfoPane" layoutX="6.0" layoutY="413.0" prefHeight="254.0" prefWidth="931.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane fx:id="downInfoPane" layoutX="6.0" layoutY="352.0" prefHeight="315.0" prefWidth="543.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Pane fx:id="totalContainersCircle" layoutX="38.0" layoutY="71.0" prefHeight="152.0" prefWidth="151.0" style="-fx-border-radius: 100; -fx-background-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false">
+                  <Pane fx:id="totalContainersCircle" layoutX="13.0" layoutY="75.0" prefHeight="99.0" prefWidth="100.0" style="-fx-border-radius: 100; -fx-background-radius: 100;" stylesheets="@styles/hoverPane.css">
                      <children>
-                        <Text fx:id="totalContainersText" fill="WHITE" layoutX="62.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                        <Text fx:id="totalContainersText" fill="WHITE" layoutX="39.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" wrappingWidth="23.021484375">
                            <font>
                               <Font name="SansSerif Regular" size="55.0" />
                            </font>
                         </Text>
                      </children></Pane>
-                  <Pane fx:id="runningContainersCircle" layoutX="219.0" layoutY="71.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverRunningPane.css" visible="false">
+                  <Pane fx:id="runningContainersCircle" layoutX="139.0" layoutY="76.0" prefHeight="95.0" prefWidth="90.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverRunningPane.css">
                      <children>
-                        <Text fx:id="runningContainersText" fill="WHITE" layoutX="60.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                        <Text fx:id="runningContainersText" fill="WHITE" layoutX="33.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" wrappingWidth="23.021484375">
                            <font>
                               <Font name="SansSerif Regular" size="55.0" />
                            </font>
                         </Text>
                      </children></Pane>
-                  <Pane fx:id="stoppedContainersCircle" layoutX="398.0" layoutY="68.0" prefHeight="152.0" prefWidth="150.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverPane.css" visible="false">
+                  <Pane fx:id="stoppedContainersCircle" layoutX="67.0" layoutY="202.0" prefHeight="109.0" prefWidth="104.0" style="-fx-background-radius: 100; -fx-border-radius: 100;" stylesheets="@styles/hoverPane.css">
                      <children>
-                        <Text fx:id="stoppedContainersText" fill="WHITE" layoutX="60.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" visible="false" wrappingWidth="23.021484375">
+                        <Text fx:id="stoppedContainersText" fill="WHITE" layoutX="38.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4" wrappingWidth="23.021484375">
                            <font>
                               <Font name="SansSerif Regular" size="55.0" />
                            </font>
                         </Text>
                      </children></Pane>
-                  <TableView fx:id="instancesTableView" layoutX="597.0" layoutY="5.0" prefHeight="246.0" prefWidth="327.0" stylesheets="@styles/styles.css" visible="false">
-                    <columns>
-                      <TableColumn fx:id="instancesNameColumn" prefWidth="192.0" text="Name" />
-                      <TableColumn fx:id="instancesStatusColumn" prefWidth="121.0" text="Status" />
-                    </columns>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </TableView>
-                  <Label fx:id="totalContainersTextLabel" layoutX="64.0" layoutY="25.0" prefHeight="59.0" prefWidth="108.0" text="Total Containers" textFill="WHITE" visible="false">
+                  <Label fx:id="totalContainersTextLabel" layoutX="11.0" layoutY="42.0" prefHeight="29.0" prefWidth="107.0" text="Total Containers" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="imageNameLabel" layoutX="255.0" layoutY="9.0" style="-fx-background-color: #1D1D1B; -fx-background-radius: 10;" text="Image Name" textFill="WHITE" visible="false">
+                  <Label fx:id="imageNameLabel" layoutX="90.0" layoutY="12.0" style="-fx-background-color: #1D1D1B; -fx-background-radius: 10;" text="Image Name" textFill="WHITE">
                      <padding>
                         <Insets bottom="4.0" left="5.0" right="5.0" top="4.0" />
                      </padding>
@@ -232,28 +224,41 @@
                         <Font name="SansSerif Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="runningContainersTextLabel" layoutX="233.0" layoutY="25.0" prefHeight="59.0" prefWidth="126.0" text="Running Containers" textFill="WHITE" visible="false">
+                  <Label fx:id="runningContainersTextLabel" layoutX="121.0" layoutY="40.0" prefHeight="34.0" prefWidth="126.0" text="Running Containers" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="stoppedContainersTextLabel" layoutX="412.0" layoutY="24.0" prefHeight="59.0" prefWidth="125.0" text="Stopped Containers" textFill="WHITE" visible="false">
+                  <Label fx:id="stoppedContainersTextLabel" layoutX="56.0" layoutY="160.0" prefHeight="59.0" prefWidth="125.0" text="Stopped Containers" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="startingLabel" layoutX="189.0" layoutY="90.0" prefHeight="83.0" prefWidth="576.0" text="Click on an image for more information.." textFill="WHITE">
-                     <font>
-                        <Font name="SansSerif Bold Italic" size="29.0" />
-                     </font>
-                  </Label>
+                  <TableView fx:id="instancesTableView" layoutX="300.0" layoutY="6.0" prefHeight="305.0" prefWidth="235.0" stylesheets="@styles/styles.css">
+                    <columns>
+                      <TableColumn fx:id="instancesNameColumn" prefWidth="110.5" text="Name" />
+                      <TableColumn fx:id="instancesStatusColumn" prefWidth="96.5" text="Status" />
+                    </columns>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </TableView>
                </children></Pane>
             <VBox fx:id="notificationBox" layoutX="645.0" layoutY="2.0" prefHeight="48.0" prefWidth="197.0" />
+            <Button fx:id="userButton" layoutX="836.0" layoutY="16.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="26.0" prefWidth="83.0" style="-fx-background-color: #31312F #31312F;" stylesheets="@styles/darkButtons.css" text="Log in" textFill="WHITE" />
+            <TextField fx:id="imagesSearch" layoutX="605.0" layoutY="353.0" prefHeight="26.0" prefWidth="216.0" promptText="Search for an image in DockerHub.." style="-fx-background-color: #31312F; -fx-text-fill: white;" />
+            <Button fx:id="searchButton" layoutX="836.0" layoutY="353.0" mnemonicParsing="false" onAction="#searchForImages" style="-fx-background-color: #31312F;" text="Search" textFill="WHITE" />
+            <Label fx:id="startingLabel" layoutX="89.0" layoutY="465.0" prefHeight="83.0" prefWidth="353.0" text="Click on an image for more information.." textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Bold Italic" size="18.0" />
+               </font>
+            </Label>
+            <ListView fx:id="searchResultsListView" layoutX="559.0" layoutY="387.0" prefHeight="234.0" prefWidth="377.0" style="-fx-background-color: #31312F;" />
          </children>
       </AnchorPane>
    </center>
    <top>
-      <HBox fx:id="topBar" prefHeight="24.0" prefWidth="1100.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
+      <HBox fx:id="topBar" prefHeight="26.0" prefWidth="1083.0" style="-fx-background-color: #F14246;" BorderPane.alignment="CENTER">
          <children>
             <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="  Docker Watchdog" textAlignment="RIGHT" wrappingWidth="201.21630859375">
                <font>

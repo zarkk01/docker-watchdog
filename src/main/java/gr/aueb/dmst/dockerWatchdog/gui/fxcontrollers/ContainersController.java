@@ -123,6 +123,8 @@ public class ContainersController implements Initializable {
     private Button removeButton;
     @FXML
     private CheckBox runningInstancesCheckbox;
+    @FXML
+    private Button userButton;
 
     @FXML
     private Label totalContainersText;
@@ -169,6 +171,14 @@ public class ContainersController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+            if (UserController.token == null) {
+                userButton.setText("Log in");
+            } else {
+                userButton.setText("Logged in");
+            }
+
+
             // Set up the shadows for the components.
             setUpShadows();
 
@@ -1154,5 +1164,21 @@ public class ContainersController implements Initializable {
      */
     public static void showLoading(boolean toBeShown) {
         loadingImageViewStatic.setVisible(toBeShown);
+    }
+
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "containersScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
     }
 }

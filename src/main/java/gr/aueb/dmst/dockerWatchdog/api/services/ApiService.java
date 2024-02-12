@@ -1,13 +1,15 @@
 package gr.aueb.dmst.dockerWatchdog.api.services;
 
+import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import okhttp3.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +63,7 @@ public class ApiService {
             MetricsRepository metricsRepository,
             ImagesRepository imagesRepository,
             VolumesRepository volumesRepository
-    ) {
+    ) throws IOException {
         this.instancesRepository = instancesRepository;
         this.metricsRepository = metricsRepository;
         this.imagesRepository = imagesRepository;
@@ -599,4 +601,50 @@ public class ApiService {
                 totalContainers,
                 stoppedContainers);
     }
+
+
+
+    private static final String DOCKER_HUB_LOGIN_URL = "https://hub.docker.com/v2/users/login/";
+    public static String authenticateDockerHub(String username, String password) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, "{ \"username\": \"" + username + "\", \"password\": \"" + password + "\" }");
+        Request request = new Request.Builder()
+                .url(DOCKER_HUB_LOGIN_URL)
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            // Parse the response body to get the token
+            String responseBody = Objects.requireNonNull(response.body()).string();
+            JSONObject jsonObject = new JSONObject(responseBody);
+            return jsonObject.getString("token");
+        }
+    }
+
+    private static final String DOCKER_HUB_SEARCH_URL = "https://hub.docker.com/v2/search/repositories/?query=";
+
+    public static JSONArray searchImages(String token, String searchTerm) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(DOCKER_HUB_SEARCH_URL + searchTerm)
+                .get()
+                .addHeader("Authorization", "JWT " + token)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+
+            // Parse the response body to get the results
+            String responseBody = response.body().string();
+            JSONObject jsonObject = new JSONObject(responseBody);
+            return jsonObject.getJSONArray("results");
+        }
+    }
+
 }
