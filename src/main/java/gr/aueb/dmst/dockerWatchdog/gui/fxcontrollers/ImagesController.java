@@ -1078,9 +1078,7 @@ public class ImagesController implements Initializable {
         stage.show();
     }
 
-
-
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+    public void changeToUserScene(ActionEvent actionEvent) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
         try {
             root = loader.load();

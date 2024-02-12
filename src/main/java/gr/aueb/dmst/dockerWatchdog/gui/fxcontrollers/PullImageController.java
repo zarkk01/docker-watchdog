@@ -37,8 +37,6 @@ public class PullImageController implements Initializable {
     @FXML
     public TableColumn<ImageScene, String> descriptionColumn;
     @FXML
-    public TableColumn<ImageScene, String> pullCountColumn;
-    @FXML
     public TableColumn<SearchResultScene, Void> pullImageColumn;
     @FXML
     public TableView<SearchResultScene> searchResultTable;
@@ -54,7 +52,6 @@ public class PullImageController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         imageNameColumn.setCellValueFactory(new PropertyValueFactory<>("repoName"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        pullCountColumn.setCellValueFactory(new PropertyValueFactory<>("pullCount"));
 
         // Set up the pullImageColumn
         pullImageColumn.setCellFactory(new Callback<>() {
@@ -72,6 +69,9 @@ public class PullImageController implements Initializable {
                                 e.printStackTrace();
                             }
                         });
+
+                        btn.setOnMouseEntered(e -> btn.setStyle("-fx-text-fill: #F14246;"));
+                        btn.setOnMouseExited(e -> btn.setStyle("-fx-text-fill: white;"));
                     }
 
                     @Override
@@ -116,8 +116,7 @@ public class PullImageController implements Initializable {
                 JSONObject jsonObject = searchResults.getJSONObject(i);
                 String repoName = jsonObject.getString("repo_name");
                 String description = jsonObject.getString("short_description");
-                int pullCount = jsonObject.getInt("pull_count");
-                items.add(new SearchResultScene(repoName, description, pullCount));
+                items.add(new SearchResultScene(repoName, description));
             }
             searchResultTable.setItems(items);
         }
@@ -146,7 +145,7 @@ public class PullImageController implements Initializable {
                     .uri(new URI("http://localhost:8080/api/images/" + "pull/" + imageName))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {
             throw new ImageActionException("Error occurred while pulling image: " + e.getMessage(), imageName);
         }

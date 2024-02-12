@@ -38,15 +38,14 @@
    <left>
       <Pane prefHeight="851.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
          <children>
-             <TextField fx:id="imagesSearch" layoutX="342.0" layoutY="27.0" prefHeight="26.0" prefWidth="216.0" promptText="Search for an image in DockerHub.." style="-fx-background-color: #31312F; -fx-text-fill: white;" />
-             <Button fx:id="searchButton" layoutX="586.0" layoutY="28.0" mnemonicParsing="false" onAction="#searchForImages" style="-fx-background-color: #31312F;" text="Search" textFill="WHITE" />
-            <Button fx:id="backButton" layoutX="34.0" layoutY="23.0" mnemonicParsing="false" onAction="#changeToImagesScene" stylesheets="@styles/darkButtons.css" text="back" textFill="WHITE" />
-            <TableView fx:id="searchResultTable" layoutX="36.0" layoutY="70.0" prefHeight="572.0" prefWidth="1030.0" stylesheets="@styles/styles.css">
+             <TextField fx:id="imagesSearch" layoutX="424.0" layoutY="28.0" prefHeight="28.0" prefWidth="216.0" promptText="Search for an image in DockerHub.." style="-fx-background-color: #31312F; -fx-text-fill: white;" />
+             <Button fx:id="searchButton" layoutX="654.0" layoutY="29.0" mnemonicParsing="false" onAction="#searchForImages" stylesheets="@styles/darkButtons.css" text="Search" textFill="WHITE" />
+            <Button fx:id="backButton" layoutX="17.0" layoutY="16.0" mnemonicParsing="false" onAction="#changeToImagesScene" stylesheets="@styles/darkButtons.css" text="Return" textFill="WHITE" />
+            <TableView fx:id="searchResultTable" layoutX="36.0" layoutY="70.0" prefHeight="572.0" prefWidth="1030.0" styleClass="table-row-cell" stylesheets="@styles/styles.css">
               <columns>
-                <TableColumn fx:id="imageNameColumn" prefWidth="174.47339630126953" text="Image" />
-                <TableColumn fx:id="descriptionColumn" prefWidth="625.0265808105469" text="Description" />
-                  <TableColumn fx:id="pullCountColumn" prefWidth="135.8721923828125" text="Pull Counts" />
-                  <TableColumn fx:id="pullImageColumn" prefWidth="88.5" text="Pull" />
+                <TableColumn fx:id="imageNameColumn" prefWidth="188.31169891357422" text="Image" />
+                <TableColumn fx:id="descriptionColumn" prefWidth="712.6883087158203" text="Description" />
+                  <TableColumn fx:id="pullImageColumn" prefWidth="112.6669921875" text="Pull" />
               </columns>
             </TableView>
          </children>
