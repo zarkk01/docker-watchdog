@@ -141,9 +141,9 @@
             <children>
             <ScrollPane fx:id="scrollPane" prefHeight="679.0" prefWidth="935.0" stylesheets="@styles/scrollPane.css">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1543.0" prefWidth="882.0" style="-fx-background-color: #474745;">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1367.0" prefWidth="882.0" style="-fx-background-color: #474745;">
                      <children>
-                                    <TableView fx:id="deploymentsTableView" layoutX="52.0" layoutY="166.0" prefHeight="310.0" prefWidth="822.0">
+                                    <TableView fx:id="deploymentsTableView" layoutX="52.0" layoutY="107.0" prefHeight="310.0" prefWidth="822.0">
                                         <columns>
                                             <TableColumn fx:id="deploymentNameColumn" prefWidth="417.21681213378906" text="Deployment Name" />
                                             <TableColumn fx:id="deploymentNamespaceColumn" minWidth="1.873138427734375" prefWidth="398.283203125" text="Namespace" />
@@ -153,7 +153,7 @@
                               <URL value="@styles/splitPane.css" />
                            </stylesheets>
                                     </TableView>
-                                <TableView fx:id="servicesTableView" layoutX="52.0" layoutY="1246.0" prefHeight="262.0" prefWidth="822.0">
+                                <TableView fx:id="servicesTableView" layoutX="49.0" layoutY="1086.0" prefHeight="262.0" prefWidth="822.0">
                                     <columns>
                                         <TableColumn fx:id="serviceNamespaceColumn" prefWidth="406.0342712402344" text="Namespace" />
                                         <TableColumn fx:id="serviceNameColumn" prefWidth="415.4656982421875" text="Service Name" />
@@ -163,7 +163,7 @@
                               <URL value="@styles/splitPane.css" />
                            </stylesheets>
                                 </TableView>
-                                    <TableView fx:id="podsTableView" layoutX="52.0" layoutY="562.0" prefHeight="262.0" prefWidth="822.0">
+                                    <TableView fx:id="podsTableView" layoutX="52.0" layoutY="478.0" prefHeight="262.0" prefWidth="822.0">
                                         <columns>
                                             <TableColumn fx:id="podNameColumn" prefWidth="235.3318328857422" text="Pod Name" />
                                             <TableColumn fx:id="podNamespaceColumn" prefWidth="326.5560302734375" text="Namespace" />
@@ -174,7 +174,7 @@
                               <URL value="@styles/splitPane.css" />
                            </stylesheets>
                                     </TableView>
-                                    <TableView fx:id="statefulSetsTableView" layoutX="52.0" layoutY="906.0" prefHeight="262.0" prefWidth="822.0">
+                                    <TableView fx:id="statefulSetsTableView" layoutX="52.0" layoutY="805.0" prefHeight="262.0" prefWidth="822.0">
                                         <columns>
                                             <TableColumn fx:id="statefulSetNameColumn" prefWidth="386.6525573730469" text="StatefulSet Name" />
                                             <TableColumn fx:id="statefulSetNamespaceColumn" minWidth="0.0" prefWidth="434.847412109375" text="Namespace" />
@@ -184,7 +184,7 @@
                               <URL value="@styles/splitPane.css" />
                            </stylesheets>
                                     </TableView>
-                        <Pane layoutX="336.0" layoutY="120.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
+                        <Pane layoutX="73.0" layoutY="67.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
                               <Text fill="WHITE" layoutX="47.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Deployments" wrappingWidth="157.6806640625">
                                  <font>
@@ -193,42 +193,38 @@
                               </Text>
                            </children>
                         </Pane>
-                        <Pane layoutX="336.0" layoutY="515.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
+                        <Pane layoutX="445.0" layoutY="434.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
-                              <Text fill="WHITE" layoutX="76.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Services" wrappingWidth="112.53265380859375">
+                              <Text fill="WHITE" layoutX="94.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pods" wrappingWidth="112.53265380859375">
                                  <font>
                                     <Font name="SansSerif Bold" size="24.0" />
                                  </font>
                               </Text>
                            </children>
                         </Pane>
-                        <Pane layoutX="336.0" layoutY="860.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
+                        <Pane layoutX="336.0" layoutY="765.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
-                              <Text fill="WHITE" layoutX="93.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pods" wrappingWidth="112.53265380859375">
+                              <Text fill="WHITE" layoutX="34.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="StatefulSet" wrappingWidth="179.19537353515625">
                                  <font>
                                     <Font name="SansSerif Bold" size="24.0" />
                                  </font>
                               </Text>
                            </children>
                         </Pane>
-                        <Pane layoutX="336.0" layoutY="1200.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
+                        <Pane layoutX="195.0" layoutY="1062.0" prefHeight="49.0" prefWidth="250.0" style="-fx-background-radius: 10 10 0 0; -fx-background-color: #1D1D1B;">
                            <children>
-                              <Text fill="WHITE" layoutX="52.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Stateful Sets" wrappingWidth="221.45172119140625">
+                              <Text fill="WHITE" layoutX="25.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Services" wrappingWidth="221.45172119140625">
                                  <font>
                                     <Font name="SansSerif Bold" size="24.0" />
                                  </font>
                               </Text>
                            </children>
                         </Pane>
-                        <Pane layoutX="343.0" layoutY="24.0" prefHeight="67.0" prefWidth="237.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
-                           <children>
-                                  <Text fx:id="kubernetesHead" fill="WHITE" layoutX="20.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
-                                      <font>
-                                          <Font name="SansSerif Bold" size="36.0" />
-                                      </font>
-                                  </Text>
-                           </children>
-                        </Pane>
+                            <Text fx:id="kubernetesHead" fill="WHITE" layoutX="344.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kubernetes" wrappingWidth="213.79238891601562">
+                                <font>
+                                    <Font name="SansSerif Bold" size="36.0" />
+                                </font>
+                            </Text>
                      </children>
                   </AnchorPane>
               </content>

@@ -217,7 +217,6 @@ public class ImagesController implements Initializable {
             instancesStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
             hideTableHeaders(instancesTableView);
 
-
             // Add an action listener to the TableView that fill down info panel with the selected image's info.
             imagesTableView.getSelectionModel().selectedItemProperty().addListener(
                     (obs, oldSelection, newSelection) -> {
