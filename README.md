@@ -1,8 +1,8 @@
 # Watchdog - Docker Monitoring Application v0.1
 
 ## Table of Contents
-- [Description](#description)
 - [Promotional Introduction To Watchdog](#promotional-introduction-to-watchdog)
+- [Technical Description](#a-more-technical-description)
 - [Getting Started](#getting-started)
 - [Project Structure](#project-structure)
 - [Project Structure and Package/Files Descriptions](#project-structure-and-packagefiles-descriptions)
