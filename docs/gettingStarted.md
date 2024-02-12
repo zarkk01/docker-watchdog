@@ -61,7 +61,7 @@ To run the application:
 ```bash
     git clone https://github.com/zarkk01/docker-watchdog.git
 ```
-**E.** Navigate to the root directory and run `mvn install`
+**E.** Navigate to the root directory and run `mvn clean install`
 
 **F.**  Run `java -jar target/watchdog.jar`
 
