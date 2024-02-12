@@ -110,22 +110,7 @@ public class KubernetesController implements Initializable {
     public ImageView watchdogImage;
 
     @FXML
-    private HBox topBar;
-    @FXML
-    private VBox sideBar;
-    @FXML
-    private Text kubernetesHead;
-    @FXML
-    private Label podsHead;
-    @FXML
-    private Label deploymentsHead;
-    @FXML
-    private Label statefulSetsHead;
-    @FXML
-    private Label servicesHead;
-
-    @FXML
-    private ScrollPane scrollPane;
+    private Button userButton;
 
     /**
      * Initializes the KubernetesController.
@@ -139,6 +124,15 @@ public class KubernetesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+
+            if (UserController.token == null) {
+                userButton.setText("Log in");
+            } else {
+                userButton.setText("Logged in");
+            }
+
+
             // Set up the shadows for the components
             setUpShadows();
 

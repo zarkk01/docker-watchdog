@@ -72,7 +72,7 @@ public class ComposeController {
     @FXML
     private VBox sideBar;
     @FXML
-    private HBox topBar;
+    private Button userButton;
 
     @FXML
     private Label fileNameLabel;
@@ -93,6 +93,14 @@ public class ComposeController {
      * and installs a Tooltip on the watchdogImage.
      */
     public void initialize() {
+
+
+        if (UserController.token == null) {
+            userButton.setText("Log in");
+        } else {
+            userButton.setText("Logged in");
+        }
+
         // Set up the shadows for the components of the Compose scene.
         setUpShadows();
 

@@ -127,7 +127,7 @@ public class IndividualContainerController {
     @FXML
     private VBox sideBar;
     @FXML
-    private HBox topBar;
+    private Button userButton;
 
 
     @FXML
@@ -145,6 +145,16 @@ public class IndividualContainerController {
      * @param instance The InstanceScene object representing the selected container.
      */
     public void onInstanceDoubleClick(InstanceScene instance, String fromWhere) {
+
+
+
+        if (UserController.token == null) {
+            userButton.setText("Log in");
+        } else {
+            userButton.setText("Logged in");
+        }
+
+
         // Set the fromWhere variable so to navigate back to the correct scene.
         this.fromWhere = fromWhere;
         // Set the selected instance.

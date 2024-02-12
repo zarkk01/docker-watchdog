@@ -80,7 +80,7 @@ public class GraphicsController implements Initializable {
     @FXML
     private VBox sideBar;
     @FXML
-    private HBox topBar;
+    private Button userButton;
     @FXML
     private Text graphicsHead;
 
@@ -111,6 +111,19 @@ public class GraphicsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+
+
+            if (UserController.token == null) {
+                userButton.setText("Log in");
+            } else {
+                userButton.setText("Logged in");
+            }
+
+
+
+
+
             // Set up shadows for the components.
             setUpShadows();
 
