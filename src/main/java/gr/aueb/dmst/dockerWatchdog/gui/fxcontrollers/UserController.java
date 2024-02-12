@@ -53,6 +53,8 @@ public class UserController {
     public Label loggedInLabel;
     @FXML
     private Button backButton;
+    @FXML
+    private Button dummyButton;
     private String fromWhichScene;
 
     // The token and name of the user that is logged in to Docker Hub.
@@ -71,6 +73,7 @@ public class UserController {
     public void onUserSceneLoad(String fromWhere) {
         // Set the scene from which the User scene was loaded
         this.fromWhichScene = fromWhere;
+        Platform.runLater(() -> dummyButton.requestFocus());
 
         // Check if the user is logged in
         if (token != null && !token.isEmpty()) {

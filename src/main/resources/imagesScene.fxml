@@ -138,7 +138,7 @@
                   <Font name="SansSerif Bold" size="36.0" />
                </font>
             </Text>
-            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="52.0" prefHeight="311.0" prefWidth="933.0" stylesheets="@styles/styles.css">
+            <TableView fx:id="imagesTableView" layoutX="6.0" layoutY="52.0" prefHeight="307.0" prefWidth="933.0" stylesheets="@styles/styles.css">
                <columns>
                   <TableColumn fx:id="idColumn" prefWidth="217.0" text="ID" />
                   <TableColumn fx:id="nameColumn" minWidth="0.0" prefWidth="113.5" text="Name" />
@@ -236,7 +236,7 @@
                   </Label>
                </children></Pane>
             <VBox fx:id="notificationBox" layoutX="645.0" layoutY="2.0" prefHeight="48.0" prefWidth="197.0" />
-            <Button fx:id="changeToPullImageSceneButton" layoutX="842.0" layoutY="374.0" mnemonicParsing="false" onAction="#changeToPullImageScene" stylesheets="@styles/darkButtons.css" text="Pull an image" textFill="WHITE">
+            <Button fx:id="changeToPullImageSceneButton" layoutX="836.0" layoutY="368.0" mnemonicParsing="false" onAction="#changeToPullImageScene" prefHeight="28.0" prefWidth="97.0" style="-fx-background-radius: 10;" stylesheets="@styles/darkButtons.css" text="Pull an image" textFill="WHITE">
                <font>
                   <Font name="SansSerif Regular" size="13.0" />
                </font></Button>

@@ -83,6 +83,7 @@
                </children>
             </Pane>
             <Button fx:id="backButton" layoutX="18.0" layoutY="12.0" mnemonicParsing="false" onAction="#goBack" prefHeight="39.0" prefWidth="39.0" style="-fx-background-color: transparent;" />
+            <Button fx:id="dummyButton" layoutX="306.0" layoutY="117.0" mnemonicParsing="false" style="-fx-background-color: transparent;" />
          </children>
       </AnchorPane>
    </center>
