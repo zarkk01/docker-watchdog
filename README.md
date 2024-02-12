@@ -47,7 +47,11 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 
 ```
 .
+├── LICENSE
 ├── README.md
+├── docs
+│   ├── gettingStarted.md
+│   └── visuals.md
 ├── pom.xml
 ├── src
 │   ├── main
@@ -56,18 +60,27 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 │   │   │       └── aueb
 │   │   │           └── dmst
 │   │   │               └── dockerWatchdog
-│   │   │                   ├── Application
-│   │   │                   │   └── DesktopApp.java
-│   │   │                   ├── Controllers
-│   │   │                   │   ├── ComposeController.java
-│   │   │                   │   ├── ContainersController.java
-│   │   │                   │   ├── DockerController.java
-│   │   │                   │   ├── GraphicsController.java
-│   │   │                   │   ├── ImagesController.java
-│   │   │                   │   ├── IndividualContainerController.java
-│   │   │                   │   ├── KubernetesController.java
-│   │   │                   │   └── VolumesController.java
-│   │   │                   ├── Exceptions
+│   │   │                   ├── Main.java
+│   │   │                   ├── api
+│   │   │                   │   ├── WebApplication.java
+│   │   │                   │   ├── controllers
+│   │   │                   │   │   └── ApiController.java
+│   │   │                   │   ├── entities
+│   │   │                   │   │   ├── Image.java
+│   │   │                   │   │   ├── Instance.java
+│   │   │                   │   │   ├── InstanceId.java
+│   │   │                   │   │   ├── Metric.java
+│   │   │                   │   │   └── Volume.java
+│   │   │                   │   ├── repositories
+│   │   │                   │   │   ├── ImagesRepository.java
+│   │   │                   │   │   ├── InstancesRepository.java
+│   │   │                   │   │   ├── MetricsRepository.java
+│   │   │                   │   │   └── VolumesRepository.java
+│   │   │                   │   └── services
+│   │   │                   │       └── ApiService.java
+│   │   │                   ├── exceptions
+│   │   │                   │   ├── ChartException.java
+│   │   │                   │   ├── ContainerActionFailedException.java
 │   │   │                   │   ├── ContainerCreationException.java
 │   │   │                   │   ├── ContainerNameConflictException.java
 │   │   │                   │   ├── ContainerNotFoundException.java
@@ -75,42 +88,46 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 │   │   │                   │   ├── ContainerRunningException.java
 │   │   │                   │   ├── DatabaseOperationException.java
 │   │   │                   │   ├── EventHandlingException.java
+│   │   │                   │   ├── ImageActionException.java
 │   │   │                   │   ├── ImageNotFoundException.java
 │   │   │                   │   ├── ListFillingException.java
-│   │   │                   │   └── LiveStatsException.java
-│   │   │                   ├── Main.java
-│   │   │                   ├── Models
-│   │   │                   │   ├── DeploymentScene.java
-│   │   │                   │   ├── Image.java
-│   │   │                   │   ├── ImageScene.java
-│   │   │                   │   ├── Instance.java
-│   │   │                   │   ├── InstanceId.java
-│   │   │                   │   ├── InstanceScene.java
-│   │   │                   │   ├── Metric.java
+│   │   │                   │   ├── LiveStatsException.java
+│   │   │                   │   ├── VolumeFetchException.java
+│   │   │                   │   └── VolumeNotModifiedException.java
+│   │   │                   ├── gui
+│   │   │                   │   ├── GuiApplication.java
+│   │   │                   │   ├── fxcontrollers
+│   │   │                   │   │   ├── ComposeController.java
+│   │   │                   │   │   ├── ContainersController.java
+│   │   │                   │   │   ├── GraphicsController.java
+│   │   │                   │   │   ├── ImagesController.java
+│   │   │                   │   │   ├── IndividualContainerController.java
+│   │   │                   │   │   ├── KubernetesController.java
+│   │   │                   │   │   ├── PullImageController.java
+│   │   │                   │   │   ├── UserController.java
+│   │   │                   │   │   └── VolumesController.java
+│   │   │                   │   └── models
+│   │   │                   │       ├── DeploymentScene.java
+│   │   │                   │       ├── ImageScene.java
+│   │   │                   │       ├── InstanceScene.java
+│   │   │                   │       ├── PodScene.java
+│   │   │                   │       ├── SearchResultScene.java
+│   │   │                   │       ├── ServiceScene.java
+│   │   │                   │       ├── StatefulSetScene.java
+│   │   │                   │       └── VolumeScene.java
+│   │   │                   ├── models
 │   │   │                   │   ├── MyImage.java
 │   │   │                   │   ├── MyInstance.java
-│   │   │                   │   ├── MyVolume.java
-│   │   │                   │   ├── PodScene.java
-│   │   │                   │   ├── ServiceScene.java
-│   │   │                   │   ├── StatefulSetScene.java
-│   │   │                   │   ├── Volume.java
-│   │   │                   │   └── VolumeScene.java
-│   │   │                   ├── Repositories
-│   │   │                   │   ├── ImagesRepository.java
-│   │   │                   │   ├── InstancesRepository.java
-│   │   │                   │   ├── MetricsRepository.java
-│   │   │                   │   └── VolumesRepository.java
-│   │   │                   ├── Services
-│   │   │                   │   └── DockerService.java
-│   │   │                   ├── Threads
-│   │   │                   │   ├── DatabaseThread.java
-│   │   │                   │   ├── ExecutorThread.java
-│   │   │                   │   └── MonitorThread.java
-│   │   │                   └── WebApp.java
+│   │   │                   │   └── MyVolume.java
+│   │   │                   └── threads
+│   │   │                       ├── DatabaseThread.java
+│   │   │                       ├── ExecutorThread.java
+│   │   │                       └── MonitorThread.java
 │   │   └── resources
 │   │       ├── application.properties
 │   │       ├── composeScene.fxml
 │   │       ├── containersScene.fxml
+│   │       ├── fonts
 │   │       ├── graphicsScene.fxml
 │   │       ├── images
 │   │       │   ├── Box.png
@@ -121,42 +138,58 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 │   │       │   ├── CheckBoxHover.png
 │   │       │   ├── Copy.png
 │   │       │   ├── CopyClick.png
-│   │       │   ├── CopyHover.png
 │   │       │   ├── Pause.png
 │   │       │   ├── PauseClick .png
 │   │       │   ├── PauseHover.png
+│   │       │   ├── UML.jpg
 │   │       │   ├── back.png
 │   │       │   ├── backClick.png
 │   │       │   ├── backHover.png
+│   │       │   ├── background.png
 │   │       │   ├── bin.png
 │   │       │   ├── binClick.png
 │   │       │   ├── binHover.png
 │   │       │   ├── binRed.png
+│   │       │   ├── blur.jpg
+│   │       │   ├── blurred.jpg
 │   │       │   ├── container.png
 │   │       │   ├── containerGrey.png
+│   │       │   ├── containersPanel.png
+│   │       │   ├── copyHover.png
 │   │       │   ├── create.png
 │   │       │   ├── createHover.png
 │   │       │   ├── docker.png
+│   │       │   ├── exraPanel.png
 │   │       │   ├── graphics.png
 │   │       │   ├── graphicsGrey.png
+│   │       │   ├── graphicsPanel.png
+│   │       │   ├── hills.png
 │   │       │   ├── image.png
 │   │       │   ├── imageGrey.png
+│   │       │   ├── imagesPanel.png
+│   │       │   ├── individualPanel.png
 │   │       │   ├── kubernetes.png
 │   │       │   ├── kubernetesGrey.png
+│   │       │   ├── loading.gif
 │   │       │   ├── play.png
 │   │       │   ├── playClick.png
 │   │       │   ├── playHover.png
 │   │       │   ├── search.png
+│   │       │   ├── shoppingCart.png
 │   │       │   ├── stop.png
 │   │       │   ├── stopClick.png
 │   │       │   ├── stopHover.png
 │   │       │   ├── stopRed.png
+│   │       │   ├── user.png
 │   │       │   ├── volumes.png
 │   │       │   ├── volumesGrey.png
-│   │       │   └── watchdog.png
+│   │       │   ├── volumesPanel.png
+│   │       │   ├── watchdog.png
+│   │       │   └── watchdogRed.png
 │   │       ├── imagesScene.fxml
 │   │       ├── individualContainerScene.fxml
 │   │       ├── kubernetesScene.fxml
+│   │       ├── pullImageScene.fxml
 │   │       ├── styles
 │   │       │   ├── buttons.css
 │   │       │   ├── chartColor.css
@@ -165,18 +198,23 @@ To view instructions on how to run Watchdog for the first time Click [here](docs
 │   │       │   ├── darkButtons.css
 │   │       │   ├── graphicsHover.css
 │   │       │   ├── hoverPane.css
+│   │       │   ├── hoverRunningPane.css
 │   │       │   ├── imagesHover.css
 │   │       │   ├── kubernetesHover.css
+│   │       │   ├── loginButton.css
 │   │       │   ├── pieChart.css
 │   │       │   ├── redButton.css
+│   │       │   ├── scrollPane.css
 │   │       │   ├── splitPane.css
 │   │       │   ├── styles.css
 │   │       │   ├── textArea.css
 │   │       │   └── volumesHover.css
+│   │       ├── userScene.fxml
 │   │       └── volumesScene.fxml
 │   └── test
-│      
 └── target
+    
+
 
 ```
 
