@@ -1,6 +1,8 @@
 package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
-import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,24 +17,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import javax.swing.text.View;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
+import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
 
+
+/**
+ * UserController is a JavaFX controller class that handles user interactions with the User scene.
+ * This includes logging in to Docker Hub, navigating back to the previous scene, and changing to other scenes.
+ * It also holds the JWT token and username of the user that is logged in to Docker Hub.
+ * These can be shared among all classes.
+ */
 public class UserController {
-
     private Stage stage;
     private Object root;
 
     @FXML
     private Label wrongUserPass;
-
     @FXML
     private Pane underLinePane;
 
-    @FXML
-    private Button backbutton;
     @FXML
     private Label loginToDockerhubLabel;
     @FXML
@@ -48,19 +50,34 @@ public class UserController {
     @FXML
     private Button backButton;
     private String fromWhichScene;
+
+    // The token and name of the user that is logged in to Docker Hub.
+    // This can be shared among all classes.
     public static String token;
     public static String name ;
 
+    /**
+     * Prepares the User scene when it is loaded.
+     * This method sets the scene from which the User scene was loaded,
+     * checks if the user is logged in, and updates the UI accordingly.
+     * It also sets the image for the back button.
+     *
+     * @param fromWhere The name of the scene from which the User scene was loaded.
+     */
     public void onUserSceneLoad(String fromWhere) {
+        // Set the scene from which the User scene was loaded
         this.fromWhichScene = fromWhere;
-        System.out.println(token);
+
+        // Check if the user is logged in
         if (token != null && !token.isEmpty()) {
-            System.out.println("User is logged in");
+            // Update the loggedInLabel with the user's name and make it visible
             loggedInLabel.setText("Logged in as " + name);
             loggedInLabel.setVisible(true);
+
+            // Hide the login form
             hideForm();
         } else {
-            System.out.println("User is not logged in");
+            // Make the login form visible
             wrongUserPass.setVisible(false);
             passwordTextField.setVisible(true);
             loginButton.setVisible(true);
@@ -69,132 +86,96 @@ public class UserController {
             loginToDockerhubLabel.setVisible(true);
         }
 
+        // Load the image for the back button
         InputStream imageStream = getClass().getResourceAsStream("/images/back.png");
         Image image = new Image(imageStream);
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(20); // adjust the height as needed
-        imageView.setFitWidth(20); // adjust the width as needed
+
+        // Adjust the size of the image as needed
+        imageView.setFitHeight(20);
+        imageView.setFitWidth(20);
+
+        // Set the image as the graphic for the back button and make the button transparent
         backButton.setGraphic(imageView);
         backButton.setStyle("-fx-background-color: transparent;");
-
     }
 
+    /**
+     * Hides the login form.
+     * This method sets the visibility of all components of the login form to false.
+     * It is used to hide the login form when the user is already logged in.
+     */
+    public void hideForm() {
+        // Hide the underline pane
+        underLinePane.setVisible(false);
+
+        // Hide the error message for wrong username or password
+        wrongUserPass.setVisible(false);
+
+        // Hide the label prompting the user to log in to Docker Hub
+        loginToDockerhubLabel.setVisible(false);
+
+        // Hide the password text field
+        passwordTextField.setVisible(false);
+
+        // Hide the login button
+        loginButton.setVisible(false);
+
+        // Hide the username text field
+        usernameTextField.setVisible(false);
+
+        // Hide the login prompt
+        loginPrompt.setVisible(false);
+    }
+
+    /**
+     * Logs in the user to Docker Hub.
+     * This method retrieves the username and password from the text fields,
+     * authenticates the user with Docker Hub, and updates the UI accordingly.
+     * If the authentication is successful, it hides the login form and displays the logged in label.
+     * If the authentication fails, it displays an error message.
+     *
+     * @throws IOException if an I/O error occurs when sending the request
+     */
     public void logIn() throws IOException {
+        // Get the username and password from the text fields
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
+
+        // Authenticate the user with Docker Hub sending the username and password
         token = ApiService.authenticateDockerHub(username, password);
+
+        // Check if the authentication was successful
         if (token != null && !token.isEmpty()) {
+            // Make the logged in label visible
             loggedInLabel.setVisible(true);
+
+            // If the username is longer than 7 characters, truncate it and add "..."
             if (username.length() > 7){
                 name = username.substring(0, 6) + "...";
             } else {
                 name = username;
             }
+
+            // Hide the login form
             hideForm();
         } else {
+            // If the authentication failed, display an error message
             wrongUserPass.setVisible(true);
         }
     }
 
-    public void hideForm() {
-        underLinePane.setVisible(false);
-        wrongUserPass.setVisible(false);
-        loginToDockerhubLabel.setVisible(false);
-        passwordTextField.setVisible(false);
-        loginButton.setVisible(false);
-        usernameTextField.setVisible(false);
-        loginPrompt.setVisible(false);
-    }
-
+    /**
+     * Navigates back to the previous scene.
+     * This method changes the current scene to the scene from which the User scene was loaded.
+     * It uses the changeScene method to perform the scene change.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the FXML file for the new scene.
+     */
     public void goBack(ActionEvent actionEvent) throws IOException {
-        if(Objects.equals(fromWhichScene, "containersScene.fxml")) {
-            changeScene(actionEvent, "containersScene.fxml");
-        } else if ( Objects.equals(fromWhichScene, "imagesScene.fxml")) {
-            changeScene(actionEvent, "imagesScene.fxml");
-        } else if ( Objects.equals(fromWhichScene, "volumesScene.fxml")) {
-            changeScene(actionEvent, "volumesScene.fxml");
-        } else if ( Objects.equals(fromWhichScene, "graphicsScene.fxml")) {
-            changeScene(actionEvent, "graphicsScene.fxml");
-        } else if ( Objects.equals(fromWhichScene, "kubernetesScene.fxml")) {
-            changeScene(actionEvent, "kubernetesScene.fxml");
-        }
-    }
-
-    /**
-     * Changes the current scene to the Containers scene.
-     * This method calls the `changeScene` method with
-     * the action event that triggered the scene change
-     * and the name of the FXML file for the Containers scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @throws IOException If an error occurs while changing the scene.
-     */
-    public void changeToContainersScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "containersScene.fxml");
-    }
-
-    /**
-     * Changes the current scene to the Images scene.
-     * This method calls the `changeScene` method with
-     * the action event that triggered the scene change
-     * and the name of the FXML file for the Images scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @throws IOException If an error occurs while changing the scene.
-     */
-    public void changeToImagesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "imagesScene.fxml");
-    }
-
-    /**
-     * Changes the current scene to the Volumes scene.
-     * This method first loads the Volumes scene and refreshes the volumes.
-     * Then, it calls the `changeScene` method with
-     * the action event that triggered the scene change
-     * and the name of the FXML file for the Volumes scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @throws IOException If an error occurs while changing the scene.
-     */
-    public void changeToVolumesScene(ActionEvent actionEvent) throws IOException {
-        // Load the Volumes scene and refresh the volumes.
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/volumesScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        VolumesController volumesController = loader.getController();
-        volumesController.refreshVolumes();
-
-        // Change the scene to the Volumes scene.
-        changeScene(actionEvent, "volumesScene.fxml");
-    }
-
-    /**
-     * Changes the current scene to the Graphics scene.
-     * This method calls the `changeScene` method with
-     * the action event that triggered the scene change
-     * and the name of the FXML file for the Graphics scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @throws IOException If an error occurs while changing the scene.
-     */
-    public void changeToGraphicsScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "graphicsScene.fxml");
-    }
-
-    /**
-     * Changes the current scene to the Kubernetes scene.
-     * This method calls the `changeScene` method with
-     * the action event that triggered the scene change
-     * and the name of the FXML file for the Kubernetes scene.
-     *
-     * @param actionEvent The event that triggered the scene change.
-     * @throws IOException If an error occurs while changing the scene.
-     */
-    public void changeToKubernetesScene(ActionEvent actionEvent) throws IOException {
-        changeScene(actionEvent, "kubernetesScene.fxml");
+        // Change the current scene to the scene from which the User scene was loaded
+        changeScene(actionEvent, fromWhichScene);
     }
 
     /**
@@ -220,5 +201,4 @@ public class UserController {
         stage.getScene().setRoot((Parent) root);
         stage.show();
     }
-
 }

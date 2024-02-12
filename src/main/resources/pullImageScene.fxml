@@ -44,7 +44,7 @@
                   <Image url="@images/blur.jpg" />
                </image>
             </ImageView>
-            <Pane layoutX="427.0" layoutY="15.0" prefHeight="95.0" prefWidth="308.0" style="-fx-background-color: #474745;" stylesheets="@../../../target/classes/styles/curvedPane.css" />
+            <Pane layoutX="427.0" layoutY="15.0" prefHeight="95.0" prefWidth="308.0" style="-fx-background-color: #474745;" stylesheets="@styles/curvedPane.css" />
              <TextField fx:id="imagesSearch" layoutX="448.0" layoutY="64.0" prefHeight="37.0" prefWidth="216.0" promptText="Search.." style="-fx-background-color: #31312F; -fx-text-fill: white;">
                <font>
                   <Font name="SansSerif Regular" size="17.0" />

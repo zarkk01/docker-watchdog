@@ -76,7 +76,6 @@ public class Main {
      * @param args command line arguments passed to the application
      */
     public static void main(String[] args) {
-
         try {
             // Start all three Threads for monitoring, executing, and database operations
             Thread monitorThread = new Thread(new MonitorThread());
