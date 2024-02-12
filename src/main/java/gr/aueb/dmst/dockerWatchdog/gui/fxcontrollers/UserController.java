@@ -2,7 +2,11 @@ package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -133,11 +137,12 @@ public class UserController {
      * This method retrieves the username and password from the text fields,
      * authenticates the user with Docker Hub, and updates the UI accordingly.
      * If the authentication is successful, it hides the login form and displays the logged in label.
+     * Also, if it was successfull it sends the user back to the previous scene after 1 second.
      * If the authentication fails, it displays an error message.
      *
      * @throws IOException if an I/O error occurs when sending the request
      */
-    public void logIn() throws IOException {
+    public void logIn(ActionEvent actionEvent) throws IOException {
         // Get the username and password from the text fields
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
@@ -159,6 +164,23 @@ public class UserController {
 
             // Hide the login form
             hideForm();
+
+            // Create a ScheduledExecutorService so to make user go back after 1 seconds
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            // Schedule the goBack() method to be executed after 2 seconds
+            executorService.schedule(() -> {
+                Platform.runLater(() -> {
+                    try {
+                        // Go back to the previous scene
+                        goBack(actionEvent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                // After 1 second
+            }, 1, TimeUnit.SECONDS);
+            // Shut down the executor service no reason to keep it running
+            executorService.shutdown();
         } else {
             // If the authentication failed, display an error message
             wrongUserPass.setVisible(true);
