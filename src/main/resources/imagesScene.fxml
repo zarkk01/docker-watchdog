@@ -229,14 +229,17 @@
                         <Font name="SansSerif Regular" size="14.0" />
                      </font>
                   </Label>
-                  <Label fx:id="startingLabel" layoutX="189.0" layoutY="90.0" prefHeight="83.0" prefWidth="576.0" text="Click on an image for more information.." textFill="WHITE">
+                  <Label fx:id="startingLabel" layoutX="189.0" layoutY="90.0" prefHeight="83.0" prefWidth="541.0" text="Click on an image for more information.." textFill="WHITE">
                      <font>
-                        <Font name="SansSerif Bold Italic" size="29.0" />
+                        <Font name="SansSerif Regular" size="29.0" />
                      </font>
                   </Label>
                </children></Pane>
             <VBox fx:id="notificationBox" layoutX="645.0" layoutY="2.0" prefHeight="48.0" prefWidth="197.0" />
-            <Button fx:id="changeToPullImageSceneButton" layoutX="842.0" layoutY="374.0" mnemonicParsing="false" onAction="#changeToPullImageScene" stylesheets="@styles/darkButtons.css" text="Pull an image" textFill="WHITE" />
+            <Button fx:id="changeToPullImageSceneButton" layoutX="842.0" layoutY="374.0" mnemonicParsing="false" onAction="#changeToPullImageScene" stylesheets="@styles/darkButtons.css" text="Pull an image" textFill="WHITE">
+               <font>
+                  <Font name="SansSerif Regular" size="13.0" />
+               </font></Button>
          </children>
       </AnchorPane>
    </center>

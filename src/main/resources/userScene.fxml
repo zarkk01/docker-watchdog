@@ -70,7 +70,7 @@
                   </Label>
                   <Label fx:id="loginPrompt" layoutX="116.0" layoutY="143.0" text="Please enter your login and password!" textFill="#e4dcdc">
                      <font>
-                        <Font size="21.0" />
+                        <Font name="SansSerif Regular" size="21.0" />
                      </font>
                   </Label>
                   <Label fx:id="wrongUserPass" layoutX="168.0" layoutY="371.0" text="Wrong username or password. Try again." textFill="RED" visible="false" />
