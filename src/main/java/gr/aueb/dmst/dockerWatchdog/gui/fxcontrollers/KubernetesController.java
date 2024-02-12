@@ -124,6 +124,9 @@ public class KubernetesController implements Initializable {
     @FXML
     private Label servicesHead;
 
+    @FXML
+    private ScrollPane scrollPane;
+
     /**
      * Initializes the KubernetesController.
      * This method is called after all @FXML annotated members have been injected.
@@ -151,6 +154,10 @@ public class KubernetesController implements Initializable {
             populateStatefulSetsTable();
             populateServicesTable();
 
+            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+
+
             // Install funny tooltip on watchdog imageView
             setUpWoofTooltip();
         } catch (ApiException | IOException e) {
@@ -168,17 +175,17 @@ public class KubernetesController implements Initializable {
         DropShadow shadow = new DropShadow();
         shadow.setRadius(7.5);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
-        kubernetesHead.setEffect(shadow);
-        topBar.setEffect(shadow);
-        sideBar.setEffect(shadow);
-        podsTableView.setEffect(shadow);
-        podsHead.setEffect(shadow);
-        deploymentsTableView.setEffect(shadow);
-        deploymentsHead.setEffect(shadow);
-        statefulSetsHead.setEffect(shadow);
-        statefulSetsTableView.setEffect(shadow);
-        servicesHead.setEffect(shadow);
-        servicesTableView.setEffect(shadow);
+//        kubernetesHead.setEffect(shadow);
+//        topBar.setEffect(shadow);
+//        sideBar.setEffect(shadow);
+//        podsTableView.setEffect(shadow);
+//        podsHead.setEffect(shadow);
+//        deploymentsTableView.setEffect(shadow);
+//        deploymentsHead.setEffect(shadow);
+//        statefulSetsHead.setEffect(shadow);
+//        statefulSetsTableView.setEffect(shadow);
+//        servicesHead.setEffect(shadow);
+//        servicesTableView.setEffect(shadow);
     }
 
     /**
