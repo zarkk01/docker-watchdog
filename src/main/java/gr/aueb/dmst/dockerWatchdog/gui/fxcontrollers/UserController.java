@@ -73,6 +73,8 @@ public class UserController {
     public void onUserSceneLoad(String fromWhere) {
         // Set the scene from which the User scene was loaded
         this.fromWhichScene = fromWhere;
+
+        // Request focus for the dummy button to prevent the text field from getting focus
         Platform.runLater(() -> dummyButton.requestFocus());
 
         // Check if the user is logged in

@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -54,6 +55,8 @@ public class PullImageController implements Initializable {
 
     @FXML
     private TextField imagesSearch;
+    @FXML
+    private Button dummyButton;
 
     /**
      * Initializes the PullImageController.
@@ -66,6 +69,9 @@ public class PullImageController implements Initializable {
         // Set the cell value factories for the imageNameColumn and descriptionColumn
         imageNameColumn.setCellValueFactory(new PropertyValueFactory<>("repoName"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        // Request focus for the dummy button to prevent the text field from getting focus
+        Platform.runLater(() -> dummyButton.requestFocus());
 
         // Set up the pullImageColumn with a custom cell factory
         pullImageColumn.setCellFactory(new Callback<>() {
