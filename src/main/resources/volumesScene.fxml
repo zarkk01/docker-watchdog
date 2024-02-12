@@ -29,9 +29,9 @@
                </font>
             </Text>
             <ImageView fx:id="loadingImageView" fitHeight="26.0" fitWidth="34.0" layoutX="969.0" pickOnBounds="true" preserveRatio="true" visible="false" />
-            <Button fx:id="userButton" alignment="TOP_LEFT" layoutX="1011.0" layoutY="1.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="23.0" prefWidth="84.0" style="-fx-background-color: #CE1E30;" stylesheets="@styles/buttons.css" text="Log in" textFill="WHITE">
+            <Button fx:id="userButton" alignment="TOP_LEFT" layoutX="1011.0" layoutY="2.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="15.0" prefWidth="84.0" style="-fx-background-color: #CE1E30; -fx-border-radius: 15;" stylesheets="@styles/buttons.css" text="Log in" textFill="WHITE">
                <font>
-                  <Font size="12.0" />
+                  <Font name="SansSerif Regular" size="11.0" />
                </font>
             </Button>
             <ImageView fitHeight="20.0" fitWidth="19.0" layoutX="1070.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
