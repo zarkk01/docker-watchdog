@@ -274,6 +274,7 @@
                </children>
             </Pane>
          <VBox fx:id="notificationBox" alignment="TOP_RIGHT" layoutX="645.0" layoutY="1.0" prefHeight="59.0" prefWidth="149.0" />
+            <Button fx:id="userButton" layoutX="795.0" layoutY="18.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="26.0" prefWidth="139.0" style="-fx-background-color: #31312F;" stylesheets="@styles/buttons.css" text="Log in" textFill="WHITE" />
 
       </children>
    </AnchorPane>

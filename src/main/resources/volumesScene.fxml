@@ -172,6 +172,7 @@
                   <Image url="@images/volumes.png" />
                </image>
             </ImageView>
+            <Button fx:id="userButton" layoutX="700.0" layoutY="15.0" mnemonicParsing="false" onAction="#changeToUserScene" prefHeight="26.0" prefWidth="117.0" stylesheets="@styles/darkButtons.css" text="Log in " textFill="WHITE" />
          </children>
       </AnchorPane>
    </center>

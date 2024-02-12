@@ -2,6 +2,7 @@ package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.net.URI;
@@ -10,14 +11,22 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.IOException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -26,6 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -156,10 +166,21 @@ public class ImagesController implements Initializable {
     private Text stoppedContainersText;
     @FXML
     private ImageView watchdogImage;
+    @FXML
+    private Button userButton;
 
     // This variable is used to know which image is selected and displayed in the down info panel.
     private ImageScene imageInfoPanel;
     private Timeline timeline;
+
+
+
+    @FXML
+    private ListView searchResultsListView;
+
+    @FXML
+    private TextField imagesSearch;
+
 
     /**
      * This method is automatically called when user navigates to Images Panel.
@@ -174,6 +195,16 @@ public class ImagesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+
+
+
+            if (UserController.token == null) {
+                userButton.setText("Log in");
+            } else {
+                userButton.setText("Logged in");
+            }
+
+
             // Set up the drop shadows of components.
             setUpShadows();
 
@@ -1084,4 +1115,58 @@ public class ImagesController implements Initializable {
     public static void showLoading(boolean toBeShown) {
         loadingImageViewStatic.setVisible(toBeShown);
     }
+
+
+
+
+
+
+
+
+
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "imagesScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
+
+    public void searchForImages() throws IOException {
+        if (UserController.token == null) {
+            System.out.print("You need to login first");
+        } else {
+            JSONArray searchResults = ApiService.searchImages(UserController.token, imagesSearch.getText());
+            ObservableList<String> items = FXCollections.observableArrayList();
+            for (int i = 0; i < searchResults.length(); i++) {
+                JSONObject jsonObject = searchResults.getJSONObject(i);
+                String repoName = jsonObject.getString("repo_name");
+                int pullCount = jsonObject.getInt("pull_count");
+                items.add("Image: " + repoName + ", Pull Count: " + pullCount);
+            }
+            searchResultsListView.setItems(items);
+
+            // Set the cell factory to create cells with a larger preferred height
+            searchResultsListView.setCellFactory(lv -> {
+                ListCell<String> cell = new ListCell<>();
+                cell.setPrefHeight(50); // Set the preferred height to 50
+                cell.textProperty().bind(cell.itemProperty());
+                cell.setStyle("-fx-background-color: #31312F; -fx-text-fill: white; -fx-padding: 10 0 10 10; -fx-font-size: 14px;");
+                return cell;
+            });
+
+            // Remove horizontal lines and scroll bars
+            searchResultsListView.setStyle("-fx-background-insets: 0; -fx-padding: 0; -fx-vertical-grid-lines-visible: false; -fx-horizontal-grid-grid-lines-visible: false;");
+
+        }
+    }
+
 }
