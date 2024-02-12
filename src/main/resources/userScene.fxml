@@ -62,12 +62,12 @@
                      <font>
                         <Font name="SansSerif Bold" size="20.0" />
                      </font></Button>
-                  <Label fx:id="loggedInLabel" layoutX="127.0" layoutY="209.0" prefHeight="79.0" prefWidth="303.0" text="You are logged in.." textFill="WHITE" visible="false">
+                  <Label fx:id="loggedInLabel" layoutX="32.0" layoutY="209.0" prefHeight="103.0" prefWidth="516.0" text="You are logged in.." textFill="WHITE" visible="false">
                      <font>
                         <Font size="64.0" />
                      </font>
                   </Label>
-                  <Label layoutX="116.0" layoutY="141.0" text="Please enter your login and password!" textFill="#e4dcdc">
+                  <Label fx:id="loginPrompt" layoutX="116.0" layoutY="141.0" text="Please enter your login and password!" textFill="#e4dcdc">
                      <font>
                         <Font size="21.0" />
                      </font>

@@ -30,15 +30,13 @@ public class UserController {
     @FXML
     private Button loginButton;
     @FXML
-    private Label usernameLabel;
-    @FXML
-    private Label passwordLabel;
-    @FXML
     private TextField usernameTextField;
     @FXML
     private TextField passwordTextField;
     @FXML
-    private Label loggedInLabel;
+    private Label loginPrompt;
+    @FXML
+    public Label loggedInLabel;
     @FXML
     private Button backButton;
     private String fromWhichScene;
@@ -79,11 +77,10 @@ public class UserController {
 
     public void hideForm() {
         loginToDockerhubLabel.setVisible(false);
-        passwordLabel.setVisible(false);
         passwordTextField.setVisible(false);
         loginButton.setVisible(false);
-        usernameLabel.setVisible(false);
         usernameTextField.setVisible(false);
+        loginPrompt.setVisible(false);
     }
 
     public void goBack(ActionEvent actionEvent) throws IOException {
