@@ -187,25 +187,19 @@ Watchdog is structured into several packages, each with a specific role in the a
 - **`gr.aueb.dmst.dockerWatchdog`**:
     - **`Main.java`**: The main entry point of the application.
 
-- **`Application`**:
-    - Contains the class that boots up the desktop app.
+- **`gui`**:
+    - Contains the class that boots up the desktop app and all fxcontrollers and models that support it.
 
-- **`Controllers`**:
-    - Contains the controller for the API and many Controllers related to the scenes of the desktop app.
+- **`api`**:
+    - Contains all related 
 
-- **`Exceptions`**:
+- **`exceptions`**:
     - Contains custom exception classes .
 
-- **`Models`**:
-    - Contains model classes for desktop and databse tables as well as the data-transfer-object classes.
+- **`models`**:
+    - Contains our custom My... models that helps us have full access and control on docker components.
 
-- **`Repositories`**:
-    - Contains repositories for interacting with the database for each entity.
-
-- **`Services`**:
-    - Contains the service for the API that implemets the practical logic of each endpoint. 
-
-- **`Threads`**:
+- **`threads`**:
     - Contains the 3 threads that are constantly running in the applicaton.
 
 - **`resources`**:
