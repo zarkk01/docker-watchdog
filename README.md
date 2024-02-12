@@ -1,77 +1,41 @@
 # Watchdog - Docker Monitoring Application v0.1
 
-## Description
+## Table of Contents
+- [Description](#description)
+- [Promotional Introduction To Watchdog](#promotional-introduction-to-watchdog)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Project Structure and Package/Files Descriptions](#project-structure-and-packagefiles-descriptions)
+- [REST Endpoints](#rest-endpoints)
+- [Libraries and Versions](#libraries-and-versions)
+- [Visuals](#visuals)
+- [Authors](#authors)
+- [Contributing](#contributing)
+
+## Promotional Introduction To Watchdog
+
+Embark on a seamless journey through the world of Docker and Kubernetes management with Watchdog – your loyal companion, tirelessly watching your back to simplify and optimize your containerized applications. 🚀
+
+🔭 Keep a Vigilant Eye:
+Watchdog provides real-time monitoring, keeping a vigilant eye on the health and performance of your Docker and Kubernetes cluster. Stay ahead of potential issues with live updates and detailed metrics, ensuring a smooth and uninterrupted development experience.
+
+🐕 Watchdog Features:
+
+- Container Caretaker: Manage your containers effortlessly with Watchdog's intuitive interface, overseeing volumes, images, and all interactions between them. It's your go-to companion for simplifying complex tasks and ensuring a harmonious container ecosystem.
+- Volume Patrol: Watchdog goes beyond the surface, keeping a keen eye on volumes to facilitate seamless data management. Effortlessly manage and organize your volumes to ensure your containerized applications run smoothly.
+- Image Inspector: Explore and manage your container images with ease. Watchdog allows you to interact with images effortlessly, ensuring that your applications are built on a solid foundation.
+- Kubernetes Support: Watchdog extends its loyalty to Kubernetes, offering support for seamless interaction. Manage your Kubernetes clusters with the same ease and confidence, as Watchdog becomes your trusted guide in the world of orchestration.
+- Tail-Wagging Interface: Experience the joy of a user-friendly design that tailors to both beginners and seasoned users, making interaction a walk in the park.
+
+## A More Technical Description
 
 Watchdog is a desktop Spring Boot application designed to monitor your docker cluster and let you interact with your containers and images in an intuitive way. In this version the extracted data is stored in a local mySQL database. It uses callbacks to get data from your docker deamon and it dynamically creates data-tranfer-objects that are pushed to the database. After, a springboot application uses the REST protocol to extract the data-tranfer-objects back into the desktop application and display them in a user-friendly way while also giving the user the ability to interact with his containers and images using designated endpoints.
 
 ## Getting Started
 
-To run the application:
-
-**A.** Ensure Java, Maven and MySQL are installed.
+To view instructions on how to run Watchdog for the first time Click [here](docs/gettingStarted.md)
 
 
-**B.** Depending on your platform:
-
-
-
-**For MacOS:**
-
-1. Set up a new MySQL connection or make use of an existing one.
-2. Export your MySQL USERNAME and PASSWORD as environment variables:
-
-    Open the terminal and type the following commands to open the shell profile file:
-
-    For bash shell:
-    ```bash
-    nano ~/.bashrc
-    ```
-
-    For zsh shell:
-    ```bash
-    nano ~/.zshrc
-    ```
-
-    Add these lines at the end of the file:
-    ```bash
-    export WATCHDOG_MYSQL_USERNAME="example_username"
-    export WATCHDOG_MYSQL_PASSWORD="example_password"
-    ```
-   
-    Replace "example_username" and "example_password" with your actual MySQL username and password. Press Ctrl + X to close the editor, followed by Y to save changes, and Enter to confirm the file name. To make these changes take effect, close and reopen your terminal.
-
-
-
-**For Windows:**
-
-1. Set up a new MySQL connection or make use of an existing one.
-2. Export your MySQL USERNAME and PASSWORD as environment variables:
-
-    Open Command Prompt as an administrator.
-
-    To set the environment variables, use the setx command followed by the variable name and its value. For example:
-
-    ```cmd
-    setx WATCHDOG_MYSQL_USERNAME "example_username"
-    setx WATCHDOG_MYSQL_PASSWORD "example_password"
-    ```
-
-    Replace "example_username" and "example_password" with your actual MySQL username and password.
-    Close and reopen Command Prompt to make sure the changes take effect.
-
-
-**C.** Ensure docker desktop is running and kubernetes is enabled in settings
-
-
-**D.** Clone the repository.
-```bash
-    git clone https://github.com/zarkk01/docker-watchdog.git
-```
-**E.** Navigate to the root directory and run `mvn install`
-
-**F.**  Run `java -jar target/watchdog.jar`
-
-**G.** Enhance your workflow with Watchdog
 ## Project Structure
 
 ```
@@ -294,18 +258,12 @@ Watchdog is structured into several packages, each with a specific role in the a
 | org.springframework:spring-test                         | 6.1.1       | test    |
 | org.testfx:testfx-junit                                 | 4.0.1-alpha | test    |
 
-## Code UML
-![](src/main/resources/images/UML.jpg)
-
 ## Visuals
-![](src/main/resources/images/containersPanel.png)
-![](src/main/resources/images/individualPanel.png)
-![](src/main/resources/images/imagesPanel.png)
-![](src/main/resources/images/volumesPanel.png)
-![](src/main/resources/images/graphicsPanel.png)
-![](src/main/resources/images/exraPanel.png)
 
-Authors:
+To view our Code UML and Visuals click [here](docs/visuals.md)
+
+
+## Authors:
 
 [Ioannis Tampakis](mailto:giannistampakis04@gmail.com),
 [Thodoris Zarkalis](mailto:zarkalhs@gmail.com),
