@@ -39,27 +39,27 @@
    <center>
       <AnchorPane prefHeight="747.0" prefWidth="1100.0" style="-fx-background-color: #474745;" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="677.0" fitWidth="1222.0" layoutX="-1.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="677.0" fitWidth="1222.0" layoutX="-1.0" layoutY="-1.0" opacity="0.41" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@images/background.png" />
                </image>
             </ImageView>
-            <Pane fx:id="loginForm" layoutX="269.0" layoutY="60.0" prefHeight="551.0" prefWidth="551.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
+            <Pane fx:id="loginForm" layoutX="421.0" layoutY="60.0" prefHeight="551.0" prefWidth="551.0" style="-fx-background-color: #31312F;" stylesheets="@styles/curvedPane.css">
                <children>
-                  <Label fx:id="loginToDockerhubLabel" layoutX="89.0" layoutY="56.0" prefHeight="80.0" prefWidth="390.0" text="DockerHub Login" textFill="WHITE">
+                  <Label fx:id="loginToDockerhubLabel" layoutX="89.0" layoutY="54.0" prefHeight="80.0" prefWidth="390.0" text="DockerHub Login" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Regular" size="48.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="usernameTextField" layoutX="141.0" layoutY="223.0" prefHeight="49.0" prefWidth="268.0" promptText="       Username or Email" style="-fx-background-color: transparent; -fx-border-radius: 15; -fx-border-color: green; -fx-text-fill: white;">
+                  <TextField fx:id="usernameTextField" layoutX="141.0" layoutY="223.0" prefHeight="49.0" prefWidth="268.0" promptText="       Username or Email" style="-fx-background-color: transparent; -fx-border-radius: 15; -fx-border-color: #F14246; -fx-text-fill: white;">
                      <font>
                         <Font name="SansSerif Regular" size="19.0" />
                      </font></TextField>
-                  <PasswordField fx:id="passwordTextField" accessibleRole="PASSWORD_FIELD" layoutX="141.0" layoutY="305.0" prefHeight="49.0" prefWidth="268.0" promptText="              Password" style="-fx-background-color: transparent; -fx-border-color: green; -fx-border-radius: 15; -fx-text-fill: white;">
+                  <PasswordField fx:id="passwordTextField" accessibleRole="PASSWORD_FIELD" layoutX="141.0" layoutY="305.0" prefHeight="49.0" prefWidth="268.0" promptText="              Password" style="-fx-background-color: transparent; -fx-border-color: #F14246; -fx-border-radius: 15; -fx-text-fill: white;">
                      <font>
                         <Font name="SansSerif Regular" size="19.0" />
                      </font></PasswordField>
-                  <Button fx:id="loginButton" layoutX="200.0" layoutY="401.0" mnemonicParsing="false" onAction="#logIn" prefHeight="49.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-border-color: green; -fx-border-radius: 15;" text="Login" textFill="WHITE">
+                  <Button fx:id="loginButton" layoutX="200.0" layoutY="401.0" mnemonicParsing="false" onAction="#logIn" prefHeight="49.0" prefWidth="151.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 15;" text="Login" textFill="WHITE">
                      <font>
                         <Font name="SansSerif Bold" size="20.0" />
                      </font></Button>
@@ -68,15 +68,21 @@
                         <Font size="50.0" />
                      </font>
                   </Label>
-                  <Label fx:id="loginPrompt" layoutX="116.0" layoutY="141.0" text="Please enter your login and password!" textFill="#e4dcdc">
+                  <Label fx:id="loginPrompt" layoutX="116.0" layoutY="143.0" text="Please enter your login and password!" textFill="#e4dcdc">
                      <font>
                         <Font size="21.0" />
                      </font>
                   </Label>
                   <Label fx:id="wrongUserPass" layoutX="168.0" layoutY="371.0" text="Wrong username or password. Try again." textFill="RED" visible="false" />
+                  <ImageView fitHeight="467.0" fitWidth="390.0" layoutX="-490.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true" rotate="-10.8">
+                     <image>
+                        <Image url="@images/watchdog.png" />
+                     </image>
+                  </ImageView>
+                  <Pane fx:id="underLinePane" layoutX="78.0" layoutY="127.0" prefHeight="4.0" prefWidth="399.0" style="-fx-background-color: white;" />
                </children>
             </Pane>
-            <Button fx:id="backButton" layoutX="35.0" layoutY="23.0" mnemonicParsing="false" onAction="#goBack" prefHeight="39.0" prefWidth="39.0" style="-fx-background-color: transparent;" />
+            <Button fx:id="backButton" layoutX="18.0" layoutY="12.0" mnemonicParsing="false" onAction="#goBack" prefHeight="39.0" prefWidth="39.0" style="-fx-background-color: transparent;" />
          </children>
       </AnchorPane>
    </center>

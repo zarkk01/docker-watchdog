@@ -12,6 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import javax.swing.text.View;
@@ -26,6 +27,9 @@ public class UserController {
 
     @FXML
     private Label wrongUserPass;
+
+    @FXML
+    private Pane underLinePane;
 
     @FXML
     private Button backbutton;
@@ -60,6 +64,7 @@ public class UserController {
             wrongUserPass.setVisible(false);
             passwordTextField.setVisible(true);
             loginButton.setVisible(true);
+            underLinePane.setVisible(true);
             usernameTextField.setVisible(true);
             loginToDockerhubLabel.setVisible(true);
         }
@@ -80,7 +85,11 @@ public class UserController {
         token = ApiService.authenticateDockerHub(username, password);
         if (token != null && !token.isEmpty()) {
             loggedInLabel.setVisible(true);
-            name = username;
+            if (username.length() > 7){
+                name = username.substring(0, 6) + "...";
+            } else {
+                name = username;
+            }
             hideForm();
         } else {
             wrongUserPass.setVisible(true);
@@ -88,6 +97,7 @@ public class UserController {
     }
 
     public void hideForm() {
+        underLinePane.setVisible(false);
         wrongUserPass.setVisible(false);
         loginToDockerhubLabel.setVisible(false);
         passwordTextField.setVisible(false);
