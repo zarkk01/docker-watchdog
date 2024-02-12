@@ -458,4 +458,19 @@ public class KubernetesController implements Initializable {
         stage.getScene().setRoot(root);
         stage.show();
     }
+
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        UserController userController = loader.getController();
+        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
+        userController.onUserSceneLoad( "containersScene.fxml");
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        stage.getScene().setRoot(root);
+        stage.show();
+    }
 }
