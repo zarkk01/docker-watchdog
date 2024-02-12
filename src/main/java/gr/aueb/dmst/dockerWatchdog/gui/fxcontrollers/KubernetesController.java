@@ -154,10 +154,6 @@ public class KubernetesController implements Initializable {
             populateStatefulSetsTable();
             populateServicesTable();
 
-            scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-
-
             // Install funny tooltip on watchdog imageView
             setUpWoofTooltip();
         } catch (ApiException | IOException e) {
@@ -175,15 +171,9 @@ public class KubernetesController implements Initializable {
         DropShadow shadow = new DropShadow();
         shadow.setRadius(7.5);
         shadow.setColor(Color.color(0, 0, 0, 0.4));
-        kubernetesHead.setEffect(shadow);
-        sideBar.setEffect(shadow);
         podsTableView.setEffect(shadow);
-        podsHead.setEffect(shadow);
         deploymentsTableView.setEffect(shadow);
-        deploymentsHead.setEffect(shadow);
-        statefulSetsHead.setEffect(shadow);
         statefulSetsTableView.setEffect(shadow);
-        servicesHead.setEffect(shadow);
         servicesTableView.setEffect(shadow);
     }
 
@@ -465,21 +455,6 @@ public class KubernetesController implements Initializable {
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
 
         // Set the new scene as the root of the stage and display it
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         stage.getScene().setRoot(root);
         stage.show();
     }
