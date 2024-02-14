@@ -1,4 +1,4 @@
-## Code UML
+## UML Class Diagram
 ![](../src/main/resources/images/UML.jpg)
 
 ## Visuals
