@@ -174,7 +174,7 @@ public class IndividualContainerController {
         // Set up the hover effects for all buttons.
         setupButton(backButton, new ImageView(), "back.png", "backHover.png", 20);
         setupButton(removeButton, new ImageView(), "binRed.png", "binHover.png", 50);
-        setupButton(copyButton, new ImageView(), "copy.png", "CopyClick.png", 38);
+        setupButton(copyButton, new ImageView(), "Copy.png", "CopyClick.png", 38);
 
         // Set up the CPU usage chart for the selected container.
         individualCpuSeries = new XYChart.Series<>();
