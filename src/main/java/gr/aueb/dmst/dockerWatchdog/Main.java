@@ -36,7 +36,8 @@ public class Main {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
-     * Configuration for the Docker client
+     * Configuration for the Docker client using the default configuration
+     * so the program works for all operating systems and Docker installations.
      */
     private static final DefaultDockerClientConfig builder =
             DefaultDockerClientConfig.createDefaultConfigBuilder()

@@ -1,6 +1,5 @@
 package gr.aueb.dmst.dockerWatchdog.gui.fxcontrollers;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -805,12 +804,18 @@ public class IndividualContainerController {
         changeScene(actionEvent, "kubernetesScene.fxml");
     }
 
+    /**
+     * Changes the current scene back to the previous scene.
+     * This method uses the 'fromWhere' variable to determine the previous scene,
+     * then calls the 'changeScene' method to change the scene.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while changing the scene.
+     */
     public void changeToBackScene(ActionEvent actionEvent) throws IOException {
-        if(Objects.equals(fromWhere, "containersScene.fxml")) {
-            changeScene(actionEvent, "containersScene.fxml");
-        } else {
-            changeScene(actionEvent, "imagesScene.fxml");
-        }
+        // 'fromWhere' holds the name of the previous scene
+        // Call 'changeScene' method to change the scene back to the previous scene
+        changeScene(actionEvent, fromWhere);
     }
 
     /**

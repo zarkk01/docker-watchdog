@@ -54,7 +54,7 @@ import io.kubernetes.client.util.Config;
 public class KubernetesController implements Initializable {
 
     // Logger instance used mainly for errors
-    private static final Logger logger = LogManager.getLogger(VolumesController.class);
+    private static final Logger logger = LogManager.getLogger(KubernetesController.class);
 
     // Stage and Parent for the scene
     private Stage stage;

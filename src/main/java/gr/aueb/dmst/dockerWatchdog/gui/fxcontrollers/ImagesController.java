@@ -681,6 +681,29 @@ public class ImagesController implements Initializable {
     }
 
     /**
+     *This method just hides the headers of the TableView so to make it look better
+     * and more friendly to the user. We basically use it only for the InstancesTableView in the down info
+     * panel and in this section headers would look awful.
+     *
+     * @param tableView The TableView whose headers are to be hidden.
+     */
+    public void hideTableHeaders(TableView<?> tableView) {
+        // Add a listener to the skin property of the TableView
+        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            // Retrieve the TableHeaderRow of the TableView
+            final TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+            // Set the visibility of the TableHeaderRow to false
+            header.setVisible(false);
+            // Set the maximum, minimum, and preferred height of the TableHeaderRow to 0
+            header.setMaxHeight(0);
+            header.setMinHeight(0);
+            header.setPrefHeight(0);
+            // Set the padding of the TableHeaderRow to 0
+            header.setPadding(new Insets(0));
+        });
+    }
+
+    /**
      * This method is sending a GET request to the WATCHDOG REST API to retrieve all instances of the specific image user clicked.
      * It parses the response body to extract the details of each instance, and
      * it creates a new InstanceScene object for each instance and adds it to the list.
@@ -1036,6 +1059,71 @@ public class ImagesController implements Initializable {
     }
 
     /**
+     * Changes the current scene to the PullImage scene.
+     * This method first checks if the user is logged in by checking if the token in UserController is null.
+     * Null token means that the user has not logged in. It is a must for user to be logged in so to browse on
+     * Dockerhub and pull images. If the user is not logged in, the scene is changed to the User scene.
+     * If the user is not logged, it changes the scene to the User scene.
+     * If the user is logged in, it loads the PullImage scene, retrieves its controller, and sets it as the root of the current stage.
+     * If an error occurs while loading the PullImage scene, it throws a RuntimeException.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     */
+    public void changeToPullImageScene(ActionEvent actionEvent) {
+        // Check if the user is logged by checking the token in UserController
+        if (UserController.token == null) {
+            // If the user is not logged, change the scene to the User scene
+            changeToUserScene(actionEvent);
+            return;
+        }
+        // Create a new FXMLLoader for the PullImage scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pullImageScene.fxml"));
+        try {
+            // Load the PullImage scene
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the PullImage scene, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the PullImage scene as the root of the current stage
+        stage.getScene().setRoot(root);
+        // Display the PullImage scene
+        stage.show();
+    }
+
+    /**
+     * Changes the current scene to the User scene.
+     * This method loads the User scene, retrieves its controller, and sets it as the root of the current stage.
+     * It also passes the name of the current scene to the UserController.
+     * If an error occurs while loading the User scene, it throws a RuntimeException.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     */
+    public void changeToUserScene(ActionEvent actionEvent) {
+        // Create a new FXMLLoader for the User scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            // Load the User scene
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the User scene, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the UserController for the User scene
+        UserController userController = loader.getController();
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad( "imagesScene.fxml");
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the current stage
+        stage.getScene().setRoot(root);
+        // Display the User scene
+        stage.show();
+    }
+
+    /**
      * Stops the Timeline if it is not null.
      * This method is used to stop the Timeline when the user leaves the scene.
      * Stopping the Timeline can help to reduce lag in the program.
@@ -1057,52 +1145,5 @@ public class ImagesController implements Initializable {
      */
     public static void showLoading(boolean toBeShown) {
         loadingImageViewStatic.setVisible(toBeShown);
-    }
-
-
-
-
-
-
-    public void hideTableHeaders(TableView<?> tableView) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            final TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
-            header.setVisible(false);
-            header.setMaxHeight(0);
-            header.setMinHeight(0);
-            header.setPrefHeight(0);
-            header.setPadding(new Insets(0));
-        });
-    }
-
-    public void changeToPullImageScene(ActionEvent actionEvent) throws IOException {
-        if ( UserController.token == null ) {
-            changeToUserScene(actionEvent);
-            return;
-        }
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pullImageScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        stage.show();
-    }
-
-    public void changeToUserScene(ActionEvent actionEvent) {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "imagesScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        stage.show();
     }
 }

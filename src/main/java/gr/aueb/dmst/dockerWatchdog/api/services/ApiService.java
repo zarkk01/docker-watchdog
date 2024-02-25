@@ -43,7 +43,7 @@ import gr.aueb.dmst.dockerWatchdog.api.repositories.MetricsRepository;
 public class ApiService {
 
     // Logger instance used mainly for errors
-    private static final Logger logger = LogManager.getLogger(ExecutorThread.class);
+    private static final Logger logger = LogManager.getLogger(ApiService.class);
 
     // URLs for Docker Hub login and search
     private static final String DOCKER_HUB_LOGIN_URL = "https://hub.docker.com/v2/users/login/";

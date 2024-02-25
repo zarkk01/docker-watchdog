@@ -1085,6 +1085,38 @@ public class ContainersController implements Initializable {
     }
 
     /**
+     * Changes the current scene to the User scene.
+     * This method loads the User scene and sets it as the root of the current stage.
+     * It also passes the name of the current scene to the UserController so it will know where
+     * to go back when the user clicks the back button.
+     * If an error occurs while loading the User scene, it throws a RuntimeException.
+     *
+     * @param actionEvent The event that triggered the scene change.
+     * @throws IOException If an error occurs while loading the User scene.
+     */
+    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
+        // Create a new FXMLLoader for the User scene
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
+        try {
+            // Load the User scene
+            root = loader.load();
+        } catch (IOException e) {
+            // If an error occurs while loading the User scene, throw a RuntimeException
+            throw new RuntimeException(e);
+        }
+        // Get the UserController for the User scene
+        UserController userController = loader.getController();
+        // Pass the name of the current scene to the UserController
+        userController.onUserSceneLoad( "containersScene.fxml");
+        // Get the current stage
+        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        // Set the User scene as the root of the current stage
+        stage.getScene().setRoot(root);
+        // Display the User scene
+        stage.show();
+    }
+
+    /**
      * Stops the Timeline if it is not null.
      * This method is used to stop the Timeline when the user leaves the scene.
      * Stopping the Timeline can help to reduce lag in the program.
@@ -1161,21 +1193,5 @@ public class ContainersController implements Initializable {
      */
     public static void showLoading(boolean toBeShown) {
         loadingImageViewStatic.setVisible(toBeShown);
-    }
-
-
-    public void changeToUserScene(ActionEvent actionEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/userScene.fxml"));
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        UserController userController = loader.getController();
-        // Pass the selected instance to the IndividualContainerController and the scene we are coming from.
-        userController.onUserSceneLoad( "containersScene.fxml");
-        stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
-        stage.getScene().setRoot(root);
-        stage.show();
     }
 }
