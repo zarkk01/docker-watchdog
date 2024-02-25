@@ -84,6 +84,11 @@
                      </image>
                   </ImageView>
                   <Pane fx:id="underLinePane" layoutX="78.0" layoutY="127.0" prefHeight="4.0" prefWidth="399.0" style="-fx-background-color: white;" />
+                  <Button fx:id="logoutButton" layoutX="241.0" layoutY="327.0" mnemonicParsing="false" onAction="#logOut" prefHeight="30.0" prefWidth="69.0" stylesheets="@styles/buttons.css" text="Log out" textFill="WHITE" visible="false">
+                     <font>
+                        <Font name="SansSerif Regular" size="13.0" />
+                     </font>
+                  </Button>
                </children>
             </Pane>
             <Button fx:id="backButton" layoutX="18.0" layoutY="12.0" mnemonicParsing="false" onAction="#goBack" prefHeight="39.0" prefWidth="39.0" style="-fx-background-color: transparent;">

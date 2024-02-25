@@ -59,6 +59,8 @@ public class UserController {
     @FXML
     private Label loginPrompt;
     @FXML
+    private Button logoutButton;
+    @FXML
     public Label loggedInLabel;
     @FXML
     private Button backButton;
@@ -97,6 +99,7 @@ public class UserController {
             // Update the loggedInLabel with the user's name and make it visible
             loggedInLabel.setText("Logged in as " + name);
             loggedInLabel.setVisible(true);
+            logoutButton.setVisible(true);
 
             // Hide the login form
             hideForm();
@@ -265,6 +268,28 @@ public class UserController {
             // If the log in proccess failed, display an error message
             wrongUserPass.setVisible(true);
         }
+    }
+
+    /**
+     * Logs out the user from Docker Hub.
+     * This method clears the token and name of the user that is logged in to Docker Hub,
+     * and updates the UI accordingly. It also makes the login form visible again.
+     */
+    public void logOut() {
+        // Clear the token and name of the user that is logged in to Docker
+        token = null;
+        name = null;
+        // Make the login form visible
+        wrongUserPass.setVisible(false);
+        passwordTextField.setVisible(true);
+        loginButton.setVisible(true);
+        underLinePane.setVisible(true);
+        usernameTextField.setVisible(true);
+        loginPrompt.setVisible(true);
+        loginToDockerhubLabel.setVisible(true);
+        // Hide the logged in label and the logout button
+        loggedInLabel.setVisible(false);
+        logoutButton.setVisible(false);
     }
 
     /**
