@@ -16,12 +16,16 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -31,6 +35,9 @@ import gr.aueb.dmst.dockerWatchdog.api.services.ApiService;
  * These can be shared among all classes.
  */
 public class UserController {
+
+    // Logger instance used mainly for errors
+    private static final Logger logger = LogManager.getLogger(UserController.class);
     private Stage stage;
     private Object root;
 
@@ -38,6 +45,8 @@ public class UserController {
     private Label wrongUserPass;
     @FXML
     private Pane underLinePane;
+    @FXML
+    private Pane loginForm;
 
     @FXML
     private Label loginToDockerhubLabel;
@@ -77,6 +86,9 @@ public class UserController {
         // Request focus for the dummy button to prevent the text field from getting focus
         Platform.runLater(() -> dummyButton.requestFocus());
 
+        // Add a shadow effect to the loginForm Pane to make it more aggressive
+        addShadowToLoginForm();
+
         // Set up the back button with the image and hover effect
         setupButton(backButton, new ImageView(), "back.png", "backHover.png", 20);
 
@@ -106,6 +118,28 @@ public class UserController {
         // Adjust the size of the image as needed
         imageView.setFitHeight(20);
         imageView.setFitWidth(20);
+    }
+
+    /**
+     * Adds a shadow effect to the loginForm Pane.
+     * This method creates a DropShadow effect with a specified radius, spread, offsets, and color.
+     * The shadow is then applied to the loginForm Pane and makes it appear as if it is floating.
+     */
+    public void addShadowToLoginForm() {
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(10.0);
+        shadow.setSpread(0.5);
+
+        // Set the horizontal and vertical offsets of the shadow to 0.0
+        // so it is exactly behind the loginForm Pane in the center
+        shadow.setOffsetX(0.0);
+        shadow.setOffsetY(0.0);
+
+        // Set the color of the shadow to a semi-transparent black
+        shadow.setColor(Color.color(0.0, 0.0, 0.0, 0.5));
+
+        // Finally, apply the shadow effect to the loginForm Pane
+        loginForm.setEffect(shadow);
     }
 
     /**
@@ -211,6 +245,7 @@ public class UserController {
             hideForm();
 
             // Create a ScheduledExecutorService so to make user go back after 1 seconds
+            // Maybe there is a better way to do this but this is maybe the most efficient
             ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
             // Schedule the goBack() method to be executed after 2 seconds
             executorService.schedule(() -> {
@@ -219,7 +254,7 @@ public class UserController {
                         // Go back to the previous scene
                         goBack(actionEvent);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("Error occurred while going back to the previous scene", e);
                     }
                 });
                 // After 1 second
@@ -227,7 +262,7 @@ public class UserController {
             // Shut down the executor service no reason to keep it running
             executorService.shutdown();
         } else {
-            // If the authentication failed, display an error message
+            // If the log in proccess failed, display an error message
             wrongUserPass.setVisible(true);
         }
     }
