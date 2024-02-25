@@ -821,7 +821,8 @@ public class IndividualContainerController {
     /**
      * Changes the current scene to the User scene so to move to the user's profile.
      * This method loads the FXML file for the User scene, sets it as the root of the current stage,
-     * and displays the new scene. It also passes the name of the current scene to the UserController.
+     * and displays the new scene. It also passes the name of the containers panel scene to the UserController
+     * so when user comes back from login panel to go to containers. Otherwise, it would need all info of the previous container.
      *
      * @param actionEvent The event that triggered the scene change.
      * @throws IOException If an error occurs while loading the FXML file.
@@ -838,8 +839,8 @@ public class IndividualContainerController {
         }
         // Get the controller for the User scene
         UserController userController = loader.getController();
-        // Pass the name of the current scene to the UserController
-        userController.onUserSceneLoad("individualContainerScene.fxml");
+        // Pass the name of the containers panel scene to the UserController
+        userController.onUserSceneLoad("containersScene.fxml");
         // Get the current stage
         stage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         // Set the User scene as the root of the stage
