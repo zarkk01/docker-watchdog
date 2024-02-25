@@ -28,7 +28,6 @@ import javafx.scene.control.skin.TableHeaderRow;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -218,7 +217,7 @@ public class ImagesController implements Initializable {
                                     adjustZeroInfoPanel(selectedImage);
                                 }
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                logger.error("Error occurred while adjusting the info panel: " + e.getMessage());
                             }
                         }
                     });
@@ -235,8 +234,10 @@ public class ImagesController implements Initializable {
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
 
-            // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
-            userButton.setText(UserController.token == null ? "Log in" : "Logged in");
+            // Trim the username if it is longer than 7 characters so to fit in the button
+            String rightLengthName = UserController.name != null && UserController.name.length() > 7 ? UserController.name.substring(0, 7) : UserController.name;
+            // Set the text of the userButton to "Log in" if the user is not logged in, and to username if the user is logged in.
+            userButton.setText(UserController.token == null ? "Log in" : rightLengthName);
         } catch (Exception e) {
             logger.error("Error occurred while initializing the Images Panel: " + e.getMessage());
         }
