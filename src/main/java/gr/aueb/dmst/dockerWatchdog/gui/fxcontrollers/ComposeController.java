@@ -107,12 +107,8 @@ public class ComposeController {
         woof.setShowDelay(Duration.millis(20));
         Tooltip.install(watchdogImage, woof);
 
-        // Set the userButton text to "Log in" or "Logged in" based on the token.
-        if (UserController.token == null) {
-            userButton.setText("Log in");
-        } else {
-            userButton.setText("Logged in");
-        }
+        // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
+        userButton.setText(UserController.token == null ? "Log in" : "Logged in");
     }
 
     /**

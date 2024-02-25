@@ -88,8 +88,6 @@ public class ImagesController implements Initializable {
     @FXML
     private VBox sideBar;
     @FXML
-    private HBox topBar;
-    @FXML
     private Pane searchPane;
     @FXML
     private Pane usedPane;
@@ -100,8 +98,6 @@ public class ImagesController implements Initializable {
 
     @FXML
     private CheckBox usedImagesCheckbox;
-    @FXML
-    private TextField pullImageTextField;
     @FXML
     private TextField searchField;
 
@@ -177,16 +173,6 @@ public class ImagesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-
-
-
-            if (UserController.token == null) {
-                userButton.setText("Log in");
-            } else {
-                userButton.setText("Logged in");
-            }
-
-
             // Set up the drop shadows of components.
             setUpShadows();
 
@@ -248,8 +234,11 @@ public class ImagesController implements Initializable {
             // Set the loadingImageViewStatic to the loadingImageView with the loading gif.
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
+
+            // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
+            userButton.setText(UserController.token == null ? "Log in" : "Logged in");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error("Error occurred while initializing the Images Panel: " + e.getMessage());
         }
     }
 

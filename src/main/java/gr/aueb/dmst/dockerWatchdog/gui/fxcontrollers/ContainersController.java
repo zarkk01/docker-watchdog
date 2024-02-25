@@ -208,14 +208,8 @@ public class ContainersController implements Initializable {
             loadingImageView.setImage(new Image(getClass().getResource("/images/loading.gif").toExternalForm()));
             loadingImageViewStatic = this.loadingImageView;
 
-            // Set the userButton text to "Log in" if the token is null, else to "Logged in".
-            if (UserController.token == null) {
-                // If the token is null, set the userButton text to "Log in".
-                userButton.setText("Log in");
-            } else {
-                // If the token is not null, set the userButton text to "Logged in".
-                userButton.setText("Logged in");
-            }
+            // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
+            userButton.setText(UserController.token == null ? "Log in" : "Logged in");
         } catch (Exception e) {
             // If an error occurs during the initialization, throw a RuntimeException.
             throw new RuntimeException(e);

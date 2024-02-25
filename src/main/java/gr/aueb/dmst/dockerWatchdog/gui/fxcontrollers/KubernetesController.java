@@ -139,14 +139,8 @@ public class KubernetesController implements Initializable {
             // Install funny tooltip on watchdog imageView
             setUpWoofTooltip();
 
-            // Set up the user button and change text according to the user's status
-            if (UserController.token == null) {
-                // If the user is not logged in, set the button text to "Log in"
-                userButton.setText("Log in");
-            } else {
-                // If the user is logged in, set the button text to "Logged in"
-                userButton.setText("Logged in");
-            }
+            // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
+            userButton.setText(UserController.token == null ? "Log in" : "Logged in");
         } catch (ApiException | IOException e) {
             // Log the error and print the stack trace
             logger.error(e);

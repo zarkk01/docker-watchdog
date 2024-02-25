@@ -122,14 +122,8 @@ public class GraphicsController implements Initializable {
             updatePidsChart();
             updatePieChart();
 
-            // Set the user button text to "Log in" if the user is not logged in, or "Logged in" if the user is logged in.
-            if (UserController.token == null) {
-                // If the user is not logged in, set the user button text to "Log in".
-                userButton.setText("Log in");
-            } else {
-                // If the user is logged in, set the user button text to "Logged in".
-                userButton.setText("Logged in");
-            }
+            // Set the text of the userButton to "Log in" if the user is not logged in, and to "Logged in" if the user is logged in.
+            userButton.setText(UserController.token == null ? "Log in" : "Logged in");
         } catch (Exception e) {
             // Log any errors that occur.
             logger.error(e.getMessage());

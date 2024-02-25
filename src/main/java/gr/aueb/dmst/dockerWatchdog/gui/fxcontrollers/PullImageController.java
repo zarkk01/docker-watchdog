@@ -168,7 +168,7 @@ public class PullImageController implements Initializable {
     }
 
     /**
-     * Searches for Docker images based on the text entered in the imagesSearch text field.
+     * Searches for Docker images based on the text entered the imagesSearch text field.
      * This method sends a request to Docker Hub to search for images.
      * If the user is not logged in, it prints a message asking the user to log in.
      * If the user is logged in, it retrieves the search results, creates SearchResultScene objects for each result,
