@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Promotional Introduction To Watchdog](#promotional-introduction-to-watchdog)
+- [Take A Look](#take-a-look)
 - [Technical Description](#a-more-technical-description)
 - [Youtube Ad](#roll-the-film-)
 - [Getting Started](#getting-started)
@@ -33,6 +34,10 @@ Watchdog provides real-time monitoring, keeping a vigilant eye on the health and
 
 We've put together a video that showcases our application in action. It's not just descriptive, it's downright entertaining! We promise it's worth your time. Click [here](https://www.youtube.com/watch?v=_BFrwwLwNy8)
 
+
+## Take A Look
+Before everything, take a look...
+![Description of the image](src/main/resources/images/containersPanel.png)
 
 ## A More Technical Description
 
